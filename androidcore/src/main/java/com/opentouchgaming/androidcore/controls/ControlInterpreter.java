@@ -1,303 +1,295 @@
 package com.opentouchgaming.androidcore.controls;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.bda.controller.Controller;
-
+import com.opentouchgaming.androidcore.DebugLog;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ControlInterpreter {
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+import static com.opentouchgaming.androidcore.DebugLog.Level.E;
 
-	String LOG = "ControlInterpreter";
+public class ControlInterpreter
+{
+    static DebugLog log;
 
-	ControlInterface quakeIf;
-	ControlConfig config;
+    static
+    {
+        log = new DebugLog(DebugLog.Module.CONTROLS, "ControlConfig");
+    }
 
-	boolean gamePadEnabled;
+    ControlInterface controlInterface;
+    ControlConfig config;
 
-	float screenWidth, screenHeight;
+    boolean gamePadEnabled;
 
-	HashMap<Integer, Boolean> analogButtonState = new HashMap<Integer, Boolean>(); //Saves current state of analog buttons so all sent each time
+    float screenWidth, screenHeight;
 
-	public ControlInterpreter(ControlInterface qif,ArrayList<ActionInput> gamepadActions,String controlfile,boolean ctrlEn)
-	{
-		if (TouchSettings.DEBUG) Log.d(LOG, "file = " + controlfile);
+    HashMap<Integer, Boolean> analogButtonState = new HashMap<Integer, Boolean>(); //Saves current state of analog buttons so all sent each time
 
-		gamePadEnabled = ctrlEn;
+    Dpad mDpad = new Dpad();
 
-		config = new ControlConfig(controlfile,gamepadActions);
-		try {
-			config.loadControls();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			Log.e(LOG, "Error loading gamepad file: " + e.toString());
-		}
+    public ControlInterpreter(ControlInterface qif, ActionInputDefinition gamepadDefinition, boolean ctrlEn)
+    {
+        gamePadEnabled = ctrlEn;
 
-		for (ActionInput ai: config.actions)
-		{
-			if ((ai.sourceType == ControlConfig.Type.ANALOG) && ((ai.actionType == ControlConfig.Type.MENU) || (ai.actionType == ControlConfig.Type.BUTTON)))
-			{
-				analogButtonState.put(ai.actionCode, false);
-			}
-		}
+        config = new ControlConfig(gamepadDefinition);
+        try
+        {
+            config.loadControls();
+        } catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            //e.printStackTrace();
+        } catch (ClassNotFoundException e)
+        {
+            log.log(E, "Error loading gamepad file: " + e.toString());
+        }
 
-		quakeIf = qif;
-	}
+        for (ActionInput ai : config.actions)
+        {
+            if ((ai.sourceType == ActionInput.SourceType.AXIS) && ((ai.actionType == ActionInput.ActionType.MENU) || (ai.actionType == ActionInput.ActionType.BUTTON)))
+            {
+                analogButtonState.put(ai.actionCode, false);
+            }
+        }
 
-	public void setScreenSize(int w,int h)
-	{
-		screenWidth = w;
-		screenHeight = h;
-	}
+        controlInterface = qif;
+    }
 
-	public boolean onTouchEvent(MotionEvent event)
-	{
-		int action = event.getAction();
-		int actionCode = action & MotionEvent.ACTION_MASK;
+    public void setScreenSize(int w, int h)
+    {
+        screenWidth = w;
+        screenHeight = h;
+    }
 
-		if (actionCode == MotionEvent.ACTION_MOVE)
-		{
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        int action = event.getAction();
+        int actionCode = action & MotionEvent.ACTION_MASK;
 
-			for (int i = 0; i < event.getPointerCount(); i++) {
+        if (actionCode == MotionEvent.ACTION_MOVE)
+        {
 
-				float x = event.getX(i)/screenWidth;
-				float y = event.getY(i)/screenHeight;
-				int pid = event.getPointerId(i);
-				quakeIf.touchEvent_if(3, pid, x, y);
-			}
-		}
-		else if (actionCode == MotionEvent.ACTION_DOWN)
-		{
-			float x = event.getX()/screenWidth;
-			float y = event.getY()/screenHeight;
-			quakeIf.touchEvent_if(1, 0, x, y);
-		}
-		else if (actionCode == MotionEvent.ACTION_POINTER_DOWN)
-		{
-			int index = event.getActionIndex();
-			if (index != -1)
-			{
-				float x = event.getX(index)/screenWidth;
-				float y = event.getY(index)/screenHeight;
-				int pid = event.getPointerId(index);
-				quakeIf.touchEvent_if(1, pid, x, y); 
-			}
-		}
-		else if (actionCode == MotionEvent.ACTION_POINTER_UP)
-		{
-			int index = event.getActionIndex();
-			if (index != -1)
-			{
+            for (int i = 0; i < event.getPointerCount(); i++)
+            {
 
-				float x = event.getX(index)/screenWidth;
-				float y = event.getY(index)/screenHeight;
-				int pid = event.getPointerId(index);
-				quakeIf.touchEvent_if(2, pid, x, y);
-			}
-		}
-		else if (actionCode == MotionEvent.ACTION_UP)
-		{
-			float x = event.getX()/screenWidth;
-			float y = event.getY()/screenHeight;
-			int index = event.getActionIndex();
-			int pid = event.getPointerId(index);
+                float x = event.getX(i) / screenWidth;
+                float y = event.getY(i) / screenHeight;
+                int pid = event.getPointerId(i);
+                controlInterface.touchEvent_if(3, pid, x, y);
+            }
+        } else if (actionCode == MotionEvent.ACTION_DOWN)
+        {
+            float x = event.getX() / screenWidth;
+            float y = event.getY() / screenHeight;
+            controlInterface.touchEvent_if(1, 0, x, y);
+        } else if (actionCode == MotionEvent.ACTION_POINTER_DOWN)
+        {
+            int index = event.getActionIndex();
+            if (index != -1)
+            {
+                float x = event.getX(index) / screenWidth;
+                float y = event.getY(index) / screenHeight;
+                int pid = event.getPointerId(index);
+                controlInterface.touchEvent_if(1, pid, x, y);
+            }
+        } else if (actionCode == MotionEvent.ACTION_POINTER_UP)
+        {
+            int index = event.getActionIndex();
+            if (index != -1)
+            {
 
-			quakeIf.touchEvent_if(2, pid, x, y);
-		}
+                float x = event.getX(index) / screenWidth;
+                float y = event.getY(index) / screenHeight;
+                int pid = event.getPointerId(index);
+                controlInterface.touchEvent_if(2, pid, x, y);
+            }
+        } else if (actionCode == MotionEvent.ACTION_UP)
+        {
+            float x = event.getX() / screenWidth;
+            float y = event.getY() / screenHeight;
+            int index = event.getActionIndex();
+            int pid = event.getPointerId(index);
 
-		return true;
-	}
+            controlInterface.touchEvent_if(2, pid, x, y);
+        }
 
-
-	public void onMogaKeyEvent(com.bda.controller.KeyEvent event,int pad_version)
-	{
-		int keycode =  event.getKeyCode();
-
-		if (pad_version ==  Controller.ACTION_VERSION_MOGA)
-		{
-			//Log.d(LOG,"removed");
-			if ((keycode == com.bda.controller.KeyEvent.KEYCODE_DPAD_DOWN) || 
-					(keycode == com.bda.controller.KeyEvent.KEYCODE_DPAD_UP) || 
-					(keycode == com.bda.controller.KeyEvent.KEYCODE_DPAD_LEFT) || 
-					(keycode == com.bda.controller.KeyEvent.KEYCODE_DPAD_RIGHT))
-				return;
-		}	
-
-		if (event.getAction() == com.bda.controller.KeyEvent.ACTION_DOWN)
-			onKeyDown(keycode, null);
-		else if (event.getAction() == com.bda.controller.KeyEvent.ACTION_UP)
-			onKeyUp(keycode, null);
-	}
-
-	public boolean onKeyDown(int keyCode, KeyEvent event)
-	{
-		boolean used = false;;	
-		if (gamePadEnabled)
-		{
-			for (ActionInput ai: config.actions)
-			{
-				if (((ai.sourceType == ControlConfig.Type.BUTTON)||(ai.sourceType == ControlConfig.Type.MENU)) && (ai.source == keyCode))
-				{
-					quakeIf.doAction_if(1, ai.actionCode);
-					Log.d(LOG,"key down intercept");
-					used =  true;
-				}
-			}
-		}
-
-		if (used)
-			return true;
+        return true;
+    }
 
 
-		if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
-				(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
-			return false;
-		else
-		{
-			int uc = 0;
-			if (event !=null)
-				uc = event.getUnicodeChar();
-			quakeIf.keyPress_if(1, quakeIf.mapKey(keyCode, uc), uc);
-			return true;
-		}
-	}
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        boolean used = false;
+        ;
+        if (gamePadEnabled)
+        {
+            for (ActionInput ai : config.actions)
+            {
+                if (((ai.sourceType == ActionInput.SourceType.BUTTON)) && (ai.source == keyCode))
+                {
+                    controlInterface.doAction_if(1, ai.actionCode);
+                    log.log(D, "key down intercept");
+                    used = true;
+                }
+            }
+        }
 
-	public boolean onKeyUp(int keyCode, KeyEvent event)
-	{
-		boolean used = false;
-
-		if (gamePadEnabled)
-		{
-			for (ActionInput ai: config.actions)
-			{
-				if (((ai.sourceType == ControlConfig.Type.BUTTON) || (ai.sourceType == ControlConfig.Type.MENU)) && (ai.source == keyCode))
-				{
-					quakeIf.doAction_if(0, ai.actionCode);
-					used = true;
-				}
-			}
-		}
-
-		if (used)
-			return true;
-
-		if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
-				(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
-			return false;
-		else
-		{
-			int uc = 0;
-			if (event !=null)
-				uc = event.getUnicodeChar();
-			quakeIf.keyPress_if(0, quakeIf.mapKey(keyCode, uc), uc);
-			return true;
-		}
-
-	}
-
-	float deadRegion = 0.2f;
-	private float analogCalibrate(float v)
-	{
-		if ((v < deadRegion) && (v > -deadRegion))
-			return 0;
-		else
-		{
-			if (v > 0)
-				return(v-deadRegion) / (1-deadRegion);
-			else
-				return(v+deadRegion) / (1-deadRegion);
-			//return v;
-		}
-	}
-
-	GenericAxisValues genericAxisValues = new GenericAxisValues();
+        if (used)
+            return true;
 
 
-	//This is for normal Android motioon event
-	public boolean onGenericMotionEvent(MotionEvent event) {
-		genericAxisValues.setAndroidValues(event);
-		return onGenericMotionEvent(genericAxisValues);
-	}
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
+                (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+            return false;
+        else
+        {
+            int uc = 0;
+            if (event != null)
+                uc = event.getUnicodeChar();
+            controlInterface.keyPress_if(1, controlInterface.mapKey(keyCode, uc), uc);
+            return true;
+        }
+    }
 
-	//This is for Moga event
-	public boolean onGenericMotionEvent(com.bda.controller.MotionEvent event) {
-		genericAxisValues.setMogaValues(event);
-		return onGenericMotionEvent(genericAxisValues);
-	}
+    public boolean onKeyUp(int keyCode, KeyEvent event)
+    {
+        boolean used = false;
 
-	public boolean onGenericMotionEvent(GenericAxisValues event) {
-		if (TouchSettings.DEBUG) Log.d(LOG,"onGenericMotionEvent" );
+        if (gamePadEnabled)
+        {
+            for (ActionInput ai : config.actions)
+            {
+                if (((ai.sourceType == ActionInput.SourceType.BUTTON)) && (ai.source == keyCode))
+                {
+                    controlInterface.doAction_if(0, ai.actionCode);
+                    used = true;
+                }
+            }
+        }
 
-		boolean used = false;
-		if (gamePadEnabled)
-		{
-			for (ActionInput ai: config.actions)
-			{
-				if ((ai.sourceType == ControlConfig.Type.ANALOG) && (ai.source != -1))
-				{
-					int invert;
-					invert = ai.invert?-1:1;
-					if (ai.actionCode == ControlConfig.ACTION_ANALOG_PITCH)
-						quakeIf.analogPitch_if(ControlConfig.LOOK_MODE_JOYSTICK, analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
-					else if (ai.actionCode == ControlConfig.ACTION_ANALOG_YAW)
-						quakeIf.analogYaw_if(ControlConfig.LOOK_MODE_JOYSTICK, -analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
-					else if (ai.actionCode == ControlConfig.ACTION_ANALOG_FWD)
-						quakeIf.analogFwd_if(-analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
-					else if (ai.actionCode == ControlConfig.ACTION_ANALOG_STRAFE)
-						quakeIf.analogSide_if(analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
-					else //Must be using analog as a button
-					{  
-						if (TouchSettings.DEBUG) Log.d(LOG,"Analog as button" );
+        if (used)
+            return true;
 
-						if (TouchSettings.DEBUG) Log.d(LOG,ai.toString());
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
+                (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+            return false;
+        else
+        {
+            int uc = 0;
+            if (event != null)
+                uc = event.getUnicodeChar();
+            controlInterface.keyPress_if(0, controlInterface.mapKey(keyCode, uc), uc);
+            return true;
+        }
 
-						if (((ai.sourcePositive) && (event.getAxisValue(ai.source)) > 0.5) ||
-								((!ai.sourcePositive) && (event.getAxisValue(ai.source)) < -0.5) )
-						{
-							if (!analogButtonState.get(ai.actionCode)) //Check internal state, only send if different
-							{
-								quakeIf.doAction_if(1, ai.actionCode); //press
-								analogButtonState.put(ai.actionCode, true);
-							}
-						}
-						else
-						{
-							if (analogButtonState.get(ai.actionCode)) //Check internal state, only send if different
-							{
-								quakeIf.doAction_if(0, ai.actionCode); //un-press
-								analogButtonState.put(ai.actionCode, false);
-							}
-						}
+    }
 
-					}
-					used = true;
-				}
-				/*
-				//Menu buttons
-				if ((ai.sourceType == Type.ANALOG) && (ai.actionType == Type.MENU) && (ai.source != -1))
-				{
-					if (GD.DEBUG) Log.d(LOG,"Analog as MENU button" );
-					if (GD.DEBUG) Log.d(LOG,ai.toString());
-					if (((ai.sourcePositive) && (event.getAxisValue(ai.source)) > 0.5) ||
-							((!ai.sourcePositive) && (event.getAxisValue(ai.source)) < -0.5) )
-						quakeIf.doAction_if(1, ai.actionCode); //press
-					else
-						quakeIf.doAction_if(0, ai.actionCode); //un-press
-				}
-				 */
-			}
+    float deadRegion = 0.2f;
 
-		}
+    private float analogCalibrate(float v)
+    {
+        if ((v < deadRegion) && (v > -deadRegion))
+            return 0;
+        else
+        {
+            if (v > 0)
+                return (v - deadRegion) / (1 - deadRegion);
+            else
+                return (v + deadRegion) / (1 - deadRegion);
+            //return v;
+        }
+    }
+
+    static int lastMenuButton = -1;
+
+    public boolean onGenericMotionEvent(MotionEvent event)
+    {
+        log.log(D, "onGenericMotionEvent");
+
+        if (Dpad.isDpadDevice(event))
+        {
+            int menuButton = mDpad.getDirectionPressed(event);
+            if (menuButton != lastMenuButton)
+            {
+                lastMenuButton = menuButton;
+                switch (menuButton)
+                {
+                    case Dpad.LEFT:
+                        log.log(D, "LEFT");
+                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_LEFT);
+                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_LEFT);
+                        return true;
+                    case Dpad.RIGHT:
+                        log.log(D, "RIGHT");
+                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_RIGHT);
+                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_RIGHT);
+                        return true;
+                    case Dpad.UP:
+                        log.log(D, "UP");
+                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_UP);
+                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_UP);
+                        return true;
+                    case Dpad.DOWN:
+                        log.log(D, "DOWN");
+                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_DOWN);
+                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_DOWN);
+                        return true;
+                }
+            }
+        }
+
+        boolean used = false;
+        if (gamePadEnabled)
+        {
+            for (ActionInput ai : config.actions)
+            {
+                if ((ai.sourceType == ActionInput.SourceType.AXIS) && (ai.source != -1))
+                {
+                    int invert;
+                    invert = ai.invert ? -1 : 1;
+                    if (ai.actionCode == PortActDefs.ACTION_ANALOG_PITCH)
+                        controlInterface.analogPitch_if(ControlConfig.LOOK_MODE_JOYSTICK, analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
+                    else if (ai.actionCode == PortActDefs.ACTION_ANALOG_YAW)
+                        controlInterface.analogYaw_if(ControlConfig.LOOK_MODE_JOYSTICK, -analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
+                    else if (ai.actionCode == PortActDefs.ACTION_ANALOG_FWD)
+                        controlInterface.analogFwd_if(-analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
+                    else if (ai.actionCode == PortActDefs.ACTION_ANALOG_STRAFE)
+                        controlInterface.analogSide_if(analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
+                    else //Must be using analog as a button
+                    {
+                        float value = event.getAxisValue(ai.source);
+                        log.log(D, "Analog as button, value = " + value);
+                        log.log(D, ai.toString());
+
+                        if (((ai.sourcePositive) && (value) > 0.5) ||
+                                ((!ai.sourcePositive) && (value) < -0.5))
+                        {
+                            if (!analogButtonState.get(ai.actionCode)) //Check internal state, only send if different
+                            {
+                                controlInterface.doAction_if(1, ai.actionCode); //press
+                                analogButtonState.put(ai.actionCode, true);
+                            }
+                        } else
+                        {
+                            if (analogButtonState.get(ai.actionCode)) //Check internal state, only send if different
+                            {
+                                controlInterface.doAction_if(0, ai.actionCode); //un-press
+                                analogButtonState.put(ai.actionCode, false);
+                            }
+                        }
+
+                    }
+                    used = true;
+                }
+            }
+        }
 
 
-		return used;
+        return used;
 
-	}
+    }
 }

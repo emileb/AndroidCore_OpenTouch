@@ -380,7 +380,6 @@ public class OptionsFragment extends Fragment{
 
 		AppSettings.belokoBaseDir = dir;
 		AppSettings.setStringOption(getActivity(), "base_path", AppSettings.belokoBaseDir);
-		AppSettings.createDirectories(getActivity());
 
 		basePathTextView.setText(AppSettings.belokoBaseDir);
 	}
@@ -399,7 +398,7 @@ public class OptionsFragment extends Fragment{
 		AppSettings.musicBaseDir = dir;
 		AppSettings.setStringOption(getActivity(), "music_path", AppSettings.musicBaseDir);
 		musicPathTextView.setText(AppSettings.musicBaseDir);
-		CDAudioPlayer.initFiles(AppSettings.musicBaseDir);
+
 	}
 
 	private void updateFPS()

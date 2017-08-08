@@ -3,8 +3,6 @@ package com.opentouchgaming.androidcore.controls;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,21 +20,26 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.bda.controller.Controller;
-import com.bda.controller.ControllerListener;
-import com.bda.controller.StateEvent;
+import com.opentouchgaming.androidcore.AppInfo;
+import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-/*
-import com.bda.controller.Controller;
-import com.bda.controller.ControllerListener;
-import com.bda.controller.StateEvent;
-*/
-public class GamePadFragment extends Fragment {
-    final String LOG = "GamePadFragment";
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+import static com.opentouchgaming.androidcore.DebugLog.Level.I;
+
+
+public class GamePadFragment extends Fragment
+{
+
+    static DebugLog log;
+
+    static
+    {
+        log = new DebugLog(DebugLog.Module.CONTROLS, "GamePadFragment");
+    }
 
     ListView listView;
     ControlListAdapter adapter;
@@ -48,83 +51,84 @@ public class GamePadFragment extends Fragment {
     //This is a bit shit, set this before instantiat the fragment
     public static ArrayList<ActionInput> gamepadActions;
 
-    GenericAxisValues genericAxisValues = new GenericAxisValues();
-
-    Controller mogaController = null;
-    final MogaControllerListener mListener = new MogaControllerListener();
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
-        config = new ControlConfig(TouchSettings.gamePadControlsFile,gamepadActions);
+        config = new ControlConfig(AppInfo.currentEngine.gamepadDefiniton);
 
-        try {
+        try
+        {
+            log.log(I, "Trying to load condig from file...");
             config.loadControls();
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             // TODO Auto-generated catch block
             //e.printStackTrace();
 
             //Failed to load, so save the default
-            try {
+            log.log(I, "..file not found");
+            try
+            {
                 config.saveControls();
-            } catch (IOException e1) {
+            } catch (IOException e1)
+            {
                 e1.printStackTrace();
             }
 
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e)
+        {
             // TODO Auto-generated catch block
-            //e.printStackTrace();
+            log.log(I, "Error in serialization.. " + e.toString());
         }
 
-
-        mogaController = Controller.getInstance(getActivity());
-        MogaHack.init(mogaController,getActivity());
-        mogaController.setListener(mListener, new Handler());
     }
 
 
-    boolean isHidden = true;
-
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        isHidden = hidden;
+    public void onHiddenChanged(boolean hidden)
+    {
         super.onHiddenChanged(hidden);
     }
 
 
     @Override
-    public void onPause() {
+    public void onPause()
+    {
         super.onPause();
-        mogaController.onPause();
+
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
-        mogaController.onResume();
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
-        mogaController.exit();
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         View mainView = inflater.inflate(R.layout.fragment_gamepad, null);
 
 
         CheckBox enableCb = (CheckBox) mainView.findViewById(R.id.gamepad_enable_checkbox);
         enableCb.setChecked(TouchSettings.gamePadEnabled);
 
-        enableCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        enableCb.setOnCheckedChangeListener(new OnCheckedChangeListener()
+        {
 
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
                 TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
                 TouchSettings.gamePadEnabled = isChecked;
                 setListViewEnabled(TouchSettings.gamePadEnabled);
@@ -136,21 +140,25 @@ public class GamePadFragment extends Fragment {
         CheckBox hideCtrlCb = (CheckBox) mainView.findViewById(R.id.gamepad_hide_touch_checkbox);
         hideCtrlCb.setChecked(TouchSettings.hideTouchControls);
 
-        hideCtrlCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        hideCtrlCb.setOnCheckedChangeListener(new OnCheckedChangeListener()
+        {
 
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-               TouchSettings.setBoolOption(getActivity(), "hide_touch_controls", isChecked);
-               TouchSettings.hideTouchControls = isChecked;
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                TouchSettings.setBoolOption(getActivity(), "hide_touch_controls", isChecked);
+                TouchSettings.hideTouchControls = isChecked;
             }
         });
 
 
         Button help = (Button) mainView.findViewById(R.id.gamepad_help_button);
-        help.setOnClickListener(new OnClickListener() {
+        help.setOnClickListener(new OnClickListener()
+        {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 //NoticeDialog.show(getActivity(),"Gamepad Help", R.raw.gamepad);
             }
         });
@@ -162,21 +170,26 @@ public class GamePadFragment extends Fragment {
         setListViewEnabled(TouchSettings.gamePadEnabled);
 
 
-        listView.setSelector(R.drawable.layout_sel_background);
-        listView.setOnItemClickListener(new OnItemClickListener() {
+        //listView.setSelector(R.drawable.layout_sel_background);
+        listView.setOnItemClickListener(new OnItemClickListener()
+        {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int pos,
-                                    long id) {
+                                    long id)
+            {
                 config.startMonitor(getActivity(), pos);
+                adapter.notifyDataSetChanged();
             }
         });
 
-        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        listView.setOnItemLongClickListener(new OnItemLongClickListener()
+        {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View v, int pos,
-                                           long id) {
+                                           long id)
+            {
                 return config.showExtraOptions(getActivity(), pos);
             }
         });
@@ -192,104 +205,117 @@ public class GamePadFragment extends Fragment {
         return mainView;
     }
 
-    private void setListViewEnabled(boolean v) {
+    private void setListViewEnabled(boolean v)
+    {
 
         listView.setEnabled(v);
-        if (v) {
+        if (v)
+        {
             listView.setAlpha(1);
-        } else {
+        } else
+        {
             listView.setAlpha(0.3f);
             //listView.setBackgroundColor(Color.GRAY);
         }
     }
 
-    public boolean onGenericMotionEvent(MotionEvent event) {
-        genericAxisValues.setAndroidValues(event);
+    Dpad mDpad = new Dpad();
 
-        if (config.onGenericMotionEvent(genericAxisValues))
+    public boolean onGenericMotionEvent(MotionEvent event)
+    {
+
+        log.log(D, "onGenericMotionEvent: event = " + event.toString());
+
+        if (Dpad.isDpadDevice(event)) {
+
+            int press = mDpad.getDirectionPressed(event);
+            switch (press) {
+                case Dpad.LEFT:
+                    log.log(D, "LEFT" );
+                    return true;
+                case Dpad.RIGHT:
+                    log.log(D, "RIGHT" );
+                    return true;
+                case Dpad.UP:
+                    log.log(D, "UP" );
+                    return true;
+                case Dpad.DOWN:
+                    log.log(D, "DOWN" );
+                    return true;
+            }
+        }
+
+
+        if (config.onGenericMotionEvent(event))
             adapter.notifyDataSetChanged();
 
         //return config.isMonitoring(); //This does not work, mouse appears anyway
-        return !isHidden; //If gamepas tab visible always steal
+        return true; //If gamepas tab visible always steal
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (config.onKeyDown(keyCode, event)) {
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        log.log(D, "onKeyDown: keyCode = " + keyCode + " event = " + event.toString());
+        if (config.onKeyDown(keyCode, event))
+        {
             adapter.notifyDataSetChanged();
             return true;
         }
+        adapter.notifyDataSetChanged();
         return false;
     }
 
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (config.onKeyUp(keyCode, event)) {
+    public boolean onKeyUp(int keyCode, KeyEvent event)
+    {
+        log.log(D, "onKeyUp: keyCode = " + keyCode + " event = " + event.toString());
+        if (config.onKeyUp(keyCode, event))
+        {
             adapter.notifyDataSetChanged();
             return true;
         }
+        adapter.notifyDataSetChanged();
         return false;
     }
 
-    class ControlListAdapter extends BaseAdapter {
+    class ControlListAdapter extends BaseAdapter
+    {
         private Activity context;
 
-        public ControlListAdapter(Activity context) {
+        public ControlListAdapter(Activity context)
+        {
             this.context = context;
 
         }
 
-        public void add(String string) {
+        public void add(String string)
+        {
 
         }
 
-        public int getCount() {
+        public int getCount()
+        {
             return config.getSize();
         }
 
-        public Object getItem(int arg0) {
+        public Object getItem(int arg0)
+        {
             // TODO Auto-generated method stub
             return null;
         }
 
-        public long getItemId(int arg0) {
+        public long getItemId(int arg0)
+        {
             // TODO Auto-generated method stub
             return 0;
         }
 
 
-        public View getView(int position, View convertView, ViewGroup list) {
+        public View getView(int position, View convertView, ViewGroup list)
+        {
             View v = config.getView(getActivity(), position);
             return v;
         }
 
-    }
-
-    class MogaControllerListener implements ControllerListener {
-
-
-        @Override
-        public void onKeyEvent(com.bda.controller.KeyEvent event) {
-            //Log.d(LOG,"onKeyEvent " + event.getKeyCode());
-
-            if (event.getAction() == com.bda.controller.KeyEvent.ACTION_DOWN)
-                onKeyDown(event.getKeyCode(), null);
-            else if (event.getAction() == com.bda.controller.KeyEvent.ACTION_UP)
-                onKeyUp(event.getKeyCode(), null);
-        }
-
-        @Override
-        public void onMotionEvent(com.bda.controller.MotionEvent event) {
-            //Log.d(LOG,"onGenericMotionEvent " + event.toString());
-
-            genericAxisValues.setMogaValues(event);
-
-            if (config.onGenericMotionEvent(genericAxisValues))
-                adapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public void onStateEvent(StateEvent event) {
-            Log.d(LOG, "onStateEvent " + event.getState());
-        }
     }
 
 }

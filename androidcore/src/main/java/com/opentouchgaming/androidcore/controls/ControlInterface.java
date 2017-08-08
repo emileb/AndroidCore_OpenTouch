@@ -11,10 +11,7 @@ public interface ControlInterface {
 	public void    analogSide_if(float v);
 	public void    analogPitch_if(int mode,float v);
 	public void    analogYaw_if(int mode,float v);
-	public void    setTouchSettings_if(float alpha,float strafe,float fwd,float pitch,float yaw,int other);
-	
-	public void quickCommand_if(String command);
-	
+
 	public  int    mapKey(int acode,int unicode);
 }
  

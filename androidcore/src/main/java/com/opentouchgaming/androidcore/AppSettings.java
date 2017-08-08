@@ -7,8 +7,6 @@ import android.os.Environment;
 
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
 public class AppSettings {
@@ -80,9 +78,6 @@ public class AppSettings {
 		
 		Random randomGenerator = new Random();
 		rnlvl = randomGenerator.nextInt();
-		
-		 
-		CDAudioPlayer.initFiles(musicBaseDir);
 	}
 
 	public static String getBaseDir()
@@ -95,86 +90,8 @@ public class AppSettings {
 		return  AppSettings.belokoBaseDir + "/" + game;
 	}
 
-	public static String getQuakeDemoDir()
-	{
-		String quakeFilesDir = AppSettings.belokoBaseDir + "/" + game;
-		return  quakeFilesDir + "/DEMO";
-	}
-
-	public static String getQuakeFullDir()
-	{
-		String quakeFilesDir = AppSettings.belokoBaseDir + "/" + game;
-		return quakeFilesDir + "/FULL";
-	}
-
-	public static void createDirectories(Context ctx)
-	{
-		boolean scan = false;
-
-		if (!new File(getQuakeDemoDir()).exists())
-			scan = true;
-
-		new File(getQuakeDemoDir()).mkdirs();
 
 
-		String d = "";
-		if (game == GD.IDGame.Quake)
-			d = "/id1/";
-		else if (game == GD.IDGame.Quake2)
-			d = "/baseq2/";
-		else if (game == GD.IDGame.Quake3)
-			d = "/baseq3/";
-		else if (game ==  GD.IDGame.Hexen2)
-			d = "/data1/";
-		else if (game ==  GD.IDGame.RTCW)
-			d = "/main/";
-		else if (game ==  GD.IDGame.JK2)
-			d = "/base/";
-		else if (game ==  GD.IDGame.JK3)
-			d = "/base/";
-
-		if (!new File(getQuakeFullDir() + d).exists())
-			scan = true;
-
-		new File(getQuakeFullDir() + d).mkdirs();
-
-		//This is totally stupid, need to do this so folder shows up in explorer!
-		if (scan) 
-		{
-			File f = new File(getQuakeDemoDir() , "temp_");
-			try {
-				f.createNewFile();
-				new SingleMediaScanner(ctx, false,  f.getAbsolutePath());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			f = new File(getQuakeFullDir() + d , "temp_");
-			try {
-				f.createNewFile();
-				new SingleMediaScanner(ctx, false,  f.getAbsolutePath());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else
-		{
-			new File(getQuakeDemoDir() , "temp_").delete();
-			new File(getQuakeFullDir() + d , "temp_").delete();
-		}
-
-
-
-		/*//Crashes on kitkat 4.4!!
-		if (scan)
-		{
-			Log.d("AppSettings","Doing media scan");
-			ctx.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + getBaseDir())));
-		}
-		 */
-	}
 
 	public static boolean showAbout(Context ctx)
 	{

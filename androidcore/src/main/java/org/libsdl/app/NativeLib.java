@@ -23,13 +23,6 @@ public class NativeLib implements ControlInterface {
 	public static native void analogYaw(int mode,float v);
 	public static native void setTouchSettings(float alpha,float strafe,float fwd,float pitch,float yaw,int other);
 
-	public static native void quickCommand(String command);
-
-	@Override
-	public void quickCommand_if(String command)
-	{
-		quickCommand(command);
-	}
 
 	@Override
 	public void initTouchControls_if(String pngPath, int width, int height) {
@@ -69,12 +62,6 @@ public class NativeLib implements ControlInterface {
 		analogYaw(mode,v);
 	}
 
-	@Override
-	public void setTouchSettings_if(float alpha,float strafe, float fwd, float pitch,
-			float yaw, int other) {
-		setTouchSettings(alpha,strafe, fwd, pitch, yaw, other);
-
-	}
 
 	public static final int KEY_PRESS = 1;
 	public static final int KEY_RELEASE = 0;

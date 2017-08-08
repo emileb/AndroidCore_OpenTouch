@@ -4,55 +4,52 @@ import java.io.Serializable;
 
 
 public class ActionInput implements Serializable
-{ 
-	private static final long serialVersionUID = 1L;
+{
+    private static final long serialVersionUID = 1L;
 
-	public String tag; 
-	public String description;
-	public boolean invert;
-	public float scale = 1; //senstivty for analog
+    public enum ActionType
+    {
+        ANALOG, BUTTON, MENU
+    }
 
-	public int source = -1;
-	public ControlConfig.Type sourceType;
-	public boolean sourcePositive=true; //Used when using analog as a button
-	
-	public int actionCode;
-	public ControlConfig.Type actionType;
+    public enum SourceType
+    {
+        AXIS,
+        BUTTON
+    }
 
-	public ActionInput(String t,String n,int action,ControlConfig.Type actiontype)
-	{
-		tag = t;
-		description = n;
-		actionCode = action;
-		actionType = actiontype;
-	}
+    public String tag;
+    public String description;
+    public boolean invert;
+    public float scale = 1; //senstivty for analog
 
-	public ActionInput(String t,String n,int action,ControlConfig.Type actiontype,ControlConfig.Type sourceTypeDef,int sourceDef)
-	{
-		tag = t;
-		description = n;
-		actionCode = action;
-		actionType = actiontype;
+    public ActionType actionType;
+    public int actionCode;
 
-		sourceType = sourceTypeDef;
-		source = sourceDef;
-	}
+    public SourceType sourceType;
+    public int source = -1;
+    public boolean sourcePositive = true; //Used when using analog as a button
 
-	public ActionInput(String t,String n,int action,ControlConfig.Type actiontype,ControlConfig.Type sourceTypeDef,int sourceDef,boolean sourcePosDef)
-	{
-		tag = t;
-		description = n;
-		actionCode = action;
-		actionType = actiontype;
 
-		sourceType = sourceTypeDef;
-		source = sourceDef;
-		sourcePositive = sourcePosDef;
-	}
+    public ActionInput(String tag, String description, ActionType actionType, int actionCode, SourceType sourceType, int source)
+    {
+        this.tag = tag;
+        this.description = description;
+        this.actionCode = actionCode;
+        this.actionType = actionType;
 
-	public String toString()
-	{
-		return description + ":" + sourceType.toString() + " source: " + source + " sourcePositive: " + sourcePositive;
-	}
+        this.sourceType = sourceType;
+        this.source = source;
+        //this.sourcePositive = sourcePositive;
+    }
+
+
+
+    public String toString()
+    {
+        return description + " : " + sourceType.toString() + " source: " + source + " sourcePositive: " + sourcePositive;
+    }
+
+
 }
 
