@@ -11,7 +11,10 @@ public class DebugLog
 
     public enum Module
     {
-        CONTROLS
+        CONTROLS,
+        GAMEFRAGMENT,
+        APP,
+        LICENSE,
     }
 
     public enum Level

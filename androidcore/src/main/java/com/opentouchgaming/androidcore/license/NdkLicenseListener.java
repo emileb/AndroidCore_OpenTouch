@@ -1,0 +1,110 @@
+package com.opentouchgaming.androidcore.license;
+
+
+import android.os.Parcel;
+import android.util.Log;
+
+import com.opentouchgaming.androidcore.DebugLog;
+
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
+public class NdkLicenseListener extends android.os.Binder
+{
+
+    static DebugLog log;
+
+    static
+    {
+        log = new DebugLog(DebugLog.Module.LICENSE, "NdkLicenseListener");
+    }
+
+    static final String LISTENER = "com.android.vending.licensing.ILicenseResultListener";
+
+    NdkLicenseCallback cb;
+    String key;
+
+    public NdkLicenseListener(NdkLicenseCallback callback, String key)
+    {
+        cb = callback;
+        this.key = key;
+    }
+
+    public boolean onTransact(int op, Parcel in, Parcel reply, int flags)
+    {
+
+        Log.d("LIC", "onTransact");
+
+        if (op == 1)
+        {
+
+            NdkLicenseCallback.LicStatus ret = new NdkLicenseCallback.LicStatus();
+
+            in.enforceInterface(LISTENER);
+            int code = in.readInt();
+            String data = in.readString();
+            String signature = in.readString();
+
+            log.log(D, "code = " + code + " data = " + data);
+            log.log(D, "sig = " + signature);
+            log.log(D, "key = " + key);
+
+            if (code == 0 || code == 2)
+            {
+
+                try
+                {
+                    byte[] sig_test;
+                    sig_test = Base64.decode(signature);
+                    int verif = NdkLvlInterface.doCheck(key.getBytes(), data.getBytes(), sig_test);
+                    if (verif == 0)
+                    {
+                        //Log.e(LOG, "Signature verification failed.");
+                        ret.code = NdkLicenseCallback.NO_GOOD;
+                        ret.desc = "Signature verification failed.";
+                        cb.status(ret);
+                        return true;
+                    }
+
+                } catch (Base64DecoderException e)
+                {
+                    ret.code = NdkLicenseCallback.ERROR;
+                    ret.desc = e.toString();
+                    cb.status(ret);
+                    return true;
+                }
+
+
+                if ((data.startsWith("0|")))// || (data.startsWith("2|")))
+                {
+                    ret.code = NdkLicenseCallback.GOOD;
+                    ret.desc = "GOOD";
+                    cb.status(ret);
+                    return true;
+                } else
+                {
+                    ret.code = NdkLicenseCallback.NO_GOOD;
+                    ret.desc = "Bad DATA code: " + data;
+                    cb.status(ret);
+                    return true;
+                }
+
+
+            } else if (code == 1)
+            {
+                ret.code = NdkLicenseCallback.NO_GOOD;
+                ret.desc = "Bad code: " + code;
+                cb.status(ret);
+                return true;
+            } else
+            {
+                ret.code = NdkLicenseCallback.ERROR;
+                ret.desc = "Bad code: " + code;
+                cb.status(ret);
+                return true;
+            }
+        }
+
+
+        return true;
+    }
+}

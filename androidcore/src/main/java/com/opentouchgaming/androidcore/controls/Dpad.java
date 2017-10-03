@@ -9,11 +9,11 @@ import android.view.MotionEvent;
  * Created by Emile on 06/08/2017.
  */
 public class Dpad {
-    final static int UP       = 0;
-    final static int LEFT     = 1;
-    final static int RIGHT    = 2;
-    final static int DOWN     = 3;
-    final static int CENTER   = 4;
+    public final static int UP       = 0;
+    public final static int LEFT     = 1;
+    public final static int RIGHT    = 2;
+    public final static int DOWN     = 3;
+    public final static int CENTER   = 4;
 
 
     public int getDirectionPressed(InputEvent event) {
