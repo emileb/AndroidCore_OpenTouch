@@ -7,31 +7,12 @@ import android.os.Environment;
 
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 
-import java.util.Random;
-
 public class AppSettings {
-
-	public static GD.IDGame game;
 
 	public static String belokoBaseDir;
 
-	public static String musicBaseDir;
-
-	public static String graphicsDir = "";
-
-	public static boolean vibrate;
 	public static boolean immersionMode;
 
-	public static long rid = 0x12345678abcdef12l;
-
-	public static int rnlvl = 0;
-	
-	public static void setGame(GD.IDGame g)
-	{
-		game = g;
-	}
-
-	public static Context ctx;
 
 	public static void resetBaseDir(Context ctx)
 	{
@@ -41,8 +22,6 @@ public class AppSettings {
 	
 	public static void reloadSettings(Context ctx)
 	{
-		AppSettings.ctx = ctx;
-
 		TouchSettings.reloadSettings(ctx);
 
 		belokoBaseDir = getStringOption(ctx, "base_path", null);
@@ -51,45 +30,16 @@ public class AppSettings {
 			resetBaseDir(ctx);
 		}
 
-		String music = getStringOption(ctx, "music_path", null);
-		if (music == null)
-		{
-			music  =  belokoBaseDir + "/" + game + "/Music";
-			setStringOption(ctx, "music_path", music);
-		}
 
-		musicBaseDir =  music;
-
-		graphicsDir = ctx.getFilesDir().toString() + "/";
-
-		vibrate =  getBoolOption(ctx, "vibrate", true);
 
 		immersionMode = getBoolOption(ctx, "immersion_mode", false);
-		
 
-		rid = getLongOption(ctx, "rid", 0);
-
-		if (rid == 0)
-		{
-			Random randomGenerator = new Random();
-			rid = randomGenerator.nextLong();
-			setLongOption(ctx, "rid", rid);
-		}
-		
-		Random randomGenerator = new Random();
-		rnlvl = randomGenerator.nextInt();
 	}
 
 	public static String getBaseDir()
 	{
 		return  AppSettings.belokoBaseDir;
 	}
-
-	public static String getGameDir()
-	{
-		return  AppSettings.belokoBaseDir + "/" + game;
-	}
-
 
 
 
@@ -186,8 +136,4 @@ public class AppSettings {
 		editor.commit();
 	}
 
-	public static long getRID()
-	{
-		return rid;
-	}
 }

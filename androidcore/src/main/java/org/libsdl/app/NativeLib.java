@@ -8,7 +8,7 @@ import com.opentouchgaming.androidcore.controls.ControlInterface;
 
 public class NativeLib implements ControlInterface {
 
-	public static native int init(String graphics_dir,int mem,String[] args,int game,String path);
+	public static native int init(String graphics_dir,int mem,String[] args,int game,String path, String filesPath);
 
 	public static native void setScreenSize( int width, int height );
 
@@ -17,6 +17,7 @@ public class NativeLib implements ControlInterface {
 	public static native boolean touchEvent( int action, int pid, float x, float y);
 	public static native void keypress(int down, int qkey, int unicode);
 	public static native void doAction(int state, int action);
+	public static native void backButton();
 	public static native void analogFwd(float v);
 	public static native void analogSide(float v);
 	public static native void analogPitch(int mode,float v);
@@ -41,7 +42,13 @@ public class NativeLib implements ControlInterface {
 	@Override
 	public void doAction_if(int state, int action) {
 		doAction(state,action);
-	} 
+	}
+
+	@Override
+	public void backButton_if()
+	{
+		backButton();
+	}
 
 	@Override
 	public void analogFwd_if(float v) {

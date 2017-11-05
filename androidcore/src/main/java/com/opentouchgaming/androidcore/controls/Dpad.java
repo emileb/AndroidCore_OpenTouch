@@ -15,6 +15,7 @@ public class Dpad {
     public final static int DOWN     = 3;
     public final static int CENTER   = 4;
 
+    int directionPressedLast = -1; // initialized to -1
 
     public int getDirectionPressed(InputEvent event) {
         if (!isDpadDevice(event)) {
@@ -64,7 +65,16 @@ public class Dpad {
                 directionPressed = Dpad.CENTER;
             }
         }
-        return directionPressed;
+
+        if( directionPressed != directionPressedLast)
+        {
+            directionPressedLast = directionPressed;
+            return directionPressed;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     public static boolean isDpadDevice(InputEvent event) {

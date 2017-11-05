@@ -12,26 +12,25 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.Toast;
+
+import com.opentouchgaming.androidcore.license.LicenseCheck;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -74,14 +73,21 @@ public class Utils {
 		}
 		out.close(); 
 	}
-	static public  void showDownloadDialog(final Activity act,String title,final String KEY,final String directory,final String file)
+	static public  void showDownloadDialog(final Activity act,String key, String title,final String directory,final String file,final int size)
 	{
+        boolean ok = LicenseCheck.checkLicenseFile(act, key);
+        if (!ok)
+        {
+            LicenseCheck.fetchLicense(act, true, key);
+            return;
+        }
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(act);
 		builder.setMessage(title)
 		.setCancelable(true)
 		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				ServerAPI.downloadFile(act,file,directory);
+				ServerAPI.downloadFile(act,file,directory,size);
 			}
 		});
 		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -90,7 +96,8 @@ public class Utils {
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
 			}
-		});                                                   
+		});
+
 		AlertDialog alert = builder.create();
 		alert.show(); 
 	}
@@ -113,7 +120,6 @@ public class Utils {
 			for (File f: files)
 			{
 				Log.d(LOG,"FILES: " + f.toString());
-
 			}
 
 			for (String e: expected)
@@ -509,76 +515,6 @@ public class Utils {
 		return BitmapFactory.decodeResource(res, resId, options);
 	}
 
-	public static void loadArgs(Context ctx,ArrayList<String> args)                         
-	{ 
-		File cacheDir = ctx.getFilesDir();
-
-		FileInputStream fis = null;
-		ObjectInputStream in = null;
-		try
-		{
-			fis = new FileInputStream(new File(cacheDir,"args_hist.dat"));
-			in = new ObjectInputStream(fis);                
-			ArrayList<String> argsHistory = (ArrayList<String>)in.readObject();
-			args.clear();
-			args.addAll(argsHistory);
-			in.close();
-			return;
-		}
-		catch(IOException ex)
-		{
-
-		}  
-		catch(ClassNotFoundException ex)
-		{
-
-		}
-		//failed load, load default
-		args.clear();
-	}  
-
-
-	public static void saveArgs(Context ctx,ArrayList<String> args)
-	{
-		File cacheDir = ctx.getFilesDir();
-
-		if (!cacheDir.exists())
-			cacheDir.mkdirs();
-
-		FileOutputStream fos = null;
-		ObjectOutputStream out = null;
-		try
-		{
-			fos = new FileOutputStream(new File(cacheDir,"args_hist.dat"));
-			out = new ObjectOutputStream(fos);
-			out.writeObject(args);
-			out.close();
-		}
-		catch(IOException ex)         
-		{
-			Toast.makeText(ctx,"Error saving args History list: " + ex.toString(), Toast.LENGTH_LONG).show();
-		}
-	}              
-
-	public static void copyTimidityFile(Activity act)
-	{
-		File timiditycfg = new File(AppSettings.getBaseDir() + "/eawpats/timidity.cfg"  );
-		File doomtimiditycfg = new File(AppSettings.getGameDir() + "/timidity.cfg"  );
-
-		if (timiditycfg.exists() && !doomtimiditycfg.exists())
-		{
-			Log.d(LOG,"Copying timidity file");
-			try {
-				Utils.copyFile(new FileInputStream(timiditycfg),new FileOutputStream(doomtimiditycfg));
-			} catch (FileNotFoundException e) {
-				Toast.makeText(act,"Error copying timidity.cfg " + e.toString(), Toast.LENGTH_LONG).show();
-			} catch (IOException e) {
-				Toast.makeText(act,"Error copying timidity.cfg " + e.toString(), Toast.LENGTH_LONG).show();
-			}
-		}
-	}
-
-
 	public static void setImmersionMode(final Activity act)
 	{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -649,6 +585,12 @@ public class Utils {
 		int exp = (int) (Math.log(bytes) / Math.log(unit));
 		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	}
+
+	public static long getSecureID(Context ctx) {
+		BigInteger b = new BigInteger(Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID), 16);
+		// Log.d("TEST","long = " + b.longValue());
+		return b.longValue();
 	}
 /*
 	public static ArrayList<ActionInput> getGameGamepadConfig(GD.IDGame game)

@@ -2,9 +2,13 @@ package com.opentouchgaming.androidcore.license;
 
 
 import android.os.Parcel;
-import android.util.Log;
 
+import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.DebugLog;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
@@ -32,11 +36,8 @@ public class NdkLicenseListener extends android.os.Binder
     public boolean onTransact(int op, Parcel in, Parcel reply, int flags)
     {
 
-        Log.d("LIC", "onTransact");
-
         if (op == 1)
         {
-
             NdkLicenseCallback.LicStatus ret = new NdkLicenseCallback.LicStatus();
 
             in.enforceInterface(LISTENER);
@@ -50,35 +51,42 @@ public class NdkLicenseListener extends android.os.Binder
 
             if (code == 0 || code == 2)
             {
-
-                try
+                //byte[] sig_test;
+                //sig_test = Base64.decode(signature);
+                int verif = NdkLvlInterface.doCheck(key.getBytes(), data.getBytes(), signature.getBytes());
+                if (verif == 0)
                 {
-                    byte[] sig_test;
-                    sig_test = Base64.decode(signature);
-                    int verif = NdkLvlInterface.doCheck(key.getBytes(), data.getBytes(), sig_test);
-                    if (verif == 0)
-                    {
-                        //Log.e(LOG, "Signature verification failed.");
-                        ret.code = NdkLicenseCallback.NO_GOOD;
-                        ret.desc = "Signature verification failed.";
-                        cb.status(ret);
-                        return true;
-                    }
-
-                } catch (Base64DecoderException e)
-                {
-                    ret.code = NdkLicenseCallback.ERROR;
-                    ret.desc = e.toString();
+                    //Log.e(LOG, "Signature verification failed.");
+                    ret.code = NdkLicenseCallback.NO_GOOD;
+                    ret.desc = "Signature verification failed.";
                     cb.status(ret);
                     return true;
                 }
 
 
-                if ((data.startsWith("0|")))// || (data.startsWith("2|")))
+                if ((data.startsWith("0|")) || (data.startsWith("2|")))
                 {
                     ret.code = NdkLicenseCallback.GOOD;
                     ret.desc = "GOOD";
                     cb.status(ret);
+
+                    // License OK, write out file
+                    try
+                    {
+                        PrintWriter writer = null;
+                        writer = new PrintWriter(AppInfo.internalFiles + "/l.dat", "UTF-8");
+                        writer.println(data);
+                        writer.println(signature);
+                        writer.flush();
+                        writer.close();
+                    } catch (FileNotFoundException e)
+                    {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e)
+                    {
+                        e.printStackTrace();
+                    }
+
                     return true;
                 } else
                 {

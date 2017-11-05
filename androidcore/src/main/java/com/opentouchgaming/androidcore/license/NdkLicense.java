@@ -8,9 +8,8 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
-import android.provider.Settings;
 
-import static android.R.attr.id;
+import com.opentouchgaming.androidcore.Utils;
 
 public class NdkLicense
 {
@@ -29,15 +28,7 @@ public class NdkLicense
                     {
                         Parcel d = Parcel.obtain();
 
-                        long id = 12345678;
-                        try
-                        {
-                            id = Long.valueOf(Settings.Secure.ANDROID_ID,16);
-                        }
-                        catch (NumberFormatException e)
-                        {
-
-                        }
+                        long id = Utils.getSecureID(context);
 
                         try
                         {

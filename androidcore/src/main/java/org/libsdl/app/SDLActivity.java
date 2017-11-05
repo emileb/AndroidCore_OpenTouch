@@ -197,7 +197,7 @@ public class SDLActivity extends Activity
         }
 
         AssetFileAccess.setAssetManager(mSingleton.getAssets());
-        Utils.copyPNGAssets(getApplicationContext(), AppSettings.graphicsDir);
+        Utils.copyPNGAssets(getApplicationContext(), AppInfo.internalFiles);
 
         if (mBrokenLibraries)
         {
@@ -1278,7 +1278,7 @@ class SDLMain implements Runnable
 
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
-        int ret = NativeLib.init(AppSettings.graphicsDir, audioSameple, args_array, 0, gamePath);
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", audioSameple, args_array, 0, gamePath,AppInfo.internalFiles );
 
         Log.v("SDL", "SDL thread terminated");
     }
@@ -1578,13 +1578,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         {
             if (event.getAction() == KeyEvent.ACTION_DOWN)
             {
-                SDLActivity.onNativeKeyDown(KeyEvent.KEYCODE_ESCAPE);
-                return true;
-            } else if (event.getAction() == KeyEvent.ACTION_UP)
-            {
-                SDLActivity.onNativeKeyUp(KeyEvent.KEYCODE_ESCAPE);
-                return true;
+                controlInterp.onBackButton();
             }
+            return true;
         }
 
 

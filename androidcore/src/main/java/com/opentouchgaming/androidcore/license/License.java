@@ -97,7 +97,6 @@ public class License
                     public void run()
                     {
 
-
                         Toast.makeText(ctx, "Unlicensed, reason: " + ret.desc, Toast.LENGTH_LONG).show();
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
