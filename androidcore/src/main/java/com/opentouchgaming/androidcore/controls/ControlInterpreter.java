@@ -5,6 +5,8 @@ import android.view.MotionEvent;
 
 import com.opentouchgaming.androidcore.DebugLog;
 
+import org.libsdl.app.SDLActivity;
+
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -147,10 +149,7 @@ public class ControlInterpreter
             return false;
         else
         {
-            int uc = 0;
-            if (event != null)
-                uc = event.getUnicodeChar();
-            controlInterface.keyPress_if(1, controlInterface.mapKey(keyCode, uc), uc);
+            SDLActivity.onNativeKeyDown(keyCode);
             return true;
         }
     }
@@ -179,13 +178,9 @@ public class ControlInterpreter
             return false;
         else
         {
-            int uc = 0;
-            if (event != null)
-                uc = event.getUnicodeChar();
-            controlInterface.keyPress_if(0, controlInterface.mapKey(keyCode, uc), uc);
+            SDLActivity.onNativeKeyUp(keyCode);
             return true;
         }
-
     }
 
     public void onBackButton( )
@@ -205,7 +200,6 @@ public class ControlInterpreter
                 return (v - deadRegion) / (1 - deadRegion);
             else
                 return (v + deadRegion) / (1 - deadRegion);
-            //return v;
         }
     }
 
@@ -227,22 +221,22 @@ public class ControlInterpreter
                         log.log(D, "LEFT");
                         controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_LEFT);
                         controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_LEFT);
-                        return true;
+                        break;
                     case Dpad.RIGHT:
                         log.log(D, "RIGHT");
                         controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_RIGHT);
                         controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_RIGHT);
-                        return true;
+                        break;
                     case Dpad.UP:
                         log.log(D, "UP");
                         controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_UP);
                         controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_UP);
-                        return true;
+                        break;
                     case Dpad.DOWN:
                         log.log(D, "DOWN");
                         controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_DOWN);
                         controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_DOWN);
-                        return true;
+                        break;
                 }
             }
         }
@@ -292,9 +286,6 @@ public class ControlInterpreter
                 }
             }
         }
-
-
         return used;
-
     }
 }

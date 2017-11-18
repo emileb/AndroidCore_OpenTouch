@@ -11,9 +11,6 @@ public class AppSettings {
 
 	public static String belokoBaseDir;
 
-	public static boolean immersionMode;
-
-
 	public static void resetBaseDir(Context ctx)
 	{
 		belokoBaseDir  =  Environment.getExternalStorageDirectory().toString() + "/Beloko";
@@ -29,10 +26,6 @@ public class AppSettings {
 		{
 			resetBaseDir(ctx);
 		}
-
-
-
-		immersionMode = getBoolOption(ctx, "immersion_mode", false);
 
 	}
 

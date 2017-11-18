@@ -519,7 +519,7 @@ public class Utils {
 	{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
-			if (AppSettings.immersionMode)
+			if (AppSettings.getBoolOption(act,"immersive_mode", false))
 			{
 				act.getWindow().getDecorView().setSystemUiVisibility(
 						View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -556,7 +556,7 @@ public class Utils {
 	{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
-			if (AppSettings.immersionMode)
+			if (AppSettings.getBoolOption(act,"immersive_mode",false))
 			{
 				Handler handler = new Handler();
 

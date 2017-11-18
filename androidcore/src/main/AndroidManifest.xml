@@ -1,7 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
 
-          package="com.opentouchgaming.androidcore"
-    >
+    package="com.opentouchgaming.androidcore">
 
     <application>
 

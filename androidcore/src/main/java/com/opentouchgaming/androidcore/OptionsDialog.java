@@ -8,11 +8,18 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Emile on 31/10/2017.
@@ -22,6 +29,7 @@ public class OptionsDialog
 {
 
     TextView appDirTextView;
+
     Activity activity;
 
     public OptionsDialog(final Activity act)
@@ -133,6 +141,59 @@ public class OptionsDialog
         {
             sdcardDir.setVisibility(View.GONE);
         }
+
+        CheckBox immersiveCheck = (CheckBox) dialog.findViewById(R.id.immersive_mode_checkbox);
+        immersiveCheck.setChecked(AppSettings.getBoolOption(activity, "immersive_mode", false));
+
+        immersiveCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                AppSettings.setBoolOption(activity, "immersive_mode", isChecked);
+            }
+        });
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+        {
+            immersiveCheck.setVisibility(View.GONE);
+        }
+
+
+        Spinner resSpinnder = (Spinner) dialog.findViewById(R.id.res_div_spinner);
+        List<String> list = new ArrayList<String>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        list.add("5");
+        list.add("6");
+        list.add("7");
+        list.add("8");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(act, android.R.layout.simple_spinner_item, list);
+
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        resSpinnder.setAdapter(dataAdapter);
+        resSpinnder.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id)
+            {
+                AppSettings.setIntOption(act, "res_div", position + 1);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+            }
+        });
+
+        int selected = AppSettings.getIntOption(act, "res_div", 1);
+        resSpinnder.setSelection(selected - 1);
         dialog.show();
 
     }

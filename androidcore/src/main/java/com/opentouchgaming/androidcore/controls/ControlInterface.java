@@ -12,7 +12,5 @@ public interface ControlInterface {
 	public void    analogSide_if(float v);
 	public void    analogPitch_if(int mode,float v);
 	public void    analogYaw_if(int mode,float v);
-
-	public  int    mapKey(int acode,int unicode);
 }
  

@@ -18,10 +18,10 @@ public class GameEngine
         RETRO
     }
 
-    public GameEngine(Engine engine, String title, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color)
+    public GameEngine(Engine engine, String title, String name, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color)
     {
         this.title = title;
-        this.directory = directory;
+        this.name = name;
         this.engine = engine;
         this.iconRes = iconRes;
         this.color = color;
@@ -35,7 +35,7 @@ public class GameEngine
     final public int color;
     final public Engine engine;
     final public String title;
-    final public String directory;
+    final public String name;
     final public String args;
     final public String[] versions;
     final public ActionInputDefinition gamepadDefiniton;

@@ -225,7 +225,7 @@ public class GamePadFragment extends Fragment
     {
 
         log.log(D, "onGenericMotionEvent: event = " + event.toString());
-
+/*
         if (Dpad.isDpadDevice(event)) {
 
             int press = mDpad.getDirectionPressed(event);
@@ -244,7 +244,7 @@ public class GamePadFragment extends Fragment
                     return true;
             }
         }
-
+*/
 
         if (config.onGenericMotionEvent(event))
             adapter.notifyDataSetChanged();

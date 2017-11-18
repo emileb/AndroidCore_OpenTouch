@@ -69,7 +69,7 @@ import static android.R.attr.fragment;
 /**
  * SDL Activity
  */
-public class SDLActivity extends Activity
+public class SDLActivity extends Activity implements Handler.Callback
 {
     private static final String TAG = "SDL";
 
@@ -98,6 +98,8 @@ public class SDLActivity extends Activity
     // Audio
     protected static AudioTrack mAudioTrack;
     protected static AudioRecord mAudioRecord;
+
+    static Handler handlerUI;
 
     /**
      * This method is called by SDL before loading the native shared libraries.
@@ -165,6 +167,7 @@ public class SDLActivity extends Activity
         Log.v(TAG, "onCreate(): " + mSingleton);
         super.onCreate(savedInstanceState);
 
+        handlerUI = new Handler(this);
 
         SDLActivity.initialize();
         // So we can call stuff from static callbacks
@@ -223,9 +226,9 @@ public class SDLActivity extends Activity
             return;
         }
 
-
+        int resDiv = getIntent().getIntExtra("res_div",1);
         // Set up the surface
-        mSurface = new SDLSurface(getApplication());
+        mSurface = new SDLSurface(getApplication(),resDiv);
 
         // fullscreen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -236,11 +239,12 @@ public class SDLActivity extends Activity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        Utils.setImmersionMode(this);
 
         mLayout = new RelativeLayout(this);
-        mLayout.addView(mSurface);
+        //mLayout.addView(mSurface);
 
-        setContentView(mLayout);
+        setContentView(mSurface);
 
         // Get filename from "Open with" of another application
         Intent intent = getIntent();
@@ -254,8 +258,8 @@ public class SDLActivity extends Activity
                 SDLActivity.onNativeDropFile(filename);
             }
         }
-
     }
+
 
     // Events
     @Override
@@ -292,6 +296,8 @@ public class SDLActivity extends Activity
     {
         super.onWindowFocusChanged(hasFocus);
         Log.v(TAG, "onWindowFocusChanged(): " + hasFocus);
+
+        Utils.onWindowFocusChanged(this, hasFocus);
 
         if (SDLActivity.mBrokenLibraries)
         {
@@ -435,6 +441,12 @@ public class SDLActivity extends Activity
      * @return if the message was handled in overridden method.
      */
     protected boolean onUnhandledMessage(int command, Object param)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean handleMessage(Message msg)
     {
         return false;
     }
@@ -1278,7 +1290,8 @@ class SDLMain implements Runnable
 
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", audioSameple, args_array, 0, gamePath,AppInfo.internalFiles );
+        String logFilename = SDLActivity.mSingleton.getIntent().getStringExtra("log_filename");
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", audioSameple, args_array, 0, gamePath, logFilename );
 
         Log.v("SDL", "SDL thread terminated");
     }
@@ -1295,6 +1308,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         View.OnKeyListener, View.OnTouchListener, SensorEventListener
 {
 
+    int resDiv = 1;
+    boolean divDone = false;
+
     // Sensors
     protected static SensorManager mSensorManager;
     protected static Display mDisplay;
@@ -1305,10 +1321,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     private ControlInterpreter controlInterp;
 
     // Startup
-    public SDLSurface(Context context)
+    public SDLSurface(Context context,int div)
     {
         super(context);
         getHolder().addCallback(this);
+        resDiv = div;
 
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -1364,60 +1381,23 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         SDLActivity.onNativeSurfaceDestroyed();
     }
 
-    /*
-        public static ArrayList<ActionInput> getGamepadAction()
-        {
-            ArrayList<ActionInput> actions = new ArrayList<ActionInput>();
 
-            actions.add(new ActionInput("analog_move_fwd","Forward/Back", ControlConfig.ACTION_ANALOG_FWD, ActionInput.ActionType.ANALOG,
-                    ActionInput.ActionType.ANALOG,MotionEvent.AXIS_Y));
-            actions.add(new ActionInput("analog_move_strafe","Strafe",ControlConfig.ACTION_ANALOG_STRAFE, ActionInput.ActionType.ANALOG,
-                    ActionInput.ActionType.ANALOG,MotionEvent.AXIS_X));
-            actions.add(new ActionInput("analog_look_yaw","Look Left/Look Right",ControlConfig.ACTION_ANALOG_YAW, ActionInput.ActionType.ANALOG,
-                    ActionInput.ActionType.ANALOG,MotionEvent.AXIS_Z));
-            actions.add(new ActionInput("analog_look_pitch","Look Up/Look Down",ControlConfig.ACTION_ANALOG_PITCH, ActionInput.ActionType.ANALOG,
-                    ActionInput.ActionType.ANALOG,MotionEvent.AXIS_RZ));
-
-            actions.add(new ActionInput("attack","Attack",ControlConfig.PORT_ACT_ATTACK, ActionInput.ActionType.BUTTON,
-                    ActionInput.ActionType.ANALOG,MotionEvent.AXIS_RTRIGGER));
-
-            actions.add(new ActionInput("use","Use/Open",ControlConfig.PORT_ACT_USE, ActionInput.ActionType.BUTTON,
-                    ActionInput.ActionType.BUTTON,KeyEvent.KEYCODE_BUTTON_A));
-
-            actions.add(new ActionInput("next_weapon","Next Weapon",ControlConfig.PORT_ACT_NEXT_WEP, ActionInput.ActionType.BUTTON,
-                    ActionInput.ActionType.BUTTON,KeyEvent.KEYCODE_BUTTON_R1));
-            actions.add(new ActionInput("prev_weapon","Previous Weapon",ControlConfig.PORT_ACT_PREV_WEP, ActionInput.ActionType.BUTTON,
-                    ActionInput.ActionType.BUTTON,KeyEvent.KEYCODE_BUTTON_L1));
-
-            actions.add(new ActionInput("inv_use","Use Item",ControlConfig.PORT_ACT_INVUSE, ActionInput.ActionType.BUTTON));
-            actions.add(new ActionInput("inv_drop","Drop Item",ControlConfig.PORT_ACT_INVDROP, ActionInput.ActionType.BUTTON));
-            actions.add(new ActionInput("inv_next","Next Item",ControlConfig.PORT_ACT_INVNEXT, ActionInput.ActionType.BUTTON));
-            actions.add(new ActionInput("inv_prev","Prev Item",ControlConfig.PORT_ACT_INVPREV, ActionInput.ActionType.BUTTON));
-            actions.add(new ActionInput("show_weap","Show Stats/Weapons",ControlConfig.PORT_ACT_SHOW_WEAPONS, ActionInput.ActionType.BUTTON));
-            actions.add(new ActionInput("show_keys","Show Keys",ControlConfig.PORT_ACT_SHOW_KEYS, ActionInput.ActionType.BUTTON));
-
-            actions.add(new ActionInput("menu_up","Menu Up",ControlConfig.MENU_UP, ActionInput.ActionType.MENU,
-                    ActionInput.ActionType.ANALOG,MotionEvent.AXIS_HAT_Y,false));
-            actions.add(new ActionInput("menu_down","Menu Down",ControlConfig.MENU_DOWN, ActionInput.ActionType.MENU,
-                    ActionInput.ActionType.ANALOG,MotionEvent.AXIS_HAT_Y));
-            actions.add(new ActionInput("menu_left","Menu Left",ControlConfig.MENU_LEFT, ActionInput.ActionType.MENU,
-                    ActionInput.ActionType.ANALOG,MotionEvent.AXIS_HAT_X,false));
-            actions.add(new ActionInput("menu_right","Menu Right",ControlConfig.MENU_RIGHT, ActionInput.ActionType.MENU,
-                    ActionInput.ActionType.ANALOG,MotionEvent.AXIS_HAT_X));
-            actions.add(new ActionInput("menu_select","Menu Select",ControlConfig.MENU_SELECT, ActionInput.ActionType.MENU,
-                    ActionInput.ActionType.BUTTON,KeyEvent.KEYCODE_BUTTON_A));
-            actions.add(new ActionInput("menu_back","Menu Back",ControlConfig.MENU_BACK, ActionInput.ActionType.MENU,
-                    ActionInput.ActionType.BUTTON,KeyEvent.KEYCODE_BUTTON_B));
-
-            return actions;
-        }
-        */
     // Called when the surface is resized
     @Override
     public void surfaceChanged(SurfaceHolder holder,
                                int format, int width, int height)
     {
-        Log.v("SDL", "surfaceChanged()");
+        Log.v("SDL", "surfaceChanged() w=" + width + " h="+height);
+
+        mWidth = width;
+        mHeight = height;
+
+        if (resDiv != 1 && !divDone)
+        {
+            getHolder().setFixedSize( mWidth/resDiv, mHeight/resDiv);
+            divDone = true;
+            return;
+        }
 
         NativeLib.setScreenSize(width, height);
 
@@ -1469,14 +1449,12 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 break;
         }
 
-        mWidth = width;
-        mHeight = height;
 
         NativeLib engine = new NativeLib();
 
         controlInterp = new ControlInterpreter(engine, AppInfo.currentEngine.gamepadDefiniton, TouchSettings.gamePadEnabled);
 
-        controlInterp.setScreenSize(width, height);
+        controlInterp.setScreenSize(width*resDiv, height*resDiv);
 
         SDLActivity.onNativeResize(width, height, sdlFormat, mDisplay.getRefreshRate());
         Log.v("SDL", "Window size: " + width + "x" + height);

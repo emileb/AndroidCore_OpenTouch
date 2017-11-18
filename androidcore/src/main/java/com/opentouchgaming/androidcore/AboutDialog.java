@@ -67,7 +67,7 @@ public class AboutDialog {
 			@Override
 			public void onClick(View v) {
 				Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-						"http://www.amazon.com/gp/mas/dl/android?p=" + ctx.getPackageName()));
+						"http://play.google.com/store/apps/details?id=" + ctx.getPackageName()));
 				ctx.startActivity(marketIntent);        
 			}
 		});

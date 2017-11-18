@@ -42,7 +42,6 @@ public class LicenseCheck
             File f = new File(AppInfo.internalFiles + "/l.dat");
 
             BufferedReader b = new BufferedReader(new FileReader(f));
-
             String data = b.readLine();
             String sig = b.readLine();
 

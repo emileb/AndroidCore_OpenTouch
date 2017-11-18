@@ -15,6 +15,7 @@ public class DebugLog
         GAMEFRAGMENT,
         APP,
         LICENSE,
+        CORE,
     }
 
     public enum Level
