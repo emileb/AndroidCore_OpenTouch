@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -349,8 +350,8 @@ public class Utils {
 
 	static public String[] creatArgs(String appArgs)
 	{
-		ArrayList<String> a = new ArrayList<String>(Arrays.asList(appArgs.split(" ")));
-
+		//ArrayList<String> a = new ArrayList<String>(Arrays.asList(appArgs.split(" ")));
+		ArrayList<String> a  = new ArrayList<String>(Arrays.asList(appArgs.split("\"?( |$)(?=(([^\"]*\"){2})*[^\"]*$)\"?")));
 		Iterator<String> iter = a.iterator();
 		while (iter.hasNext()) {
 			if (iter.next().contentEquals("")) {
@@ -591,6 +592,13 @@ public class Utils {
 		BigInteger b = new BigInteger(Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID), 16);
 		// Log.d("TEST","long = " + b.longValue());
 		return b.longValue();
+	}
+
+	public static float convertDpToPixel(float dp, Context context){
+		Resources resources = context.getResources();
+		DisplayMetrics metrics = resources.getDisplayMetrics();
+		float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+		return px;
 	}
 /*
 	public static ArrayList<ActionInput> getGameGamepadConfig(GD.IDGame game)

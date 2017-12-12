@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.androidcore.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,7 +34,6 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 public class ControlConfig implements Serializable
 {
-
     static DebugLog log;
 
     static
@@ -177,6 +177,7 @@ public class ControlConfig implements Serializable
 
             final LinearLayout l = new LinearLayout(act);
             l.setOrientation(LinearLayout.VERTICAL);
+            l.setMinimumWidth((int)Utils.convertDpToPixel(500,act));
 
             final SeekBar sb = new SeekBar(act);
             l.addView(sb);

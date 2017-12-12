@@ -1,5 +1,6 @@
 package com.opentouchgaming.androidcore;
 
+import android.app.Activity;
 import android.widget.ImageButton;
 
 import com.opentouchgaming.androidcore.controls.ActionInputDefinition;
@@ -18,7 +19,7 @@ public class GameEngine
         RETRO
     }
 
-    public GameEngine(Engine engine, String title, String name, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color)
+    public GameEngine(Engine engine, String title, String name, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)
     {
         this.title = title;
         this.name = name;
@@ -29,6 +30,24 @@ public class GameEngine
         this.args = args;
         this.versions = versions;
         this.gamepadDefiniton = gamepadDefiniton;
+        this.engineOptionsClass = opCls;
+    }
+
+    public void init(Activity act)
+    {
+        if (engineOptions == null)
+        {
+            try // Create class from class type
+            {
+                engineOptions = (EngineOptionsInterface) engineOptionsClass.newInstance();
+            } catch (IllegalAccessException e)
+            {
+                e.printStackTrace();
+            } catch (InstantiationException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     final public int iconRes;
@@ -42,4 +61,8 @@ public class GameEngine
     final public String[][] loadLibs;
 
     public ImageButton imageButton;
+
+    final Class engineOptionsClass;
+
+    public EngineOptionsInterface engineOptions;
 }

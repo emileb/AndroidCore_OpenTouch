@@ -30,7 +30,7 @@ public class LogViewDialog
 
         dialog.setContentView(R.layout.dialog_log_view);
 
-        dialog.setTitle("Game options");
+        dialog.setTitle("Game log");
 
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);

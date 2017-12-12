@@ -69,8 +69,91 @@ public class ControlInterpreter
 
     public boolean onTouchEvent(MotionEvent event)
     {
+
+        // Get pointer index from the event object
+        int pointerIndex = event.getActionIndex();
+
+        // Get pointer ID
+        int pointerId = event.getPointerId(pointerIndex);
+
+        // Get masked (not specific to a pointer) action
+        int maskedAction = event.getActionMasked();
+
+        float x = event.getX(pointerIndex) / screenWidth;
+        float y = event.getY(pointerIndex) / screenHeight;
+
+        switch (maskedAction)
+        {
+            case MotionEvent.ACTION_MOVE:
+            {
+                int pointerCount = event.getPointerCount();
+/*
+                for (int i = 0; i < pointerCount; ++i)
+                {
+                    // i is the pointer index but we'll update our pointerIndex variable for clarity
+                    pointerIndex = i;
+
+                    // Get the pointerId at that pointerIndex (pointerId never changes while pointer is in contact)
+                    pointerId = event.getPointerId(pointerIndex);
+
+                    // ...and update the circle's location.
+                    x = event.getX(pointerIndex) / screenWidth;
+                    y = event.getY(pointerIndex) / screenHeight;
+
+                    controlInterface.touchEvent_if(3, pointerId, x, y);
+                }
+*/
+                for(int i = 0; i < pointerCount; ++i)
+                {
+                    // i is the pointer index but we'll update our pointerIndex variable for clarity
+                    pointerIndex = i;
+
+                    // To find out WHICH pointer moved we must compare pointer historical locations
+                    if (event.getHistorySize() > 0)
+                    {
+                        // X or Y location for that pointer index moved?
+                        // Corner-case: Pointer index changed (pointer up or down promoted or demoted pointer index while moving?)
+                        // Fix: Track by pointer Id via sparse array as outlined in second potential solution below.
+                        if ( (int)event.getX(i) != (int)event.getHistoricalX(i,0) || (int)event.getY(i) != (int)event.getHistoricalY(i, 0) )
+                        {
+                            pointerId = event.getPointerId(i);
+                            // ...and update the circle's location.
+                            x = event.getX(pointerIndex) / screenWidth;
+                            y = event.getY(pointerIndex) / screenHeight;
+
+                            controlInterface.touchEvent_if(3, pointerId, x, y);
+                        }
+                    }
+                }
+
+            }
+            break;
+            case MotionEvent.ACTION_DOWN:
+            {
+                controlInterface.touchEvent_if(1, pointerId, x, y);
+            }
+            break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+            {
+                controlInterface.touchEvent_if(1, pointerId, x, y);
+            }
+            break;
+            case MotionEvent.ACTION_POINTER_UP:
+            {
+                controlInterface.touchEvent_if(2, pointerId, x, y);
+            }
+            break;
+            case MotionEvent.ACTION_UP:
+            {
+                controlInterface.touchEvent_if(2, pointerId, x, y);
+            }
+            break;
+        }
+
+/*
         int action = event.getAction();
         int actionCode = action & MotionEvent.ACTION_MASK;
+
 
         if (actionCode == MotionEvent.ACTION_MOVE)
         {
@@ -118,7 +201,7 @@ public class ControlInterpreter
 
             controlInterface.touchEvent_if(2, pid, x, y);
         }
-
+*/
         return true;
     }
 
@@ -183,7 +266,7 @@ public class ControlInterpreter
         }
     }
 
-    public void onBackButton( )
+    public void onBackButton()
     {
         controlInterface.backButton_if();
     }
