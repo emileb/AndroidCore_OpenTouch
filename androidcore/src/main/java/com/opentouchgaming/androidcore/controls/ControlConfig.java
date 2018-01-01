@@ -2,7 +2,6 @@ package com.opentouchgaming.androidcore.controls;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.view.KeyEvent;
@@ -41,6 +40,11 @@ public class ControlConfig implements Serializable
         log = new DebugLog(DebugLog.Module.CONTROLS, "ControlConfig");
     }
 
+    public interface Listener
+    {
+        void startMonitoring( ActionInput action );
+        void finishedMonitoring();
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -48,24 +52,15 @@ public class ControlConfig implements Serializable
     public static final int LOOK_MODE_ABSOLUTE = 1;
     public static final int LOOK_MODE_JOYSTICK = 2;
 
-
-    Context ctx;
-    TextView infoTextView;
-
     String filename;
 
-    boolean ignoreDirectionFromJoystick;
+    Listener listener;
 
-    public ControlConfig(ActionInputDefinition gamepadDefinition)
+    public ControlConfig(ActionInputDefinition gamepadDefinition, Listener listener)
     {
         actions.addAll(gamepadDefinition.actions);
         filename = AppInfo.internalFiles + "/" + gamepadDefinition.filename;
-    }
-
-    public void setTextView(Context c, TextView tv)
-    {
-        ctx = c;
-        infoTextView = tv;
+        this.listener = listener;
     }
 
     void saveControls() throws IOException
@@ -164,6 +159,7 @@ public class ControlConfig implements Serializable
     ActionInput actionMonitor = null;
 
     boolean monitoring = false;
+    boolean gotInput = false;
 
     public boolean showExtraOptions(Activity act, int pos)
     {
@@ -216,13 +212,16 @@ public class ControlConfig implements Serializable
     {
         actionMonitor = actions.get(pos);
         monitoring = true;
+        gotInput = false;
+        if(listener != null)
+            listener.startMonitoring( actionMonitor );
+    }
 
-        if (actionMonitor.actionType == ActionInput.ActionType.ANALOG)
-            infoTextView.setText("Move Stick for: " + actionMonitor.description);
-        else
-            infoTextView.setText("Press Button for: " + actionMonitor.description);
-
-        infoTextView.setTextColor(ctx.getResources().getColor(android.R.color.holo_green_light));
+    private void stopMonitor()
+    {
+        monitoring = false;
+        if(listener != null)
+            listener.finishedMonitoring();
     }
 
     int[] axisTest = {
@@ -266,7 +265,7 @@ public class ControlConfig implements Serializable
 
         if (monitoring)
         {
-            if (actionMonitor != null)
+            if (actionMonitor != null && gotInput == false)
             {
                 for (int a : axisTest)
                 {
@@ -280,16 +279,29 @@ public class ControlConfig implements Serializable
                         else
                             actionMonitor.sourcePositive = false;
 
-                        monitoring = false;
+                        //monitoring = false;
+                        gotInput = true;
 
                         log.log(D, actionMonitor.description + " = Analog (" + actionMonitor.source + ")");
-
-                        infoTextView.setText("Select Action");
-                        infoTextView.setTextColor(ctx.getResources().getColor(android.R.color.holo_blue_light));
 
                         updated();
                         return true;
                     }
+                }
+            } else // Keep monitoring until all the axis are back in the centre
+            {
+                boolean allCentre = true;
+                for (int a : axisTest)
+                {
+                    if (Math.abs(event.getAxisValue(a)) > 0.2)
+                    {
+                        allCentre = false;
+                    }
+                }
+                if( allCentre )
+                {
+                    stopMonitor();
+                    return true;
                 }
             }
         }
@@ -311,10 +323,8 @@ public class ControlConfig implements Serializable
             {
                 actionMonitor.source = -1;
                 actionMonitor.sourceType = ActionInput.SourceType.BUTTON;
-                monitoring = false;
-                infoTextView.setText("CANCELED");
-                infoTextView.setTextColor(ctx.getResources().getColor(android.R.color.holo_red_light));
 
+                stopMonitor();
                 updated();
                 return true;
             } else
@@ -325,16 +335,14 @@ public class ControlConfig implements Serializable
                     {
                         actionMonitor.source = keyCode;
                         actionMonitor.sourceType = ActionInput.SourceType.BUTTON;
-                        monitoring = false;
 
-                        infoTextView.setText("Select Action");
-                        infoTextView.setTextColor(ctx.getResources().getColor(android.R.color.holo_blue_light));
-
+                        stopMonitor();
                         updated();
                         return true;
                     }
                 }
             }
+            return true;
         }
 
         return false;
@@ -342,7 +350,7 @@ public class ControlConfig implements Serializable
 
     public boolean onKeyUp(int keyCode, KeyEvent event)
     {
-        return false;
+        return monitoring;
     }
 
 
@@ -371,6 +379,7 @@ public class ControlConfig implements Serializable
                 image.setImageResource(R.drawable.gamepad_menu);
             } else
             {
+                name.setTextColor(0xFF02ad2a); //GREEN
                 image.setImageResource(R.drawable.gamepad);
             }
         } else if (ai.actionType == ActionInput.ActionType.ANALOG)
@@ -406,7 +415,7 @@ public class ControlConfig implements Serializable
             view.setBackgroundResource(0);
         }
 
-
+        //view.setBackgroundResource(R.drawable.focusable);
         /*
 		if (ai.actionType == ActionType.BUTTON)
 		{

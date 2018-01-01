@@ -37,7 +37,7 @@ public class ControlInterpreter
     {
         gamePadEnabled = ctrlEn;
 
-        config = new ControlConfig(gamepadDefinition);
+        config = new ControlConfig(gamepadDefinition,null);
         try
         {
             config.loadControls();
@@ -209,8 +209,8 @@ public class ControlInterpreter
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
         boolean used = false;
-        ;
-        if (gamePadEnabled)
+
+        if (gamePadEnabled && event.getRepeatCount() == 0) //Don't want to send key repeates
         {
             for (ActionInput ai : config.actions)
             {

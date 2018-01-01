@@ -7,16 +7,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,7 +28,7 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 import static com.opentouchgaming.androidcore.DebugLog.Level.I;
 
 
-public class GamePadFragment extends Fragment
+public class GamePadFragment extends Fragment implements ControlConfig.Listener
 {
 
     static DebugLog log;
@@ -56,7 +53,7 @@ public class GamePadFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
-        config = new ControlConfig(AppInfo.currentEngine.gamepadDefiniton);
+        config = new ControlConfig(AppInfo.currentEngine.gamepadDefiniton,this);
 
         try
         {
@@ -82,7 +79,6 @@ public class GamePadFragment extends Fragment
             // TODO Auto-generated catch block
             log.log(I, "Error in serialization.. " + e.toString());
         }
-
     }
 
 
@@ -97,7 +93,6 @@ public class GamePadFragment extends Fragment
     public void onPause()
     {
         super.onPause();
-
     }
 
     @Override
@@ -119,56 +114,11 @@ public class GamePadFragment extends Fragment
     {
         View mainView = inflater.inflate(R.layout.fragment_gamepad, null);
 
-
-        CheckBox enableCb = (CheckBox) mainView.findViewById(R.id.gamepad_enable_checkbox);
-        enableCb.setChecked(TouchSettings.gamePadEnabled);
-
-        enableCb.setOnCheckedChangeListener(new OnCheckedChangeListener()
-        {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
-                TouchSettings.gamePadEnabled = isChecked;
-                setListViewEnabled(TouchSettings.gamePadEnabled);
-
-            }
-        });
-
-
-        CheckBox hideCtrlCb = (CheckBox) mainView.findViewById(R.id.gamepad_hide_touch_checkbox);
-        hideCtrlCb.setChecked(TouchSettings.hideTouchControls);
-
-        hideCtrlCb.setOnCheckedChangeListener(new OnCheckedChangeListener()
-        {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                TouchSettings.setBoolOption(getActivity(), "hide_touch_controls", isChecked);
-                TouchSettings.hideTouchControls = isChecked;
-            }
-        });
-
-
-        Button help = (Button) mainView.findViewById(R.id.gamepad_help_button);
-        help.setOnClickListener(new OnClickListener()
-        {
-
-            @Override
-            public void onClick(View v)
-            {
-                //NoticeDialog.show(getActivity(),"Gamepad Help", R.raw.gamepad);
-            }
-        });
-
         listView = (ListView) mainView.findViewById(R.id.gamepad_listview);
         adapter = new ControlListAdapter(getActivity());
         listView.setAdapter(adapter);
 
-        setListViewEnabled(TouchSettings.gamePadEnabled);
-
+        setListViewEnabled(true);
 
         //listView.setSelector(R.drawable.layout_sel_background);
         listView.setOnItemClickListener(new OnItemClickListener()
@@ -196,11 +146,8 @@ public class GamePadFragment extends Fragment
 
         adapter.notifyDataSetChanged();
 
-        info = (TextView) mainView.findViewById(R.id.gamepad_info_textview);
-        info.setText("Select Action");
-        info.setTextColor(getResources().getColor(android.R.color.holo_blue_light));
-
-        config.setTextView(getActivity(), info);
+        info = mainView.findViewById(R.id.gamepad_info_textview);
+        finishedMonitoring();
 
         return mainView;
     }
@@ -223,34 +170,13 @@ public class GamePadFragment extends Fragment
 
     public boolean onGenericMotionEvent(MotionEvent event)
     {
-
         log.log(D, "onGenericMotionEvent: event = " + event.toString());
-/*
-        if (Dpad.isDpadDevice(event)) {
-
-            int press = mDpad.getDirectionPressed(event);
-            switch (press) {
-                case Dpad.LEFT:
-                    log.log(D, "LEFT" );
-                    return true;
-                case Dpad.RIGHT:
-                    log.log(D, "RIGHT" );
-                    return true;
-                case Dpad.UP:
-                    log.log(D, "UP" );
-                    return true;
-                case Dpad.DOWN:
-                    log.log(D, "DOWN" );
-                    return true;
-            }
-        }
-*/
 
         if (config.onGenericMotionEvent(event))
             adapter.notifyDataSetChanged();
 
-        //return config.isMonitoring(); //This does not work, mouse appears anyway
-        return true; //If gamepas tab visible always steal
+        return config.isMonitoring(); //This does not work, mouse appears anyway
+        //return true; //If gamepas tab visible always steal
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event)
@@ -277,6 +203,33 @@ public class GamePadFragment extends Fragment
         return false;
     }
 
+    @Override
+    public void startMonitoring(ActionInput action)
+    {
+        if (action.actionType == ActionInput.ActionType.ANALOG)
+            info.setText("Move Stick for: " + action.description);
+        else
+            info.setText("Press Button for: " + action.description);
+
+        info.setTextColor(getActivity().getResources().getColor(android.R.color.holo_green_light));
+        //Make it flash
+        Animation anim = new AlphaAnimation(0.2f, 1.0f);
+        anim.setDuration(500); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
+        info.startAnimation(anim);
+    }
+
+    @Override
+    public void finishedMonitoring()
+    {
+        info.setText("Select Action");
+        info.setTextColor(getActivity().getResources().getColor(android.R.color.holo_blue_light));
+        info.clearAnimation();
+
+    }
+
     class ControlListAdapter extends BaseAdapter
     {
         private Activity context;
@@ -284,7 +237,6 @@ public class GamePadFragment extends Fragment
         public ControlListAdapter(Activity context)
         {
             this.context = context;
-
         }
 
         public void add(String string)
@@ -315,7 +267,5 @@ public class GamePadFragment extends Fragment
             View v = config.getView(getActivity(), position);
             return v;
         }
-
     }
-
 }

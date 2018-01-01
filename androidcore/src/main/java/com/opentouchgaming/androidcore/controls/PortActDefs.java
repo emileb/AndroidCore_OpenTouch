@@ -39,6 +39,9 @@ public class PortActDefs
     public static final int PORT_ACT_INVNEXT   = 22;
     public static final int PORT_ACT_HELPCOMP  = 23;
 
+    public static final int PORT_ACT_CONSOLE   = 25;
+    public static final int PORT_ACT_SHOW_KBRD = 26;
+
     //Doom
     public static final int  PORT_ACT_MAP          = 30;
     public static final int  PORT_ACT_MAP_UP       = 31;

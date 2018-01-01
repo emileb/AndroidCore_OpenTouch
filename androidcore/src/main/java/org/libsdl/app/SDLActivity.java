@@ -1452,7 +1452,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         NativeLib engine = new NativeLib();
 
-        controlInterp = new ControlInterpreter(engine, AppInfo.currentEngine.gamepadDefiniton, TouchSettings.gamePadEnabled);
+        controlInterp = new ControlInterpreter(engine, AppInfo.currentEngine.gamepadDefiniton, true);
 
         controlInterp.setScreenSize(width*resDiv, height*resDiv);
 

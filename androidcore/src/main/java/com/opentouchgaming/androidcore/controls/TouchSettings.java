@@ -16,14 +16,10 @@ public class TouchSettings {
 	public static boolean DEBUG = true;
 	
 	public static String gamePadControlsFile;
-	public static boolean gamePadEnabled;
-	public static boolean hideTouchControls;
+
 
 	public static void reloadSettings(Context ctx)
 	{
-		hideTouchControls = getBoolOption(ctx, "hide_touch_controls", true);
-		gamePadEnabled = getBoolOption(ctx, "gamepad_enabled", true);
-
 		gamePadControlsFile = ctx.getFilesDir().toString() + "/gamepadSettings.dat";
 	}
 	
