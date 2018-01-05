@@ -8,6 +8,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
+        <CheckBox
+            android:id="@+id/gamepad_enable_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enable Game Pad" />
+
         <TextView
             android:id="@+id/gamepad_info_textview"
             android:layout_width="match_parent"

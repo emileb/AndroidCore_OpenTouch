@@ -14,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -114,11 +116,27 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
     {
         View mainView = inflater.inflate(R.layout.fragment_gamepad, null);
 
+        CheckBox enableCb = (CheckBox) mainView.findViewById(R.id.gamepad_enable_checkbox);
+        enableCb.setChecked(TouchSettings.gamePadEnabled);
+
+        enableCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
+                TouchSettings.gamePadEnabled = isChecked;
+                setListViewEnabled(TouchSettings.gamePadEnabled);
+
+            }
+        });
+
         listView = (ListView) mainView.findViewById(R.id.gamepad_listview);
         adapter = new ControlListAdapter(getActivity());
         listView.setAdapter(adapter);
 
-        setListViewEnabled(true);
+        setListViewEnabled(TouchSettings.gamePadEnabled);
 
         //listView.setSelector(R.drawable.layout_sel_background);
         listView.setOnItemClickListener(new OnItemClickListener()

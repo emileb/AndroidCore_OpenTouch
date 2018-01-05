@@ -20,10 +20,10 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -49,7 +49,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.opentouchgaming.androidcore.AppInfo;
-import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.AssetFileAccess;
 import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.ControlInterpreter;
@@ -58,13 +57,7 @@ import com.opentouchgaming.androidcore.controls.TouchSettings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import static android.R.attr.fragment;
 
 /**
  * SDL Activity
@@ -258,6 +251,18 @@ public class SDLActivity extends Activity implements Handler.Callback
                 SDLActivity.onNativeDropFile(filename);
             }
         }
+/*
+        try
+        {
+            int curBrightnessValue = android.provider.Settings.System.getInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS);
+            WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+            layoutParams.screenBrightness = 1;
+            getWindow().setAttributes(layoutParams);
+        } catch (Settings.SettingNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+*/
     }
 
 
@@ -1344,7 +1349,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     public void handlePause()
     {
-        enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+        //enableSensor(Sensor.TYPE_ACCELEROMETER, false);
     }
 
     public void handleResume()
@@ -1354,7 +1359,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         requestFocus();
         setOnKeyListener(this);
         setOnTouchListener(this);
-        enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+        //enableSensor(Sensor.TYPE_ACCELEROMETER, true);
     }
 
     public Surface getNativeSurface()
@@ -1452,7 +1457,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         NativeLib engine = new NativeLib();
 
-        controlInterp = new ControlInterpreter(engine, AppInfo.currentEngine.gamepadDefiniton, true);
+        controlInterp = new ControlInterpreter(engine, AppInfo.currentEngine.gamepadDefiniton, TouchSettings.gamePadEnabled);
 
         controlInterp.setScreenSize(width*resDiv, height*resDiv);
 
@@ -1511,7 +1516,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             // Start up the C app thread and enable sensor input for the first time
 
             final Thread sdlThread = new Thread(new SDLMain(), "SDLThread");
-            enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+            //enableSensor(Sensor.TYPE_ACCELEROMETER, true);
             sdlThread.start();
 
             // Set up a listener thread to catch when the native thread ends

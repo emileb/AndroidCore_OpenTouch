@@ -17,10 +17,12 @@ public class TouchSettings {
 	
 	public static String gamePadControlsFile;
 
+	public static boolean gamePadEnabled;
 
 	public static void reloadSettings(Context ctx)
 	{
 		gamePadControlsFile = ctx.getFilesDir().toString() + "/gamepadSettings.dat";
+		gamePadEnabled = getBoolOption(ctx, "gamepad_enabled", true);
 	}
 	
 	public static float getFloatOption(Context ctx,String name, float def)
