@@ -157,6 +157,31 @@ public class LicenseCheck
             } else
             {
                 log.log(D,  "Got responce " + ret.code + " Desc = " + ret.desc);
+                if( activity != null )
+                {
+                    activity.runOnUiThread(new Runnable()
+                    {
+                        public void run()
+                        {
+
+                            Toast.makeText(activity, "Can not check license: " + ret.desc, Toast.LENGTH_LONG).show();
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                            builder.setMessage("Can not check license. Please make sure you have working internet. " + ret.desc)
+                                    .setCancelable(true)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface dialog, int id)
+                                        {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        }
+                    });
+                }
             }
 
             if(progressDialog != null)

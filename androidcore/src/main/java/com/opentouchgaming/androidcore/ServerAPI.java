@@ -111,7 +111,7 @@ public class ServerAPI
 
                 String apk_hash = PackageVerif.bytesToString(PackageVerif.packageSig(ctx).sig);
 
-                String url_full = "http://beloko.com/opentouch/download.php?" + ""
+                String url_full = "http://opentouchgaming.com/api/download.php?" + ""
                         + "ldata=" + URLEncoder.encode(lic_data, "UTF-8")
                         + "&lsig=" + URLEncoder.encode(lic_sig, "UTF-8")
                         + "&apkhash=" + URLEncoder.encode(apk_hash, "UTF-8")
