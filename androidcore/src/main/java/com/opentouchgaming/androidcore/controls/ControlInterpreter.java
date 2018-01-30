@@ -69,7 +69,7 @@ public class ControlInterpreter
 
     public boolean onTouchEvent(MotionEvent event)
     {
-
+/*
         // Get pointer index from the event object
         int pointerIndex = event.getActionIndex();
 
@@ -87,22 +87,7 @@ public class ControlInterpreter
             case MotionEvent.ACTION_MOVE:
             {
                 int pointerCount = event.getPointerCount();
-/*
-                for (int i = 0; i < pointerCount; ++i)
-                {
-                    // i is the pointer index but we'll update our pointerIndex variable for clarity
-                    pointerIndex = i;
 
-                    // Get the pointerId at that pointerIndex (pointerId never changes while pointer is in contact)
-                    pointerId = event.getPointerId(pointerIndex);
-
-                    // ...and update the circle's location.
-                    x = event.getX(pointerIndex) / screenWidth;
-                    y = event.getY(pointerIndex) / screenHeight;
-
-                    controlInterface.touchEvent_if(3, pointerId, x, y);
-                }
-*/
                 for(int i = 0; i < pointerCount; ++i)
                 {
                     // i is the pointer index but we'll update our pointerIndex variable for clarity
@@ -149,18 +134,14 @@ public class ControlInterpreter
             }
             break;
         }
-
-/*
+*/
         int action = event.getAction();
         int actionCode = action & MotionEvent.ACTION_MASK;
 
-
         if (actionCode == MotionEvent.ACTION_MOVE)
         {
-
             for (int i = 0; i < event.getPointerCount(); i++)
             {
-
                 float x = event.getX(i) / screenWidth;
                 float y = event.getY(i) / screenHeight;
                 int pid = event.getPointerId(i);
@@ -186,7 +167,6 @@ public class ControlInterpreter
             int index = event.getActionIndex();
             if (index != -1)
             {
-
                 float x = event.getX(index) / screenWidth;
                 float y = event.getY(index) / screenHeight;
                 int pid = event.getPointerId(index);
@@ -201,7 +181,7 @@ public class ControlInterpreter
 
             controlInterface.touchEvent_if(2, pid, x, y);
         }
-*/
+
         return true;
     }
 

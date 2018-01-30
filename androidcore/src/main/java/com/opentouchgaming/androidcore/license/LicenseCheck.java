@@ -37,6 +37,7 @@ public class LicenseCheck
     public static boolean checkLicenseFile(Context context, String key)
     {
         boolean ok = false;
+
         try
         {
             File f = new File(AppInfo.internalFiles + "/l.dat");
