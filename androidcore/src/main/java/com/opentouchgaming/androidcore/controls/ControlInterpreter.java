@@ -197,7 +197,7 @@ public class ControlInterpreter
                 if (((ai.sourceType == ActionInput.SourceType.BUTTON)) && (ai.source == keyCode))
                 {
                     controlInterface.doAction_if(1, ai.actionCode);
-                    log.log(D, "key down intercept");
+                    //log.log(D, "key down intercept");
                     used = true;
                 }
             }
@@ -270,7 +270,7 @@ public class ControlInterpreter
 
     public boolean onGenericMotionEvent(MotionEvent event)
     {
-        log.log(D, "onGenericMotionEvent");
+        //log.log(D, "onGenericMotionEvent");
 
         if (Dpad.isDpadDevice(event))
         {
@@ -324,8 +324,8 @@ public class ControlInterpreter
                     else //Must be using analog as a button
                     {
                         float value = event.getAxisValue(ai.source);
-                        log.log(D, "Analog as button, value = " + value);
-                        log.log(D, ai.toString());
+                        //log.log(D, "Analog as button, value = " + value);
+                        //log.log(D, ai.toString());
 
                         if (((ai.sourcePositive) && (value) > 0.5) ||
                                 ((!ai.sourcePositive) && (value) < -0.5))
@@ -343,7 +343,6 @@ public class ControlInterpreter
                                 analogButtonState.put(ai.actionCode, false);
                             }
                         }
-
                     }
                     used = true;
                 }

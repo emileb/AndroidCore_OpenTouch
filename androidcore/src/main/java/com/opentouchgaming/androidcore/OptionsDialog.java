@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -32,7 +33,7 @@ public class OptionsDialog
 
     Activity activity;
 
-    public OptionsDialog(final Activity act)
+    public OptionsDialog(final Activity act, View extraOptions)
     {
         activity = act;
 
@@ -194,6 +195,13 @@ public class OptionsDialog
 
         int selected = AppSettings.getIntOption(act, "res_div", 1);
         resSpinnder.setSelection(selected - 1);
+
+
+        if (extraOptions != null)
+        {
+            LinearLayout layout = dialog.findViewById(R.id.top_linearlayout);
+            layout.addView(extraOptions);
+        }
         dialog.show();
 
     }

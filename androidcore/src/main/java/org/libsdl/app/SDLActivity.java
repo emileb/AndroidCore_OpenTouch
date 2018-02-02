@@ -515,34 +515,9 @@ public class SDLActivity extends Activity implements Handler.Callback
                     Integer value = (Integer)msg.obj;
                     Log.d(TAG, "Set backlight " + value);
                     String text = "";
-                    float brightness = 0;
-                    if( value == 0)
-                    {
-                        text = "Backlight level: 0%";
-                        brightness = 0;
-                    }
-                    else if( value == 1)
-                    {
-                        text = "Backlight level: 25%";
-                        brightness = 0.25f;
-                    }
-                    else if( value == 2)
-                    {
-                        text = "Backlight level: 50%";
-                        brightness = 0.5f;
-                    }
-                    else if( value == 3)
-                    {
-                        text = "Backlight level: 75%";
-                        brightness = 0.75f;
-                    }
-                    else if( value == 4)
-                    {
-                        text = "Backlight level: 100%";
-                        brightness = 1f;
-                    }
+                    float brightness = (float)value/255.f;
 
-                    Toast.makeText(SDLActivity.getContext(), text, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(SDLActivity.getContext(), text, Toast.LENGTH_SHORT).show();
 
                     //nt curBrightnessValue = android.provider.Settings.System.getInt(SDLActivity.getContext().getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS);
                     WindowManager.LayoutParams layoutParams = SDLActivity.mSingleton.getWindow().getAttributes();
