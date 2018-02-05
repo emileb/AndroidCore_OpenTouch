@@ -1,0 +1,29 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relative_top_left_panel"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="0dp">
+
+    <LinearLayout
+        android:id="@+id/linear_left_hidden_panel"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:background="#e9e6e6e6"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/imagebutton_entry_open_left"
+        android:layout_width="50dp"
+        android:layout_height="80dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/linear_left_hidden_panel"
+        android:background="@null"
+        android:focusable="false"
+        app:srcCompat="@drawable/ic_keyboard_arrow_right">
+
+    </android.support.v7.widget.AppCompatImageButton>
+</RelativeLayout>

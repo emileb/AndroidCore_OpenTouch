@@ -16,7 +16,10 @@ public class GameEngine
         GZDOOM,
         PRBOOM,
         CHOC,
-        RETRO
+        RETRO,
+        BLAKE,
+        ROTT,
+        WOLF
     }
 
     public GameEngine(Engine engine, String title, String name, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)

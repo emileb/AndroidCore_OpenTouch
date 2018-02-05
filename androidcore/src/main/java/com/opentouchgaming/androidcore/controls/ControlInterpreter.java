@@ -272,37 +272,6 @@ public class ControlInterpreter
     {
         //log.log(D, "onGenericMotionEvent");
 
-        if (Dpad.isDpadDevice(event))
-        {
-            int menuButton = mDpad.getDirectionPressed(event);
-            if (menuButton != lastMenuButton)
-            {
-                lastMenuButton = menuButton;
-                switch (menuButton)
-                {
-                    case Dpad.LEFT:
-                        log.log(D, "LEFT");
-                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_LEFT);
-                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_LEFT);
-                        break;
-                    case Dpad.RIGHT:
-                        log.log(D, "RIGHT");
-                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_RIGHT);
-                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_RIGHT);
-                        break;
-                    case Dpad.UP:
-                        log.log(D, "UP");
-                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_UP);
-                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_UP);
-                        break;
-                    case Dpad.DOWN:
-                        log.log(D, "DOWN");
-                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_DOWN);
-                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_DOWN);
-                        break;
-                }
-            }
-        }
 
         boolean used = false;
         if (gamePadEnabled)
@@ -348,6 +317,40 @@ public class ControlInterpreter
                 }
             }
         }
+
+        // Moved to below the above so GZDOOM gamepad custom buttons get registered before the arrows
+        if (Dpad.isDpadDevice(event))
+        {
+            int menuButton = mDpad.getDirectionPressed(event);
+            if (menuButton != lastMenuButton)
+            {
+                lastMenuButton = menuButton;
+                switch (menuButton)
+                {
+                    case Dpad.LEFT:
+                        log.log(D, "LEFT");
+                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_LEFT);
+                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_LEFT);
+                        break;
+                    case Dpad.RIGHT:
+                        log.log(D, "RIGHT");
+                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_RIGHT);
+                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_RIGHT);
+                        break;
+                    case Dpad.UP:
+                        log.log(D, "UP");
+                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_UP);
+                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_UP);
+                        break;
+                    case Dpad.DOWN:
+                        log.log(D, "DOWN");
+                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_DOWN);
+                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_DOWN);
+                        break;
+                }
+            }
+        }
+
         return used;
     }
 }
