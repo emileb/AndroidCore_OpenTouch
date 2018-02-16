@@ -115,5 +115,10 @@ public class PortActDefs
     public static final int PORT_ACT_MENU_RIGHT              = 0x203;
     public static final int PORT_ACT_MENU_SELECT             = 0x204;
     public static final int PORT_ACT_MENU_BACK               = 0x205;
+    public static final int PORT_ACT_MENU_CONFIRM            = 0x206;
+    public static final int PORT_ACT_MENU_ABORT              = 0x207;
+
+
+    public static final int PORT_ACT_MENU_SHOW               = 0x208;
 
 }
