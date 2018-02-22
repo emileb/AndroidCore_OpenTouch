@@ -70,6 +70,12 @@
             android:layout_height="wrap_content"
             android:text="Immersive Mode"/>
 
+        <CheckBox
+            android:id="@+id/alt_touch_code_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use alternative touch code (may fix touch screen issues)"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

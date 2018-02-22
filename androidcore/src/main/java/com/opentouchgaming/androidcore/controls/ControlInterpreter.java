@@ -27,15 +27,18 @@ public class ControlInterpreter
 
     boolean gamePadEnabled;
 
+    boolean alternatePointerCode = false;
+
     float screenWidth, screenHeight;
 
     HashMap<Integer, Boolean> analogButtonState = new HashMap<Integer, Boolean>(); //Saves current state of analog buttons so all sent each time
 
     Dpad mDpad = new Dpad();
 
-    public ControlInterpreter(ControlInterface qif, ActionInputDefinition gamepadDefinition, boolean ctrlEn)
+    public ControlInterpreter(ControlInterface qif, ActionInputDefinition gamepadDefinition, boolean ctrlEn, boolean alternatePointerCode)
     {
         gamePadEnabled = ctrlEn;
+        this.alternatePointerCode = alternatePointerCode;
 
         config = new ControlConfig(gamepadDefinition,null);
         try
@@ -69,117 +72,121 @@ public class ControlInterpreter
 
     public boolean onTouchEvent(MotionEvent event)
     {
-/*
-        // Get pointer index from the event object
-        int pointerIndex = event.getActionIndex();
-
-        // Get pointer ID
-        int pointerId = event.getPointerId(pointerIndex);
-
-        // Get masked (not specific to a pointer) action
-        int maskedAction = event.getActionMasked();
-
-        float x = event.getX(pointerIndex) / screenWidth;
-        float y = event.getY(pointerIndex) / screenHeight;
-
-        switch (maskedAction)
+        if (alternatePointerCode)
         {
-            case MotionEvent.ACTION_MOVE:
+            // Get pointer index from the event object
+            int pointerIndex = event.getActionIndex();
+
+            // Get pointer ID
+            int pointerId = event.getPointerId(pointerIndex);
+
+            // Get masked (not specific to a pointer) action
+            int maskedAction = event.getActionMasked();
+
+            float x = event.getX(pointerIndex) / screenWidth;
+            float y = event.getY(pointerIndex) / screenHeight;
+
+            switch (maskedAction)
             {
-                int pointerCount = event.getPointerCount();
-
-                for(int i = 0; i < pointerCount; ++i)
+                case MotionEvent.ACTION_MOVE:
                 {
-                    // i is the pointer index but we'll update our pointerIndex variable for clarity
-                    pointerIndex = i;
+                    int pointerCount = event.getPointerCount();
 
-                    // To find out WHICH pointer moved we must compare pointer historical locations
-                    if (event.getHistorySize() > 0)
+                    for (int i = 0; i < pointerCount; ++i)
                     {
-                        // X or Y location for that pointer index moved?
-                        // Corner-case: Pointer index changed (pointer up or down promoted or demoted pointer index while moving?)
-                        // Fix: Track by pointer Id via sparse array as outlined in second potential solution below.
-                        if ( (int)event.getX(i) != (int)event.getHistoricalX(i,0) || (int)event.getY(i) != (int)event.getHistoricalY(i, 0) )
-                        {
-                            pointerId = event.getPointerId(i);
-                            // ...and update the circle's location.
-                            x = event.getX(pointerIndex) / screenWidth;
-                            y = event.getY(pointerIndex) / screenHeight;
+                        // i is the pointer index but we'll update our pointerIndex variable for clarity
+                        pointerIndex = i;
 
-                            controlInterface.touchEvent_if(3, pointerId, x, y);
+                        // To find out WHICH pointer moved we must compare pointer historical locations
+                        if (event.getHistorySize() > 0)
+                        {
+                            // X or Y location for that pointer index moved?
+                            // Corner-case: Pointer index changed (pointer up or down promoted or demoted pointer index while moving?)
+                            // Fix: Track by pointer Id via sparse array as outlined in second potential solution below.
+                            if ((int) event.getX(i) != (int) event.getHistoricalX(i, 0) || (int) event.getY(i) != (int) event.getHistoricalY(i, 0))
+                            {
+                                pointerId = event.getPointerId(i);
+                                // ...and update the circle's location.
+                                x = event.getX(pointerIndex) / screenWidth;
+                                y = event.getY(pointerIndex) / screenHeight;
+
+                                controlInterface.touchEvent_if(3, pointerId, x, y);
+                            }
                         }
                     }
                 }
-
+                break;
+                case MotionEvent.ACTION_DOWN:
+                {
+                    controlInterface.touchEvent_if(1, pointerId, x, y);
+                }
+                break;
+                case MotionEvent.ACTION_POINTER_DOWN:
+                {
+                    controlInterface.touchEvent_if(1, pointerId, x, y);
+                }
+                break;
+                case MotionEvent.ACTION_POINTER_UP:
+                {
+                    controlInterface.touchEvent_if(2, pointerId, x, y);
+                }
+                break;
+                case MotionEvent.ACTION_UP:
+                {
+                    controlInterface.touchEvent_if(2, pointerId, x, y);
+                }
+                break;
             }
-            break;
-            case MotionEvent.ACTION_DOWN:
-            {
-                controlInterface.touchEvent_if(1, pointerId, x, y);
-            }
-            break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-            {
-                controlInterface.touchEvent_if(1, pointerId, x, y);
-            }
-            break;
-            case MotionEvent.ACTION_POINTER_UP:
-            {
-                controlInterface.touchEvent_if(2, pointerId, x, y);
-            }
-            break;
-            case MotionEvent.ACTION_UP:
-            {
-                controlInterface.touchEvent_if(2, pointerId, x, y);
-            }
-            break;
         }
-*/
-        int action = event.getAction();
-        int actionCode = action & MotionEvent.ACTION_MASK;
+        else
+        {
 
-        if (actionCode == MotionEvent.ACTION_MOVE)
-        {
-            for (int i = 0; i < event.getPointerCount(); i++)
+            int action = event.getAction();
+            int actionCode = action & MotionEvent.ACTION_MASK;
+
+            if (actionCode == MotionEvent.ACTION_MOVE)
             {
-                float x = event.getX(i) / screenWidth;
-                float y = event.getY(i) / screenHeight;
-                int pid = event.getPointerId(i);
-                controlInterface.touchEvent_if(3, pid, x, y);
-            }
-        } else if (actionCode == MotionEvent.ACTION_DOWN)
-        {
-            float x = event.getX() / screenWidth;
-            float y = event.getY() / screenHeight;
-            controlInterface.touchEvent_if(1, 0, x, y);
-        } else if (actionCode == MotionEvent.ACTION_POINTER_DOWN)
-        {
-            int index = event.getActionIndex();
-            if (index != -1)
+                for (int i = 0; i < event.getPointerCount(); i++)
+                {
+                    float x = event.getX(i) / screenWidth;
+                    float y = event.getY(i) / screenHeight;
+                    int pid = event.getPointerId(i);
+                    controlInterface.touchEvent_if(3, pid, x, y);
+                }
+            } else if (actionCode == MotionEvent.ACTION_DOWN)
             {
-                float x = event.getX(index) / screenWidth;
-                float y = event.getY(index) / screenHeight;
+                float x = event.getX() / screenWidth;
+                float y = event.getY() / screenHeight;
+                controlInterface.touchEvent_if(1, 0, x, y);
+            } else if (actionCode == MotionEvent.ACTION_POINTER_DOWN)
+            {
+                int index = event.getActionIndex();
+                if (index != -1)
+                {
+                    float x = event.getX(index) / screenWidth;
+                    float y = event.getY(index) / screenHeight;
+                    int pid = event.getPointerId(index);
+                    controlInterface.touchEvent_if(1, pid, x, y);
+                }
+            } else if (actionCode == MotionEvent.ACTION_POINTER_UP)
+            {
+                int index = event.getActionIndex();
+                if (index != -1)
+                {
+                    float x = event.getX(index) / screenWidth;
+                    float y = event.getY(index) / screenHeight;
+                    int pid = event.getPointerId(index);
+                    controlInterface.touchEvent_if(2, pid, x, y);
+                }
+            } else if (actionCode == MotionEvent.ACTION_UP)
+            {
+                float x = event.getX() / screenWidth;
+                float y = event.getY() / screenHeight;
+                int index = event.getActionIndex();
                 int pid = event.getPointerId(index);
-                controlInterface.touchEvent_if(1, pid, x, y);
-            }
-        } else if (actionCode == MotionEvent.ACTION_POINTER_UP)
-        {
-            int index = event.getActionIndex();
-            if (index != -1)
-            {
-                float x = event.getX(index) / screenWidth;
-                float y = event.getY(index) / screenHeight;
-                int pid = event.getPointerId(index);
+
                 controlInterface.touchEvent_if(2, pid, x, y);
             }
-        } else if (actionCode == MotionEvent.ACTION_UP)
-        {
-            float x = event.getX() / screenWidth;
-            float y = event.getY() / screenHeight;
-            int index = event.getActionIndex();
-            int pid = event.getPointerId(index);
-
-            controlInterface.touchEvent_if(2, pid, x, y);
         }
 
         return true;

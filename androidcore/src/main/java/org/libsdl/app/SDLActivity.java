@@ -49,6 +49,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.opentouchgaming.androidcore.AppInfo;
+import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.AssetFileAccess;
 import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.ControlInterpreter;
@@ -159,6 +160,8 @@ public class SDLActivity extends Activity implements Handler.Callback
         Log.v(TAG, "Model: " + android.os.Build.MODEL);
         Log.v(TAG, "onCreate(): " + mSingleton);
         super.onCreate(savedInstanceState);
+
+        AppSettings.reloadSettings(getApplicationContext());
 
         handlerUI = new Handler(this);
 
@@ -1304,15 +1307,14 @@ class SDLMain implements Runnable
 
         String gamePath = SDLActivity.mSingleton.getIntent().getStringExtra("game_path");
 
-
-        int audioSameple = AudioTrack.getNativeOutputSampleRate(AudioTrack.MODE_STREAM);
-        if ((audioSameple != 48000) && (audioSameple != 44100)) //Just in case
-            audioSameple = 48000;
+        int options = 0;
+        if( TouchSettings.gamepadHidetouch)
+            options |= TouchSettings.GAME_OPTION_HIDE_TOUCH;
 
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
         String logFilename = SDLActivity.mSingleton.getIntent().getStringExtra("log_filename");
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", audioSameple, args_array, 0, gamePath, logFilename );
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, args_array, 0, gamePath, logFilename );
 
         Log.v("SDL", "SDL thread terminated");
     }
@@ -1473,7 +1475,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         NativeLib engine = new NativeLib();
 
-        controlInterp = new ControlInterpreter(engine, AppInfo.currentEngine.gamepadDefiniton, TouchSettings.gamePadEnabled);
+        controlInterp = new ControlInterpreter(engine, AppInfo.currentEngine.gamepadDefiniton, TouchSettings.gamePadEnabled,TouchSettings.altTouchCode);
 
         controlInterp.setScreenSize(width*resDiv, height*resDiv);
 

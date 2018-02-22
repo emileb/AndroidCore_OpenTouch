@@ -26,7 +26,6 @@ public class AppSettings {
 		{
 			resetBaseDir(ctx);
 		}
-
 	}
 
 	public static String getBaseDir()

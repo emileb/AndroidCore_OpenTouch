@@ -116,7 +116,7 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
     {
         View mainView = inflater.inflate(R.layout.fragment_gamepad, null);
 
-        CheckBox enableCb = (CheckBox) mainView.findViewById(R.id.gamepad_enable_checkbox);
+        CheckBox enableCb = mainView.findViewById(R.id.gamepad_enable_checkbox);
         enableCb.setChecked(TouchSettings.gamePadEnabled);
 
         enableCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
@@ -128,7 +128,20 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
                 TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
                 TouchSettings.gamePadEnabled = isChecked;
                 setListViewEnabled(TouchSettings.gamePadEnabled);
+            }
+        });
 
+        CheckBox showTouchcd =  mainView.findViewById(R.id.gamepad_hide_touch_checkbox);
+        showTouchcd.setChecked(TouchSettings.gamepadHidetouch);
+
+        showTouchcd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                TouchSettings.setBoolOption(getActivity(), "gamepad_hide_touch", isChecked);
+                TouchSettings.gamepadHidetouch = isChecked;
             }
         });
 

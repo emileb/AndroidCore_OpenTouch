@@ -1,4 +1,4 @@
-package com.opentouchgaming.androidcore;
+package com.opentouchgaming.androidcore.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -17,6 +17,11 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.opentouchgaming.androidcore.AppInfo;
+import com.opentouchgaming.androidcore.AppSettings;
+import com.opentouchgaming.androidcore.DirectoryChooserDialog;
+import com.opentouchgaming.androidcore.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -161,6 +166,17 @@ public class OptionsDialog
             immersiveCheck.setVisibility(View.GONE);
         }
 
+        CheckBox altTouchCodeCheck = (CheckBox) dialog.findViewById(R.id.alt_touch_code_checkbox);
+        altTouchCodeCheck.setChecked(AppSettings.getBoolOption(activity, "alt_touch_code", false));
+
+        altTouchCodeCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                AppSettings.setBoolOption(activity, "alt_touch_code", isChecked);
+            }
+        });
 
         Spinner resSpinnder = (Spinner) dialog.findViewById(R.id.res_div_spinner);
         List<String> list = new ArrayList<String>();
