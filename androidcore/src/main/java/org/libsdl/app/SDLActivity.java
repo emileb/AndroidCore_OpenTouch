@@ -1311,10 +1311,11 @@ class SDLMain implements Runnable
         if( TouchSettings.gamepadHidetouch)
             options |= TouchSettings.GAME_OPTION_HIDE_TOUCH;
 
+        int gameType = SDLActivity.mSingleton.getIntent().getIntExtra("game_type",0);
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
         String logFilename = SDLActivity.mSingleton.getIntent().getStringExtra("log_filename");
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, args_array, 0, gamePath, logFilename );
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, args_array, gameType, gamePath, logFilename );
 
         Log.v("SDL", "SDL thread terminated");
     }
