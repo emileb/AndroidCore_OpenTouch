@@ -42,6 +42,7 @@ public class PortActDefs
     public static final int PORT_ACT_CONSOLE   = 25;
     public static final int PORT_ACT_SHOW_KBRD = 26;
     public static final int PORT_ACT_SHOW_INV  = 27;
+    public static final int PORT_ACT_SHOW_GP_UTILS  = 28;
 
     //Doom
     public static final int  PORT_ACT_MAP          = 30;
