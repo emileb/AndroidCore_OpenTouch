@@ -12,6 +12,13 @@ import java.io.IOException;
 
 public class AppInfo
 {
+    static DebugLog log;
+
+    static
+    {
+        log = new DebugLog(DebugLog.Module.CORE, "AppInfo");
+    }
+
     public enum Apps
     {
         DELTA_TOUCH,
@@ -54,7 +61,10 @@ public class AppInfo
         File file = new File(appDir);
         if (!file.exists())
         {
-            file.mkdirs();
+            if( !file.mkdirs() )
+            {
+                log.log(DebugLog.Level.E, "Did not create base folder");
+            }
 
             File f = new File(appDir, "temp_");
             try {

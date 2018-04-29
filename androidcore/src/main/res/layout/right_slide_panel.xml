@@ -24,7 +24,7 @@
         android:layout_toLeftOf="@id/linear_right_hidden_panel"
         android:background="@null"
         android:focusable="false"
-        app:srcCompat="@drawable/ic_keyboard_arrow_left">
+        app:srcCompat="@drawable/right_arrow">
 
     </android.support.v7.widget.AppCompatImageButton>
 </RelativeLayout>

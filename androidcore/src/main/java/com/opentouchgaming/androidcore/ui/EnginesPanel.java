@@ -1,7 +1,10 @@
 package com.opentouchgaming.androidcore.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,6 +24,7 @@ public class EnginesPanel
     public interface Listener
     {
         void engineSelected(GameEngine engine);
+        void engineConfig(GameEngine engine);
 
         void enginePanelStateChange(boolean open);
     }
@@ -32,6 +36,8 @@ public class EnginesPanel
     SlidePanel leftSlidePanel;
 
     EnginesPanel.Listener listener;
+
+    ImageButton leftPanelButton;
 
     public EnginesPanel(Context context, View topView, GameEngine[] engines, final Listener listener)
     {
@@ -45,7 +51,7 @@ public class EnginesPanel
         {  // Sets the size of panel so the buttons are square
             Configuration configuration = context.getResources().getConfiguration();
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) leftPanel.getLayoutParams();
-            lp.width = Utils.dpToPx(context.getResources(), configuration.screenHeightDp / gameEngines.length);
+            lp.width = (int)(Utils.dpToPx(context.getResources(), configuration.screenHeightDp / gameEngines.length) * 1.5);
             leftPanel.setLayoutParams(lp);
             leftPanelSlideAmmount = leftPanel.getLayoutParams().width;
         }
@@ -56,27 +62,26 @@ public class EnginesPanel
 
 
         // Button to open panel
-        ImageButton leftPanelButton = (ImageButton) topView.findViewById(R.id.imagebutton_entry_open_left);
+        leftPanelButton = topView.findViewById(R.id.imagebutton_entry_open_left);
         leftPanelButton.setFocusable(false);
         leftPanelButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                if(isOpen())
-                    close() ;
+                if (isOpen())
+                    close();
                 else
                     open();
                 updateFocus();
             }
         });
 
-        LinearLayout leftPanelLayout = (LinearLayout) topView.findViewById(R.id.linear_left_hidden_panel);
+        LinearLayout leftPanelLayout = topView.findViewById(R.id.linear_left_hidden_panel);
 
         for (int n = 0; n < gameEngines.length; n++)
         {
-            ImageButton button = new ImageButton(context);
-            button.setTag(new Integer(n)); // Used for the click listener callback
+
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
             params.weight = 1;
             params.width = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -88,13 +93,39 @@ public class EnginesPanel
             params.topMargin = Utils.dpToPx(context.getResources(), margin);
             params.bottomMargin = Utils.dpToPx(context.getResources(), margin);
 
-            button.setLayoutParams(params);
+            LinearLayout groupLayout = new LinearLayout(context);
+            groupLayout.setLayoutParams(params);
+
+            // button.setLayoutParams(params);
+            ImageButton button = new ImageButton(context);
+            button.setTag(new Integer(n)); // Used for the click listener callback
             button.setImageResource(gameEngines[n].iconRes);
             button.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            leftPanelLayout.addView(button);
-
+            LinearLayout.LayoutParams paramsB = new LinearLayout.LayoutParams(0, 0);
+            paramsB.weight = 2f;
+            paramsB.width = 0;
+            paramsB.height = LinearLayout.LayoutParams.MATCH_PARENT;
+            button.setLayoutParams(paramsB);
             button.setBackgroundResource(R.drawable.focusable);
             button.setFocusableInTouchMode(true);
+
+            AppCompatImageButton buttonCfg = new AppCompatImageButton(context);
+            buttonCfg.setTag(new Integer(n)); // Used for the click listener callback
+            buttonCfg.setImageResource(R.drawable.ic_build_black_24dp);
+            buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            LinearLayout.LayoutParams paramsC = new LinearLayout.LayoutParams(0, 0);
+            paramsC.weight = 1;
+            paramsC.width = 0;
+            paramsC.height = LinearLayout.LayoutParams.MATCH_PARENT;
+            buttonCfg.setLayoutParams(paramsC);
+            buttonCfg.setBackgroundResource(R.drawable.focusable);
+            buttonCfg.setFocusableInTouchMode(true);
+
+            groupLayout.addView(button);
+            groupLayout.addView(buttonCfg);
+            leftPanelLayout.addView(groupLayout);
+
+
             button.setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -107,7 +138,18 @@ public class EnginesPanel
             });
 
 
+            buttonCfg.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    int selected = (Integer) view.getTag();
+                    listener.engineConfig(gameEngines[selected]);
+                }
+            });
+
             gameEngines[n].imageButton = button;
+            gameEngines[n].imageButtonCfg = buttonCfg;
         }
         updateFocus();
     }
@@ -120,6 +162,7 @@ public class EnginesPanel
             if (leftSlidePanel.isOpen())
             {
                 button.imageButton.setFocusable(true);
+                button.imageButtonCfg.setFocusable(true);
                 // Set focus to current engine
                 if (currentEngine == button)
                 {
@@ -128,6 +171,7 @@ public class EnginesPanel
             } else
             {
                 button.imageButton.setFocusable(false);
+                button.imageButtonCfg.setFocusable(false);
             }
         }
     }
@@ -137,10 +181,48 @@ public class EnginesPanel
         return leftSlidePanel.isOpen();
     }
 
+
+    private void fadeHandleButton(boolean out)
+    {
+        if (out)
+        {
+            leftPanelButton.animate()
+                    .alpha(0.0f)
+                    .setDuration(300)
+                    .setListener(new AnimatorListenerAdapter()
+                    {
+                        @Override
+                        public void onAnimationEnd(Animator animation)
+                        {
+                            super.onAnimationEnd(animation);
+                            leftPanelButton.clearAnimation();
+                            leftPanelButton.setVisibility(View.GONE);
+                        }
+                    });
+        } else
+        {
+            leftPanelButton.setVisibility(View.VISIBLE);
+            leftPanelButton.animate()
+                    .alpha(1.0f)
+                    .setDuration(300)
+                    .setListener(new AnimatorListenerAdapter()
+                    {
+                        @Override
+                        public void onAnimationEnd(Animator animation)
+                        {
+                            super.onAnimationEnd(animation);
+                            leftPanelButton.clearAnimation();
+
+                        }
+                    });
+        }
+    }
+
     public void close()
     {
         leftSlidePanel.close();
         listener.enginePanelStateChange(false);
+        //fadeHandleButton(false);
         updateFocus();
     }
 
@@ -148,6 +230,8 @@ public class EnginesPanel
     {
         leftSlidePanel.open();
         listener.enginePanelStateChange(true);
+        // Fade out button
+        //fadeHandleButton(true);
         updateFocus();
     }
 
@@ -155,6 +239,7 @@ public class EnginesPanel
     {
         leftSlidePanel.closeIfOpen();
         listener.enginePanelStateChange(false);
+        //fadeHandleButton(false);
         updateFocus();
     }
 

@@ -21,6 +21,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
@@ -46,12 +47,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.AssetFileAccess;
 import com.opentouchgaming.androidcore.Utils;
+import com.opentouchgaming.androidcore.controls.ControlConfig;
 import com.opentouchgaming.androidcore.controls.ControlInterpreter;
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 
@@ -197,6 +198,7 @@ public class SDLActivity extends Activity implements Handler.Callback
 
         AssetFileAccess.setAssetManager(mSingleton.getAssets());
         Utils.copyPNGAssets(getApplicationContext(), AppInfo.internalFiles);
+        NativeConsoleBox.init( this );
 
         if (mBrokenLibraries)
         {
@@ -1368,7 +1370,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     public void handlePause()
     {
-        //enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+        //enableSensor(Sensor.TYPE_ROTATION_VECTOR, false);
     }
 
     public void handleResume()
@@ -1378,7 +1380,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         requestFocus();
         setOnKeyListener(this);
         setOnTouchListener(this);
-        //enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+       // enableSensor(Sensor.TYPE_ROTATION_VECTOR|Sensor.TYPE_ACCELEROMETER, true);
     }
 
     public Surface getNativeSurface()
@@ -1483,6 +1485,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         SDLActivity.onNativeResize(width, height, sdlFormat, mDisplay.getRefreshRate());
         Log.v("SDL", "Window size: " + width + "x" + height);
 
+        //enableSensor(Sensor.TYPE_GAME_ROTATION_VECTOR, true);
+        //enableSensor(Sensor.TYPE_ROTATION_VECTOR, true);
 
         boolean skip = false;
         int requestedOrientation = SDLActivity.mSingleton.getRequestedOrientation();
@@ -1660,7 +1664,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
-
         return controlInterp.onTouchEvent(event);
     }
 
@@ -1692,9 +1695,75 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         // TODO
     }
 
+    // Dont create these each time
+    float[] rotationMatrix = new float[9];
+    float[] orientation = new float[3];
+    float[] orientationLast = new float[3];
+    float[] adjustedRotationMatrix = new float[9];
+    private void updateOrientation(float[] rotationVector) {
+
+        SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
+
+        final int worldAxisForDeviceAxisX;
+        final int worldAxisForDeviceAxisY;
+
+        // Remap the axes as if the device screen was the instrument panel,
+        // and adjust the rotation matrix for the device orientation.
+        switch (SDLActivity.mSingleton.getWindowManager().getDefaultDisplay().getRotation()) {
+            case Surface.ROTATION_0:
+            default:
+                worldAxisForDeviceAxisX = SensorManager.AXIS_X;
+                worldAxisForDeviceAxisY = SensorManager.AXIS_Z;
+                break;
+            case Surface.ROTATION_90:
+                worldAxisForDeviceAxisX = SensorManager.AXIS_Z;
+                worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_X;
+                break;
+            case Surface.ROTATION_180:
+                worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_X;
+                worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_Z;
+                break;
+            case Surface.ROTATION_270:
+                worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_Z;
+                worldAxisForDeviceAxisY = SensorManager.AXIS_X;
+                break;
+        }
+
+        SensorManager.remapCoordinateSystem(rotationMatrix, worldAxisForDeviceAxisX,
+                worldAxisForDeviceAxisY, adjustedRotationMatrix);
+
+        // Transform rotation matrix into azimuth/pitch/roll
+
+        SensorManager.getOrientation(adjustedRotationMatrix, orientation);
+
+
+        float yawDx = orientationLast[0] -  orientation[0];
+        float pitchDx = orientationLast[1] -  orientation[1];
+        yawDx = yawDx * (float)(((Math.PI/2) - Math.abs(orientationLast[1])) / Math.PI);
+        //Log.d("gyro","pith = " + orientation[1] + " roll ="+ orientation[2] + "yaw = " + orientation[0] + " ydx =" + yawDx );
+        NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE,yawDx/2);
+        NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE,pitchDx/5);
+
+        orientationLast[0] = orientation[0];
+        orientationLast[1] = orientation[1];
+        orientationLast[2] = orientation[2];
+
+        //long alloc = Debug.getNativeHeapAllocatedSize();
+        //long free = Debug.getNativeHeapSize();
+        //Log.d("MEM","alloc = " + alloc + "   free = " + free);
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event)
     {
+        //Log.d("sen",event.toString());
+
+        if ((event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) || (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR))
+        {
+            //Log.d("GYRP", "1 = " + event.values[0]+ " 2 = " + event.values[1]+" 3 = " + event.values[2]);
+            updateOrientation(event.values);
+        }
+        /*
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
             float x, y;
@@ -1721,6 +1790,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                     y / SensorManager.GRAVITY_EARTH,
                     event.values[2] / SensorManager.GRAVITY_EARTH);
         }
+        */
     }
 }
 

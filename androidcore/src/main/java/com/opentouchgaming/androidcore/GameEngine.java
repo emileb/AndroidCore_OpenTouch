@@ -22,10 +22,11 @@ public class GameEngine
         WOLF
     }
 
-    public GameEngine(Engine engine, String title, String name, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)
+    public GameEngine(Engine engine, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)
     {
         this.title = title;
         this.name = name;
+        this.directory = directory;
         this.engine = engine;
         this.iconRes = iconRes;
         this.color = color;
@@ -59,11 +60,13 @@ public class GameEngine
     final public String title;
     final public String name;
     final public String args;
+    final public String directory;
     final public String[] versions;
     final public ActionInputDefinition gamepadDefiniton;
     final public String[][] loadLibs;
 
     public ImageButton imageButton;
+    public ImageButton imageButtonCfg;
 
     final Class engineOptionsClass;
 

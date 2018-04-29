@@ -47,7 +47,6 @@ public class ServerAPI
 
     static private class DLFileThread extends AsyncTask<String, Integer, Long>
     {
-
         private ProgressDialog progressBar;
         String errorstring = null;
 
@@ -129,8 +128,6 @@ public class ServerAPI
                 int code = connection.getResponseCode();
 
                 log.log(D, "resp code = " + code);
-
-
 
                 if (code != 200)
                 {
