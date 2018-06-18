@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -74,6 +73,7 @@ public class Utils {
 		}
 		out.close(); 
 	}
+
 	static public  void showDownloadDialog(final Activity act,String key, String title,final String directory,final String file,final int size)
 	{
         boolean ok = LicenseCheck.checkLicenseFile(act, key);
@@ -559,8 +559,8 @@ public class Utils {
 
 			if (AppSettings.getBoolOption(act,"immersive_mode",false))
 			{
+				/*
 				Handler handler = new Handler();
-
 				handler.postDelayed(new Runnable() {
 					public void run() {
 
@@ -577,6 +577,17 @@ public class Utils {
 					}
 
 				}, 2000);
+				*/
+				if (hasFocus) {
+					act.getWindow().getDecorView().setSystemUiVisibility(
+							View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+									| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+									| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+									| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+									| View.SYSTEM_UI_FLAG_FULLSCREEN
+									| View.SYSTEM_UI_FLAG_IMMERSIVE
+									| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+				}
 			}
 		}
 	}

@@ -112,7 +112,7 @@ public class EnginesPanel
             AppCompatImageButton buttonCfg = new AppCompatImageButton(context);
             buttonCfg.setTag(new Integer(n)); // Used for the click listener callback
             buttonCfg.setImageResource(R.drawable.ic_build_black_24dp);
-            buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            //buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
             LinearLayout.LayoutParams paramsC = new LinearLayout.LayoutParams(0, 0);
             paramsC.weight = 1;
             paramsC.width = 0;

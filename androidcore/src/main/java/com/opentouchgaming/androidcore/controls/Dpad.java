@@ -17,6 +17,19 @@ public class Dpad {
 
     int directionPressedLast = -1; // initialized to -1
 
+    boolean axisState[] = new boolean[4];
+    boolean keyState[] = new boolean[4];
+    boolean finalState[] = new boolean[4];
+
+    public boolean[] getFinalState()
+    {
+        finalState[Dpad.LEFT] = axisState[Dpad.LEFT] | keyState[Dpad.LEFT];
+        finalState[Dpad.RIGHT] = axisState[Dpad.RIGHT] | keyState[Dpad.RIGHT];
+        finalState[Dpad.UP] = axisState[Dpad.UP] | keyState[Dpad.UP];
+        finalState[Dpad.DOWN] = axisState[Dpad.DOWN] | keyState[Dpad.DOWN];
+        return finalState;
+    }
+
     public int getDirectionPressed(InputEvent event) {
         if (!isDpadDevice(event)) {
             return -1;
@@ -35,16 +48,34 @@ public class Dpad {
             // Check if the AXIS_HAT_X value is -1 or 1, and set the D-pad
             // LEFT and RIGHT direction accordingly.
             if (Float.compare(xaxis, -1.0f) == 0) {
+                axisState[Dpad.LEFT] = true;
+                axisState[Dpad.RIGHT] = false;
                 directionPressed =  Dpad.LEFT;
             } else if (Float.compare(xaxis, 1.0f) == 0) {
+                axisState[Dpad.LEFT] = false;
+                axisState[Dpad.RIGHT] = true;
                 directionPressed =  Dpad.RIGHT;
+            }
+            else
+            {
+                axisState[Dpad.LEFT] = false;
+                axisState[Dpad.RIGHT] = false;
             }
             // Check if the AXIS_HAT_Y value is -1 or 1, and set the D-pad
             // UP and DOWN direction accordingly.
-            else if (Float.compare(yaxis, -1.0f) == 0) {
+            if (Float.compare(yaxis, -1.0f) == 0) {
+                axisState[Dpad.UP] = true;
+                axisState[Dpad.DOWN] = false;
                 directionPressed =  Dpad.UP;
             } else if (Float.compare(yaxis, 1.0f) == 0) {
+                axisState[Dpad.UP] = false;
+                axisState[Dpad.DOWN] = true;
                 directionPressed =  Dpad.DOWN;
+            }
+            else
+            {
+                axisState[Dpad.UP] = false;
+                axisState[Dpad.DOWN] = false;
             }
         }
 
@@ -54,12 +85,36 @@ public class Dpad {
             // Use the key code to find the D-pad direction.
             KeyEvent keyEvent = (KeyEvent) event;
             if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+
+                if( keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                    keyState[Dpad.LEFT] = true;
+                else if ( keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                    keyState[Dpad.LEFT] = false;
+
                 directionPressed = Dpad.LEFT;
             } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+
+                if( keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                    keyState[Dpad.RIGHT] = true;
+                else if ( keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                    keyState[Dpad.RIGHT] = false;
+
                 directionPressed = Dpad.RIGHT;
             } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+
+                if( keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                    keyState[Dpad.UP] = true;
+                else if ( keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                    keyState[Dpad.UP] = false;
+
                 directionPressed = Dpad.UP;
             } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+
+                if( keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                    keyState[Dpad.DOWN] = true;
+                else if ( keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                    keyState[Dpad.DOWN] = false;
+
                 directionPressed = Dpad.DOWN;
             } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
                 directionPressed = Dpad.CENTER;

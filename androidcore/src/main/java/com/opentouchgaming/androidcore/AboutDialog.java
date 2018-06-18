@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -17,11 +19,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import it.gmariotti.changelibs.library.view.ChangeLogRecyclerView;
+
 public class AboutDialog {
 
 	public static void show(final Context ctx,final int changes,final int about )
 	{
-		final Dialog dialog = new Dialog(ctx);
+		final Dialog dialog;
+
+		dialog = new Dialog(ctx);
 		dialog.setContentView(R.layout.about_dialog_view);
 		dialog.setTitle("Changes");
 		dialog.setCancelable(true);
@@ -29,8 +35,10 @@ public class AboutDialog {
 
 		//set up text
 		final TextView text = (TextView) dialog.findViewById(R.id.about_text_textview);
-		text.setText(readTxt(ctx,changes));
+		text.setVisibility(View.INVISIBLE);
+		//text.setText(readTxt(ctx,changes));
 
+		final ChangeLogRecyclerView changeLogView = dialog.findViewById(R.id.changeLogView);
 		//set up image view
 
 
@@ -40,7 +48,8 @@ public class AboutDialog {
 			@Override
 			public void onClick(View v) {
 				dialog.setTitle("Changes");
-				text.setText(readTxt(ctx,changes));
+				text.setVisibility(View.INVISIBLE);
+				changeLogView.setVisibility(View.VISIBLE);
 			}
 		});
 
@@ -51,6 +60,8 @@ public class AboutDialog {
 			public void onClick(View v) {
 				dialog.setTitle("About");
 				text.setText(readTxt(ctx,about));
+				text.setVisibility(View.VISIBLE);
+				changeLogView.setVisibility(View.INVISIBLE);
 			}
 		});
 
@@ -80,11 +91,23 @@ public class AboutDialog {
 			}
 		});
 
-		//now that the dialog is set up, it's time to show it    
-		dialog.show();
+		//now that the dialog is set up, it's time to show it
 
+		DisplayMetrics metrics = new DisplayMetrics();
+		dialog.getWindow().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		int screenHeight = metrics.heightPixels;
+		int scrreenWidth = metrics.widthPixels;
+		WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+		params.height = (int)(screenHeight);
+		params.width = (int)(scrreenWidth*90.0/100);
+		dialog.getWindow().setAttributes(params);
+
+		dialog.show();
 	}
 
+	private static void setWindowHeight(int percent){
+
+	}
 
 	private static String readTxt(Context ctx, int id){
 

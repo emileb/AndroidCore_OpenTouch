@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/relativeLayout1"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minWidth="500dp">
+               >
 
     <ScrollView
         android:id="@+id/scrollview"
@@ -17,6 +17,17 @@
             android:layout_height="wrap_content"
             android:text="Nzb filename"/>
     </ScrollView>
+
+    <it.gmariotti.changelibs.library.view.ChangeLogRecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:chg="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/changeLogView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/linearLayout2"
+        chg:rowLayoutId="@layout/changelogrow_layout_my"
+        chg:rowHeaderLayoutId="@layout/changelogrowheader_layout_my"
+        android:layout_gravity="center" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"

@@ -122,8 +122,8 @@ public class ServerAPI
                 URL url = new URL(url_full);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestProperty("User-Agent", "");
-                connection.setRequestMethod("POST");
-                connection.setDoInput(true);
+                connection.setRequestMethod("GET");
+                //connection.setDoInput(true);
                 connection.connect();
                 int code = connection.getResponseCode();
 

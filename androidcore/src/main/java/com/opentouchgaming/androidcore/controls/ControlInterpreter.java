@@ -10,7 +10,6 @@ import org.libsdl.app.SDLActivity;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 import static com.opentouchgaming.androidcore.DebugLog.Level.E;
 
 public class ControlInterpreter
@@ -19,7 +18,7 @@ public class ControlInterpreter
 
     static
     {
-        log = new DebugLog(DebugLog.Module.CONTROLS, "ControlConfig");
+        log = new DebugLog(DebugLog.Module.CONTROLS, "ControlInterpreter");
     }
 
     ControlInterface controlInterface;
@@ -197,13 +196,15 @@ public class ControlInterpreter
     {
         boolean used = false;
 
-        if (gamePadEnabled && event.getRepeatCount() == 0) //Don't want to send key repeates
+        if (gamePadEnabled )
         {
             for (ActionInput ai : config.actions)
             {
                 if (((ai.sourceType == ActionInput.SourceType.BUTTON)) && (ai.source == keyCode))
                 {
-                    controlInterface.doAction_if(1, ai.actionCode);
+                    if( event.getRepeatCount() == 0 )//Don't want to send key repeats
+                        controlInterface.doAction_if(1, ai.actionCode);
+
                     //log.log(D, "key down intercept");
                     used = true;
                 }
@@ -275,10 +276,10 @@ public class ControlInterpreter
 
     static int lastMenuButton = -1;
 
+    boolean[] dpadLastState = new boolean[4];
     public boolean onGenericMotionEvent(MotionEvent event)
     {
         //log.log(D, "onGenericMotionEvent");
-
 
         boolean used = false;
         if (gamePadEnabled)
@@ -328,6 +329,33 @@ public class ControlInterpreter
         // Moved to below the above so GZDOOM gamepad custom buttons get registered before the arrows
         if (Dpad.isDpadDevice(event))
         {
+            mDpad.getDirectionPressed(event);
+            boolean[] dpadState =  mDpad.getFinalState();
+
+            if( dpadState[Dpad.LEFT] != dpadLastState[Dpad.LEFT])
+            {
+                controlInterface.doAction_if(dpadState[Dpad.LEFT]?1:0, PortActDefs.PORT_ACT_MENU_LEFT);
+                dpadLastState[Dpad.LEFT] = dpadState[Dpad.LEFT];
+            }
+
+            if( dpadState[Dpad.RIGHT] != dpadLastState[Dpad.RIGHT])
+            {
+                controlInterface.doAction_if(dpadState[Dpad.RIGHT]?1:0, PortActDefs.PORT_ACT_MENU_RIGHT);
+                dpadLastState[Dpad.RIGHT] = dpadState[Dpad.RIGHT];
+            }
+
+            if( dpadState[Dpad.UP] != dpadLastState[Dpad.UP])
+            {
+                controlInterface.doAction_if(dpadState[Dpad.UP]?1:0, PortActDefs.PORT_ACT_MENU_UP);
+                dpadLastState[Dpad.UP] = dpadState[Dpad.UP];
+            }
+
+            if( dpadState[Dpad.DOWN] != dpadLastState[Dpad.DOWN])
+            {
+                controlInterface.doAction_if(dpadState[Dpad.DOWN]?1:0, PortActDefs.PORT_ACT_MENU_DOWN);
+                dpadLastState[Dpad.DOWN] = dpadState[Dpad.DOWN];
+            }
+            /*
             int menuButton = mDpad.getDirectionPressed(event);
             if (menuButton != lastMenuButton)
             {
@@ -356,6 +384,7 @@ public class ControlInterpreter
                         break;
                 }
             }
+            */
         }
 
         return used;

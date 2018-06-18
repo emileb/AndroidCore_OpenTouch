@@ -20,8 +20,8 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
@@ -390,7 +390,8 @@ public class SDLActivity extends Activity implements Handler.Callback
                 keyCode == 169 /* API 11: KeyEvent.KEYCODE_ZOOM_OUT */
                 )
         {
-            return false;
+            // Actually want to handle volume so can be mapped
+            //return false;
         }
         return super.dispatchKeyEvent(event);
     }
@@ -1415,6 +1416,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     {
         Log.v("SDL", "surfaceChanged() w=" + width + " h="+height);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            requestPointerCapture();
+        }
+
         mWidth = width;
         mHeight = height;
 
@@ -1577,7 +1583,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     public boolean onKey(View v, int keyCode, KeyEvent event)
     {
 
-        Log.v("SDL", "SDLSurface::onKey: " + keyCode);
+        Log.v("SDL", "SDLSurface::onKey: " + keyCode + " Action = " + event.getAction() );
 
         // We always want the back button to do an escape
         if (keyCode == KeyEvent.KEYCODE_BACK)
@@ -1592,12 +1598,10 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         if (event.getAction() == KeyEvent.ACTION_DOWN)
         {
-            controlInterp.onKeyDown(keyCode,event);
-            return true;
+            return controlInterp.onKeyDown(keyCode,event);
         } else if (event.getAction() == KeyEvent.ACTION_UP)
         {
-            controlInterp.onKeyUp(keyCode,event);
-            return true;
+            return controlInterp.onKeyUp(keyCode,event);
         }
 
         // Dispatch the different events depending on where they come from
@@ -1671,6 +1675,16 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     public boolean onGenericMotionEvent(MotionEvent event)
     {
         return controlInterp.onGenericMotionEvent(event);
+    }
+
+    @Override
+    public boolean onCapturedPointerEvent(MotionEvent motionEvent) {
+        // Get the coordinates required by your app
+        float verticalOffset = motionEvent.getY();
+       
+        // Use the coordinates to update your view and return true if the event was
+        // successfully processed
+        return true;
     }
 
     // Sensor events
