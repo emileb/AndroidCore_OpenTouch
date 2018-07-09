@@ -9,10 +9,18 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
 
+import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.Utils;
 
 public class NdkLicense
 {
+    static DebugLog log;
+
+    static
+    {
+        log = new DebugLog(DebugLog.Module.LICENSE, "NdkLicense");
+    }
+
     static final String SERVICE = "com.android.vending.licensing.ILicensingService";
 
     public static void check(final Context context, final String key, final NdkLicenseCallback callback)
@@ -20,12 +28,16 @@ public class NdkLicense
         Intent intent = new Intent(SERVICE);
         intent.setPackage("com.android.vending");
 
-        context.bindService(
+        log.log(DebugLog.Level.D,"Binding service...");
+
+        boolean res = context.bindService(
                 intent,
                 new ServiceConnection()
                 {
                     public void onServiceConnected(ComponentName name, IBinder binder)
                     {
+                        log.log(DebugLog.Level.D,"onServiceConnected");
+
                         Parcel d = Parcel.obtain();
 
                         long id = Utils.getSecureID(context);
@@ -39,14 +51,21 @@ public class NdkLicense
                             binder.transact(1, d, null, IBinder.FLAG_ONEWAY);
                         } catch (RemoteException e)
                         {
+                            log.log(DebugLog.Level.E,"Error connecting to l server:" + e.toString());
                         }
                         d.recycle();
                     }
 
                     public void onServiceDisconnected(ComponentName name)
                     {
+                        log.log(DebugLog.Level.D,"onServiceDisconnected");
                     }
                 },
                 Context.BIND_AUTO_CREATE);
+
+        if( res )
+            log.log(DebugLog.Level.D,"Bound OK");
+        else
+            log.log(DebugLog.Level.D,"NOT BOUND");
     }
 }

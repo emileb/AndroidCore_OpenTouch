@@ -60,6 +60,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
+
+import static android.content.Context.SENSOR_SERVICE;
 
 /**
  * SDL Activity
@@ -76,6 +79,10 @@ public class SDLActivity extends Activity implements Handler.Callback
      * If shared libraries (e.g. SDL or the native application) could not be loaded.
      */
     public static boolean mBrokenLibraries;
+
+    public static boolean useMouse;
+    public static boolean useGyro;
+
 
     // If we want to separate mouse and touch events.
     //  This is only toggled in native code when a hint is set!
@@ -196,9 +203,16 @@ public class SDLActivity extends Activity implements Handler.Callback
             errorMsgBrokenLib = e.getMessage();
         }
 
+        // Occurs if Android tries to launch this again on its own
+        if (AppInfo.internalFiles == null)
+        {
+            finish();
+            return;
+        }
+
         AssetFileAccess.setAssetManager(mSingleton.getAssets());
         Utils.copyPNGAssets(getApplicationContext(), AppInfo.internalFiles);
-        NativeConsoleBox.init( this );
+        NativeConsoleBox.init(this);
 
         if (mBrokenLibraries)
         {
@@ -224,9 +238,12 @@ public class SDLActivity extends Activity implements Handler.Callback
             return;
         }
 
-        int resDiv = getIntent().getIntExtra("res_div",1);
+        int resDiv = getIntent().getIntExtra("res_div", 1);
         // Set up the surface
-        mSurface = new SDLSurface(getApplication(),resDiv);
+        mSurface = new SDLSurface(getApplication(), resDiv);
+
+        useMouse = getIntent().getBooleanExtra("use_mouse", false);
+        useGyro = getIntent().getBooleanExtra("gyro", false);
 
         // fullscreen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -256,18 +273,6 @@ public class SDLActivity extends Activity implements Handler.Callback
                 SDLActivity.onNativeDropFile(filename);
             }
         }
-/*
-        try
-        {
-            int curBrightnessValue = android.provider.Settings.System.getInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS);
-            WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
-            layoutParams.screenBrightness = 1;
-            getWindow().setAttributes(layoutParams);
-        } catch (Settings.SettingNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-*/
     }
 
 
@@ -371,11 +376,11 @@ public class SDLActivity extends Activity implements Handler.Callback
         // Reset everything in case the user re opens the app
         SDLActivity.initialize();
     }
-
+/*
     @Override
     public boolean dispatchKeyEvent(KeyEvent event)
     {
-
+        Log.d("SDL", "dispatchKeyEvent " +  event.toString());
         if (SDLActivity.mBrokenLibraries)
         {
             return false;
@@ -386,8 +391,8 @@ public class SDLActivity extends Activity implements Handler.Callback
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
                 keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
                 keyCode == KeyEvent.KEYCODE_CAMERA ||
-                keyCode == 168 || /* API 11: KeyEvent.KEYCODE_ZOOM_IN */
-                keyCode == 169 /* API 11: KeyEvent.KEYCODE_ZOOM_OUT */
+                keyCode == 168 || // API 11: KeyEvent.KEYCODE_ZOOM_IN
+                keyCode == 169 // API 11: KeyEvent.KEYCODE_ZOOM_OUT
                 )
         {
             // Actually want to handle volume so can be mapped
@@ -395,6 +400,7 @@ public class SDLActivity extends Activity implements Handler.Callback
         }
         return super.dispatchKeyEvent(event);
     }
+*/
 
     /**
      * Called by onPause or surfaceDestroyed. Even if surfaceDestroyed
@@ -442,6 +448,7 @@ public class SDLActivity extends Activity implements Handler.Callback
 
     protected static final int COMMAND_USER = 0x8000;
     protected static final int COMMAND_SET_BACKLIGHT = 0x8001;
+
     /**
      * This method is called by SDL if SDL did not handle a message itself.
      * This happens if a received message contains an unsupported command.
@@ -518,10 +525,10 @@ public class SDLActivity extends Activity implements Handler.Callback
                 }
                 case COMMAND_SET_BACKLIGHT:
                 {
-                    Integer value = (Integer)msg.obj;
+                    Integer value = (Integer) msg.obj;
                     Log.d(TAG, "Set backlight " + value);
                     String text = "";
-                    float brightness = (float)value/255.f;
+                    float brightness = (float) value / 255.f;
 
                     //Toast.makeText(SDLActivity.getContext(), text, Toast.LENGTH_SHORT).show();
 
@@ -1311,14 +1318,17 @@ class SDLMain implements Runnable
         String gamePath = SDLActivity.mSingleton.getIntent().getStringExtra("game_path");
 
         int options = 0;
-        if( TouchSettings.gamepadHidetouch)
-            options |= TouchSettings.GAME_OPTION_HIDE_TOUCH;
+        if (TouchSettings.gamepadHidetouch)
+            options |= TouchSettings.GAME_OPTION_AUTO_HIDE_GAMEPAD;
 
-        int gameType = SDLActivity.mSingleton.getIntent().getIntExtra("game_type",0);
+        if (TouchSettings.hideGameAndMenuTouch)
+            options |= TouchSettings.GAME_OPTION_HIDE_MENU_AND_GAME;
+
+        int gameType = SDLActivity.mSingleton.getIntent().getIntExtra("game_type", 0);
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
         String logFilename = SDLActivity.mSingleton.getIntent().getStringExtra("log_filename");
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, args_array, gameType, gamePath, logFilename );
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, args_array, gameType, gamePath, logFilename);
 
         Log.v("SDL", "SDL thread terminated");
     }
@@ -1348,7 +1358,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     private ControlInterpreter controlInterp;
 
     // Startup
-    public SDLSurface(Context context,int div)
+    public SDLSurface(Context context, int div)
     {
         super(context);
         getHolder().addCallback(this);
@@ -1361,7 +1371,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         setOnTouchListener(this);
 
         mDisplay = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
 
 
         // Some arbitrary defaults to avoid a potential division by zero
@@ -1381,7 +1391,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         requestFocus();
         setOnKeyListener(this);
         setOnTouchListener(this);
-       // enableSensor(Sensor.TYPE_ROTATION_VECTOR|Sensor.TYPE_ACCELEROMETER, true);
+        // enableSensor(Sensor.TYPE_ROTATION_VECTOR|Sensor.TYPE_ACCELEROMETER, true);
     }
 
     public Surface getNativeSurface()
@@ -1414,11 +1424,14 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     public void surfaceChanged(SurfaceHolder holder,
                                int format, int width, int height)
     {
-        Log.v("SDL", "surfaceChanged() w=" + width + " h="+height);
+        Log.v("SDL", "surfaceChanged() w=" + width + " h=" + height);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        if (SDLActivity.useMouse)
         {
-            requestPointerCapture();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            {
+                requestPointerCapture();
+            }
         }
 
         mWidth = width;
@@ -1426,7 +1439,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         if (resDiv != 1 && !divDone)
         {
-            getHolder().setFixedSize( mWidth/resDiv, mHeight/resDiv);
+            getHolder().setFixedSize(mWidth / resDiv, mHeight / resDiv);
             divDone = true;
             return;
         }
@@ -1484,13 +1497,45 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         NativeLib engine = new NativeLib();
 
-        controlInterp = new ControlInterpreter(engine, AppInfo.currentEngine.gamepadDefiniton, TouchSettings.gamePadEnabled,TouchSettings.altTouchCode);
+        controlInterp = new ControlInterpreter(engine, AppInfo.currentEngine.gamepadDefiniton, TouchSettings.gamePadEnabled, TouchSettings.altTouchCode);
 
-        controlInterp.setScreenSize(width*resDiv, height*resDiv);
+        controlInterp.setScreenSize(width * resDiv, height * resDiv);
 
         SDLActivity.onNativeResize(width, height, sdlFormat, mDisplay.getRefreshRate());
         Log.v("SDL", "Window size: " + width + "x" + height);
 
+        boolean enableGyro = SDLActivity.mSingleton.getIntent().getBooleanExtra("gyro", false);
+
+        if (enableGyro)
+        {
+            mSensorManager = (SensorManager) SDLActivity.mSingleton.getSystemService(SENSOR_SERVICE);
+
+            // List of Sensors Available
+            List<Sensor> sensorList = mSensorManager.getSensorList(Sensor.TYPE_GAME_ROTATION_VECTOR);
+
+            for (Sensor s : sensorList)
+            {
+                Log.v("SDL", "Game Rotation sensor: " + s.getName());
+            }
+
+            if (sensorList.size() > 0)
+            {
+                enableSensor(Sensor.TYPE_GAME_ROTATION_VECTOR, true);
+            } else
+            {
+                sensorList = mSensorManager.getSensorList(Sensor.TYPE_ROTATION_VECTOR);
+
+                for (Sensor s : sensorList)
+                {
+                    Log.v("SDL", "Rotation sensor: " + s.getName());
+                }
+
+                if (sensorList.size() > 0)
+                {
+                    enableSensor(Sensor.TYPE_ROTATION_VECTOR, true);
+                }
+            }
+        }
         //enableSensor(Sensor.TYPE_GAME_ROTATION_VECTOR, true);
         //enableSensor(Sensor.TYPE_ROTATION_VECTOR, true);
 
@@ -1582,8 +1627,16 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event)
     {
+        Log.v("SDL", "SDLSurface::onKey: " + keyCode + " Action = " + event.getAction() + " " + event.toString());
 
-        Log.v("SDL", "SDLSurface::onKey: " + keyCode + " Action = " + event.getAction() );
+        int source = event.getSource();
+        // Stop right mouse button being backbutton
+        if ((source == InputDevice.SOURCE_MOUSE)
+                || (source == InputDevice.SOURCE_MOUSE_RELATIVE))
+        {
+            Log.v("SDL", "SDLSurface::onKey: is mouse");
+            return true;
+        }
 
         // We always want the back button to do an escape
         if (keyCode == KeyEvent.KEYCODE_BACK)
@@ -1598,12 +1651,12 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         if (event.getAction() == KeyEvent.ACTION_DOWN)
         {
-            return controlInterp.onKeyDown(keyCode,event);
+            return controlInterp.onKeyDown(keyCode, event);
         } else if (event.getAction() == KeyEvent.ACTION_UP)
         {
-            return controlInterp.onKeyUp(keyCode,event);
+            return controlInterp.onKeyUp(keyCode, event);
         }
-
+/*
         // Dispatch the different events depending on where they come from
         // Some SOURCE_JOYSTICK, SOURCE_DPAD or SOURCE_GAMEPAD are also SOURCE_KEYBOARD
         // So, we try to process them as JOYSTICK/DPAD/GAMEPAD events first, if that fails we try them as KEYBOARD
@@ -1628,7 +1681,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 }
             }
         }
-
+*/
         if ((event.getSource() & InputDevice.SOURCE_KEYBOARD) != 0)
         {
             if (event.getAction() == KeyEvent.ACTION_DOWN)
@@ -1644,23 +1697,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             }
         }
 
-        if ((event.getSource() & InputDevice.SOURCE_MOUSE) != 0)
-        {
-            // on some devices key events are sent for mouse BUTTON_BACK/FORWARD presses
-            // they are ignored here because sending them as mouse input to SDL is messy
-            if ((keyCode == KeyEvent.KEYCODE_BACK) || (keyCode == KeyEvent.KEYCODE_FORWARD))
-            {
-                switch (event.getAction())
-                {
-                    case KeyEvent.ACTION_DOWN:
-                    case KeyEvent.ACTION_UP:
-                        // mark the event as handled or it will be handled by system
-                        // handling KEYCODE_BACK by system will call onBackPressed()
-                        return true;
-                }
-            }
-        }
-
         return false;
     }
 
@@ -1668,24 +1704,65 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
+        //Log.d("SDL touch", event.toString());
+
         return controlInterp.onTouchEvent(event);
     }
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event)
     {
+        //Log.d("SDL gen", event.toString());
+
+        if (SDLActivity.useMouse)
+        {
+            if (event.getSource() == InputDevice.SOURCE_MOUSE)
+            {
+                Log.v("SDL", "SDLSurface::onGenericMotionEvent: is mouse");
+                // If this happens it measn the mouse has lost capture somehow
+                if (event.getAction() == MotionEvent.ACTION_HOVER_MOVE)
+                {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    {
+                        requestPointerCapture();
+                    }
+                }
+                return true;
+            }
+        }
+
         return controlInterp.onGenericMotionEvent(event);
     }
 
+
     @Override
-    public boolean onCapturedPointerEvent(MotionEvent motionEvent) {
-        // Get the coordinates required by your app
-        float verticalOffset = motionEvent.getY();
-       
-        // Use the coordinates to update your view and return true if the event was
-        // successfully processed
-        return true;
+    public boolean onCapturedPointerEvent(MotionEvent event)
+    {
+        //Log.d("SDL cap", event.toString());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            //Log.d("SDL", " dx = " + xOffset + " dt = " + yOffset + "Action = " + motionEvent.getAction() + " button" + motionEvent.getButtonState());
+
+            if (event.getAction() == MotionEvent.ACTION_SCROLL)
+            {
+                SDLActivity.onNativeMouse(0, 8, event.getAxisValue(MotionEvent.AXIS_HSCROLL), event.getAxisValue(MotionEvent.AXIS_VSCROLL));
+            } else if (event.getAction() == MotionEvent.ACTION_BUTTON_PRESS)
+            {
+                SDLActivity.onNativeMouse(event.getActionButton(), 0, 0, 0);
+            } else if (event.getAction() == MotionEvent.ACTION_BUTTON_RELEASE)
+            {
+                SDLActivity.onNativeMouse(event.getActionButton(), 1, 0, 0);
+            } else if (event.getAction() == MotionEvent.ACTION_MOVE)
+            {
+                SDLActivity.onNativeMouse(0, 3, event.getX(), event.getY());
+            }
+            // Use the coordinates to update your view and return true if the event was
+            // successfully processed
+            return true;
+        } else
+            return false;
     }
+
 
     // Sensor events
     public void enableSensor(int sensortype, boolean enabled)
@@ -1714,7 +1791,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     float[] orientation = new float[3];
     float[] orientationLast = new float[3];
     float[] adjustedRotationMatrix = new float[9];
-    private void updateOrientation(float[] rotationVector) {
+
+    private void updateOrientation(float[] rotationVector)
+    {
 
         SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
 
@@ -1723,7 +1802,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         // Remap the axes as if the device screen was the instrument panel,
         // and adjust the rotation matrix for the device orientation.
-        switch (SDLActivity.mSingleton.getWindowManager().getDefaultDisplay().getRotation()) {
+        switch (SDLActivity.mSingleton.getWindowManager().getDefaultDisplay().getRotation())
+        {
             case Surface.ROTATION_0:
             default:
                 worldAxisForDeviceAxisX = SensorManager.AXIS_X;
@@ -1751,12 +1831,12 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         SensorManager.getOrientation(adjustedRotationMatrix, orientation);
 
 
-        float yawDx = orientationLast[0] -  orientation[0];
-        float pitchDx = orientationLast[1] -  orientation[1];
-        yawDx = yawDx * (float)(((Math.PI/2) - Math.abs(orientationLast[1])) / Math.PI);
+        float yawDx = orientationLast[0] - orientation[0];
+        float pitchDx = orientationLast[1] - orientation[1];
+        yawDx = yawDx * (float) (((Math.PI / 2) - Math.abs(orientationLast[1])) / Math.PI);
         //Log.d("gyro","pith = " + orientation[1] + " roll ="+ orientation[2] + "yaw = " + orientation[0] + " ydx =" + yawDx );
-        NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE,yawDx/2);
-        NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE,pitchDx/5);
+        NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, yawDx / 2);
+        NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, pitchDx / 5);
 
         orientationLast[0] = orientation[0];
         orientationLast[1] = orientation[1];
@@ -1777,34 +1857,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             //Log.d("GYRP", "1 = " + event.values[0]+ " 2 = " + event.values[1]+" 3 = " + event.values[2]);
             updateOrientation(event.values);
         }
-        /*
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
-        {
-            float x, y;
-            switch (mDisplay.getRotation())
-            {
-                case Surface.ROTATION_90:
-                    x = -event.values[1];
-                    y = event.values[0];
-                    break;
-                case Surface.ROTATION_270:
-                    x = event.values[1];
-                    y = -event.values[0];
-                    break;
-                case Surface.ROTATION_180:
-                    x = -event.values[1];
-                    y = -event.values[0];
-                    break;
-                default:
-                    x = event.values[0];
-                    y = event.values[1];
-                    break;
-            }
-            SDLActivity.onNativeAccel(-x / SensorManager.GRAVITY_EARTH,
-                    y / SensorManager.GRAVITY_EARTH,
-                    event.values[2] / SensorManager.GRAVITY_EARTH);
-        }
-        */
     }
 }
 

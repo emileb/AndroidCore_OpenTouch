@@ -15,13 +15,15 @@ import java.io.OutputStream;
 public class TouchSettings {
 	public static boolean DEBUG = true;
 
-	public static final int GAME_OPTION_HIDE_TOUCH = 1;
+	public static final int GAME_OPTION_AUTO_HIDE_GAMEPAD = 1;
+	public static final int GAME_OPTION_HIDE_MENU_AND_GAME = 2;
 
 	public static String gamePadControlsFile;
 
 	public static boolean gamePadEnabled;
 	public static boolean altTouchCode;
 	public static boolean gamepadHidetouch;
+	public static boolean hideGameAndMenuTouch;
 
 	public static void reloadSettings(Context ctx)
 	{
@@ -29,6 +31,7 @@ public class TouchSettings {
 		gamePadEnabled = getBoolOption(ctx, "gamepad_enabled", true);
 		altTouchCode = getBoolOption(ctx, "alt_touch_code", false);
 		gamepadHidetouch =  getBoolOption(ctx, "gamepad_hide_touch", true);
+		hideGameAndMenuTouch = getBoolOption(ctx,"hide_game_menu_touch", false);
 	}
 	
 	public static float getFloatOption(Context ctx,String name, float def)
