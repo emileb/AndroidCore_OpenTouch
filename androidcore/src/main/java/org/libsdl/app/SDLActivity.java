@@ -23,6 +23,7 @@ import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.text.InputType;
 import android.util.Log;
@@ -55,6 +56,7 @@ import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.ControlConfig;
 import com.opentouchgaming.androidcore.controls.ControlInterpreter;
 import com.opentouchgaming.androidcore.controls.TouchSettings;
+import com.opentouchgaming.androidcore.ui.GyroDialog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,8 +83,6 @@ public class SDLActivity extends Activity implements Handler.Callback
     public static boolean mBrokenLibraries;
 
     public static boolean useMouse;
-    public static boolean useGyro;
-
 
     // If we want to separate mouse and touch events.
     //  This is only toggled in native code when a hint is set!
@@ -243,7 +243,6 @@ public class SDLActivity extends Activity implements Handler.Callback
         mSurface = new SDLSurface(getApplication(), resDiv);
 
         useMouse = getIntent().getBooleanExtra("use_mouse", false);
-        useGyro = getIntent().getBooleanExtra("gyro", false);
 
         // fullscreen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -401,7 +400,6 @@ public class SDLActivity extends Activity implements Handler.Callback
         return super.dispatchKeyEvent(event);
     }
 */
-
     /**
      * Called by onPause or surfaceDestroyed. Even if surfaceDestroyed
      * is the first to be called, mIsSurfaceReady should still be set
@@ -435,6 +433,7 @@ public class SDLActivity extends Activity implements Handler.Callback
     /* The native thread has finished */
     public static void handleNativeExit()
     {
+        Log.d("SDL", "handleNativeExit");
         SDLActivity.mSDLThread = null;
         mSingleton.finish();
     }
@@ -448,6 +447,8 @@ public class SDLActivity extends Activity implements Handler.Callback
 
     protected static final int COMMAND_USER = 0x8000;
     protected static final int COMMAND_SET_BACKLIGHT = 0x8001;
+    protected static final int COMMAND_SHOW_GYRO_OPTIONS = 0x8002;
+    protected static final int COMMAND_SHOW_KEYBOARD = 0x8003;
 
     /**
      * This method is called by SDL if SDL did not handle a message itself.
@@ -539,6 +540,34 @@ public class SDLActivity extends Activity implements Handler.Callback
 
                     break;
                 }
+                case COMMAND_SHOW_GYRO_OPTIONS:
+                {
+
+                    new GyroDialog(SDLActivity.mSingleton, SDLActivity.mSurface.getRotationSensor()){
+                        public void dismiss()
+                        {
+                            SDLActivity.mSurface.setGyroMode();
+                        }
+                    };
+
+                    break;
+                }
+                case COMMAND_SHOW_KEYBOARD:
+                {
+                    //showTextInput(0,0,100,10);
+
+                    InputMethodManager imm = (InputMethodManager)
+                            SDLActivity.mSingleton.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if(imm != null){
+                        //imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                        SDLActivity.mSurface.clearFocus();
+                        SDLActivity.mSurface.requestFocus();
+                        //imm.showSoftInput(SDLActivity.mSurface,0);
+                        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,0);
+                    }
+
+                    break;
+                }
                 default:
                     if ((context instanceof SDLActivity) && !((SDLActivity) context).onUnhandledMessage(msg.arg1, msg.obj))
                     {
@@ -585,7 +614,7 @@ public class SDLActivity extends Activity implements Handler.Callback
     public static native void onNativeHat(int device_id, int hat_id,
                                           int x, int y);
 
-    public static native void onNativeKeyDown(int keycode);
+    public static native void onNativeKeyDown(int keycode,int unicode);
 
     public static native void onNativeKeyUp(int keycode);
 
@@ -715,7 +744,7 @@ public class SDLActivity extends Activity implements Handler.Callback
             mTextEdit.requestFocus();
 
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(mTextEdit, 0);
+            imm.showSoftInput(mTextEdit, InputMethodManager.SHOW_FORCED);
         }
     }
 
@@ -1324,6 +1353,9 @@ class SDLMain implements Runnable
         if (TouchSettings.hideGameAndMenuTouch)
             options |= TouchSettings.GAME_OPTION_HIDE_MENU_AND_GAME;
 
+        if (TouchSettings.useSystemKeyboard)
+            options |= TouchSettings.GAME_OPTION_USE_SYSTEM_KEYBOARD;
+
         int gameType = SDLActivity.mSingleton.getIntent().getIntExtra("game_type", 0);
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
@@ -1348,6 +1380,13 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     int resDiv = 1;
     boolean divDone = false;
 
+    float gyroXSens = 1;
+    float gyroYSens = 1;
+
+    boolean gyroInvertX = false;
+    boolean gyroInvertY = false;
+    boolean gyroSwapXY = false;
+
     // Sensors
     protected static SensorManager mSensorManager;
     protected static Display mDisplay;
@@ -1361,7 +1400,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     public SDLSurface(Context context, int div)
     {
         super(context);
+
         getHolder().addCallback(this);
+
         resDiv = div;
 
         setFocusable(true);
@@ -1379,9 +1420,95 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         mHeight = 1;
     }
 
+    // Sensor events
+    private void enableSensor( Sensor sensor , boolean enabled)
+    {
+        if (enabled)
+        {
+            //Sensor sensor = mSensorManager.getDefaultSensor(sensortype);
+            if( sensor != null )
+            {
+                Log.d("sen","sensor is: " + sensor.getName());
+            }
+            else
+            {
+                Log.d("sen","sensor is NULL!");
+            }
+            mSensorManager.registerListener(SDLActivity.mSurface,
+                    sensor,
+                    SensorManager.SENSOR_DELAY_GAME);
+
+        } else
+        {
+            mSensorManager.unregisterListener(SDLActivity.mSurface,
+                    sensor);
+        }
+    }
+
+    Sensor getRotationSensor()
+    {
+        Sensor ret = null;
+        /*
+        // List of Sensors Available
+        List<Sensor> sensorList = mSensorManager.getSensorList(Sensor.TYPE_GAME_ROTATION_VECTOR);
+
+        for (Sensor s : sensorList)
+        {
+            Log.v("SDL", "Game Rotation sensor: " + s.getName());
+        }
+
+        if (sensorList.size() > 0)
+        {
+            ret = sensorList.get(0);
+        } else
+        {
+            sensorList = mSensorManager.getSensorList(Sensor.TYPE_ROTATION_VECTOR);
+
+            for (Sensor s : sensorList)
+            {
+                Log.v("SDL", "Rotation sensor: " + s.getName());
+            }
+
+            if (sensorList.size() > 0)
+            {
+                ret = sensorList.get(0);
+            }
+        }
+
+        // Must have a gyro to be good enough
+        if( mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) == null )
+        {
+            ret = null;
+        }
+        */
+        ret = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+        return ret;
+    }
+
+    public void setGyroMode()
+    {
+        boolean enableGyro = AppSettings.getBoolOption(SDLActivity.mSingleton,"gyro_enable", false);
+
+        gyroXSens = AppSettings.getFloatOption(SDLActivity.mSingleton,"gyro_x_sens",1);
+        gyroYSens = AppSettings.getFloatOption(SDLActivity.mSingleton,"gyro_y_sens",1);
+        gyroInvertX = AppSettings.getBoolOption(SDLActivity.mSingleton,"gyro_invert_x", false);
+        gyroInvertY = AppSettings.getBoolOption(SDLActivity.mSingleton,"gyro_invert_y", false);
+        gyroSwapXY = AppSettings.getBoolOption(SDLActivity.mSingleton,"gyro_swap_xy", false);
+
+        mSensorManager = (SensorManager) SDLActivity.mSingleton.getSystemService(SENSOR_SERVICE);
+
+        Sensor sensor = getRotationSensor();
+
+        if( sensor != null )
+        {
+            enableSensor(sensor, enableGyro);
+        }
+    }
+
     public void handlePause()
     {
-        //enableSensor(Sensor.TYPE_ROTATION_VECTOR, false);
+
     }
 
     public void handleResume()
@@ -1391,7 +1518,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         requestFocus();
         setOnKeyListener(this);
         setOnTouchListener(this);
-        // enableSensor(Sensor.TYPE_ROTATION_VECTOR|Sensor.TYPE_ACCELEROMETER, true);
     }
 
     public Surface getNativeSurface()
@@ -1504,40 +1630,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         SDLActivity.onNativeResize(width, height, sdlFormat, mDisplay.getRefreshRate());
         Log.v("SDL", "Window size: " + width + "x" + height);
 
-        boolean enableGyro = SDLActivity.mSingleton.getIntent().getBooleanExtra("gyro", false);
-
-        if (enableGyro)
-        {
-            mSensorManager = (SensorManager) SDLActivity.mSingleton.getSystemService(SENSOR_SERVICE);
-
-            // List of Sensors Available
-            List<Sensor> sensorList = mSensorManager.getSensorList(Sensor.TYPE_GAME_ROTATION_VECTOR);
-
-            for (Sensor s : sensorList)
-            {
-                Log.v("SDL", "Game Rotation sensor: " + s.getName());
-            }
-
-            if (sensorList.size() > 0)
-            {
-                enableSensor(Sensor.TYPE_GAME_ROTATION_VECTOR, true);
-            } else
-            {
-                sensorList = mSensorManager.getSensorList(Sensor.TYPE_ROTATION_VECTOR);
-
-                for (Sensor s : sensorList)
-                {
-                    Log.v("SDL", "Rotation sensor: " + s.getName());
-                }
-
-                if (sensorList.size() > 0)
-                {
-                    enableSensor(Sensor.TYPE_ROTATION_VECTOR, true);
-                }
-            }
-        }
-        //enableSensor(Sensor.TYPE_GAME_ROTATION_VECTOR, true);
-        //enableSensor(Sensor.TYPE_ROTATION_VECTOR, true);
+        setGyroMode();
 
         boolean skip = false;
         int requestedOrientation = SDLActivity.mSingleton.getRequestedOrientation();
@@ -1590,7 +1683,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             // Start up the C app thread and enable sensor input for the first time
 
             final Thread sdlThread = new Thread(new SDLMain(), "SDLThread");
-            //enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+
             sdlThread.start();
 
             // Set up a listener thread to catch when the native thread ends
@@ -1681,7 +1774,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 }
             }
         }
-*/
+
         if ((event.getSource() & InputDevice.SOURCE_KEYBOARD) != 0)
         {
             if (event.getAction() == KeyEvent.ACTION_DOWN)
@@ -1696,7 +1789,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 return true;
             }
         }
-
+*/
         return false;
     }
 
@@ -1718,7 +1811,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         {
             if (event.getSource() == InputDevice.SOURCE_MOUSE)
             {
-                Log.v("SDL", "SDLSurface::onGenericMotionEvent: is mouse");
+                //Log.v("SDL", "SDLSurface::onGenericMotionEvent: is mouse");
                 // If this happens it measn the mouse has lost capture somehow
                 if (event.getAction() == MotionEvent.ACTION_HOVER_MOVE)
                 {
@@ -1764,22 +1857,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     }
 
 
-    // Sensor events
-    public void enableSensor(int sensortype, boolean enabled)
-    {
-        // TODO: This uses getDefaultSensor - what if we have >1 accels?
-        if (enabled)
-        {
-            mSensorManager.registerListener(this,
-                    mSensorManager.getDefaultSensor(sensortype),
-                    SensorManager.SENSOR_DELAY_GAME, null);
-        } else
-        {
-            mSensorManager.unregisterListener(this,
-                    mSensorManager.getDefaultSensor(sensortype));
-        }
-    }
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy)
     {
@@ -1794,7 +1871,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     private void updateOrientation(float[] rotationVector)
     {
-
         SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
 
         final int worldAxisForDeviceAxisX;
@@ -1832,11 +1908,19 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 
         float yawDx = orientationLast[0] - orientation[0];
+        // Handle when going 3.14 to -3.14
+        // If very big we probably crossed the boundry
+        if( (yawDx > 5) || ( yawDx < -5 ))
+        {
+            yawDx = orientationLast[0] - (-orientation[0]);
+        }
+
+
         float pitchDx = orientationLast[1] - orientation[1];
         yawDx = yawDx * (float) (((Math.PI / 2) - Math.abs(orientationLast[1])) / Math.PI);
         //Log.d("gyro","pith = " + orientation[1] + " roll ="+ orientation[2] + "yaw = " + orientation[0] + " ydx =" + yawDx );
-        NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, yawDx / 2);
-        NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, pitchDx / 5);
+        NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, (yawDx / 2) * gyroXSens);
+        NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, (pitchDx / 5) * gyroYSens);
 
         orientationLast[0] = orientation[0];
         orientationLast[1] = orientation[1];
@@ -1847,15 +1931,66 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         //Log.d("MEM","alloc = " + alloc + "   free = " + free);
     }
 
+    long lastGyroTime;
+
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-        //Log.d("sen",event.toString());
-
-        if ((event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) || (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR))
+        //Log.d("sen"," type = "+ event.sensor.getType());
+        int type = event.sensor.getType();
+        if ((type ==  Sensor.TYPE_GAME_ROTATION_VECTOR) || (type == Sensor.TYPE_ROTATION_VECTOR))
         {
             //Log.d("GYRP", "1 = " + event.values[0]+ " 2 = " + event.values[1]+" 3 = " + event.values[2]);
             updateOrientation(event.values);
+        }
+        else if (type == Sensor.TYPE_GYROSCOPE)
+        {
+            long timeDiff = event.timestamp - lastGyroTime;
+            lastGyroTime = event.timestamp;
+
+            timeDiff /= 1000000; // Convert to milliseconds
+
+            float yawDx;
+            float pitchDx;
+
+            if( !gyroSwapXY )
+            {
+                yawDx = event.values[0];
+                pitchDx = event.values[1];
+            }
+            else
+            {
+                yawDx = event.values[1];
+                pitchDx = event.values[0];
+            }
+
+            if( gyroInvertX )
+                yawDx = -yawDx;
+
+            if( gyroInvertY )
+                pitchDx = -pitchDx;
+
+            yawDx = yawDx  * timeDiff / 6000.f;
+            pitchDx = pitchDx * timeDiff / 7000.f;
+
+            int rotation = SDLActivity.mSingleton.getWindowManager().getDefaultDisplay().getRotation();
+            if( rotation == Surface.ROTATION_90)
+            {
+                pitchDx = -pitchDx;
+            }
+            else
+            {
+                yawDx = -yawDx;
+            }
+
+            yawDx *= gyroXSens;
+            pitchDx *= gyroYSens;
+
+            NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, (yawDx) * gyroXSens);
+            NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, (pitchDx) * gyroYSens);
+
+            //Log.d("gyro", "Time = " + timeDiff + " 0 = " +  event.values[0] + " 1 ="+  event.values[1] + " 2 = " +  event.values[2]);
+
         }
     }
 }
@@ -1890,7 +2025,7 @@ class DummyEdit extends View implements View.OnKeyListener
         {
             if (event.getAction() == KeyEvent.ACTION_DOWN)
             {
-                SDLActivity.onNativeKeyDown(KeyEvent.KEYCODE_ESCAPE);
+                SDLActivity.onNativeKeyDown(KeyEvent.KEYCODE_ESCAPE, 0);
                 return true;
             } else if (event.getAction() == KeyEvent.ACTION_UP)
             {
@@ -1910,7 +2045,7 @@ class DummyEdit extends View implements View.OnKeyListener
         if (event.getAction() == KeyEvent.ACTION_DOWN)
         {
             Log.v("SDL", "onKey down: " + keyCode);
-            SDLActivity.onNativeKeyDown(keyCode);
+            SDLActivity.onNativeKeyDown(keyCode, 0);
             return true;
         } else if (event.getAction() == KeyEvent.ACTION_UP)
         {
@@ -1967,7 +2102,6 @@ class SDLInputConnection extends BaseInputConnection
     @Override
     public boolean sendKeyEvent(KeyEvent event)
     {
-
         /*
          * This handles the keycodes from soft keyboard (and IME-translated
          * input from hardkeyboard)
@@ -1980,7 +2114,7 @@ class SDLInputConnection extends BaseInputConnection
                 commitText(String.valueOf((char) event.getUnicodeChar()), 1);
             }
             Log.v("SDL", "sendKeyEvent down: " + keyCode);
-            SDLActivity.onNativeKeyDown(keyCode);
+            SDLActivity.onNativeKeyDown(keyCode, 0);
             return true;
         } else if (event.getAction() == KeyEvent.ACTION_UP)
         {
@@ -2027,27 +2161,3 @@ class SDLInputConnection extends BaseInputConnection
         return super.deleteSurroundingText(beforeLength, afterLength);
     }
 }
-
-/* A null joystick handler for API level < 12 devices (the accelerometer is handled separately) */
-class SDLJoystickHandler
-{
-
-    /**
-     * Handles given MotionEvent.
-     *
-     * @param event the event to be handled.
-     * @return if given event was processed.
-     */
-    public boolean handleMotionEvent(MotionEvent event)
-    {
-        return false;
-    }
-
-    /**
-     * Handles adding and removing of input devices.
-     */
-    public void pollInputDevices()
-    {
-    }
-}
-

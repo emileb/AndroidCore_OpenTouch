@@ -30,17 +30,20 @@ public class AppInfo
     public static String internalFiles;
     public static String directory;
 
+    public static boolean isAndroidTv;
+
     public static GameEngine currentEngine;
 
     private static Context context;
 
-    static public void setAppInfo(Context ctx, Apps app, String title, String directory)
+    static public void setAppInfo(Context ctx, Apps app, String title, String directory, boolean isAndroidTv )
     {
         AppInfo.context = ctx;
         AppInfo.app = app;
         AppInfo.title = title;
         AppInfo.directory = directory;
         AppInfo.internalFiles = ctx.getFilesDir().getAbsolutePath();
+        AppInfo.isAndroidTv = isAndroidTv;
     }
 
     static public void setAppDirectory(String appDir)

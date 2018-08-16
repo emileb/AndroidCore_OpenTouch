@@ -51,6 +51,7 @@ public class ControlConfig implements Serializable
     public static final int LOOK_MODE_MOUSE = 0;
     public static final int LOOK_MODE_ABSOLUTE = 1;
     public static final int LOOK_MODE_JOYSTICK = 2;
+    public static final int LOOK_MODE_GYRO = 3;
 
     String filename;
 

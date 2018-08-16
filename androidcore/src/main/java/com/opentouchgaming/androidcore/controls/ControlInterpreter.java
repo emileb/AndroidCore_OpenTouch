@@ -220,7 +220,12 @@ public class ControlInterpreter
             return false;
         else
         {
-            SDLActivity.onNativeKeyDown(keyCode);
+            int unicode = 0;
+            if( event.isPrintingKey() || keyCode == KeyEvent.KEYCODE_SPACE)
+            {
+                unicode = event.getUnicodeChar();
+            }
+            SDLActivity.onNativeKeyDown(keyCode,unicode);
             return true;
         }
     }

@@ -66,6 +66,9 @@ public class LicenseCheck
                             {
                                 PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
                                 int lId = Integer.parseInt(fields[3]);
+
+                                lId = pInfo.versionCode; // FIX THIS! TEMP UNTIL GOOGLE FIXES ISSUE
+
                                 if (lId == pInfo.versionCode) // Check correct version of app
                                 {
                                     ok = true;

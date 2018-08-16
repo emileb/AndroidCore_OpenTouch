@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import com.opentouchgaming.androidcore.AppInfo;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,6 +19,7 @@ public class TouchSettings {
 
 	public static final int GAME_OPTION_AUTO_HIDE_GAMEPAD = 1;
 	public static final int GAME_OPTION_HIDE_MENU_AND_GAME = 2;
+	public static final int GAME_OPTION_USE_SYSTEM_KEYBOARD = 4;
 
 	public static String gamePadControlsFile;
 
@@ -24,6 +27,7 @@ public class TouchSettings {
 	public static boolean altTouchCode;
 	public static boolean gamepadHidetouch;
 	public static boolean hideGameAndMenuTouch;
+	public static boolean useSystemKeyboard;
 
 	public static void reloadSettings(Context ctx)
 	{
@@ -31,7 +35,8 @@ public class TouchSettings {
 		gamePadEnabled = getBoolOption(ctx, "gamepad_enabled", true);
 		altTouchCode = getBoolOption(ctx, "alt_touch_code", false);
 		gamepadHidetouch =  getBoolOption(ctx, "gamepad_hide_touch", true);
-		hideGameAndMenuTouch = getBoolOption(ctx,"hide_game_menu_touch", false);
+		hideGameAndMenuTouch = getBoolOption(ctx,"hide_game_menu_touch", AppInfo.isAndroidTv); // default to hide on Android TV
+		useSystemKeyboard = getBoolOption(ctx,"use_system_keyboard", false);
 	}
 	
 	public static float getFloatOption(Context ctx,String name, float def)
