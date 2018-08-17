@@ -1387,6 +1387,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     boolean gyroInvertY = false;
     boolean gyroSwapXY = false;
 
+    float gyroXOffset = 0;
+    float gyroYOffset = 0;
+
     // Sensors
     protected static SensorManager mSensorManager;
     protected static Display mDisplay;
@@ -1495,6 +1498,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         gyroInvertX = AppSettings.getBoolOption(SDLActivity.mSingleton,"gyro_invert_x", false);
         gyroInvertY = AppSettings.getBoolOption(SDLActivity.mSingleton,"gyro_invert_y", false);
         gyroSwapXY = AppSettings.getBoolOption(SDLActivity.mSingleton,"gyro_swap_xy", false);
+        gyroXOffset = AppSettings.getFloatOption(SDLActivity.mSingleton,"gyro_x_offset",0);
+        gyroYOffset = AppSettings.getFloatOption(SDLActivity.mSingleton,"gyro_y_offset",0);
+
 
         mSensorManager = (SensorManager) SDLActivity.mSingleton.getSystemService(SENSOR_SERVICE);
 
@@ -1955,13 +1961,13 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
             if( !gyroSwapXY )
             {
-                yawDx = event.values[0];
-                pitchDx = event.values[1];
+                yawDx = event.values[0] - gyroXOffset;
+                pitchDx = event.values[1]- gyroYOffset;
             }
             else
             {
-                yawDx = event.values[1];
-                pitchDx = event.values[0];
+                yawDx = event.values[1]- gyroYOffset;
+                pitchDx = event.values[0]- gyroXOffset;
             }
 
             if( gyroInvertX )

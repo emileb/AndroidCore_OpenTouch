@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:orientation="vertical"
+              android:minWidth="300dp"
               android:layout_height="match_parent">
 
 
@@ -20,6 +21,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
+        android:gravity="right"
         android:layout_height="wrap_content">
         <TextView
             android:layout_width="wrap_content"
@@ -28,15 +30,17 @@
             android:text="Turn sens:"/>
         <SeekBar
             android:id="@+id/gyro_x_seekBar"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_gravity="center_vertical"
-            android:max="200"
+            android:max="300"
+
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
+        android:gravity="right"
         android:layout_height="wrap_content">
         <TextView
             android:layout_width="wrap_content"
@@ -45,8 +49,8 @@
             android:text="Look sens:"/>
         <SeekBar
             android:id="@+id/gyro_y_seekBar"
-            android:layout_width="match_parent"
-            android:max="200"
+            android:layout_width="200dp"
+            android:max="300"
             android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -68,5 +72,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="SWAP X/Y"/>
+
+    <Button
+        android:id="@+id/gyro_calibrate_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Calibrate"/>
 
 </LinearLayout>

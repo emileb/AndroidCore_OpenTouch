@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.hardware.Sensor;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
@@ -21,7 +23,6 @@ import com.opentouchgaming.androidcore.R;
 
 public class GyroDialog
 {
-
     Activity activity;
 
     public GyroDialog(final Activity act, final Sensor sensor)
@@ -33,7 +34,7 @@ public class GyroDialog
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.gyro_dialog);
+        dialog.setContentView(R.layout.dialog_gyro);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
 
@@ -52,6 +53,7 @@ public class GyroDialog
         final CheckBox invertX = dialog.findViewById(R.id.gyro_invert_x_checkBox);
         final CheckBox invertY = dialog.findViewById(R.id.gyro_invert_y_checkBox);
         final CheckBox swapXY = dialog.findViewById(R.id.gyro_swap_xy_checkBox);
+        final Button gyroCalib = dialog.findViewById(R.id.gyro_calibrate_button);
 
         enableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
@@ -172,6 +174,14 @@ public class GyroDialog
         invertY.setEnabled(enableSwitch.isChecked());
         swapXY.setEnabled(enableSwitch.isChecked());
 
+        gyroCalib.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                new GyroCalibrateDialog(activity, sensor);
+            }
+        });
         dialog.show();
     }
 
