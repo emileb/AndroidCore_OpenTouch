@@ -19,7 +19,13 @@ public class GameEngine
         RETRO,
         BLAKE,
         ROTT,
-        WOLF
+        WOLF,
+        QUAKESDL,
+        QUAKEDP,
+        QUAKEFTEQW,
+        QUAKE2,
+        YQUAKE2,
+        IOQUAKE,
     }
 
     public GameEngine(Engine engine, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)

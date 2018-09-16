@@ -44,6 +44,13 @@ import java.util.zip.ZipInputStream;
 public class Utils {
 	static String LOG = "Utils";
 
+	static DebugLog log;
+
+	static
+	{
+		log = new DebugLog(DebugLog.Module.CONTROLS, "Utils");
+	}
+
 	static public int dpToPx( Resources r, int dp )
 	{
 		int px = (int) TypedValue.applyDimension(
@@ -54,7 +61,32 @@ public class Utils {
 		return px;
 	}
 
+	static public boolean mkdirs( Context context, String path)
+	{
+		File file = new File(path);
+		if (!file.exists())
+		{
+			if( !file.mkdirs() )
+			{
+				log.log(DebugLog.Level.E, "Did not create base folder");
+			}
 
+			File f = new File(path, "temp_");
+			try {
+				f.createNewFile();
+				new SingleMediaScanner(context, false,  f.getAbsolutePath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return true;
+		}
+		else
+		{
+			new File(path, "temp_").delete();
+			return false;
+		}
+	}
 	static public void copyFile(InputStream in, OutputStream out) throws IOException {
 		byte[] buffer = new byte[1024];
 		int read;

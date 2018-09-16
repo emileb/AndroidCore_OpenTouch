@@ -4,6 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 import android.widget.ImageButton;
@@ -39,7 +42,7 @@ public class EnginesPanel
 
     ImageButton leftPanelButton;
 
-    public EnginesPanel(Context context, View topView, GameEngine[] engines, final Listener listener)
+    public EnginesPanel(Context context, View topView, GameEngine[] engines, boolean showCircles, final Listener listener)
     {
         this.listener = listener;
 
@@ -106,8 +109,27 @@ public class EnginesPanel
             paramsB.width = 0;
             paramsB.height = LinearLayout.LayoutParams.MATCH_PARENT;
             button.setLayoutParams(paramsB);
-            button.setBackgroundResource(R.drawable.focusable);
+            //button.setBackgroundResource(R.drawable.focusable);
             button.setFocusableInTouchMode(true);
+
+            // This is all done so we can change the background color of the drawable
+            StateListDrawable states = new StateListDrawable();
+            states.addState(new int[] {android.R.attr.state_focused,android.R.attr.state_activated},
+                    context.getResources().getDrawable(R.drawable.imagebutton_focus_selected));
+            states.addState(new int[] {android.R.attr.state_activated},
+                    context.getResources().getDrawable(R.drawable.imagebutton_selected));
+            states.addState(new int[] {android.R.attr.state_focused},
+                    context.getResources().getDrawable(R.drawable.imagebutton_focus));
+
+
+            if( showCircles )
+            {
+                Drawable shape = context.getResources().getDrawable(R.drawable.engine_button_background);
+                shape.setColorFilter(0x7F000000 | gameEngines[n].color, PorterDuff.Mode.SRC_ATOP);
+                states.addState(new int[] { }, shape);
+            }
+
+            button.setBackgroundDrawable(states);
 
             AppCompatImageButton buttonCfg = new AppCompatImageButton(context);
             buttonCfg.setTag(new Integer(n)); // Used for the click listener callback

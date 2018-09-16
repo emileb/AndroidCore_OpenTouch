@@ -23,7 +23,6 @@ import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Message;
 import android.text.InputType;
 import android.util.Log;
@@ -58,11 +57,11 @@ import com.opentouchgaming.androidcore.controls.ControlInterpreter;
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 import com.opentouchgaming.androidcore.ui.GyroDialog;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -1360,7 +1359,21 @@ class SDLMain implements Runnable
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
         String logFilename = SDLActivity.mSingleton.getIntent().getStringExtra("log_filename");
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, args_array, gameType, gamePath, logFilename);
+
+        String nativeSoPath = SDLActivity.mSingleton.getApplicationInfo().nativeLibraryDir;
+
+        File folder = new File(nativeSoPath);
+        File[] listOfFiles = folder.listFiles();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                Log.v("SDL","File " + listOfFiles[i].getName());
+            } else if (listOfFiles[i].isDirectory()) {
+                Log.v("SDL","Directory " + listOfFiles[i].getName());
+            }
+        }
+        Log.v("SDL", "Native .so path = " + nativeSoPath);
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, args_array, gameType, gamePath, logFilename,nativeSoPath);
 
         Log.v("SDL", "SDL thread terminated");
     }
