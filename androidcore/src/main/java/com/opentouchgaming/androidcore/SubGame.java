@@ -13,16 +13,54 @@ public class SubGame
     String detail2;
 
     String path;
+    int gameType;
 
-    public SubGame( String title, String path, int image, String detail1, String detail2 )
+    String downloadPath;
+    String downloadFilename;
+
+    String extraArgs;
+
+
+    public SubGame(String title, String path, int gameType, int image, String detail1, String detail2)
     {
         this.path = path;
         this.title = title;
         this.image = image;
         this.detail1 = detail1;
-        this.detail2 =  detail2;
+        this.detail2 = detail2;
         this.imagePng = null;
+        this.gameType = gameType;
     }
+
+    public String getExtraArgs()
+    {
+        if (extraArgs == null)
+            return "";
+        else
+            return extraArgs;
+    }
+
+    public void setExtraArgs(String extraArgs)
+    {
+        this.extraArgs = extraArgs;
+    }
+
+    public void setDownloadInfo(String path, String filename)
+    {
+        downloadPath = path;
+        downloadFilename = filename;
+    }
+
+    public String getDownloadPath()
+    {
+        return downloadPath;
+    }
+
+    public String getDownloadFilename()
+    {
+        return downloadFilename;
+    }
+
     public String getImagePng()
     {
         return imagePng;
@@ -83,6 +121,15 @@ public class SubGame
         this.path = path;
     }
 
+    public int getGameType()
+    {
+        return gameType;
+    }
+
+    public void setGameType(int gameType)
+    {
+        this.gameType = gameType;
+    }
 
     public boolean selected;
 }

@@ -25,7 +25,7 @@ public class GameEngine
         QUAKEFTEQW,
         QUAKE2,
         YQUAKE2,
-        IOQUAKE,
+        IOQUAKE3,
     }
 
     public GameEngine(Engine engine, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)

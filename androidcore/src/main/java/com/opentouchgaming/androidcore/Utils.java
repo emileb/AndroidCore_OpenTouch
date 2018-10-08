@@ -591,25 +591,6 @@ public class Utils {
 
 			if (AppSettings.getBoolOption(act,"immersive_mode",false))
 			{
-				/*
-				Handler handler = new Handler();
-				handler.postDelayed(new Runnable() {
-					public void run() {
-
-						if (hasFocus) {
-							act.getWindow().getDecorView().setSystemUiVisibility(
-									View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-											| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-											| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-											| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-											| View.SYSTEM_UI_FLAG_FULLSCREEN
-											| View.SYSTEM_UI_FLAG_IMMERSIVE
-											| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-						}
-					}
-
-				}, 2000);
-				*/
 				if (hasFocus) {
 					act.getWindow().getDecorView().setSystemUiVisibility(
 							View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -627,7 +608,7 @@ public class Utils {
 		int unit = si ? 1000 : 1024;
 		if (bytes < unit) return bytes + " B";
 		int exp = (int) (Math.log(bytes) / Math.log(unit));
-		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+		String pre = (si ? "KMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "");
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 
@@ -643,201 +624,26 @@ public class Utils {
 		float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
 		return px;
 	}
-/*
-	public static ArrayList<ActionInput> getGameGamepadConfig(GD.IDGame game)
+
+	public static String filesInfoString(String path, String ext)
 	{
-		ArrayList<ActionInput> actions = new ArrayList<ActionInput>();
+		File files[] = new File(path).listFiles();
 
-		actions.add(new ActionInput("analog_move_fwd","Forward/Back", ControlConfig.ACTION_ANALOG_FWD, ActionInput.ActionType.ANALOG));
-		actions.add(new ActionInput("analog_move_strafe","Strafe",ControlConfig.ACTION_ANALOG_STRAFE, ActionInput.ActionType.ANALOG));
-
-
-		if (game != GD.IDGame.Wolf3d)
-			actions.add(new ActionInput("analog_look_pitch","Look Up/Look Down",ControlConfig.ACTION_ANALOG_PITCH, ActionInput.ActionType.ANALOG));
-
-		actions.add(new ActionInput("analog_look_yaw","Look Left/Look Right",ControlConfig.ACTION_ANALOG_YAW, ActionInput.ActionType.ANALOG));
-
-		actions.add(new ActionInput("attack","Attack",ControlConfig.PORT_ACT_ATTACK, ActionInput.ActionType.BUTTON));
-
-		if ((game == GD.IDGame.Doom) || (game == GD.IDGame.Wolf3d)|| (game == GD.IDGame.Hexen)|| (game == GD.IDGame.Strife)|| (game == GD.IDGame.Heretic))
-			actions.add(new ActionInput("use","Use/Open",ControlConfig.PORT_ACT_USE, ActionInput.ActionType.BUTTON));
-
-		if (game == GD.IDGame.RTCW)
+		String pakFiles = "[ ";
+		int nbrFiles = 0;
+		int totalSize = 0;
+		for (File file : files)
 		{
-			actions.add(new ActionInput("use","Use/Open",ControlConfig.PORT_ACT_USE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("reload","Reload",ControlConfig.PORT_ACT_RELOAD, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("alt_fire","Alt Weapon",ControlConfig.PORT_ACT_ALT_FIRE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("binocular","Binocuar",ControlConfig.PORT_ACT_ZOOM_IN, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("quick_kick","Kick",ControlConfig.PORT_ACT_KICK, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("lean_left","Lean Left",ControlConfig.PORT_ACT_LEAN_LEFT, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("lean_right","Lean Right",ControlConfig.PORT_ACT_LEAN_RIGHT, ActionInput.ActionType.BUTTON));
+			if (file.getName().toLowerCase().endsWith(ext))
+			{
+				pakFiles += file.getName() + ", ";
+				totalSize += file.length();
+				nbrFiles++;
+			}
 		}
+		pakFiles += "]";
 
-		if (game == GD.IDGame.Quake) {
-			actions.add(new ActionInput("malice_reload", "Malice Reload", ControlConfig.PORT_MALICE_RELOAD, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("malice_use", "Malice Use", ControlConfig.PORT_MALICE_USE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("malice_cycle", "Malice Cycle", ControlConfig.PORT_MALICE_CYCLE, ActionInput.ActionType.BUTTON));
-		}
-
-		if (game == GD.IDGame.Quake3)
-		{
-			actions.add(new ActionInput("zoomin","Zoom in/out",ControlConfig.PORT_ACT_ZOOM_IN, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_0","Custom F1",ControlConfig.PORT_ACT_CUSTOM_0, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_1","Custom F2",ControlConfig.PORT_ACT_CUSTOM_1, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_2","Custom F3",ControlConfig.PORT_ACT_CUSTOM_2, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_3","Custom F4",ControlConfig.PORT_ACT_CUSTOM_3, ActionInput.ActionType.BUTTON));
-		}
-
-		if ((game == GD.IDGame.JK2) || (game == GD.IDGame.JK3))
-		{
-			actions.add(new ActionInput("attack_alt","Alt Attack",ControlConfig.PORT_ACT_ALT_ATTACK, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("use_force","Use Force",ControlConfig.PORT_ACT_FORCE_USE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("saber_style","Saber Style",ControlConfig.PORT_ACT_SABER_STYLE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("saber_show_hide","Saber Sheath/Unsheath",ControlConfig.PORT_ACT_SABER_SEL, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("use","Use/Open",ControlConfig.PORT_ACT_USE, ActionInput.ActionType.BUTTON));
-		}
-
-		if ((game != GD.IDGame.Doom) && (game != GD.IDGame.Wolf3d))
-			actions.add(new ActionInput("jump","Jump",ControlConfig.PORT_ACT_JUMP, ActionInput.ActionType.BUTTON));
-
-		if ((game == GD.IDGame.Quake2) || (game == GD.IDGame.Quake3)|| (game == GD.IDGame.Hexen2)|| (game == GD.IDGame.RTCW)|| (game == GD.IDGame.JK2) || (game == GD.IDGame.JK3))
-			actions.add(new ActionInput("crouch","Crouch",ControlConfig.PORT_ACT_DOWN, ActionInput.ActionType.BUTTON));
-
-		//Add GZDoom specific actions
-		if (game == GD.IDGame.Doom)
-		{
-			actions.add(new ActionInput("attack_alt","Alt Attack (GZ)",ControlConfig.PORT_ACT_ALT_ATTACK, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("jump","Jump (GZ)",ControlConfig.PORT_ACT_JUMP, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("crouch","Crouch (GZ)",ControlConfig.PORT_ACT_DOWN, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_0","Custom A (GZ)",ControlConfig.PORT_ACT_CUSTOM_0, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_1","Custom B (GZ)",ControlConfig.PORT_ACT_CUSTOM_1, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_2","Custom C (GZ)",ControlConfig.PORT_ACT_CUSTOM_2, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_3","Custom D (GZ)",ControlConfig.PORT_ACT_CUSTOM_3, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_4","Custom E (GZ)",ControlConfig.PORT_ACT_CUSTOM_4, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("custom_5","Custom F (GZ)",ControlConfig.PORT_ACT_CUSTOM_5, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("quick_save","Quick Save (GZ)",ControlConfig.PORT_ACT_QUICKSAVE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("quick_load","Quick Load (GZ)",ControlConfig.PORT_ACT_QUICKLOAD, ActionInput.ActionType.BUTTON));
-		}
-
-		actions.add(new ActionInput("fwd","Move Forward",ControlConfig.PORT_ACT_FWD, ActionInput.ActionType.BUTTON));
-		actions.add(new ActionInput("back","Move Backwards",ControlConfig.PORT_ACT_BACK, ActionInput.ActionType.BUTTON));
-		actions.add(new ActionInput("left","Strafe Left",ControlConfig.PORT_ACT_MOVE_LEFT, ActionInput.ActionType.BUTTON));
-		actions.add(new ActionInput("right","Strafe Right",ControlConfig.PORT_ACT_MOVE_RIGHT, ActionInput.ActionType.BUTTON));
-
-		if ((game != GD.IDGame.Doom) && (game != GD.IDGame.Wolf3d))
-		{
-			actions.add(new ActionInput("look_up","Look Up",ControlConfig.PORT_ACT_LOOK_UP, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("look_down","Look Down",ControlConfig.PORT_ACT_LOOK_DOWN, ActionInput.ActionType.BUTTON));
-		}
-
-		actions.add(new ActionInput("look_left","Look Left",ControlConfig.PORT_ACT_LEFT, ActionInput.ActionType.BUTTON));
-		actions.add(new ActionInput("look_right","Look Right",ControlConfig.PORT_ACT_RIGHT, ActionInput.ActionType.BUTTON));
-
-		if ((game != GD.IDGame.Wolf3d) && (game != GD.IDGame.JK2) || (game != GD.IDGame.JK3))
-		{
-			actions.add(new ActionInput("strafe_on","Strafe On",ControlConfig.PORT_ACT_STRAFE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("speed","Run On",ControlConfig.PORT_ACT_SPEED, ActionInput.ActionType.BUTTON));
-		}
-		actions.add(new ActionInput("next_weapon","Next Weapon",ControlConfig.PORT_ACT_NEXT_WEP, ActionInput.ActionType.BUTTON));
-		actions.add(new ActionInput("prev_weapon","Previous Weapon",ControlConfig.PORT_ACT_PREV_WEP, ActionInput.ActionType.BUTTON));
-
-		if ((game == GD.IDGame.JK2)|| (game == GD.IDGame.JK3))
-		{
-			actions.add(new ActionInput("next_force","Next Force",ControlConfig.PORT_ACT_NEXT_FORCE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("prev_force","Previous Force",ControlConfig.PORT_ACT_PREV_FORCE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("force_pull","Force Pull",ControlConfig.PORT_ACT_FORCE_PULL, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("force_push","Force Push",ControlConfig.PORT_ACT_FORCE_PUSH, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("force_speed","Force Speed",ControlConfig.PORT_ACT_FORCE_SPEED, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("force_heal","Force Heal",ControlConfig.PORT_ACT_FORCE_HEAL, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("force_mind","Force Mind",ControlConfig.PORT_ACT_FORCE_MIND, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("force_grip","Force Grip",ControlConfig.PORT_ACT_FORCE_GRIP, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("force_lightning","Force Lightning",ControlConfig.PORT_ACT_FORCE_LIGHT, ActionInput.ActionType.BUTTON));
-
-		}
-
-		if ((game == GD.IDGame.Quake2) || (game == GD.IDGame.Hexen2)|| (game == GD.IDGame.RTCW))
-		{
-			actions.add(new ActionInput("help_comp","Show Objectives",ControlConfig.PORT_ACT_HELPCOMP, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_show","Show Inventory",ControlConfig.PORT_ACT_INVEN, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_use","Use Item",ControlConfig.PORT_ACT_INVUSE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_next","Next Item",ControlConfig.PORT_ACT_INVNEXT, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_prev","Prev Item",ControlConfig.PORT_ACT_INVPREV, ActionInput.ActionType.BUTTON));
-		}
-
-		if (game == GD.IDGame.JK2)
-		{
-			actions.add(new ActionInput("help_comp","Show Data Pad",ControlConfig.PORT_ACT_DATAPAD, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_use","Use Item",ControlConfig.PORT_ACT_INVUSE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_next","Next Item",ControlConfig.PORT_ACT_INVNEXT, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_prev","Prev Item",ControlConfig.PORT_ACT_INVPREV, ActionInput.ActionType.BUTTON));
-		}
-
-		if (game == GD.IDGame.Hexen)
-		{
-			actions.add(new ActionInput("inv_use","Use Item",ControlConfig.PORT_ACT_INVUSE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_next","Next Item",ControlConfig.PORT_ACT_INVNEXT, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_prev","Prev Item",ControlConfig.PORT_ACT_INVPREV, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("fly_up","Fly Up",ControlConfig.PORT_ACT_FLY_UP, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("fly_down","Fly Down",ControlConfig.PORT_ACT_FLY_DOWN, ActionInput.ActionType.BUTTON));
-
-		}
-
-		if (game == GD.IDGame.Strife)
-		{
-			actions.add(new ActionInput("inv_use","Use Item",ControlConfig.PORT_ACT_INVUSE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_drop","Drop Item",ControlConfig.PORT_ACT_INVDROP, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_next","Next Item",ControlConfig.PORT_ACT_INVNEXT, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_prev","Prev Item",ControlConfig.PORT_ACT_INVPREV, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("show_weap","Show Stats/Weapons",ControlConfig.PORT_ACT_SHOW_WEAPONS, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("show_keys","Show Keys",ControlConfig.PORT_ACT_SHOW_KEYS, ActionInput.ActionType.BUTTON));
-
-		}
-
-		if (game == GD.IDGame.Heretic)
-		{
-			actions.add(new ActionInput("inv_use","Use Item",ControlConfig.PORT_ACT_INVUSE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_next","Next Item",ControlConfig.PORT_ACT_INVNEXT, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("inv_prev","Prev Item",ControlConfig.PORT_ACT_INVPREV, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("fly_up","Fly Up",ControlConfig.PORT_ACT_FLY_UP, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("fly_down","Fly Down",ControlConfig.PORT_ACT_FLY_DOWN, ActionInput.ActionType.BUTTON));
-		}
-
-		if (game == GD.IDGame.Quake3)
-		{
-			actions.add(new ActionInput("inv_use","Use Item",ControlConfig.PORT_ACT_USE, ActionInput.ActionType.BUTTON));
-		}
-
-		if (game == GD.IDGame.Doom)
-		{
-			actions.add(new ActionInput("map_show","Show Automap",ControlConfig.PORT_ACT_MAP, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("map_up","Automap Up",ControlConfig.PORT_ACT_MAP_UP, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("map_down","Automap Down",ControlConfig.PORT_ACT_MAP_DOWN, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("map_left","Automap Left",ControlConfig.PORT_ACT_MAP_LEFT, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("map_right","Automap Right",ControlConfig.PORT_ACT_MAP_RIGHT, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("map_zoomin","Automap Zoomin",ControlConfig.PORT_ACT_MAP_ZOOM_IN, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("map_zoomout","Automap Zoomout",ControlConfig.PORT_ACT_MAP_ZOOM_OUT, ActionInput.ActionType.BUTTON));
-		}
-
-		if ((game == GD.IDGame.RTCW) || (game == GD.IDGame.JK2) || (game == GD.IDGame.JK3))
-		{
-			actions.add(new ActionInput("quick_save","Quick Save",ControlConfig.PORT_ACT_QUICKSAVE, ActionInput.ActionType.BUTTON));
-			actions.add(new ActionInput("quick_load","Quick Load",ControlConfig.PORT_ACT_QUICKLOAD, ActionInput.ActionType.BUTTON));
-		}
-
-		if ((game == GD.IDGame.Doom) || (game == GD.IDGame.Heretic)  || (game == GD.IDGame.Hexen)
-				|| (game == GD.IDGame.Strife)|| (game == GD.IDGame.Quake)|| (game == GD.IDGame.Quake2)
-				|| (game == GD.IDGame.Hexen2) || (game == GD.IDGame.Wolf3d)
-				|| (game == GD.IDGame.JK2)  || (game == GD.IDGame.JK3) || (game == GD.IDGame.TestPlatform))
-		{
-			actions.add(new ActionInput("menu_up","Menu Up",ControlConfig.MENU_UP, ActionInput.ActionType.MENU));
-			actions.add(new ActionInput("menu_down","Menu Down",ControlConfig.MENU_DOWN, ActionInput.ActionType.MENU));
-			actions.add(new ActionInput("menu_left","Menu Left",ControlConfig.MENU_LEFT, ActionInput.ActionType.MENU));
-			actions.add(new ActionInput("menu_right","Menu Right",ControlConfig.MENU_RIGHT, ActionInput.ActionType.MENU));
-			actions.add(new ActionInput("menu_select","Menu Select",ControlConfig.MENU_SELECT, ActionInput.ActionType.MENU));
-			actions.add(new ActionInput("menu_back","Menu Back",ControlConfig.MENU_BACK, ActionInput.ActionType.MENU));
-		}
-
-		return actions;
+		String ret = nbrFiles + " files (" + Utils.humanReadableByteCount(totalSize, false) + ") : " + pakFiles;
+		return ret;
 	}
-	*/
 }

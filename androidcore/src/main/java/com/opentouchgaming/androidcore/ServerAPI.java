@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import com.opentouchgaming.androidcore.license.PackageVerif;
 
@@ -110,7 +111,7 @@ public class ServerAPI
 
                 String apk_hash = PackageVerif.bytesToString(PackageVerif.packageSig(ctx).sig);
 
-                String url_full = "http://opentouchgaming.com/api/download.php?" + ""
+                String url_full = "http://opentouchgaming.com/api/download_v2.php?" + ""
                         + "ldata=" + URLEncoder.encode(lic_data, "UTF-8")
                         + "&lsig=" + URLEncoder.encode(lic_sig, "UTF-8")
                         + "&apkhash=" + URLEncoder.encode(apk_hash, "UTF-8")
@@ -211,9 +212,44 @@ public class ServerAPI
 
         }
 
+        public void dismissWithExceptionHandling(ProgressDialog dialog)
+        {
+            try
+            {
+                dialog.dismiss();
+            } catch (final IllegalArgumentException e)
+            {
+                // Do nothing.
+            } catch (final Exception e)
+            {
+                // Do nothing.
+            } finally
+            {
+                dialog = null;
+            }
+        }
+
         protected void onPostExecute(Long result)
         {
-            progressBar.dismiss();
+            if(progressBar != null && progressBar.isShowing())
+            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+                {
+                    if (!ctx.isFinishing() && !ctx.isDestroyed())
+                    {
+                        dismissWithExceptionHandling(progressBar);
+                    }
+                } else
+                {
+                    // Api < 17. Unfortunately cannot check for isDestroyed()
+                    if (!ctx.isFinishing())
+                    {
+                        dismissWithExceptionHandling(progressBar);
+                    }
+                }
+                progressBar = null;
+            }
+
             if (errorstring != null)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ctx);

@@ -1,5 +1,6 @@
 package com.opentouchgaming.androidcore.controls;
 
+import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -192,6 +193,40 @@ public class ControlInterpreter
     }
 
 
+    boolean[] dpadLastState = new boolean[4];
+    private void handleDpad(InputEvent event )
+    {
+        if (Dpad.isDpadDevice(event))
+        {
+            mDpad.getDirectionPressed(event);
+            boolean[] dpadState =  mDpad.getFinalState();
+
+            if( dpadState[Dpad.LEFT] != dpadLastState[Dpad.LEFT])
+            {
+                controlInterface.doAction_if(dpadState[Dpad.LEFT]?1:0, PortActDefs.PORT_ACT_MENU_LEFT);
+                dpadLastState[Dpad.LEFT] = dpadState[Dpad.LEFT];
+            }
+
+            if( dpadState[Dpad.RIGHT] != dpadLastState[Dpad.RIGHT])
+            {
+                controlInterface.doAction_if(dpadState[Dpad.RIGHT]?1:0, PortActDefs.PORT_ACT_MENU_RIGHT);
+                dpadLastState[Dpad.RIGHT] = dpadState[Dpad.RIGHT];
+            }
+
+            if( dpadState[Dpad.UP] != dpadLastState[Dpad.UP])
+            {
+                controlInterface.doAction_if(dpadState[Dpad.UP]?1:0, PortActDefs.PORT_ACT_MENU_UP);
+                dpadLastState[Dpad.UP] = dpadState[Dpad.UP];
+            }
+
+            if( dpadState[Dpad.DOWN] != dpadLastState[Dpad.DOWN])
+            {
+                controlInterface.doAction_if(dpadState[Dpad.DOWN]?1:0, PortActDefs.PORT_ACT_MENU_DOWN);
+                dpadLastState[Dpad.DOWN] = dpadState[Dpad.DOWN];
+            }
+        }
+    }
+
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
         boolean used = false;
@@ -210,6 +245,8 @@ public class ControlInterpreter
                 }
             }
         }
+
+        handleDpad(event);
 
         if (used)
             return true;
@@ -246,6 +283,8 @@ public class ControlInterpreter
             }
         }
 
+        handleDpad(event);
+
         if (used)
             return true;
 
@@ -281,7 +320,6 @@ public class ControlInterpreter
 
     static int lastMenuButton = -1;
 
-    boolean[] dpadLastState = new boolean[4];
     public boolean onGenericMotionEvent(MotionEvent event)
     {
         //log.log(D, "onGenericMotionEvent");
@@ -332,65 +370,7 @@ public class ControlInterpreter
         }
 
         // Moved to below the above so GZDOOM gamepad custom buttons get registered before the arrows
-        if (Dpad.isDpadDevice(event))
-        {
-            mDpad.getDirectionPressed(event);
-            boolean[] dpadState =  mDpad.getFinalState();
-
-            if( dpadState[Dpad.LEFT] != dpadLastState[Dpad.LEFT])
-            {
-                controlInterface.doAction_if(dpadState[Dpad.LEFT]?1:0, PortActDefs.PORT_ACT_MENU_LEFT);
-                dpadLastState[Dpad.LEFT] = dpadState[Dpad.LEFT];
-            }
-
-            if( dpadState[Dpad.RIGHT] != dpadLastState[Dpad.RIGHT])
-            {
-                controlInterface.doAction_if(dpadState[Dpad.RIGHT]?1:0, PortActDefs.PORT_ACT_MENU_RIGHT);
-                dpadLastState[Dpad.RIGHT] = dpadState[Dpad.RIGHT];
-            }
-
-            if( dpadState[Dpad.UP] != dpadLastState[Dpad.UP])
-            {
-                controlInterface.doAction_if(dpadState[Dpad.UP]?1:0, PortActDefs.PORT_ACT_MENU_UP);
-                dpadLastState[Dpad.UP] = dpadState[Dpad.UP];
-            }
-
-            if( dpadState[Dpad.DOWN] != dpadLastState[Dpad.DOWN])
-            {
-                controlInterface.doAction_if(dpadState[Dpad.DOWN]?1:0, PortActDefs.PORT_ACT_MENU_DOWN);
-                dpadLastState[Dpad.DOWN] = dpadState[Dpad.DOWN];
-            }
-            /*
-            int menuButton = mDpad.getDirectionPressed(event);
-            if (menuButton != lastMenuButton)
-            {
-                lastMenuButton = menuButton;
-                switch (menuButton)
-                {
-                    case Dpad.LEFT:
-                        log.log(D, "LEFT");
-                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_LEFT);
-                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_LEFT);
-                        break;
-                    case Dpad.RIGHT:
-                        log.log(D, "RIGHT");
-                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_RIGHT);
-                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_RIGHT);
-                        break;
-                    case Dpad.UP:
-                        log.log(D, "UP");
-                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_UP);
-                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_UP);
-                        break;
-                    case Dpad.DOWN:
-                        log.log(D, "DOWN");
-                        controlInterface.doAction_if(1, PortActDefs.PORT_ACT_MENU_DOWN);
-                        controlInterface.doAction_if(0, PortActDefs.PORT_ACT_MENU_DOWN);
-                        break;
-                }
-            }
-            */
-        }
+        handleDpad(event);
 
         return used;
     }
