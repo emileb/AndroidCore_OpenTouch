@@ -625,7 +625,7 @@ public class Utils {
 		return px;
 	}
 
-	public static String filesInfoString(String path, String ext)
+	public static String filesInfoString(String path, String ext, int maxFiles)
 	{
 		File files[] = new File(path).listFiles();
 
@@ -636,7 +636,10 @@ public class Utils {
 		{
 			if (file.getName().toLowerCase().endsWith(ext))
 			{
-				pakFiles += file.getName() + ", ";
+				if( nbrFiles < maxFiles )
+				{
+					pakFiles += file.getName() + ", ";
+				}
 				totalSize += file.length();
 				nbrFiles++;
 			}
