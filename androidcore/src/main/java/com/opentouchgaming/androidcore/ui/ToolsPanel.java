@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.Utils;
 
+
 /**
  * Created by Emile on 26/07/2017.
  */

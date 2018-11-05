@@ -51,6 +51,7 @@ import android.widget.TextView;
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.AssetFileAccess;
+import com.opentouchgaming.androidcore.GamepadActivity;
 import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.ControlConfig;
 import com.opentouchgaming.androidcore.controls.ControlInterpreter;
@@ -448,7 +449,7 @@ public class SDLActivity extends Activity implements Handler.Callback
     protected static final int COMMAND_SET_BACKLIGHT = 0x8001;
     protected static final int COMMAND_SHOW_GYRO_OPTIONS = 0x8002;
     protected static final int COMMAND_SHOW_KEYBOARD = 0x8003;
-
+    protected static final int COMMAND_SHOW_GAMEPAD= 0x8004;
     /**
      * This method is called by SDL if SDL did not handle a message itself.
      * This happens if a received message contains an unsupported command.
@@ -541,7 +542,6 @@ public class SDLActivity extends Activity implements Handler.Callback
                 }
                 case COMMAND_SHOW_GYRO_OPTIONS:
                 {
-
                     new GyroDialog(SDLActivity.mSingleton, SDLActivity.mSurface.getRotationSensor()){
                         public void dismiss()
                         {
@@ -549,6 +549,12 @@ public class SDLActivity extends Activity implements Handler.Callback
                         }
                     };
 
+                    break;
+                }
+                case COMMAND_SHOW_GAMEPAD:
+                {
+                    Intent intent = new Intent(getContext(), GamepadActivity.class);
+                    SDLActivity.mSingleton.startActivity(intent);
                     break;
                 }
                 case COMMAND_SHOW_KEYBOARD:
@@ -1537,6 +1543,10 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         requestFocus();
         setOnKeyListener(this);
         setOnTouchListener(this);
+        if( controlInterp != null )
+        {
+            controlInterp.loadGameControlsFile();
+        }
     }
 
     public Surface getNativeSurface()

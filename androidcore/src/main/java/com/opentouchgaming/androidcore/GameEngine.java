@@ -45,7 +45,7 @@ public class GameEngine
 
     public void init(Activity act)
     {
-        if (engineOptions == null)
+        if (engineOptionsClass != null && engineOptions == null)
         {
             try // Create class from class type
             {

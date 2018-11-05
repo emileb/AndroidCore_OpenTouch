@@ -13,7 +13,7 @@ public interface EngineOptionsInterface
         void launch( String mpArgs );
     }
 
-    void showDialog(Activity act, GameEngine engine, int version, String root);
+    void showDialog(final Activity act, GameEngine engine, int version,final String root);
     String getArgs(int version);
     boolean hasMultiplayer();
     void launchMultiplayer(Activity ac,GameEngine engine, int version, String mainArgs, MultiplayerCallback callback );

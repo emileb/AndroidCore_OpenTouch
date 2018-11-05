@@ -41,17 +41,8 @@ public class ControlInterpreter
         this.alternatePointerCode = alternatePointerCode;
 
         config = new ControlConfig(gamepadDefinition,null);
-        try
-        {
-            config.loadControls();
-        } catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
-        } catch (ClassNotFoundException e)
-        {
-            log.log(E, "Error loading gamepad file: " + e.toString());
-        }
+
+        loadGameControlsFile();
 
         for (ActionInput ai : config.actions)
         {
@@ -64,6 +55,20 @@ public class ControlInterpreter
         controlInterface = qif;
     }
 
+    public void loadGameControlsFile()
+    {
+        try
+        {
+            config.loadControls();
+        } catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            //e.printStackTrace();
+        } catch (ClassNotFoundException e)
+        {
+            log.log(E, "Error loading gamepad file: " + e.toString());
+        }
+    }
     public void setScreenSize(int w, int h)
     {
         screenWidth = w;

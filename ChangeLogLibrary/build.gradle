@@ -1,0 +1,31 @@
+apply plugin: 'com.android.library'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 7
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // It would be better to fix the issues
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies{
+    //compile 'com.android.support:support-v4:23.3.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+
+}
+
+// Used to push in maven
+// apply from: '../maven_push.gradle'

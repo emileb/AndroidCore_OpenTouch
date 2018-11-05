@@ -90,7 +90,7 @@ public class EnginesPanel
             params.width = LinearLayout.LayoutParams.MATCH_PARENT;
             params.height = 0;
 
-            int margin = 5;
+            int margin = 1;
             params.leftMargin = Utils.dpToPx(context.getResources(), margin);
             params.rightMargin = Utils.dpToPx(context.getResources(), margin);
             params.topMargin = Utils.dpToPx(context.getResources(), margin);
@@ -108,6 +108,8 @@ public class EnginesPanel
             paramsB.weight = 2f;
             paramsB.width = 0;
             paramsB.height = LinearLayout.LayoutParams.MATCH_PARENT;
+            paramsB.leftMargin =  paramsB.rightMargin = paramsB.topMargin =  paramsB.bottomMargin =  0;
+
             button.setLayoutParams(paramsB);
             //button.setBackgroundResource(R.drawable.focusable);
             button.setFocusableInTouchMode(true);
@@ -133,7 +135,8 @@ public class EnginesPanel
 
             AppCompatImageButton buttonCfg = new AppCompatImageButton(context);
             buttonCfg.setTag(new Integer(n)); // Used for the click listener callback
-            buttonCfg.setImageResource(R.drawable.ic_build_black_24dp);
+            if( gameEngines[n].engineOptions != null) // Only show if available
+                buttonCfg.setImageResource(R.drawable.ic_build_black_24dp);
             //buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
             LinearLayout.LayoutParams paramsC = new LinearLayout.LayoutParams(0, 0);
             paramsC.weight = 1;

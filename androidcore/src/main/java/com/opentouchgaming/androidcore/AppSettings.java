@@ -3,36 +3,17 @@ package com.opentouchgaming.androidcore;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Environment;
 
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 
 public class AppSettings {
-
-	public static String belokoBaseDir;
-
-	public static void resetBaseDir(Context ctx)
-	{
-		belokoBaseDir  =  Environment.getExternalStorageDirectory().toString() + "/Beloko";
-		setStringOption(ctx, "base_path", belokoBaseDir);
-	}
 	
 	public static void reloadSettings(Context ctx)
 	{
 		TouchSettings.reloadSettings(ctx);
 
-		belokoBaseDir = getStringOption(ctx, "base_path", null);
-		if (belokoBaseDir == null)
-		{
-			resetBaseDir(ctx);
-		}
-	}
 
-	public static String getBaseDir()
-	{
-		return  AppSettings.belokoBaseDir;
 	}
-
 
 
 	public static boolean showAbout(Context ctx)

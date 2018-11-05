@@ -42,7 +42,8 @@ public class ControlConfig implements Serializable
 
     public interface Listener
     {
-        void startMonitoring( ActionInput action );
+        void startMonitoring(ActionInput action);
+
         void finishedMonitoring();
     }
 
@@ -107,7 +108,7 @@ public class ControlConfig implements Serializable
         {
             for (ActionInput a : actions)
             {
-                if (d.tag.contentEquals(a.tag))
+                if (d.tag != null && a.tag != null && d.tag.contentEquals(a.tag))
                 {
                     a.invert = d.invert;
                     a.source = d.source;
@@ -174,7 +175,7 @@ public class ControlConfig implements Serializable
 
             final LinearLayout l = new LinearLayout(act);
             l.setOrientation(LinearLayout.VERTICAL);
-            l.setMinimumWidth((int)Utils.convertDpToPixel(500,act));
+            l.setMinimumWidth((int) Utils.convertDpToPixel(500, act));
 
             final SeekBar sb = new SeekBar(act);
             l.addView(sb);
@@ -212,16 +213,21 @@ public class ControlConfig implements Serializable
     public void startMonitor(Activity act, int pos)
     {
         actionMonitor = actions.get(pos);
+
+        // Don't set the headers!
+        if( actionMonitor.tag == null )
+            return;
+
         monitoring = true;
         gotInput = false;
-        if(listener != null)
-            listener.startMonitoring( actionMonitor );
+        if (listener != null)
+            listener.startMonitoring(actionMonitor);
     }
 
     private void stopMonitor()
     {
         monitoring = false;
-        if(listener != null)
+        if (listener != null)
             listener.finishedMonitoring();
     }
 
@@ -299,7 +305,7 @@ public class ControlConfig implements Serializable
                         allCentre = false;
                     }
                 }
-                if( allCentre )
+                if (allCentre)
                 {
                     stopMonitor();
                     return true;
@@ -362,87 +368,73 @@ public class ControlConfig implements Serializable
 
     public View getView(final Activity ctx, final int nbr)
     {
-        View view = ctx.getLayoutInflater().inflate(R.layout.controls_listview_item, null);
-        ImageView image = (ImageView) view.findViewById(R.id.imageView);
-        TextView name = (TextView) view.findViewById(R.id.name_textview);
-        TextView binding = (TextView) view.findViewById(R.id.binding_textview);
-        ImageView setting_image = (ImageView) view.findViewById(R.id.settings_imageview);
-
         ActionInput ai = actions.get(nbr);
 
-        if ((ai.actionType == ActionInput.ActionType.BUTTON) || (ai.actionType == ActionInput.ActionType.MENU))
+        if( ai.tag != null ) // If tag is null it's a header, otherwise normal item
         {
-            setting_image.setVisibility(View.GONE);
+            View view = ctx.getLayoutInflater().inflate(R.layout.controls_listview_item, null);
+            ImageView image = (ImageView) view.findViewById(R.id.imageView);
+            TextView name = (TextView) view.findViewById(R.id.name_textview);
+            TextView binding = (TextView) view.findViewById(R.id.binding_textview);
+            ImageView setting_image = (ImageView) view.findViewById(R.id.settings_imageview);
 
-            if ((ai.actionType == ActionInput.ActionType.MENU))
+
+            if ((ai.actionType == ActionInput.ActionType.BUTTON) || (ai.actionType == ActionInput.ActionType.MENU))
             {
-                name.setTextColor(0xFF00aeef); //BLUEY
-                image.setImageResource(R.drawable.gamepad_menu);
+                setting_image.setVisibility(View.GONE);
+
+                if ((ai.actionType == ActionInput.ActionType.MENU))
+                {
+                    name.setTextColor(0xFF00aeef); //BLUEY
+                    image.setImageResource(R.drawable.gamepad_menu);
+                } else
+                {
+                    name.setTextColor(0xFF02ad2a); //GREEN
+                    image.setImageResource(R.drawable.gamepad);
+                }
+            } else if (ai.actionType == ActionInput.ActionType.ANALOG)
+            {
+                binding.setText(MotionEvent.axisToString(ai.source));
+                setting_image.setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        showExtraOptions(ctx, nbr);
+                    }
+                });
+                name.setTextColor(0xFFf7941d); //ORANGE
+            }
+
+            if (ai.source == -1)
+            {
+                binding.setText("not set");
             } else
             {
-                name.setTextColor(0xFF02ad2a); //GREEN
-                image.setImageResource(R.drawable.gamepad);
+                if (ai.sourceType == ActionInput.SourceType.AXIS)
+                    binding.setText(MotionEvent.axisToString(ai.source));
+                else
+                    binding.setText(KeyEvent.keyCodeToString(ai.source));
             }
-        } else if (ai.actionType == ActionInput.ActionType.ANALOG)
-        {
-            binding.setText(MotionEvent.axisToString(ai.source));
-            setting_image.setOnClickListener(new OnClickListener()
+
+            if (actionMonitor != null && actionMonitor == ai && monitoring)
             {
-                @Override
-                public void onClick(View v)
-                {
-                    showExtraOptions(ctx, nbr);
-                }
-            });
-            name.setTextColor(0xFFf7941d); //ORANGE
+                view.setBackgroundResource(R.drawable.layout_sel_background);
+            } else
+            {
+                view.setBackgroundResource(0);
+            }
+
+            name.setText(ai.description);
+
+            return view;
         }
-
-        if (ai.source == -1)
+        else
         {
-            binding.setText("not set");
-        } else
-        {
-            if (ai.sourceType == ActionInput.SourceType.AXIS)
-                binding.setText(MotionEvent.axisToString(ai.source));
-            else
-                binding.setText(KeyEvent.keyCodeToString(ai.source));
+            View view = ctx.getLayoutInflater().inflate(R.layout.controls_listview_header_item, null);
+            TextView title = (TextView) view.findViewById(R.id.title_textview);
+            title.setText(ai.description);
+            return view;
         }
-
-        if (actionMonitor != null && actionMonitor == ai && monitoring)
-        {
-            view.setBackgroundResource(R.drawable.layout_sel_background);
-        } else
-        {
-            view.setBackgroundResource(0);
-        }
-
-        //view.setBackgroundResource(R.drawable.focusable);
-        /*
-		if (ai.actionType == ActionType.BUTTON)
-		{
-			image.setImageResource(R.drawable.gamepad);
-			if (ai.sourceType == ActionType.ANALOG)
-				binding.setText(MotionEvent.axisToString(ai.source));
-			else
-				binding.setText(KeyEvent.keyCodeToString(ai.source));
-
-			setting_image.setVisibility(View.GONE);
-		}
-		else //Analog
-		{
-			binding.setText(MotionEvent.axisToString(ai.source));
-			setting_image.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					showExtraOptions(ctx,nbr);
-				}
-			});
-			name.setTextColor(0xFFf7941d);
-		}
-*/
-        name.setText(ai.description);
-
-        return view;
     }
 }
