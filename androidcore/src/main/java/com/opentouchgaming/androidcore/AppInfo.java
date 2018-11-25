@@ -34,6 +34,8 @@ public class AppInfo
 
     public static boolean isAndroidTv;
 
+    public static GameEngine gameEngines[];
+
     public static GameEngine currentEngine;
 
     private static Context context;
@@ -48,6 +50,19 @@ public class AppInfo
         AppInfo.isAndroidTv = isAndroidTv;
     }
 
+    static public GameEngine getGameEngine( GameEngine.Engine type )
+    {
+        GameEngine ret = null;
+        for( GameEngine e : gameEngines )
+        {
+            if( e.engine == type )
+            {
+                ret = e;
+                break;
+            }
+        }
+        return ret;
+    }
     static public void setAppDirectory(String appDir)
     {
         AppSettings.setStringOption(context, "app_dir", appDir);
