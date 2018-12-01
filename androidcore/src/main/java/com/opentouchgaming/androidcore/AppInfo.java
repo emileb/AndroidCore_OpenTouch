@@ -30,6 +30,7 @@ public class AppInfo
     public static Apps app;
     public static String title;
     public static String internalFiles;
+    public static String cacheFiles;
     public static String directory;
 
     public static boolean isAndroidTv;
@@ -47,6 +48,8 @@ public class AppInfo
         AppInfo.title = title;
         AppInfo.directory = directory;
         AppInfo.internalFiles = ctx.getFilesDir().getAbsolutePath();
+        AppInfo.cacheFiles =  ctx.getCacheDir().toString();
+
         AppInfo.isAndroidTv = isAndroidTv;
     }
 
