@@ -92,6 +92,24 @@
 
         </LinearLayout>
 
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/capture_mouse_checkBox"
+            android:text="Use mouse"/>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/hide_game_menu_checkBox"
+            android:text="Disable Menu and Game touchscreen graphics"/>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/use_system_keyboard_checkBox"
+            android:text="Use Android keyboard"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

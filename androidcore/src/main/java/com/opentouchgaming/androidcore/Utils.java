@@ -108,12 +108,12 @@ public class Utils
 
     static public void copyFile(InputStream in, OutputStream out, ProgressDialog pb) throws IOException
     {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[1024 * 10];
         int read;
         while ((read = in.read(buffer)) != -1)
         {
             out.write(buffer, 0, read);
-            pb.setProgress(pb.getProgress() + 1024);
+            pb.setProgress(pb.getProgress() + read);
         }
         out.close();
     }
@@ -784,5 +784,25 @@ public class Utils
 
         String ret = nbrFiles + " files (" + Utils.humanReadableByteCount(totalSize, false) + ") : " + pakFiles;
         return ret;
+    }
+
+    static public  ArrayList<String> findFiles(File root, String name)
+    {
+        ArrayList<String> files = new ArrayList<>();
+        File[] list =root.listFiles();
+        if(list!=null)
+            for (File fil : list)
+            {
+                if (fil.isDirectory())
+                {
+                    findFiles(fil,name);
+                }
+                else if (name.equalsIgnoreCase(fil.getName()))
+                {
+                    files.add(fil.getAbsolutePath());
+                }
+            }
+
+            return files;
     }
 }

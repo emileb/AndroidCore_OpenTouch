@@ -213,6 +213,45 @@ public class OptionsDialog
         int selected = AppSettings.getIntOption(act, "res_div", 1);
         resSpinnder.setSelection(selected - 1);
 
+        CheckBox useMouse = dialog.findViewById(R.id.capture_mouse_checkBox);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            useMouse.setChecked(AppSettings.getBoolOption(act, "use_mouse", true));
+            useMouse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+                {
+                    AppSettings.setBoolOption(act, "use_mouse", isChecked);
+                }
+            });
+        }
+        else
+        {
+            useMouse.setVisibility(View.GONE);
+        }
+
+        CheckBox hideGameMenu = dialog.findViewById(R.id.hide_game_menu_checkBox);
+        hideGameMenu.setChecked(AppSettings.getBoolOption(act,"hide_game_menu_touch", AppInfo.isAndroidTv));
+        hideGameMenu.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                AppSettings.setBoolOption(act,"hide_game_menu_touch", isChecked);
+            }
+        });
+
+        CheckBox useSystemKeyboard = dialog.findViewById(R.id.use_system_keyboard_checkBox);
+        useSystemKeyboard.setChecked(AppSettings.getBoolOption(act,"use_system_keyboard", false));
+        useSystemKeyboard.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                AppSettings.setBoolOption(act,"use_system_keyboard", isChecked);
+            }
+        });
 
         if (extraOptions != null)
         {

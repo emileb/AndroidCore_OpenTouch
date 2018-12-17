@@ -242,7 +242,7 @@ public class SDLActivity extends Activity implements Handler.Callback
         // Set up the surface
         mSurface = new SDLSurface(getApplication(), resDiv);
 
-        useMouse = getIntent().getBooleanExtra("use_mouse", false);
+        useMouse =   AppSettings.getBoolOption(this, "use_mouse", true);
 
         // fullscreen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
