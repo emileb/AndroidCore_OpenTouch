@@ -15,6 +15,7 @@ public interface EngineOptionsInterface
 
     void showDialog(final Activity act, GameEngine engine, int version,final String root);
     String getArgs(int version);
+    int getGLESVersion(int version);
     boolean hasMultiplayer();
     void launchMultiplayer(Activity ac,GameEngine engine, int version, String mainArgs, MultiplayerCallback callback );
 }

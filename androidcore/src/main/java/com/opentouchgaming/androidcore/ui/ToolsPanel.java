@@ -54,7 +54,7 @@ public class ToolsPanel
         {  // Sets the size of panel so the buttons are square
             Configuration configuration = context.getResources().getConfiguration();
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) leftPanel.getLayoutParams();
-            lp.width = Utils.dpToPx(context.getResources(), configuration.screenHeightDp / buttons.length);
+            lp.width = (int)(Utils.dpToPx(context.getResources(), configuration.screenHeightDp / buttons.length) * 1.5);
             leftPanel.setLayoutParams(lp);
             slideAmmount = leftPanel.getLayoutParams().width;
         }
@@ -90,7 +90,7 @@ public class ToolsPanel
             params.width = LinearLayout.LayoutParams.MATCH_PARENT;
             params.height = 0;
 
-            int margin = 5;
+            int margin = 3;
             params.leftMargin = Utils.dpToPx(context.getResources(), margin);
             params.rightMargin = Utils.dpToPx(context.getResources(), margin);
             params.topMargin = Utils.dpToPx(context.getResources(), margin);

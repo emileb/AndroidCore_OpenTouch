@@ -20,7 +20,7 @@ public class LogViewDialog
 
     Activity activity;
 
-    public LogViewDialog(final Activity act, String file)
+    public LogViewDialog(final Activity act, String file, String name)
     {
         activity = act;
 
@@ -30,7 +30,7 @@ public class LogViewDialog
 
         dialog.setContentView(R.layout.dialog_log_view);
 
-        dialog.setTitle("Game log");
+        dialog.setTitle("Game log for: " +  name);
 
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);

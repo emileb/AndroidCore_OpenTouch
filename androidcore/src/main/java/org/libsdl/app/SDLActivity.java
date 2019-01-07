@@ -1361,6 +1361,9 @@ class SDLMain implements Runnable
         if (TouchSettings.useSystemKeyboard)
             options |= TouchSettings.GAME_OPTION_USE_SYSTEM_KEYBOARD;
 
+        if( SDLActivity.mSingleton.getIntent().getBooleanExtra("use_gles2", false))
+            options |= TouchSettings.GAME_OPTION_GLES2;
+
         int gameType = SDLActivity.mSingleton.getIntent().getIntExtra("game_type", 0);
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);

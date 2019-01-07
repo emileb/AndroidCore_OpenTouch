@@ -118,7 +118,7 @@ public class Utils
         out.close();
     }
 
-    static public void showDownloadDialog(final Activity act, String key, String title, final String directory, final String file, final int size)
+    static public void showDownloadDialog(final Activity act, String key, String title, final String directory, final String file, final int size, final ServerAPI.Callback cb)
     {
         boolean ok = LicenseCheck.checkLicenseFile(act, key);
         if (!ok)
@@ -134,7 +134,7 @@ public class Utils
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        ServerAPI.downloadFile(act, file, directory, size);
+                        ServerAPI.downloadFile(act, file, directory, size, cb);
                     }
                 });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
@@ -578,11 +578,11 @@ public class Utils
                             emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             //Uri uri = Uri.parse("file://" + filename);
                             ArrayList<Uri> uris = new ArrayList<Uri>();
-                            Uri uri = FileProvider.getUriForFile(activity, appId + ".provider",new File(filename));
+                            Uri uri = FileProvider.getUriForFile(activity, appId + ".provider", new File(filename));
                             uris.add(uri);
-                            if( logFile != null )
+                            if (logFile != null)
                             {
-                                uri = FileProvider.getUriForFile(activity, appId + ".provider",new File(logFile));
+                                uri = FileProvider.getUriForFile(activity, appId + ".provider", new File(logFile));
                                 uris.add(uri);
                             }
                             emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
@@ -786,23 +786,22 @@ public class Utils
         return ret;
     }
 
-    static public  ArrayList<String> findFiles(File root, String name)
+    static public ArrayList<String> findFiles(File root, String name, ArrayList<String> files)
     {
-        ArrayList<String> files = new ArrayList<>();
-        File[] list =root.listFiles();
-        if(list!=null)
+        File[] list = root.listFiles();
+        if (list != null)
+        {
             for (File fil : list)
             {
                 if (fil.isDirectory())
                 {
-                    findFiles(fil,name);
-                }
-                else if (name.equalsIgnoreCase(fil.getName()))
+                    findFiles(fil, name,  files);
+                } else if (name.equalsIgnoreCase(fil.getName()))
                 {
                     files.add(fil.getAbsolutePath());
                 }
             }
-
-            return files;
+        }
+        return files;
     }
 }

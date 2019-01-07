@@ -38,13 +38,21 @@ public class ServerAPI
         log = new DebugLog(DebugLog.Module.CORE, "ServerAPI");
     }
 
+    public interface Callback {
+        public void callback( boolean complete );
+    }
+
     static Activity ctx;
     static int size;
 
-    public static void downloadFile(Activity ctx, String file, String path, int size)
+    static Callback callback;
+
+    public static void downloadFile(Activity ctx, String file, String path, int size, Callback cb)
     {
         ServerAPI.size = size;
         ServerAPI.ctx = ctx;
+        ServerAPI.callback = cb;
+
         new DLFileThread().execute(file, path);
     }
 
@@ -442,6 +450,12 @@ public class ServerAPI
                         });
 
                 builder.show();
+            }
+
+            if(  ServerAPI.callback!= null )
+            {
+                ServerAPI.callback.callback(errorstring != null);
+                ServerAPI.callback = null;
             }
         }
     }
