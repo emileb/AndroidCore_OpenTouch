@@ -112,7 +112,6 @@ public class NdkLicenseListener extends android.os.Binder
             }
         }
 
-
         return true;
     }
 }

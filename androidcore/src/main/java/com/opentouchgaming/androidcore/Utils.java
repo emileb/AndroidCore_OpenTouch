@@ -546,7 +546,7 @@ public class Utils
         return sb;
     }
 
-    static public void SendDebugEmail(final Activity activity, final String appId, final String logFile)
+    static public void SendDebugEmail(final Activity activity, final String emailAddress, final String appId, final String logFile)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage("Are you sure you want to email the debug log?\nIf yes, please give good information about the problem.\n")
@@ -572,7 +572,7 @@ public class Utils
                             emailIntent.setType("plain/text");
 
                             emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, AppInfo.app.toString() + "_" + GD.version + " Logging file");
-                            emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"support@opentouchgaming.com"});
+                            emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{emailAddress});
                             emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Enter description of issue:  ");
 
                             emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
