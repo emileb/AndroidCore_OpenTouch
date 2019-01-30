@@ -767,10 +767,15 @@ public class Utils
 
         String pakFiles = "[ ";
         int nbrFiles = 0;
+        int nbrDirs = 0;
         int totalSize = 0;
         for (File file : files)
         {
-            if (file.getName().toLowerCase().endsWith(ext))
+            if( file.isDirectory())
+            {
+                nbrDirs++;
+            }
+            else if (ext == null || file.getName().toLowerCase().endsWith(ext))
             {
                 if (nbrFiles < maxFiles)
                 {
@@ -782,7 +787,10 @@ public class Utils
         }
         pakFiles += "]";
 
-        String ret = nbrFiles + " files (" + Utils.humanReadableByteCount(totalSize, false) + ") : " + pakFiles;
+        String ret = nbrFiles + " files";
+        if( nbrDirs != 0 )
+            ret += " and " + nbrDirs + " folders";
+        ret += " (" + Utils.humanReadableByteCount(totalSize, false) + ")";
         return ret;
     }
 

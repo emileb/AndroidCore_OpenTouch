@@ -2,6 +2,7 @@ package com.opentouchgaming.androidcore;
 
 import android.app.Activity;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.opentouchgaming.androidcore.controls.ActionInputDefinition;
 
@@ -71,7 +72,7 @@ public class GameEngine
     final public ActionInputDefinition gamepadDefiniton;
     final public String[][] loadLibs;
 
-    public ImageButton imageButton;
+    public ImageView imageButton;
     public ImageButton imageButtonCfg;
 
     final Class engineOptionsClass;

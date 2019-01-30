@@ -100,7 +100,7 @@ public class EnginesPanel
             groupLayout.setLayoutParams(params);
 
             // button.setLayoutParams(params);
-            ImageButton button = new ImageButton(context);
+            ImageView button = new ImageView(context);
             button.setTag(new Integer(n)); // Used for the click listener callback
             button.setImageResource(gameEngines[n].iconRes);
             button.setScaleType(ImageView.ScaleType.FIT_CENTER);
