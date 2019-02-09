@@ -52,6 +52,7 @@ import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.AssetFileAccess;
 import com.opentouchgaming.androidcore.GamepadActivity;
+import com.opentouchgaming.androidcore.SubGame;
 import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.ControlConfig;
 import com.opentouchgaming.androidcore.controls.ControlInterpreter;
@@ -65,6 +66,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import static android.content.Context.SENSOR_SERVICE;
+import static android.media.AudioTrack.PLAYSTATE_PAUSED;
+import static android.media.AudioTrack.PLAYSTATE_PLAYING;
 
 /**
  * SDL Activity
@@ -144,6 +147,7 @@ public class SDLActivity extends Activity implements Handler.Callback
 
     public static void initialize()
     {
+        Log.d("SDLActivity","initialize");
         // The static nature of the singleton and Android quirkyness force us to initialize everything here
         // Otherwise, when exiting the app and returning to it, these variables *keep* their pre exit values
         mSingleton = null;
@@ -413,6 +417,15 @@ public class SDLActivity extends Activity implements Handler.Callback
             SDLActivity.nativePause();
             mSurface.handlePause();
         }
+
+        if (mAudioTrack != null)
+        {
+            if( mAudioTrack.getPlayState() == PLAYSTATE_PLAYING)
+            {
+                Log.d("mAudioTrack","Pausing");
+                mAudioTrack.pause();
+            }
+        }
     }
 
     /**
@@ -427,6 +440,14 @@ public class SDLActivity extends Activity implements Handler.Callback
             SDLActivity.mIsPaused = false;
             SDLActivity.nativeResume();
             mSurface.handleResume();
+        }
+        if (mAudioTrack != null)
+        {
+            if( mAudioTrack.getPlayState() == PLAYSTATE_PAUSED)
+            {
+                Log.d("mAudioTrack","Resuming");
+                mAudioTrack.play();
+            }
         }
     }
 
@@ -934,6 +955,7 @@ public class SDLActivity extends Activity implements Handler.Callback
     {
         if (mAudioTrack != null)
         {
+            Log.d("mAudioTrack","Closing");
             mAudioTrack.stop();
             mAudioTrack.release();
             mAudioTrack = null;
