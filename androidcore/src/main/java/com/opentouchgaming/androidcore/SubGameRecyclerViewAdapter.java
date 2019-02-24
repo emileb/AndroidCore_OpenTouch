@@ -39,10 +39,10 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         holder.mIdView.setText(holder.mItem.title);
         holder.mDetail1.setText(holder.mItem.detail1);
         holder.mDetail2.setText(holder.mItem.detail2);
-        if( holder.mItem.imagePng != null )
+        if( holder.mItem.getImagePng() != null )
         {
             holder.mImage.setScaleType(ImageView.ScaleType.FIT_XY);
-            holder.mImage.setImageURI(Uri.fromFile( new File(holder.mItem.imagePng) ));
+            holder.mImage.setImageURI(Uri.fromFile( new File(holder.mItem.getImagePng()) ));
         }
         else
             holder.mImage.setImageResource(holder.mItem.image);
