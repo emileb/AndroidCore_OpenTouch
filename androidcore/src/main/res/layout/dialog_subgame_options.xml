@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:layout_margin="10dp"
@@ -9,11 +8,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title:"/>
@@ -22,8 +20,36 @@
             android:id="@+id/subgame_title_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name"            />
+            android:text="Name"/>
     </LinearLayout>
 
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/image_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Image:   "/>
+
+        <TextView
+            android:id="@+id/subgame_image_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/image_textview"
+            android:layout_toLeftOf="@id/subgame_image_choose_button"
+            android:text=""/>
+
+        <Button
+            android:id="@+id/subgame_image_choose_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Choose"/>
+
+
+    </RelativeLayout>
 </LinearLayout>

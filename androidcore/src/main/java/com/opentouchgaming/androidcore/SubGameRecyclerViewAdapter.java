@@ -1,6 +1,5 @@
 package com.opentouchgaming.androidcore;
 
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 
 
@@ -41,8 +43,13 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         holder.mDetail2.setText(holder.mItem.detail2);
         if( holder.mItem.getImagePng() != null )
         {
-            holder.mImage.setScaleType(ImageView.ScaleType.FIT_XY);
-            holder.mImage.setImageURI(Uri.fromFile( new File(holder.mItem.getImagePng()) ));
+            Glide.with(holder.mImage)
+                    .load(holder.mItem.getImagePng())
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
+                    .into(holder.mImage);
+
+          //  holder.mImage.setScaleType(ImageView.ScaleType.FIT_XY);
+           // holder.mImage.setImageURI(Uri.fromFile( new File(holder.mItem.getImagePng()) ));
         }
         else
             holder.mImage.setImageResource(holder.mItem.image);
