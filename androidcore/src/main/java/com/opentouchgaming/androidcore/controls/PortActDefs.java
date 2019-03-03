@@ -70,6 +70,8 @@ public class PortActDefs
     public static final int PORT_MALICE_RELOAD = 60;
     public static final int PORT_MALICE_CYCLE = 61;
 
+    //SMD for Q2
+    public static final int  PORT_SMD_USE  =  62;
 
     //JK2
     //public static final int   PORT_ACT_FORCE_LIGHTNING = 60;
