@@ -52,12 +52,12 @@ import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.AssetFileAccess;
 import com.opentouchgaming.androidcore.GamepadActivity;
-import com.opentouchgaming.androidcore.SubGame;
 import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.ControlConfig;
 import com.opentouchgaming.androidcore.controls.ControlInterpreter;
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 import com.opentouchgaming.androidcore.ui.GyroDialog;
+import com.opentouchgaming.saffal.UtilsSAF;
 
 import java.io.File;
 import java.io.IOException;
@@ -180,6 +180,9 @@ public class SDLActivity extends Activity implements Handler.Callback
         SDLActivity.initialize();
         // So we can call stuff from static callbacks
         mSingleton = this;
+
+        //UtilsSAF.setContext(getApplicationContext());
+        //UtilsSAF.loadTreeRoot(getApplicationContext());
 
         // Load shared libraries
         String errorMsgBrokenLib = "";

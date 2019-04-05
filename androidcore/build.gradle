@@ -41,6 +41,9 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.8.0") {
         exclude group: "com.android.support"
     }
+
+    implementation project(path: ':saffal')
+
     annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
     implementation project(path: ':changeloglib')
 }
