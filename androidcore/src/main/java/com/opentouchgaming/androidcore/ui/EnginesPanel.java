@@ -1,22 +1,20 @@
 package com.opentouchgaming.androidcore.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.StateListDrawable;
-import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.GameEngine;
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.Utils;
+
+import java.util.ArrayList;
 
 /**
  * Created by Emile on 25/07/2017.
@@ -24,9 +22,17 @@ import com.opentouchgaming.androidcore.Utils;
 
 public class EnginesPanel
 {
+    static DebugLog log;
+
+    static
+    {
+        log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "EnginesPanel");
+    }
+
     public interface Listener
     {
         void engineSelected(GameEngine engine);
+
         void engineConfig(GameEngine engine);
 
         void enginePanelStateChange(boolean open);
@@ -40,32 +46,50 @@ public class EnginesPanel
 
     EnginesPanel.Listener listener;
 
-    ImageButton leftPanelButton;
+    private class EngineGroup
+    {
+        ArrayList<GameEngine> engines = new ArrayList<>();
+        ImageButton button;
+    }
+
+    ArrayList<EngineGroup> engineGroups = new ArrayList<>();
 
     public EnginesPanel(Context context, View topView, GameEngine[] engines, boolean showCircles, final Listener listener)
     {
         this.listener = listener;
-
         gameEngines = engines;
 
-        int leftPanelSlideAmmount;
+        View         leftPanelTopView = topView.findViewById(R.id.relative_top_left_panel);
+        LinearLayout leftPanelLayout  = topView.findViewById(R.id.linear_left_hidden_panel);
+        ImageButton  leftPanelButton  = topView.findViewById(R.id.imagebutton_entry_open_left);
 
-        View leftPanel = topView.findViewById(R.id.linear_left_hidden_panel);
-        {  // Sets the size of panel so the buttons are square
-            Configuration configuration = context.getResources().getConfiguration();
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) leftPanel.getLayoutParams();
-            lp.width = (int)(Utils.dpToPx(context.getResources(), configuration.screenHeightDp / gameEngines.length) * 1.5);
-            leftPanel.setLayoutParams(lp);
-            leftPanelSlideAmmount = leftPanel.getLayoutParams().width;
+
+        // Collect the engines into the UI groups
+        EngineGroup group = null;
+        int uiGroup = -1;
+        for (int n = 0; n < gameEngines.length; n++)
+        {
+            // New (or first ui group)
+            if( uiGroup != gameEngines[n].uiGroup )
+            {
+                group = new EngineGroup();
+                engineGroups.add(group);
+                uiGroup = gameEngines[n].uiGroup;
+            }
+
+            group.engines.add(gameEngines[n]);
         }
 
-        View leftPanelTopView;
-        leftPanelTopView = topView.findViewById(R.id.relative_top_left_panel);
-        leftSlidePanel = new SlidePanel(leftPanelTopView, SlidePanel.SlideSide.LEFT, leftPanelSlideAmmount, 300);
-
+        // Find largest number of engines in a group
+        int largestGroup = 1;
+        for( EngineGroup g : engineGroups )
+        {
+            log.log(DebugLog.Level.D,"Group has " + g.engines.size());
+            if( g.engines.size() > largestGroup)
+                largestGroup =  g.engines.size();
+        }
 
         // Button to open panel
-        leftPanelButton = topView.findViewById(R.id.imagebutton_entry_open_left);
         leftPanelButton.setFocusable(false);
         leftPanelButton.setOnClickListener(new View.OnClickListener()
         {
@@ -80,101 +104,104 @@ public class EnginesPanel
             }
         });
 
-        LinearLayout leftPanelLayout = topView.findViewById(R.id.linear_left_hidden_panel);
 
-        for (int n = 0; n < gameEngines.length; n++)
+        int leftPanelSlideAmmount;
+
+        // Get screen height in pixels
+        Configuration configuration = context.getResources().getConfiguration();
+        int screenHeightPx = Utils.dpToPx(context.getResources(), configuration.screenHeightDp);
+        //screenHeightPx = leftPanelTopView.getLayoutParams().height;
+
+        // Calculate square button size
+        // Give equal size for each ui group
+        int buttonSize = screenHeightPx / engineGroups.size();
+
+        // Set the layout width, equal to the button size x largest group
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)leftPanelLayout.getLayoutParams();
+        lp.width = buttonSize * largestGroup;
+        leftPanelLayout.setLayoutParams(lp);
+        leftPanelSlideAmmount = lp.width;
+
+
+        leftSlidePanel = new SlidePanel(leftPanelTopView, SlidePanel.SlideSide.LEFT, leftPanelSlideAmmount, 300);
+
+
+        for (int g = 0; g < engineGroups.size(); g++)
         {
+            log.log(DebugLog.Level.D,"g = " + g +  " engineGroups.size() = " + engineGroups.size());
+            group = engineGroups.get(g);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
-            params.weight = 1;
-            params.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            params.height = 0;
-
+            // Create new ui group layout
             int margin = 1;
-            params.leftMargin = Utils.dpToPx(context.getResources(), margin);
-            params.rightMargin = Utils.dpToPx(context.getResources(), margin);
-            params.topMargin = Utils.dpToPx(context.getResources(), margin);
-            params.bottomMargin = Utils.dpToPx(context.getResources(), margin);
-
             LinearLayout groupLayout = new LinearLayout(context);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, buttonSize);
+            params.setMargins(margin,margin,margin,margin);
             groupLayout.setLayoutParams(params);
 
-            // button.setLayoutParams(params);
-            ImageView button = new ImageView(context);
-            button.setTag(new Integer(n)); // Used for the click listener callback
-            button.setImageResource(gameEngines[n].iconRes);
-            button.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            LinearLayout.LayoutParams paramsB = new LinearLayout.LayoutParams(0, 0);
-            paramsB.weight = 2f;
-            paramsB.width = 0;
-            paramsB.height = LinearLayout.LayoutParams.MATCH_PARENT;
-            paramsB.leftMargin =  paramsB.rightMargin = paramsB.topMargin =  paramsB.bottomMargin =  0;
-
-            button.setLayoutParams(paramsB);
-            //button.setBackgroundResource(R.drawable.focusable);
-            button.setFocusableInTouchMode(true);
-
-            // This is all done so we can change the background color of the drawable
-            StateListDrawable states = new StateListDrawable();
-            states.addState(new int[] {android.R.attr.state_focused,android.R.attr.state_activated},
-                    context.getResources().getDrawable(R.drawable.imagebutton_focus_selected));
-            states.addState(new int[] {android.R.attr.state_activated},
-                    context.getResources().getDrawable(R.drawable.imagebutton_selected));
-            states.addState(new int[] {android.R.attr.state_focused},
-                    context.getResources().getDrawable(R.drawable.imagebutton_focus));
-
-
-            if( showCircles )
+            // Add buttons to the group
+            for( int e = 0; e < group.engines.size(); e++ )
             {
-                Drawable shape = context.getResources().getDrawable(R.drawable.engine_button_background);
-                shape.setColorFilter(0x7F000000 | gameEngines[n].color, PorterDuff.Mode.SRC_ATOP);
-                states.addState(new int[] { }, shape);
+                log.log(DebugLog.Level.D,"e = " + e);
+                GameEngine engine = group.engines.get(e);
+
+                // MAIN BUTTON
+                AppCompatImageView button = new AppCompatImageView(context);
+                params = new LinearLayout.LayoutParams(buttonSize, buttonSize);
+                button.setTag(engine); // Used for the click listener callback
+                button.setImageResource(engine.iconRes);
+                button.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                button.setBackgroundResource(R.drawable.focusable);
+                button.setFocusableInTouchMode(true);
+
+                button.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        GameEngine engine = (GameEngine) view.getTag();
+                        selectEngine(engine);
+                        close();
+                    }
+                });
+
+
+                button.setLayoutParams(params);
+                groupLayout.addView(button);
+
+                // CFG BUTTON
+                int buttonCfgSize = buttonSize / 3;
+                AppCompatImageView buttonCfg = new AppCompatImageView(context);
+                params = new LinearLayout.LayoutParams(buttonCfgSize, buttonCfgSize);
+                // Move to bottom right
+                params.setMargins( -buttonCfgSize, buttonSize - buttonCfgSize, 0 ,0 );
+                buttonCfg.setTag(engine); // Used for the click listener callback
+                buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                buttonCfg.setBackgroundResource(R.drawable.focusable);
+                buttonCfg.setFocusableInTouchMode(true);
+
+                if (engine.engineOptions != null) // Only show if available
+                    buttonCfg.setImageResource(R.drawable.ic_settings_black_24dp);
+
+                buttonCfg.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        GameEngine engine = (GameEngine) view.getTag();
+                        listener.engineConfig(engine);
+                    }
+                });
+
+
+                buttonCfg.setLayoutParams(params);
+                groupLayout.addView(buttonCfg);
+
+
+                engine.imageButton = button;
+                engine.imageButtonCfg = buttonCfg;
             }
 
-            button.setBackgroundDrawable(states);
-
-            AppCompatImageButton buttonCfg = new AppCompatImageButton(context);
-            buttonCfg.setTag(new Integer(n)); // Used for the click listener callback
-            if( gameEngines[n].engineOptions != null) // Only show if available
-                buttonCfg.setImageResource(R.drawable.ic_build_black_24dp);
-            //buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            LinearLayout.LayoutParams paramsC = new LinearLayout.LayoutParams(0, 0);
-            paramsC.weight = 1;
-            paramsC.width = 0;
-            paramsC.height = LinearLayout.LayoutParams.MATCH_PARENT;
-            buttonCfg.setLayoutParams(paramsC);
-            buttonCfg.setBackgroundResource(R.drawable.focusable);
-            buttonCfg.setFocusableInTouchMode(true);
-
-            groupLayout.addView(button);
-            groupLayout.addView(buttonCfg);
             leftPanelLayout.addView(groupLayout);
-
-
-            button.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    int selected = (Integer) view.getTag();
-                    selectEngine(gameEngines[selected]);
-                    close();
-                }
-            });
-
-
-            buttonCfg.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    int selected = (Integer) view.getTag();
-                    listener.engineConfig(gameEngines[selected]);
-                }
-            });
-
-            gameEngines[n].imageButton = button;
-            gameEngines[n].imageButtonCfg = buttonCfg;
         }
         updateFocus();
     }
@@ -204,43 +231,6 @@ public class EnginesPanel
     public boolean isOpen()
     {
         return leftSlidePanel.isOpen();
-    }
-
-
-    private void fadeHandleButton(boolean out)
-    {
-        if (out)
-        {
-            leftPanelButton.animate()
-                    .alpha(0.0f)
-                    .setDuration(300)
-                    .setListener(new AnimatorListenerAdapter()
-                    {
-                        @Override
-                        public void onAnimationEnd(Animator animation)
-                        {
-                            super.onAnimationEnd(animation);
-                            leftPanelButton.clearAnimation();
-                            leftPanelButton.setVisibility(View.GONE);
-                        }
-                    });
-        } else
-        {
-            leftPanelButton.setVisibility(View.VISIBLE);
-            leftPanelButton.animate()
-                    .alpha(1.0f)
-                    .setDuration(300)
-                    .setListener(new AnimatorListenerAdapter()
-                    {
-                        @Override
-                        public void onAnimationEnd(Animator animation)
-                        {
-                            super.onAnimationEnd(animation);
-                            leftPanelButton.clearAnimation();
-
-                        }
-                    });
-        }
     }
 
     public void close()
@@ -277,14 +267,16 @@ public class EnginesPanel
             if (engine == gameEngines[n]) // Set selected image
             {
                 button.imageButton.setActivated(true);
+                button.imageButtonCfg.setVisibility(View.VISIBLE);
+
             } else
             {
                 button.imageButton.setActivated(false);
+                button.imageButtonCfg.setVisibility(View.INVISIBLE);
             }
         }
 
         currentEngine = engine;
         listener.engineSelected(currentEngine);
-        //  wadsFragment.selectEngine(currentEngine);
     }
 }

@@ -1,7 +1,6 @@
 package com.opentouchgaming.androidcore;
 
 import android.app.Activity;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.opentouchgaming.androidcore.controls.ActionInputDefinition;
@@ -30,12 +29,13 @@ public class GameEngine
         HEXEN2,
     }
 
-    public GameEngine(Engine engine, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)
+    public GameEngine(Engine engine, int uiGroup, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)
     {
         this.title = title;
         this.name = name;
         this.directory = directory;
         this.engine = engine;
+        this.uiGroup = uiGroup;
         this.iconRes = iconRes;
         this.color = color;
         this.loadLibs = loadLibs;
@@ -73,8 +73,10 @@ public class GameEngine
     final public ActionInputDefinition gamepadDefiniton;
     final public String[][] loadLibs;
 
+    final public int uiGroup;
+
     public ImageView imageButton;
-    public ImageButton imageButtonCfg;
+    public ImageView imageButtonCfg;
 
     final Class engineOptionsClass;
 

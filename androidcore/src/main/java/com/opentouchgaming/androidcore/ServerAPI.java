@@ -144,7 +144,7 @@ public class ServerAPI
 
                 String apk_hash = PackageVerif.bytesToString(PackageVerif.packageSig(ctx).sig);
 
-                urlString = "http://opentouchgaming.com/api/download_v3.php?" + ""
+                urlString = "http://opentouchgaming.com/api/download_v4.php?" + ""
                         + "ldata=" + URLEncoder.encode(lic_data, "UTF-8")
                         + "&lsig=" + URLEncoder.encode(lic_sig, "UTF-8")
                         + "&apkhash=" + URLEncoder.encode(apk_hash, "UTF-8")
