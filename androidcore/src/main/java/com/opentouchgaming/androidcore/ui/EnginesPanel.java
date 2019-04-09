@@ -128,13 +128,14 @@ public class EnginesPanel
 
         for (int g = 0; g < engineGroups.size(); g++)
         {
-            log.log(DebugLog.Level.D,"g = " + g +  " engineGroups.size() = " + engineGroups.size());
+            //log.log(DebugLog.Level.D,"g = " + g +  " engineGroups.size() = " + engineGroups.size());
             group = engineGroups.get(g);
 
             // Create new ui group layout
             int margin = 1;
             LinearLayout groupLayout = new LinearLayout(context);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, buttonSize);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
+            params.weight = 1;
             params.setMargins(margin,margin,margin,margin);
             groupLayout.setLayoutParams(params);
 
