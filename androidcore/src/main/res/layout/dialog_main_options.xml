@@ -93,22 +93,28 @@
         </LinearLayout>
 
         <CheckBox
+            android:id="@+id/capture_mouse_checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/capture_mouse_checkBox"
             android:text="Use mouse"/>
 
         <CheckBox
+            android:id="@+id/hide_game_menu_checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/hide_game_menu_checkBox"
             android:text="Disable Menu and Game touchscreen graphics"/>
 
         <CheckBox
+            android:id="@+id/use_system_keyboard_checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/use_system_keyboard_checkBox"
             android:text="Use Android keyboard"/>
+
+        <CheckBox
+            android:id="@+id/group_similar_engines_checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Group similar engines on left panel (Restart needed)"/>
 
         <View
             android:layout_width="match_parent"

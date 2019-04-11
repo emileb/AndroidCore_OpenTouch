@@ -46,6 +46,8 @@ public class EnginesPanel
 
     EnginesPanel.Listener listener;
 
+    boolean useGroups;
+
     private class EngineGroup
     {
         ArrayList<GameEngine> engines = new ArrayList<>();
@@ -54,9 +56,11 @@ public class EnginesPanel
 
     ArrayList<EngineGroup> engineGroups = new ArrayList<>();
 
-    public EnginesPanel(Context context, View topView, GameEngine[] engines, boolean showCircles, final Listener listener)
+    public EnginesPanel(Context context, View topView, GameEngine[] engines, boolean useGroups, final Listener listener)
     {
         this.listener = listener;
+        this.useGroups = useGroups;
+
         gameEngines = engines;
 
         View         leftPanelTopView = topView.findViewById(R.id.relative_top_left_panel);
@@ -69,12 +73,20 @@ public class EnginesPanel
         int uiGroup = -1;
         for (int n = 0; n < gameEngines.length; n++)
         {
-            // New (or first ui group)
-            if( uiGroup != gameEngines[n].uiGroup )
+            if( useGroups )
+            {
+                // New (or first ui group)
+                if (uiGroup != gameEngines[n].uiGroup)
+                {
+                    group = new EngineGroup();
+                    engineGroups.add(group);
+                    uiGroup = gameEngines[n].uiGroup;
+                }
+            }
+            else
             {
                 group = new EngineGroup();
                 engineGroups.add(group);
-                uiGroup = gameEngines[n].uiGroup;
             }
 
             group.engines.add(gameEngines[n]);
@@ -115,10 +127,21 @@ public class EnginesPanel
         // Calculate square button size
         // Give equal size for each ui group
         int buttonSize = screenHeightPx / engineGroups.size();
-
+        int buttonCfgSize = buttonSize / 3;
+        int totalWidth ;
+        if( useGroups )
+        {
+            buttonCfgSize = buttonSize / 3;
+            totalWidth = buttonSize * largestGroup;
+        }
+        else
+        {
+            buttonCfgSize = buttonSize / 2;
+            totalWidth = buttonSize + buttonCfgSize;
+        }
         // Set the layout width, equal to the button size x largest group
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)leftPanelLayout.getLayoutParams();
-        lp.width = buttonSize * largestGroup;
+        lp.width = totalWidth;
         leftPanelLayout.setLayoutParams(lp);
         leftPanelSlideAmmount = lp.width;
 
@@ -170,11 +193,19 @@ public class EnginesPanel
                 groupLayout.addView(button);
 
                 // CFG BUTTON
-                int buttonCfgSize = buttonSize / 3;
-                AppCompatImageView buttonCfg = new AppCompatImageView(context);
+                AppCompatImageView buttonCfg;
+                buttonCfg = new AppCompatImageView(context);
                 params = new LinearLayout.LayoutParams(buttonCfgSize, buttonCfgSize);
-                // Move to bottom right
-                params.setMargins( -buttonCfgSize, buttonSize - buttonCfgSize, 0 ,0 );
+                if( useGroups )
+                {
+                    // Move to bottom right
+                    params.setMargins( -buttonCfgSize, buttonSize - buttonCfgSize, 0 ,0 );
+                }
+                else
+                {
+                    // Put next to the button
+                    params.setMargins( 0, (buttonCfgSize / 2), 0 ,0 );
+                }
                 buttonCfg.setTag(engine); // Used for the click listener callback
                 buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 buttonCfg.setBackgroundResource(R.drawable.focusable);
@@ -268,12 +299,14 @@ public class EnginesPanel
             if (engine == gameEngines[n]) // Set selected image
             {
                 button.imageButton.setActivated(true);
-                button.imageButtonCfg.setVisibility(View.VISIBLE);
+                if(useGroups)
+                    button.imageButtonCfg.setVisibility(View.VISIBLE);
 
             } else
             {
                 button.imageButton.setActivated(false);
-                button.imageButtonCfg.setVisibility(View.INVISIBLE);
+                if(useGroups)
+                    button.imageButtonCfg.setVisibility(View.INVISIBLE);
             }
         }
 

@@ -253,6 +253,17 @@ public class OptionsDialog
             }
         });
 
+        CheckBox groupSimilar = dialog.findViewById(R.id.group_similar_engines_checkBox);
+        groupSimilar.setChecked(AppSettings.getBoolOption(act,"group_similar_engines", false));
+        groupSimilar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                AppSettings.setBoolOption(act,"group_similar_engines", isChecked);
+            }
+        });
+
         if (extraOptions != null)
         {
             LinearLayout layout = dialog.findViewById(R.id.top_linearlayout);
