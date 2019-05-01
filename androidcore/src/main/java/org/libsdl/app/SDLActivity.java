@@ -127,6 +127,7 @@ public class SDLActivity extends Activity implements Handler.Callback
     // Load the .so
     public void loadLibraries()
     {
+        System.loadLibrary("core_shared");
         for (String lib : getLibraries())
         {
             System.loadLibrary(lib);
