@@ -106,6 +106,11 @@ public class AppInfo
         return appDir;
     }
 
+    static public String getGamepadDirectory()
+    {
+        return AppInfo.internalFiles + "/gamepad/";
+    }
+
     // JNI
     static public Context getContext()
     {

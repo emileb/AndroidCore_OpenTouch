@@ -3,7 +3,7 @@ package com.opentouchgaming.androidcore.controls;
 import java.io.Serializable;
 
 
-public class ActionInput implements Serializable
+public class ActionInput implements Serializable, Cloneable
 {
     private static final long serialVersionUID = 1L;
 
@@ -44,12 +44,23 @@ public class ActionInput implements Serializable
     }
 
 
-
     public String toString()
     {
         return description + " : " + sourceType.toString() + " source: " + source + " sourcePositive: " + sourcePositive;
     }
 
+    @Override
+    protected ActionInput clone() {
+        ActionInput clone = null;
+        try{
+            clone = (ActionInput) super.clone();
+
+        }catch(CloneNotSupportedException e){
+            throw new RuntimeException(e); // won't happen
+        }
+
+        return clone;
+    }
 
 }
 

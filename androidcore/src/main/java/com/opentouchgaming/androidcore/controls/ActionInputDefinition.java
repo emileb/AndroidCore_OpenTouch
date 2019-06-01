@@ -8,12 +8,11 @@ import java.util.ArrayList;
 
 public class ActionInputDefinition
 {
-    String filename;
     ArrayList<ActionInput> actions = new ArrayList<>();
 
-    public ActionInputDefinition(String filename)
+    public ActionInputDefinition()
     {
-        this.filename = filename;
+
     }
 
     public void addAction(String tag, String description, ActionInput.ActionType actionType, int actionCode, ActionInput.SourceType sourceType, int source)

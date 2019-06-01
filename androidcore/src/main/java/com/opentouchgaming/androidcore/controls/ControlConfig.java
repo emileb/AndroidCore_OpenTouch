@@ -28,51 +28,75 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
-public class ControlConfig implements Serializable
-{
+public class ControlConfig implements Serializable {
     static DebugLog log;
 
-    static
-    {
+    static {
         log = new DebugLog(DebugLog.Module.CONTROLS, "ControlConfig");
     }
 
-    public interface Listener
-    {
+    public interface Listener {
         void startMonitoring(ActionInput action);
 
         void finishedMonitoring();
     }
 
+    String configFilename;
+
+    static final String CONFIG_EXT = ".padconfig";
+
     private static final long serialVersionUID = 1L;
+
+    ActionInputDefinition gamepadDefinition;
+
+    ArrayList<ActionInput> actions = new ArrayList<ActionInput>();
+
+    ActionInput actionMonitor = null;
+
+    boolean monitoring = false;
+    boolean gotInput = false;
 
     public static final int LOOK_MODE_MOUSE = 0;
     public static final int LOOK_MODE_ABSOLUTE = 1;
     public static final int LOOK_MODE_JOYSTICK = 2;
     public static final int LOOK_MODE_GYRO = 3;
 
-    String filename;
-
     Listener listener;
 
-    public ControlConfig(ActionInputDefinition gamepadDefinition, Listener listener)
-    {
-        actions.addAll(gamepadDefinition.actions);
-        filename = AppInfo.internalFiles + "/" + gamepadDefinition.filename;
+    public ControlConfig(ActionInputDefinition gamepadDefinition, Listener listener) {
+        this.gamepadDefinition = gamepadDefinition;
+        reset();
         this.listener = listener;
     }
 
+    /*
     void saveControls() throws IOException
     {
         saveControls(new File(filename));
     }
+*/
 
-    void saveControls(File file) throws IOException
-    {
-        log.log(D, "saveControls, file = " + file.toString());
+    void reset() {
+        actions.clear();
+
+        Iterator<ActionInput> iterator = gamepadDefinition.actions.iterator();
+        while (iterator.hasNext()) {
+            actions.add(iterator.next().clone());
+        }
+    }
+
+    void saveControls(String filename) throws IOException {
+        log.log(D, "saveControls, file = " + filename.toString());
+
+        configFilename = filename;
+
+        new File(AppInfo.getGamepadDirectory()).mkdirs();
+
+        File file = new File(AppInfo.getGamepadDirectory() + "/" + configFilename);
 
         FileOutputStream fos = null;
         ObjectOutputStream out = null;
@@ -83,14 +107,18 @@ public class ControlConfig implements Serializable
         out.close();
     }
 
-    public void loadControls() throws IOException, ClassNotFoundException
-    {
-        loadControls(new File(filename));
-    }
+    /*
+        public void loadControls() throws IOException, ClassNotFoundException
+        {
+            loadControls(new File(filename));
+        }
+    */
+    public void loadControls(String filename) throws IOException, ClassNotFoundException {
+        log.log(D, "loadControls, file = " + filename);
 
-    public void loadControls(File file) throws IOException, ClassNotFoundException
-    {
-        log.log(D, "loadControls, file = " + file.toString());
+        configFilename = filename;
+
+        File file = new File(AppInfo.getGamepadDirectory() + "/" + configFilename);
 
         InputStream fis = null;
         ObjectInputStream in = null;
@@ -104,12 +132,9 @@ public class ControlConfig implements Serializable
 
         in.close();
 
-        for (ActionInput d : cd)
-        {
-            for (ActionInput a : actions)
-            {
-                if (d.tag != null && a.tag != null && d.tag.contentEquals(a.tag))
-                {
+        for (ActionInput d : cd) {
+            for (ActionInput a : actions) {
+                if (d.tag != null && a.tag != null && d.tag.contentEquals(a.tag)) {
                     a.invert = d.invert;
                     a.source = d.source;
                     a.sourceType = d.sourceType;
@@ -122,16 +147,11 @@ public class ControlConfig implements Serializable
 
         //Now check no buttons are also assigned to analog, if it is, clear the buttons
         //This is because n00bs keep assigning movment analog AND buttons!
-        for (ActionInput a : actions)
-        {
-            if ((a.source != -1) && (a.sourceType == ActionInput.SourceType.AXIS) && (a.actionType == ActionInput.ActionType.BUTTON))
-            {
-                for (ActionInput a_check : actions)
-                {
-                    if ((a_check.sourceType == ActionInput.SourceType.AXIS) && (a_check.actionType == ActionInput.ActionType.ANALOG))
-                    {
-                        if (a.source == a_check.source)
-                        {
+        for (ActionInput a : actions) {
+            if ((a.source != -1) && (a.sourceType == ActionInput.SourceType.AXIS) && (a.actionType == ActionInput.ActionType.BUTTON)) {
+                for (ActionInput a_check : actions) {
+                    if ((a_check.sourceType == ActionInput.SourceType.AXIS) && (a_check.actionType == ActionInput.ActionType.ANALOG)) {
+                        if (a.source == a_check.source) {
                             a.source = -1;
                             break;
                         }
@@ -144,31 +164,19 @@ public class ControlConfig implements Serializable
     }
 
 
-    void updated()
-    {
-        try
-        {
-            saveControls(new File(filename));
-        } catch (IOException e)
-        {
+    void updated() {
+        try {
+            saveControls(configFilename);
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    ArrayList<ActionInput> actions = new ArrayList<ActionInput>();
-
-    ActionInput actionMonitor = null;
-
-    boolean monitoring = false;
-    boolean gotInput = false;
-
-    public boolean showExtraOptions(Activity act, int pos)
-    {
+    public boolean showExtraOptions(Activity act, int pos) {
         final ActionInput in = actions.get(pos);
 
-        if (in.actionType == ActionInput.ActionType.ANALOG)
-        {
+        if (in.actionType == ActionInput.ActionType.ANALOG) {
             Dialog dialog = new Dialog(act);
             dialog.setTitle("Axis Sensitivity Setting");
             dialog.setCancelable(true);
@@ -190,12 +198,10 @@ public class ControlConfig implements Serializable
 
             l.addView(invert);
 
-            dialog.setOnDismissListener(new OnDismissListener()
-            {
+            dialog.setOnDismissListener(new OnDismissListener() {
 
                 @Override
-                public void onDismiss(DialogInterface dialog)
-                {
+                public void onDismiss(DialogInterface dialog) {
                     in.scale = (float) sb.getProgress() / (float) 50;
                     in.invert = invert.isChecked();
                     updated();
@@ -210,12 +216,11 @@ public class ControlConfig implements Serializable
         return false;
     }
 
-    public void startMonitor(Activity act, int pos)
-    {
+    public void startMonitor(Activity act, int pos) {
         actionMonitor = actions.get(pos);
 
         // Don't set the headers!
-        if( actionMonitor.tag == null )
+        if (actionMonitor.tag == null)
             return;
 
         monitoring = true;
@@ -224,8 +229,7 @@ public class ControlConfig implements Serializable
             listener.startMonitoring(actionMonitor);
     }
 
-    private void stopMonitor()
-    {
+    private void stopMonitor() {
         monitoring = false;
         if (listener != null)
             listener.finishedMonitoring();
@@ -266,18 +270,13 @@ public class ControlConfig implements Serializable
             MotionEvent.AXIS_GAS,
     };
 
-    public boolean onGenericMotionEvent(MotionEvent event)
-    {
+    public boolean onGenericMotionEvent(MotionEvent event) {
         log.log(D, "onGenericMotionEvent");
 
-        if (monitoring)
-        {
-            if (actionMonitor != null && gotInput == false)
-            {
-                for (int a : axisTest)
-                {
-                    if (Math.abs(event.getAxisValue(a)) > 0.6)
-                    {
+        if (monitoring) {
+            if (actionMonitor != null && gotInput == false) {
+                for (int a : axisTest) {
+                    if (Math.abs(event.getAxisValue(a)) > 0.6) {
                         actionMonitor.source = a;
                         actionMonitor.sourceType = ActionInput.SourceType.AXIS;
                         //Used for button actions
@@ -298,15 +297,12 @@ public class ControlConfig implements Serializable
             } else // Keep monitoring until all the axis are back in the centre
             {
                 boolean allCentre = true;
-                for (int a : axisTest)
-                {
-                    if (Math.abs(event.getAxisValue(a)) > 0.2)
-                    {
+                for (int a : axisTest) {
+                    if (Math.abs(event.getAxisValue(a)) > 0.2) {
                         allCentre = false;
                     }
                 }
-                if (allCentre)
-                {
+                if (allCentre) {
                     stopMonitor();
                     return true;
                 }
@@ -315,17 +311,14 @@ public class ControlConfig implements Serializable
         return false;
     }
 
-    public boolean isMonitoring()
-    {
+    public boolean isMonitoring() {
         return monitoring;
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         log.log(D, "onKeyDown " + keyCode);
 
-        if (monitoring)
-        {
+        if (monitoring) {
             if (keyCode == KeyEvent.KEYCODE_BACK) //Cancel and clear button assignment
             {
                 actionMonitor.source = -1;
@@ -334,12 +327,9 @@ public class ControlConfig implements Serializable
                 stopMonitor();
                 updated();
                 return true;
-            } else
-            {
-                if (actionMonitor != null)
-                {
-                    if (actionMonitor.actionType != ActionInput.ActionType.ANALOG)
-                    {
+            } else {
+                if (actionMonitor != null) {
+                    if (actionMonitor.actionType != ActionInput.ActionType.ANALOG) {
                         actionMonitor.source = keyCode;
                         actionMonitor.sourceType = ActionInput.SourceType.BUTTON;
 
@@ -355,22 +345,19 @@ public class ControlConfig implements Serializable
         return false;
     }
 
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         return monitoring;
     }
 
 
-    public int getSize()
-    {
+    public int getSize() {
         return actions.size();
     }
 
-    public View getView(final Activity ctx, final int nbr)
-    {
+    public View getView(final Activity ctx, final int nbr) {
         ActionInput ai = actions.get(nbr);
 
-        if( ai.tag != null ) // If tag is null it's a header, otherwise normal item
+        if (ai.tag != null) // If tag is null it's a header, otherwise normal item
         {
             View view = ctx.getLayoutInflater().inflate(R.layout.controls_listview_item, null);
             ImageView image = (ImageView) view.findViewById(R.id.imageView);
@@ -379,58 +366,46 @@ public class ControlConfig implements Serializable
             ImageView setting_image = (ImageView) view.findViewById(R.id.settings_imageview);
 
 
-            if ((ai.actionType == ActionInput.ActionType.BUTTON) || (ai.actionType == ActionInput.ActionType.MENU))
-            {
+            if ((ai.actionType == ActionInput.ActionType.BUTTON) || (ai.actionType == ActionInput.ActionType.MENU)) {
                 setting_image.setVisibility(View.GONE);
 
-                if ((ai.actionType == ActionInput.ActionType.MENU))
-                {
+                if ((ai.actionType == ActionInput.ActionType.MENU)) {
                     name.setTextColor(0xFF00aeef); //BLUEY
                     image.setImageResource(R.drawable.gamepad_menu);
-                } else
-                {
+                } else {
                     name.setTextColor(0xFF02ad2a); //GREEN
                     image.setImageResource(R.drawable.gamepad);
                 }
-            } else if (ai.actionType == ActionInput.ActionType.ANALOG)
-            {
+            } else if (ai.actionType == ActionInput.ActionType.ANALOG) {
                 binding.setText(MotionEvent.axisToString(ai.source));
-                setting_image.setOnClickListener(new OnClickListener()
-                {
+                setting_image.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onClick(View v)
-                    {
+                    public void onClick(View v) {
                         showExtraOptions(ctx, nbr);
                     }
                 });
                 name.setTextColor(0xFFf7941d); //ORANGE
             }
 
-            if (ai.source == -1)
-            {
+            if (ai.source == -1) {
                 binding.setText("not set");
-            } else
-            {
+            } else {
                 if (ai.sourceType == ActionInput.SourceType.AXIS)
                     binding.setText(MotionEvent.axisToString(ai.source));
                 else
                     binding.setText(KeyEvent.keyCodeToString(ai.source));
             }
 
-            if (actionMonitor != null && actionMonitor == ai && monitoring)
-            {
+            if (actionMonitor != null && actionMonitor == ai && monitoring) {
                 view.setBackgroundResource(R.drawable.layout_sel_background);
-            } else
-            {
+            } else {
                 view.setBackgroundResource(0);
             }
 
             name.setText(ai.description);
 
             return view;
-        }
-        else
-        {
+        } else {
             View view = ctx.getLayoutInflater().inflate(R.layout.controls_listview_header_item, null);
             TextView title = (TextView) view.findViewById(R.id.title_textview);
             title.setText(ai.description);
