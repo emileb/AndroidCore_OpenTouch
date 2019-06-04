@@ -127,6 +127,14 @@ public class PortActDefs
     public static final int PORT_ACT_CUSTOM_7 = 157;
 
 
+    public static final int PORT_ACT_CUSTOM_8 = 158;
+    public static final int PORT_ACT_CUSTOM_9 = 159;
+    public static final int PORT_ACT_CUSTOM_10 = 160;
+    public static final int PORT_ACT_CUSTOM_11 = 161;
+    public static final int PORT_ACT_CUSTOM_12 = 162;
+    public static final int PORT_ACT_CUSTOM_13 = 163;
+    public static final int PORT_ACT_CUSTOM_14 = 164;
+    public static final int PORT_ACT_CUSTOM_15 = 165;
     //Menu
     public static final int PORT_ACT_MENU_UP = 0x200;
     public static final int PORT_ACT_MENU_DOWN = 0x201;
