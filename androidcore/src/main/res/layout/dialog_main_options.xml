@@ -111,6 +111,12 @@
             android:text="Use Android keyboard"/>
 
         <CheckBox
+            android:id="@+id/enable_vibrate_checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enable vibrate"/>
+
+        <CheckBox
             android:id="@+id/group_similar_engines_checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

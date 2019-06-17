@@ -264,6 +264,17 @@ public class OptionsDialog
             }
         });
 
+        CheckBox enableVibrate = dialog.findViewById(R.id.enable_vibrate_checkBox);
+        enableVibrate.setChecked(AppSettings.getBoolOption(act,"enable_vibrate", true));
+        enableVibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                AppSettings.setBoolOption(act,"enable_vibrate", isChecked);
+            }
+        });
+
         if (extraOptions != null)
         {
             LinearLayout layout = dialog.findViewById(R.id.top_linearlayout);

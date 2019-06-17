@@ -24,6 +24,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -90,6 +92,8 @@ public class SDLActivity extends Activity implements Handler.Callback
     // If we want to separate mouse and touch events.
     //  This is only toggled in native code when a hint is set!
     public static boolean mSeparateMouseAndTouch;
+
+    public  static boolean enableVibrate;
 
     // Main components
     protected static SDLActivity mSingleton;
@@ -175,6 +179,7 @@ public class SDLActivity extends Activity implements Handler.Callback
         super.onCreate(savedInstanceState);
 
         AppSettings.reloadSettings(getApplicationContext());
+        enableVibrate =  AppSettings.getBoolOption(this,"enable_vibrate", true);
 
         handlerUI = new Handler(this);
 
@@ -475,6 +480,7 @@ public class SDLActivity extends Activity implements Handler.Callback
     protected static final int COMMAND_SHOW_GYRO_OPTIONS = 0x8002;
     protected static final int COMMAND_SHOW_KEYBOARD = 0x8003;
     protected static final int COMMAND_SHOW_GAMEPAD= 0x8004;
+    protected static final int COMMAND_VIBRATE= 0x8005;
     /**
      * This method is called by SDL if SDL did not handle a message itself.
      * This happens if a received message contains an unsupported command.
@@ -495,6 +501,21 @@ public class SDLActivity extends Activity implements Handler.Callback
         return false;
     }
 
+    private static void vibrate( int duration)
+    {
+        if( enableVibrate ) {
+            Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            if (v != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    //deprecated in API 26
+                    v.vibrate(duration);
+                }
+            }
+        }
+    }
     /**
      * A Handler class for Messages from native SDL applications.
      * It uses current Activities as target (e.g. for the title).
@@ -596,6 +617,12 @@ public class SDLActivity extends Activity implements Handler.Callback
                         imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,0);
                     }
 
+                    break;
+                }
+                case COMMAND_VIBRATE:
+                {
+                    Integer value = (Integer) msg.obj;
+                    vibrate(value);
                     break;
                 }
                 default:
