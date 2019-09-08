@@ -292,15 +292,17 @@ public class ControlInterpreter {
                 if ((ai.sourceType == ActionInput.SourceType.AXIS) && (ai.source != -1)) {
                     int invert;
                     invert = ai.invert ? -1 : 1;
-                    if (ai.actionCode == PortActDefs.ACTION_ANALOG_PITCH)
-                        controlInterface.analogPitch_if(ControlConfig.LOOK_MODE_JOYSTICK, analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
-                    else if (ai.actionCode == PortActDefs.ACTION_ANALOG_YAW)
-                        controlInterface.analogYaw_if(ControlConfig.LOOK_MODE_JOYSTICK, -analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
-                    else if (ai.actionCode == PortActDefs.ACTION_ANALOG_FWD)
-                        controlInterface.analogFwd_if(-analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
-                    else if (ai.actionCode == PortActDefs.ACTION_ANALOG_STRAFE)
-                        controlInterface.analogSide_if(analogCalibrate(event.getAxisValue(ai.source)) * invert * ai.scale);
-                    else //Must be using analog as a button
+                    float raw = event.getAxisValue(ai.source);
+                    float rawDeadZone = analogCalibrate(raw);
+                    if (ai.actionCode == PortActDefs.ACTION_ANALOG_PITCH) {
+                        controlInterface.analogPitch_if(ControlConfig.LOOK_MODE_JOYSTICK, rawDeadZone * invert * ai.scale, raw);
+                    } else if (ai.actionCode == PortActDefs.ACTION_ANALOG_YAW) {
+                        controlInterface.analogYaw_if(ControlConfig.LOOK_MODE_JOYSTICK, -rawDeadZone * invert * ai.scale,raw);
+                    } else if (ai.actionCode == PortActDefs.ACTION_ANALOG_FWD) {
+                        controlInterface.analogFwd_if(-rawDeadZone * invert * ai.scale,raw);
+                    } else if (ai.actionCode == PortActDefs.ACTION_ANALOG_STRAFE) {
+                        controlInterface.analogSide_if(rawDeadZone * invert * ai.scale,raw);
+                    } else //Must be using analog as a button
                     {
                         float value = event.getAxisValue(ai.source);
                         //log.log(D, "Analog as button, value = " + value);

@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore.controls;
 
+import android.app.Activity;
+
 import java.io.Serializable;
 
 
@@ -17,6 +19,10 @@ public class ActionInput implements Serializable, Cloneable
         AXIS,
         BUTTON
     }
+    public interface ActionInputExtra
+    {
+        void show(Activity activity,ActionInput action);
+    }
 
     public String tag;
     public String description;
@@ -30,8 +36,9 @@ public class ActionInput implements Serializable, Cloneable
     public int source = -1;
     public boolean sourcePositive = true; //Used when using analog as a button
 
+    transient ActionInputExtra extraDialog;
 
-    public ActionInput(String tag, String description, ActionType actionType, int actionCode, SourceType sourceType, int source)
+    public ActionInput(String tag, String description, ActionType actionType, int actionCode, SourceType sourceType, int source,  ActionInputExtra extraDialog)
     {
         this.tag = tag;
         this.description = description;
@@ -41,6 +48,7 @@ public class ActionInput implements Serializable, Cloneable
         this.sourceType = sourceType;
         this.source = source;
         //this.sourcePositive = sourcePositive;
+        this.extraDialog = extraDialog;
     }
 
 

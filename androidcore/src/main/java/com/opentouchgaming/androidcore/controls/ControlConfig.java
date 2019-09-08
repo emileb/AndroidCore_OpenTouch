@@ -213,6 +213,10 @@ public class ControlConfig implements Serializable {
             dialog.show();
             return true;
         }
+        else if( in.extraDialog != null )
+        {
+            in.extraDialog.show(act,in);
+        }
         return false;
     }
 
@@ -367,7 +371,6 @@ public class ControlConfig implements Serializable {
 
 
             if ((ai.actionType == ActionInput.ActionType.BUTTON) || (ai.actionType == ActionInput.ActionType.MENU)) {
-                setting_image.setVisibility(View.GONE);
 
                 if ((ai.actionType == ActionInput.ActionType.MENU)) {
                     name.setTextColor(0xFF00aeef); //BLUEY
@@ -378,14 +381,21 @@ public class ControlConfig implements Serializable {
                 }
             } else if (ai.actionType == ActionInput.ActionType.ANALOG) {
                 binding.setText(MotionEvent.axisToString(ai.source));
+                name.setTextColor(0xFFf7941d); //ORANGE
+            }
+
+            if ((ai.actionType == ActionInput.ActionType.ANALOG) || (ai.extraDialog != null)) {
+                setting_image.setVisibility(View.VISIBLE);
                 setting_image.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         showExtraOptions(ctx, nbr);
                     }
                 });
-                name.setTextColor(0xFFf7941d); //ORANGE
             }
+            else
+                setting_image.setVisibility(View.GONE);
+
 
             if (ai.source == -1) {
                 binding.setText("not set");

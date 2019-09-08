@@ -812,4 +812,52 @@ public class Utils
         }
         return files;
     }
+
+    public static class SpinnerValues {
+
+        private float value;
+        private String name;
+
+        public SpinnerValues(float value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public float getValue() {
+            return value;
+        }
+
+        public int getIntValue() {
+            return (int)value;
+        }
+
+        public void setValue(float value) {
+            this.value = value;
+        }
+
+        //to display object as a string in spinner
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof SpinnerValues){
+                SpinnerValues c = (SpinnerValues )obj;
+                if(c.getName().equals(name) && c.getValue()==value ) return true;
+            }
+
+            return false;
+        }
+    }
+
 }

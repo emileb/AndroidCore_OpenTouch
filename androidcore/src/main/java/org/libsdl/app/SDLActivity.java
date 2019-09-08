@@ -15,6 +15,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -833,6 +834,9 @@ public class SDLActivity extends Activity implements Handler.Callback
         int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT : AudioFormat.ENCODING_PCM_8BIT;
         int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
 
+        int nativeRate = AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_MUSIC);
+        Log.v(TAG, "SDL nativeRate = " + nativeRate);
+
         Log.v(TAG, "SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + (sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
 
         // Let the user pick a larger buffer if they really want -- but ye
@@ -843,8 +847,20 @@ public class SDLActivity extends Activity implements Handler.Callback
         if (mAudioTrack == null)
         {
             mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
-                    channelConfig, audioFormat, desiredFrames * frameSize, AudioTrack.MODE_STREAM);
+                   channelConfig, audioFormat, desiredFrames * frameSize, AudioTrack.MODE_STREAM);
+/*
+            AudioFormat myFormat = new AudioFormat.Builder()
+                    .setSampleRate(sampleRate)
+                    .setEncoding(audioFormat)
+                    .build();
 
+            mAudioTrack = new AudioTrack(
+                    new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .build(),
+                    myFormat, desiredFrames * frameSize, AudioTrack.MODE_STREAM, AudioManager.AUDIO_SESSION_ID_GENERATE);
+*/
             // Instantiating AudioTrack can "succeed" without an exception and the track may still be invalid
             // Ref: https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/media/java/android/media/AudioTrack.java
             // Ref: http://developer.android.com/reference/android/media/AudioTrack.html#getState()
@@ -869,9 +885,11 @@ public class SDLActivity extends Activity implements Handler.Callback
      */
     public static void audioWriteShortBuffer(short[] buffer)
     {
+        //Log.w(TAG, "audioWriteShortBuffer " +  buffer.length);
         for (int i = 0; i < buffer.length; )
         {
             int result = mAudioTrack.write(buffer, i, buffer.length - i);
+            //Log.w(TAG, "result " + result);
             if (result > 0)
             {
                 i += result;
@@ -879,7 +897,7 @@ public class SDLActivity extends Activity implements Handler.Callback
             {
                 try
                 {
-                    Thread.sleep(1);
+                    Thread.sleep(10);
                 } catch (InterruptedException e)
                 {
                     // Nom nom
@@ -1603,6 +1621,15 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         {
             controlInterp.loadGameControlsFile();
         }
+        sendWeaponWheelSettings();
+    }
+
+    void sendWeaponWheelSettings()
+    {
+        int useMoveStick = AppSettings.getBoolOption(getContext(), "weapon_wheel_move_stick", true)? 1 : 0;
+        int mode = AppSettings.getIntOption(getContext(), "weapon_wheel_button_mode", 0);
+        int autoTimeout = AppSettings.getIntOption(getContext(), "weapon_wheel_auto_timeout", 0);
+        NativeLib.weaponWheelSettings(useMoveStick,mode,autoTimeout);
     }
 
     public Surface getNativeSurface()
@@ -1799,6 +1826,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         {
             SDLActivity.handleResume();
         }
+
+        sendWeaponWheelSettings();
     }
 
     // Key events
@@ -2004,8 +2033,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         float pitchDx = orientationLast[1] - orientation[1];
         yawDx = yawDx * (float) (((Math.PI / 2) - Math.abs(orientationLast[1])) / Math.PI);
         //Log.d("gyro","pith = " + orientation[1] + " roll ="+ orientation[2] + "yaw = " + orientation[0] + " ydx =" + yawDx );
-        NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, (yawDx / 2) * gyroXSens);
-        NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, (pitchDx / 5) * gyroYSens);
+        NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, (yawDx / 2) * gyroXSens,0);
+        NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, (pitchDx / 5) * gyroYSens,0);
 
         orientationLast[0] = orientation[0];
         orientationLast[1] = orientation[1];
@@ -2071,8 +2100,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             yawDx *= gyroXSens;
             pitchDx *= gyroYSens;
 
-            NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, (yawDx) * gyroXSens);
-            NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, (pitchDx) * gyroYSens);
+            NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, (yawDx) * gyroXSens,0);
+            NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, (pitchDx) * gyroYSens,0);
 
             //Log.d("gyro", "Time = " + timeDiff + " 0 = " +  event.values[0] + " 1 ="+  event.values[1] + " 2 = " +  event.values[2]);
 

@@ -39,6 +39,7 @@ public class PortActDefs
     public static final int PORT_ACT_INVNEXT = 22;
     public static final int PORT_ACT_HELPCOMP = 23;
 
+    public static final int PORT_ACT_USE_WEAPON_WHEEL = 24;
     public static final int PORT_ACT_CONSOLE = 25;
     public static final int PORT_ACT_SHOW_KBRD = 26;
     public static final int PORT_ACT_SHOW_INV = 27;
