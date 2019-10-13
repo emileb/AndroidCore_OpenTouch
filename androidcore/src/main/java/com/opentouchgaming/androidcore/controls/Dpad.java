@@ -1,5 +1,6 @@
 package com.opentouchgaming.androidcore.controls;
 
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.InputEvent;
 import android.view.KeyEvent;
@@ -147,14 +148,32 @@ public class Dpad
 
     public static boolean isDpadDevice(InputEvent event)
     {
+        Log.d("test","source = " +event.getSource() );
         // Check that input comes from a device with directional pads.
-        if ((event.getSource() & InputDevice.SOURCE_DPAD)
-                != InputDevice.SOURCE_DPAD)
+
+        // Get the source, but clear the button bit which is always set
+        int sourceNoButton = event.getSource() & ~InputDevice.SOURCE_CLASS_BUTTON;
+
+        // Trying to determine if a gamepad and NOT and keyboard
+        if (((sourceNoButton & InputDevice.SOURCE_KEYBOARD) == 0) ||
+                ((sourceNoButton & InputDevice.SOURCE_GAMEPAD) != 0) ||
+                ((sourceNoButton & InputDevice.SOURCE_JOYSTICK) != 0))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+        /*
+        if ((event.getSource() & InputDevice.SOURCE_DPAD) != InputDevice.SOURCE_DPAD)
         {
             return true;
         } else
         {
             return false;
         }
+        */
     }
 }

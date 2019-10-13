@@ -52,7 +52,7 @@ public class WadExt
       aMap.put("hexen.wad",new TitlePicOptions("TITLE", WadExt.DO_HEXEN_PAL, true));
       aMap.put("hexdd.wad",new TitlePicOptions("TITLE", WadExt.DO_HEXEN_PAL, true));
       aMap.put("heretic.wad",new TitlePicOptions("TITLE", WadExt.DO_HERETIC_PAL, true));
-      aMap.put("strife.wad",new TitlePicOptions("TITLE", WadExt.DO_STRIFE, true));
+      aMap.put("strife.wad",new TitlePicOptions("TITLEPIC", WadExt.DO_STRIFE, true));
       aMap.put("strife1.wad",new TitlePicOptions("TITLEPIC", WadExt.DO_STRIFE, true));
       aMap.put("doom2bfg.wad",new TitlePicOptions("DMENUPIC", 0, true));
       aMap.put("bfgdoom2.wad",new TitlePicOptions("DMENUPIC", 0, true));

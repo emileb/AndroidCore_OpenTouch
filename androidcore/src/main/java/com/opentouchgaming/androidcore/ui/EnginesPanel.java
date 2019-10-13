@@ -124,6 +124,9 @@ public class EnginesPanel
         int screenHeightPx = Utils.dpToPx(context.getResources(), configuration.screenHeightDp);
         //screenHeightPx = leftPanelTopView.getLayoutParams().height;
 
+
+        float cfgButtonSize = 0.8f;
+
         // Calculate square button size
         // Give equal size for each ui group
         int buttonSize = screenHeightPx / engineGroups.size();
@@ -136,7 +139,7 @@ public class EnginesPanel
         }
         else
         {
-            buttonCfgSize = buttonSize / 2;
+            buttonCfgSize = (int)(buttonSize * cfgButtonSize);
             totalWidth = buttonSize + buttonCfgSize;
         }
         // Set the layout width, equal to the button size x largest group
@@ -204,7 +207,7 @@ public class EnginesPanel
                 else
                 {
                     // Put next to the button
-                    params.setMargins( 0, (buttonCfgSize / 2), 0 ,0 );
+                    params.setMargins( 0, (int)(buttonCfgSize * (1 - cfgButtonSize)), 0 ,0 );
                 }
                 buttonCfg.setTag(engine); // Used for the click listener callback
                 buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);

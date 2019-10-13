@@ -1432,8 +1432,13 @@ class SDLMain implements Runnable
         if (TouchSettings.useSystemKeyboard)
             options |= TouchSettings.GAME_OPTION_USE_SYSTEM_KEYBOARD;
 
-        if( SDLActivity.mSingleton.getIntent().getBooleanExtra("use_gles2", false))
+        int gles_version = SDLActivity.mSingleton.getIntent().getIntExtra("gles_version", 1);
+
+        if( gles_version == 2 )
             options |= TouchSettings.GAME_OPTION_GLES2;
+
+        if( gles_version == 3 )
+            options |= TouchSettings.GAME_OPTION_GLES3;
 
         int gameType = SDLActivity.mSingleton.getIntent().getIntExtra("game_type", 0);
         //NativeLib.setScreenSize(1920,1104);
@@ -2159,7 +2164,7 @@ class DummyEdit extends View implements View.OnKeyListener
         if (event.getAction() == KeyEvent.ACTION_DOWN)
         {
             Log.v("SDL", "onKey down: " + keyCode);
-            SDLActivity.onNativeKeyDown(keyCode, 0);
+            SDLActivity.onNativeKeyDown(keyCode, event.getUnicodeChar());
             return true;
         } else if (event.getAction() == KeyEvent.ACTION_UP)
         {

@@ -28,6 +28,7 @@ public class GameEngine
         IOQUAKE3,
         HEXEN2,
         ZANDRONUM,
+        LZDOOM,
     }
 
     public GameEngine(Engine engine, int uiGroup, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)
