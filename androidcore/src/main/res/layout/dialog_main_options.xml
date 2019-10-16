@@ -67,7 +67,7 @@
             android:id="@+id/immersive_mode_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Immersive Mode"/>
+            android:text="Full screen (Immersive Mode)"/>
 
         <CheckBox
             android:id="@+id/alt_touch_code_checkbox"
