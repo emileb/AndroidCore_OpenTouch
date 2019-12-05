@@ -20,6 +20,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
@@ -711,6 +712,20 @@ public class Utils
 
                             }
                         });
+            }
+        }
+    }
+
+    public static void expandToCutout(final Activity act)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+        {
+            if (AppSettings.getBoolOption(act, "expand_cutout", false)) {
+
+                WindowManager.LayoutParams attributes = act.getWindow().getAttributes();
+                attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                act.getWindow().setAttributes(attributes);
             }
         }
     }
