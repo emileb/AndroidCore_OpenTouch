@@ -3,10 +3,13 @@ package com.opentouchgaming.androidcore.ui;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.support.v7.widget.AppCompatImageButton;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.Utils;
@@ -26,14 +29,16 @@ public class ToolsPanel
 
     public static class ToolsPanelButton
     {
-        public ToolsPanelButton(int code,int image)
+        public ToolsPanelButton(int code,String label,int image)
         {
+            this.label = label;
             this.imageRes = image;
             this.code = code;
         }
 
         public int imageRes;
         public AppCompatImageButton imageButton;
+        public String label;
         int code;
     };
 
@@ -50,11 +55,17 @@ public class ToolsPanel
 
         int slideAmmount;
 
-        LinearLayout leftPanel = (LinearLayout)topView.findViewById(R.id.linear_right_hidden_panel);
+        int buttonSize;
+
+        LinearLayout leftPanel = topView.findViewById(R.id.linear_right_hidden_panel);
         {  // Sets the size of panel so the buttons are square
             Configuration configuration = context.getResources().getConfiguration();
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) leftPanel.getLayoutParams();
+
+            buttonSize =  (int)(Utils.dpToPx(context.getResources(), configuration.screenHeightDp / buttons.length));
             lp.width = (int)(Utils.dpToPx(context.getResources(), configuration.screenHeightDp / buttons.length) * 1.5);
+            lp.width += Utils.dpToPx(context.getResources(),100);
+
             leftPanel.setLayoutParams(lp);
             slideAmmount = leftPanel.getLayoutParams().width;
         }
@@ -82,9 +93,18 @@ public class ToolsPanel
 
         for (int n = 0; n < buttons.length; n++)
         {
-            final AppCompatImageButton button = new AppCompatImageButton(context);
+            LayoutInflater inflater = (LayoutInflater)context.getSystemService
+                    (Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.tool_panel_item,null);
+
+            AppCompatImageButton button = view.findViewById(R.id.image_button);
+            TextView lableTextView = view.findViewById(R.id.label_textView);
+            lableTextView.setText(buttons[n].label);
+
             buttons[n].imageButton = button;
             button.setTag(new Integer(n)); // Used for the click listener callback
+
+
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
             params.weight = 1;
             params.width = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -96,12 +116,18 @@ public class ToolsPanel
             params.topMargin = Utils.dpToPx(context.getResources(), margin);
             params.bottomMargin = Utils.dpToPx(context.getResources(), margin);
 
-            button.setLayoutParams(params);
-            button.setImageResource(buttons[n].imageRes);
-//            button.setBackground(null);
-            button.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            leftPanel.addView(button);
+            view.setLayoutParams(params);
 
+            //RelativeLayout.LayoutParams p = new  RelativeLayout.LayoutParams(0,0);// (RelativeLayout.LayoutParams)button.getLayoutParams();
+            RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams)button.getLayoutParams();
+            p.width  = buttonSize;
+            p.height = buttonSize;
+            button.setLayoutParams(p);
+
+            leftPanel.addView(view);
+
+            button.setImageResource(buttons[n].imageRes);
+            button.setScaleType(ImageView.ScaleType.FIT_CENTER);
             button.setBackgroundResource(R.drawable.focusable);
             button.setOnClickListener(new View.OnClickListener()
             {
@@ -113,6 +139,7 @@ public class ToolsPanel
                     close();
                 }
             });
+
         }
         updateFocus();
     }
