@@ -54,7 +54,8 @@ public class PortActDefs
     public static final int PORT_ACT_MAP_RIGHT = 34;
     public static final int PORT_ACT_MAP_ZOOM_IN = 35;
     public static final int PORT_ACT_MAP_ZOOM_OUT = 36;
-
+    public static final int PORT_ACT_ALWAYS_RUN = 37;
+    public static final int PORT_ACT_TOGGLE_CROUCH = 38;
     //RTCW
     public static final int PORT_ACT_ZOOM_IN = 50;
     public static final int PORT_ACT_ALT_FIRE = 51;
