@@ -166,6 +166,24 @@ public class OptionsDialog
             immersiveCheck.setVisibility(View.GONE);
         }
 
+        CheckBox cutoutCheckbox = dialog.findViewById(R.id.expand_cutout_checkbox);
+        cutoutCheckbox.setChecked(AppSettings.getBoolOption(activity, "expand_cutout", false));
+
+        cutoutCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                AppSettings.setBoolOption(activity, "expand_cutout", isChecked);
+            }
+        });
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
+        {
+            cutoutCheckbox.setVisibility(View.GONE);
+        }
+
+
         CheckBox altTouchCodeCheck = (CheckBox) dialog.findViewById(R.id.alt_touch_code_checkbox);
         altTouchCodeCheck.setChecked(AppSettings.getBoolOption(activity, "alt_touch_code", false));
 

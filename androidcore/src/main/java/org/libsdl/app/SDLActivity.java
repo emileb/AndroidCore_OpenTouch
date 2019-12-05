@@ -268,6 +268,7 @@ public class SDLActivity extends Activity implements Handler.Callback
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Utils.setImmersionMode(this);
+        Utils.expandToCutout(this);
 
         mLayout = new RelativeLayout(this);
         //mLayout.addView(mSurface);

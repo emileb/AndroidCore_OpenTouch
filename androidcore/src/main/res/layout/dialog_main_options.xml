@@ -70,6 +70,12 @@
             android:text="Full screen (Immersive Mode)"/>
 
         <CheckBox
+            android:id="@+id/expand_cutout_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Expand game screen into notch (if present)"/>
+
+        <CheckBox
             android:id="@+id/alt_touch_code_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
