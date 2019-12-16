@@ -43,13 +43,10 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         holder.mDetail2.setText(holder.mItem.detail2);
         if( holder.mItem.getImagePng() != null )
         {
-            Glide.with(holder.mImage)
+            Glide.with(AppInfo.getContext())
                     .load(holder.mItem.getImagePng())
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
                     .into(holder.mImage);
-
-          //  holder.mImage.setScaleType(ImageView.ScaleType.FIT_XY);
-           // holder.mImage.setImageURI(Uri.fromFile( new File(holder.mItem.getImagePng()) ));
         }
         else
             holder.mImage.setImageResource(holder.mItem.image);
