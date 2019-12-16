@@ -258,6 +258,8 @@ public class SDLActivity extends Activity implements Handler.Callback
 
         useMouse =   AppSettings.getBoolOption(this, "use_mouse", true);
 
+
+
         // fullscreen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -1440,6 +1442,11 @@ class SDLMain implements Runnable
 
         if( gles_version == 3 )
             options |= TouchSettings.GAME_OPTION_GLES3;
+
+        int freq =  SDLActivity.mSingleton.getIntent().getIntExtra("audio_freq", 0);
+        int samples = SDLActivity.mSingleton.getIntent().getIntExtra("audio_samples", 0);
+
+        NativeLib.audioOverride(freq,samples);
 
         int gameType = SDLActivity.mSingleton.getIntent().getIntExtra("game_type", 0);
         //NativeLib.setScreenSize(1920,1104);

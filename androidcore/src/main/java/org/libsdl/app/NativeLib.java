@@ -32,6 +32,8 @@ public class NativeLib implements ControlInterface {
 
     public static native void weaponWheelSettings(int useMoveStick, int mode, int autoTimeout);
 
+    public static native void audioOverride(int freq, int samples);
+
 
     @Override
     public void initTouchControls_if(String pngPath, int width, int height) {
@@ -77,11 +79,6 @@ public class NativeLib implements ControlInterface {
     @Override
     public void analogYaw_if(int mode, float v, float raw) {
         analogYaw(mode, v, raw);
-    }
-
-    @Override
-    public void weaponWheelSettings_if(int useMoveStick, int mode, int autoTimeout) {
-        weaponWheelSettings(useMoveStick, mode, autoTimeout);
     }
 
 }

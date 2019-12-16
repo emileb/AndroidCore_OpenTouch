@@ -18,4 +18,15 @@ public interface EngineOptionsInterface
     int getGLESVersion(int version);
     boolean hasMultiplayer();
     void launchMultiplayer(Activity ac,GameEngine engine, int version, String mainArgs, MultiplayerCallback callback );
+
+    default int audioOverrideFreq()
+    {
+        return 0;
+    }
+
+    default int audioOverrideSamples()
+    {
+        return 0;
+    }
+
 }
