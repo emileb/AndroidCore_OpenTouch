@@ -53,6 +53,8 @@ public class Utils
 
     static DebugLog log;
 
+    public static String key;
+
     static
     {
         log = new DebugLog(DebugLog.Module.CONTROLS, "Utils");
@@ -119,7 +121,7 @@ public class Utils
         out.close();
     }
 
-    static public void showDownloadDialog(final Activity act, String key, String title, final String directory, final String file, final int size, final ServerAPI.Callback cb)
+    static public void showDownloadDialog(final Activity act, String title, final String directory, final String file, final int size, final ServerAPI.Callback cb)
     {
         boolean ok = LicenseCheck.checkLicenseFile(act, key);
         if (!ok)
