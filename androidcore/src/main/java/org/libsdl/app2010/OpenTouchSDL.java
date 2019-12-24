@@ -55,7 +55,7 @@ public class OpenTouchSDL {
             }
         }
         Log.v("SDL", "Native .so path = " + nativeSoPath);
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, args_array, gameType, gamePath, logFilename,nativeSoPath);
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", options,10, args_array, gameType, gamePath, logFilename,nativeSoPath);
 
         Log.v("SDL", "SDL thread terminated");
     }

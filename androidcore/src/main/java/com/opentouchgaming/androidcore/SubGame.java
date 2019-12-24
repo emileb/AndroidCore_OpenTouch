@@ -36,9 +36,9 @@ public class SubGame
     String downloadFilename;
 
     String extraArgs;
+    int wheelNbr;
 
-
-    public SubGame(String tag, String title, String path, String rootPath, int gameType, int image, String detail1, String detail2)
+    public SubGame(String tag, String title, String path, String rootPath, int gameType, int image, String detail1, String detail2, int wheelNbr)
     {
         this.tag = tag;
         this.path = path;
@@ -49,6 +49,7 @@ public class SubGame
         this.detail2 = detail2;
         this.imagePng = null;
         this.gameType = gameType;
+        this.wheelNbr = wheelNbr;
     }
 
     public void load(Context ctx)
@@ -171,6 +172,14 @@ public class SubGame
     public void setGameType(int gameType)
     {
         this.gameType = gameType;
+    }
+
+    public int getWheelNbr() {
+        return wheelNbr;
+    }
+
+    public void setWheelNbr(int wheelNbr) {
+        this.wheelNbr = wheelNbr;
     }
 
     public boolean selected;

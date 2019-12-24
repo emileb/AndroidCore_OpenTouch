@@ -1449,6 +1449,8 @@ class SDLMain implements Runnable
         NativeLib.audioOverride(freq,samples);
 
         int gameType = SDLActivity.mSingleton.getIntent().getIntExtra("game_type", 0);
+        int wheelNbr = SDLActivity.mSingleton.getIntent().getIntExtra("wheel_nbr", 10);
+
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
         String logFilename = SDLActivity.mSingleton.getIntent().getStringExtra("log_filename");
@@ -1466,7 +1468,7 @@ class SDLMain implements Runnable
             }
         }
         Log.v("SDL", "Native .so path = " + nativeSoPath);
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, args_array, gameType, gamePath, logFilename,nativeSoPath);
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, wheelNbr,args_array, gameType, gamePath, logFilename,nativeSoPath);
 
         Log.v("SDL", "SDL thread terminated");
     }
