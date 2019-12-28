@@ -6,20 +6,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.opentouchgaming.androidcore.ui.FileSelectDialog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Emile on 20/05/2018.
  */
 
-public class SubGame
-{
+public class SubGame {
     String title;
     int image;
     String imagePng;
@@ -38,8 +41,7 @@ public class SubGame
     String extraArgs;
     int wheelNbr;
 
-    public SubGame(String tag, String title, String path, String rootPath, int gameType, int image, String detail1, String detail2, int wheelNbr)
-    {
+    public SubGame(String tag, String title, String path, String rootPath, int gameType, int image, String detail1, String detail2, int wheelNbr) {
         this.tag = tag;
         this.path = path;
         this.rootPath = rootPath;
@@ -52,10 +54,8 @@ public class SubGame
         this.wheelNbr = wheelNbr;
     }
 
-    public void load(Context ctx)
-    {
-        if (tag != null)
-        {
+    public void load(Context ctx) {
+        if (tag != null) {
             String title = AppSettings.getStringOption(ctx, tag + "title", null);
             if (title != null)
                 setTitle(title);
@@ -63,114 +63,97 @@ public class SubGame
             String imageOverride = AppSettings.getStringOption(ctx, tag + "imageOverride", null);
             if (imageOverride != null)
                 setImagePng(imageOverride);
+
+            int weaponWheelNbr = AppSettings.getIntOption(ctx, tag + "wheel_nbr", -1);
+            if (weaponWheelNbr != -1)
+                setWheelNbr(weaponWheelNbr);
         }
     }
 
 
-    public void save(Context ctx)
-    {
-        if (tag != null)
-        {
+    public void save(Context ctx) {
+        if (tag != null) {
             AppSettings.setStringOption(ctx, tag + "title", title);
         }
     }
 
-    public String getExtraArgs()
-    {
+    public String getExtraArgs() {
         if (extraArgs == null)
             return "";
         else
             return extraArgs;
     }
 
-    public void setExtraArgs(String extraArgs)
-    {
+    public void setExtraArgs(String extraArgs) {
         this.extraArgs = extraArgs;
     }
 
-    public void setDownloadInfo(String path, String filename)
-    {
+    public void setDownloadInfo(String path, String filename) {
         downloadPath = path;
         downloadFilename = filename;
     }
 
-    public String getDownloadPath()
-    {
+    public String getDownloadPath() {
         return downloadPath;
     }
 
-    public String getDownloadFilename()
-    {
+    public String getDownloadFilename() {
         return downloadFilename;
     }
 
-    public String getImagePng()
-    {
+    public String getImagePng() {
         return imagePng;
     }
 
-    public void setImagePng(String imagePng)
-    {
+    public void setImagePng(String imagePng) {
         this.imagePng = imagePng;
     }
 
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public int getImage()
-    {
+    public int getImage() {
         return image;
     }
 
-    public void setImage(int image)
-    {
+    public void setImage(int image) {
         this.image = image;
     }
 
-    public String getDetail1()
-    {
+    public String getDetail1() {
         return detail1;
     }
 
-    public void setDetail1(String detail1)
-    {
+    public void setDetail1(String detail1) {
         this.detail1 = detail1;
     }
 
-    public String getDetail2()
-    {
+    public String getDetail2() {
         return detail2;
     }
 
-    public void setDetail2(String detail2)
-    {
+    public void setDetail2(String detail2) {
         this.detail2 = detail2;
     }
 
-    public String getPath()
-    {
+    public String getPath() {
         return path;
     }
 
-    public void setPath(String path)
-    {
+    public void setPath(String path) {
         this.path = path;
     }
 
-    public int getGameType()
-    {
+    public int getGameType() {
         return gameType;
     }
 
-    public void setGameType(int gameType)
-    {
+    public void setGameType(int gameType) {
         this.gameType = gameType;
     }
 
@@ -184,15 +167,12 @@ public class SubGame
 
     public boolean selected;
 
-    public interface DialogCallback
-    {
+    public interface DialogCallback {
         void dismiss();
     }
 
-    public void edit(final Activity act, final DialogCallback callback)
-    {
-        if (tag != null)
-        {
+    public void edit(final Activity act, final DialogCallback callback) {
+        if (tag != null) {
             Dialog dialog = new Dialog(act);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.dialog_subgame_options);
@@ -206,29 +186,23 @@ public class SubGame
             final TextView imagePath = dialog.findViewById(R.id.subgame_image_path);
 
             String imageOverride = AppSettings.getStringOption(act, tag + "imageOverride", null);
+
             if (imageOverride != null)
                 imagePath.setText(imageOverride);
             else
                 imagePath.setText("[default]");
 
-
-            imageChoose.setOnClickListener(new View.OnClickListener()
-            {
+            imageChoose.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
-                    FileSelectDialog.FileSelectCallback callback = new FileSelectDialog.FileSelectCallback()
-                    {
+                public void onClick(View v) {
+                    FileSelectDialog.FileSelectCallback callback = new FileSelectDialog.FileSelectCallback() {
                         @Override
-                        public void dismiss(ArrayList<String> filesArray)
-                        {
+                        public void dismiss(ArrayList<String> filesArray) {
                             String imageOverride;
 
-                            if (filesArray == null || filesArray.size() == 0)
-                            {
+                            if (filesArray == null || filesArray.size() == 0) {
                                 imageOverride = null;
-                            } else
-                            {
+                            } else {
                                 imageOverride = filesArray.get(0);
                             }
 
@@ -245,15 +219,44 @@ public class SubGame
                 }
             });
 
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
-            {
+            Spinner wheelSpinner = dialog.findViewById(R.id.weapon_wheel_spinner);
+            List<String> list = new ArrayList<String>();
+            list.add("4");
+            list.add("8");
+            list.add("10");
+
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(act, android.R.layout.simple_spinner_item, list);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            wheelSpinner.setAdapter(dataAdapter);
+            wheelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onDismiss(DialogInterface dialog)
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                    setWheelNbr(Integer.parseInt(list.get(position)));
+                    AppSettings.setIntOption(act, tag + "wheel_nbr", getWheelNbr());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+            int pos = 0;
+            for (int n = 0; n < list.size(); n++) {
+                if(getWheelNbr() == Integer.parseInt(list.get(n)))
                 {
+                    pos = n;
+                    break;
+                }
+            }
+            wheelSpinner.setSelection(pos);
+
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
                     setTitle(title.getText().toString());
                     save(act);
-                    if (callback != null)
-                    {
+                    if (callback != null) {
                         callback.dismiss();
                     }
                 }
