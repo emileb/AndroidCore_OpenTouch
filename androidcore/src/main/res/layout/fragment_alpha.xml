@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/imageview_doom_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2"
+        android:scaleType="fitCenter"
+       />
+
+    <TextView
+        android:id="@+id/textview_doom_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1b1b1b"
+        android:gravity="center_horizontal"
+        android:textSize="25sp"/>
+
+    <android.support.v7.widget.RecyclerView
+
+        android:id="@+id/list"
+        android:name="com.opentouchgaming.deltatouch.WadsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/textview_doom_args"
+        android:layout_below="@+id/textview_doom_title"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:choiceMode="singleChoice"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        tools:context="com.opentouchgaming.deltatouch.DoomFragment"
+       />
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/imagebutton_change_version"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textview_doom_title"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_swap_horiz_black"/>
+
+    <TextView
+        android:id="@+id/textview_doom_args"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#1b1b1b"
+        android:textSize="15dp"/>
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/imageview_game_start"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="20dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_play_circle_filled_black_80dp"/>
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/imageview_doom_show_args"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="20dp"
+        android:layout_toLeftOf="@+id/imageview_game_start"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_keyboard_black_24dp"/>
+
+    <include layout="@layout/left_slide_panel"/>
+
+
+    <include layout="@layout/right_slide_panel"/>
+
+</RelativeLayout>

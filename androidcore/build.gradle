@@ -49,6 +49,7 @@ dependencies {
     }
 
     implementation project(path: ':saffal')
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
     implementation project(path: ':changeloglib')

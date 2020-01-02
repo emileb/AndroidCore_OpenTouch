@@ -3,8 +3,11 @@ package com.opentouchgaming.androidcore;
 import android.content.Context;
 import android.os.Environment;
 
+import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Emile on 03/08/2017.
@@ -33,15 +36,21 @@ public class AppInfo
     public static String cacheFiles;
     public static String directory;
 
+    public static String packageId;
+    public static String emailAddress;
+    public static String key;
+
     public static boolean isAndroidTv;
 
     public static GameEngine gameEngines[];
 
     public static GameEngine currentEngine;
 
+    public static ArrayList<Tutorial> tutorials = new ArrayList<>();
+
     private static Context context;
 
-    static public void setAppInfo(Context ctx, Apps app, String title, String directory, boolean isAndroidTv )
+    static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email,  boolean isAndroidTv )
     {
         AppInfo.context = ctx;
         AppInfo.app = app;
@@ -49,6 +58,9 @@ public class AppInfo
         AppInfo.directory = directory;
         AppInfo.internalFiles = ctx.getFilesDir().getAbsolutePath();
         AppInfo.cacheFiles =  ctx.getCacheDir().toString();
+
+        AppInfo.packageId = pkg;
+        AppInfo.emailAddress = email;
 
         AppInfo.isAndroidTv = isAndroidTv;
     }

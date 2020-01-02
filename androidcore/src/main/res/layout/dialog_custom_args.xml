@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_margin="10dp"
+              android:minWidth="500dp"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Custom args"
+        android:textSize="30dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/editText_custom_args"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/imagebutton_clear_custom"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/imagebutton_clear_custom"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toLeftOf="@+id/imagebutton_args_history"
+            android:background="@drawable/focusable"
+            app:srcCompat="@drawable/ic_clear_white_24dp"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/imagebutton_args_history"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/focusable"
+            app:srcCompat="@drawable/ic_history_white_24dp"/>
+    </RelativeLayout>
+
+</LinearLayout>
