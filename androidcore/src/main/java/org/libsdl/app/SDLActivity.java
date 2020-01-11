@@ -1468,7 +1468,10 @@ class SDLMain implements Runnable
             }
         }
         Log.v("SDL", "Native .so path = " + nativeSoPath);
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, wheelNbr,args_array, gameType, gamePath, logFilename,nativeSoPath);
+        Log.v("SDL", "gamePath = " + gamePath);
+        Log.v("SDL", "logFilename = " + logFilename);
+
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath);
 
         Log.v("SDL", "SDL thread terminated");
     }
