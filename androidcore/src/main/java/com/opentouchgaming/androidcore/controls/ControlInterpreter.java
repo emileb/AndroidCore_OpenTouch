@@ -268,16 +268,16 @@ public class ControlInterpreter {
         controlInterface.backButton_if();
     }
 
-    float deadRegion = 0.2f;
+    //float deadRegion = 0.2f;
 
-    private float analogCalibrate(float v) {
-        if ((v < deadRegion) && (v > -deadRegion))
+    private float analogCalibrate(ActionInput ai, float v) {
+        if ((v < ai.deadZone) && (v > -ai.deadZone))
             return 0;
         else {
             if (v > 0)
-                return (v - deadRegion) / (1 - deadRegion);
+                return (v - ai.deadZone) / (1 - ai.deadZone);
             else
-                return (v + deadRegion) / (1 - deadRegion);
+                return (v + ai.deadZone) / (1 - ai.deadZone);
         }
     }
 
@@ -293,7 +293,7 @@ public class ControlInterpreter {
                     int invert;
                     invert = ai.invert ? -1 : 1;
                     float raw = event.getAxisValue(ai.source);
-                    float rawDeadZone = analogCalibrate(raw);
+                    float rawDeadZone = analogCalibrate(ai, raw);
                     if (ai.actionCode == PortActDefs.ACTION_ANALOG_PITCH) {
                         controlInterface.analogPitch_if(ControlConfig.LOOK_MODE_JOYSTICK, rawDeadZone * invert * ai.scale, raw);
                     } else if (ai.actionCode == PortActDefs.ACTION_ANALOG_YAW) {

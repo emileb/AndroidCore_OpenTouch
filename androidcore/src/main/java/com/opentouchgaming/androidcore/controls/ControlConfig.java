@@ -140,7 +140,9 @@ public class ControlConfig implements Serializable {
                     a.sourceType = d.sourceType;
                     a.sourcePositive = d.sourcePositive;
                     a.scale = d.scale;
+                    a.deadZone = d.deadZone;
                     if (a.scale == 0) a.scale = 1;
+                    if (a.deadZone == 0) a.deadZone = 0.2f;
                 }
             }
         }
@@ -165,6 +167,8 @@ public class ControlConfig implements Serializable {
 
 
     void updated() {
+        log.log(D, "updated");
+
         try {
             saveControls(configFilename);
         } catch (IOException e) {
@@ -176,48 +180,12 @@ public class ControlConfig implements Serializable {
     public boolean showExtraOptions(Activity act, int pos) {
         final ActionInput in = actions.get(pos);
 
-        if (in.actionType == ActionInput.ActionType.ANALOG) {
-            Dialog dialog = new Dialog(act);
-            dialog.setTitle("Axis Sensitivity Setting");
-            dialog.setCancelable(true);
-
-            final LinearLayout l = new LinearLayout(act);
-            l.setOrientation(LinearLayout.VERTICAL);
-            l.setMinimumWidth((int) Utils.convertDpToPixel(500, act));
-
-            final SeekBar sb = new SeekBar(act);
-            l.addView(sb);
-
-
-            sb.setMax(100);
-            sb.setProgress((int) (in.scale * 50));
-
-            final CheckBox invert = new CheckBox(act);
-            invert.setText("Invert");
-            invert.setChecked(in.invert);
-
-            l.addView(invert);
-
-            dialog.setOnDismissListener(new OnDismissListener() {
-
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    in.scale = (float) sb.getProgress() / (float) 50;
-                    in.invert = invert.isChecked();
-                    updated();
-                }
-            });
-
-            dialog.setContentView(l);
-
-            dialog.show();
+        if (in.extraDialog != null) {
+            in.extraDialog.show(act, in, this::updated);
             return true;
         }
-        else if( in.extraDialog != null )
-        {
-            in.extraDialog.show(act,in);
-        }
-        return false;
+        else
+            return false;
     }
 
     public void startMonitor(Activity act, int pos) {
@@ -392,8 +360,7 @@ public class ControlConfig implements Serializable {
                         showExtraOptions(ctx, nbr);
                     }
                 });
-            }
-            else
+            } else
                 setting_image.setVisibility(View.GONE);
 
 

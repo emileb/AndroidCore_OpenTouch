@@ -3,6 +3,7 @@ package com.opentouchgaming.androidcore.controls;
 import android.app.Activity;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 
 public class ActionInput implements Serializable, Cloneable
@@ -21,13 +22,14 @@ public class ActionInput implements Serializable, Cloneable
     }
     public interface ActionInputExtra
     {
-        void show(Activity activity,ActionInput action);
+        void show(Activity activity, ActionInput action,Runnable runnable);
     }
 
     public String tag;
     public String description;
     public boolean invert;
     public float scale = 1; //senstivty for analog
+    public float deadZone = 0.2f;
 
     public ActionType actionType;
     public int actionCode;

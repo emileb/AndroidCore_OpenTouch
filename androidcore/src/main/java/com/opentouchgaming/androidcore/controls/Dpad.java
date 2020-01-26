@@ -148,7 +148,7 @@ public class Dpad
 
     public static boolean isDpadDevice(InputEvent event)
     {
-        Log.d("test","source = " +event.getSource() );
+        //Log.d("test","source = " +event.getSource() );
         // Check that input comes from a device with directional pads.
 
         // Get the source, but clear the button bit which is always set

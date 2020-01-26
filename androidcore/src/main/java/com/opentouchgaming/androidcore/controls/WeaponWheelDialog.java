@@ -47,7 +47,7 @@ public class WeaponWheelDialog implements ActionInput.ActionInputExtra {
     }
 
     @Override
-    public void show(Activity activity, ActionInput action) {
+    public void show(Activity activity, ActionInput action,Runnable runnable) {
         log.log(DebugLog.Level.D, "SHOW");
 
         this.activity = activity;
