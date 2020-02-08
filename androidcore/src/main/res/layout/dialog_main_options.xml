@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/top_linearlayout"
@@ -13,73 +15,107 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Game directory"
-            android:textSize="20sp"/>
+            android:gravity="center_horizontal"
+            android:text="Primary folder"
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Directory which contains your game files. MUST have write access."
-            android:textSize="15sp"/>
+            android:gravity="center_horizontal"
+            android:text="(MUST be writable)"
+            android:textSize="10sp" />
 
-        <TextView
-            android:id="@+id/app_dir_textview"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="/"
-            android:textColor="@color/light_green"
-            android:textSize="15sp"/>
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
+            <TextView
+                android:id="@+id/app_dir_textview"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/app_dir_options_button"
+                android:gravity="center_vertical"
+                android:text="/"
+                android:textColor="@color/light_green"
+                android:textSize="15sp" />
 
-            <Button
-                android:id="@+id/sdcard_base_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="SDCard"/>
-
-            <Button
-                android:id="@+id/reset_base_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Reset"/>
-
-            <Button
-                android:id="@+id/choose_base_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Choose"/>
-        </LinearLayout>
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/app_dir_options_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="10dp"
-            android:background="@android:color/darker_gray"/>
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Secondary folder"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="(Optional location to load game data from)"
+            android:textSize="10sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/appSec_dir_textview"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/appSec_dir_options_button"
+                android:gravity="center_vertical"
+                android:text="/"
+                android:textColor="@color/light_green"
+                android:textSize="15sp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appSec_dir_options_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+        </RelativeLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="10dp"
+            android:background="@android:color/darker_gray" />
 
         <CheckBox
             android:id="@+id/immersive_mode_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Full screen (Immersive Mode)"/>
+            android:text="Full screen (Immersive Mode)" />
 
         <CheckBox
             android:id="@+id/expand_cutout_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Expand game screen into notch (if present)"/>
+            android:text="Expand game screen into notch (if present)" />
 
         <CheckBox
             android:id="@+id/alt_touch_code_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Use alternative touch code (may fix touch screen issues)"/>
+            android:text="Use alternative touch code (may fix touch screen issues)" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,12 +125,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Divide screen resolution: "/>
+                android:text="Divide screen resolution: " />
 
             <Spinner
                 android:id="@+id/res_div_spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -102,37 +138,37 @@
             android:id="@+id/capture_mouse_checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Use mouse"/>
+            android:text="Use mouse" />
 
         <CheckBox
             android:id="@+id/hide_game_menu_checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Disable Menu and Game touchscreen graphics"/>
+            android:text="Disable Menu and Game touchscreen graphics" />
 
         <CheckBox
             android:id="@+id/use_system_keyboard_checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Use Android keyboard"/>
+            android:text="Use Android keyboard" />
 
         <CheckBox
             android:id="@+id/enable_vibrate_checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enable vibrate"/>
+            android:text="Enable vibrate" />
 
         <CheckBox
             android:id="@+id/group_similar_engines_checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Group similar engines on left panel (Restart needed)"/>
+            android:text="Group similar engines on left panel (Restart needed)" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="10dp"
-            android:background="@android:color/darker_gray"/>
+            android:background="@android:color/darker_gray" />
 
     </LinearLayout>
 </ScrollView>

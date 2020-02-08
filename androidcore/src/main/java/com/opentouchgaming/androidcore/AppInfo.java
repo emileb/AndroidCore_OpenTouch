@@ -1,6 +1,9 @@
 package com.opentouchgaming.androidcore;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 
 import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
@@ -36,6 +39,11 @@ public class AppInfo
     public static String cacheFiles;
     public static String directory;
 
+    public static String flashRoot; // Root of internal flash
+    public static String sdcardRoot; // Root of the SD card
+    public static String sdcardWritable; // WRITABLE area on the SD dard
+
+
     public static String packageId;
     public static String emailAddress;
     public static String key;
@@ -50,6 +58,8 @@ public class AppInfo
 
     private static Context context;
 
+    private static final int SCOPED_VERSION = 30;
+
     static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email,  boolean isAndroidTv )
     {
         AppInfo.context = ctx;
@@ -63,7 +73,29 @@ public class AppInfo
         AppInfo.emailAddress = email;
 
         AppInfo.isAndroidTv = isAndroidTv;
+
+
+        AppInfo.flashRoot = Environment.getExternalStorageDirectory().toString();
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            File files[] = context.getExternalFilesDirs(null);
+            log.log(DebugLog.Level.D,"files lenth = " + files.length);
+            if( files != null && files.length > 1 && files[1] != null) {
+
+                if( !files[1].exists())
+                    files[1].mkdirs();
+
+                AppInfo.sdcardWritable = files[1].getAbsolutePath();
+                AppInfo.sdcardRoot = AppInfo.sdcardWritable.substring(0, AppInfo.sdcardWritable.indexOf("/Android/data"));
+            }
+        }
+
+        log.log(DebugLog.Level.D, "flashRoot = " + flashRoot);
+        log.log(DebugLog.Level.D, "sdcardRoot = " + sdcardRoot);
+        log.log(DebugLog.Level.D, "sdcardWritable = " + sdcardWritable);
     }
+
 
     static public GameEngine getGameEngine( GameEngine.Engine type )
     {
@@ -78,9 +110,54 @@ public class AppInfo
         }
         return ret;
     }
+
+    static public boolean isScoped()
+    {
+        return  (Build.VERSION.SDK_INT >= SCOPED_VERSION);
+    }
+
     static public void setAppDirectory(String appDir)
     {
         AppSettings.setStringOption(context, "app_dir", appDir);
+    }
+
+    static public void setAppSecDirectory(String appDir)
+    {
+        AppSettings.setStringOption(context, "app_sec_dir", appDir);
+    }
+
+
+    // PRIMARY DEFAULT
+    static public String getDefaultAppDirectory()
+    {
+        if (isScoped() == false) {
+            return flashRoot + "/OpenTouch/" + directory;
+        }
+        else // Android R!!!! FUCKK
+        {
+            File files[] = context.getExternalFilesDirs(null);
+
+            if( !files[0].exists())
+                files[0].mkdirs();
+
+            return files[0].getAbsolutePath();
+        }
+    }
+
+    // SECONDARY DEFAULT
+    static public String getDefaultAppSecDirectory()
+    {
+        if( sdcardRoot != null ) {
+            if (isScoped() == false) {
+                return sdcardRoot + "/OpenTouch/" + directory;
+            } else {
+                return sdcardWritable;
+            }
+        }
+        else
+        {
+            return null;
+        }
     }
 
     static public String getAppDirectory()
@@ -88,34 +165,56 @@ public class AppInfo
         String appDir = AppSettings.getStringOption(context, "app_dir", null);
         if (appDir == null)
         {
-            appDir = Environment.getExternalStorageDirectory().toString() + "/OpenTouch/" + directory;
+            appDir = getDefaultAppDirectory();
             AppSettings.setStringOption(context, "app_dir", appDir);
         }
 
-        // Check if exists, create if not
-        File file = new File(appDir);
-        if (!file.exists())
-        {
-            if( !file.mkdirs() )
-            {
-                log.log(DebugLog.Level.E, "Did not create base folder");
-            }
+        Utils.mkdirs( AppInfo.getContext(), appDir,"Put doom.wad here.txt" );
 
-            File f = new File(appDir, "temp_");
-            try {
-                f.createNewFile();
-                new SingleMediaScanner(context, false,  f.getAbsolutePath());
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+        return appDir;
+    }
+
+    static public String getAppSecDirectory()
+    {
+        String appDir = AppSettings.getStringOption(context, "app_sec_dir", null);
+        if (appDir == null)
+        {
+            appDir = getDefaultAppSecDirectory();
+            AppSettings.setStringOption(context, "app_sec_dir", appDir);
+        }
+
+        //if (appDir == null)
+        //    appDir = "/";
+
+        return appDir;
+    }
+
+    static public String replaceRootPaths(String path)
+    {
+        if( path != null) {
+            String ret = path.replace(flashRoot, "<Internal>");
+            if (sdcardRoot != null) {
+                ret = ret.replace(sdcardRoot, "<SD-Card>");
             }
+            return ret;
         }
         else
         {
-            new File(appDir, "temp_").delete();
+            return "Not set";
         }
+    }
 
-        return appDir;
+    static public String hideAppPaths(String path)
+    {
+        String appPath = getAppDirectory();
+        String appSecPath = getAppSecDirectory();
+
+        String ret = path.replace(appPath + "/", "");
+
+        if( appSecPath != null) {
+            ret = ret.replace(appSecPath + "/", "");
+        }
+        return ret;
     }
 
     static public String getGamepadDirectory()

@@ -168,7 +168,6 @@ public class EnginesPanel
             // Add buttons to the group
             for( int e = 0; e < group.engines.size(); e++ )
             {
-                log.log(DebugLog.Level.D,"e = " + e);
                 GameEngine engine = group.engines.get(e);
 
                 // MAIN BUTTON
