@@ -1,6 +1,7 @@
 package com.opentouchgaming.androidcore.common;
 
 import android.app.Activity;
+import android.arch.core.util.Function;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -645,7 +646,12 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     {
         if (engine.engineOptions != null)
         {
-            engine.engineOptions.showDialog(getActivity(), engine, selectedVersion, AppInfo.getAppDirectory());
+            engine.engineOptions.showDialog(getActivity(), engine, selectedVersion, AppInfo.getAppDirectory(), version ->
+            {
+                selectedVersion = version;
+                selectEngine(AppInfo.currentEngine);
+                return null;
+            });
         }
     }
 

@@ -1,6 +1,8 @@
 package com.opentouchgaming.androidcore;
 
 import android.app.Activity;
+import android.arch.core.util.Function;
+
 
 /**
  * Created by Emile on 10/12/2017.
@@ -13,7 +15,7 @@ public interface EngineOptionsInterface
         void launch( String mpArgs );
     }
 
-    void showDialog(final Activity act, GameEngine engine, int version,final String root);
+    void showDialog(final Activity act, GameEngine engine, int version,final String root, Function<Integer,Void> update);
     String getArgs(int version);
     int getGLESVersion(int version);
     boolean hasMultiplayer();
