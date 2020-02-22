@@ -90,7 +90,7 @@ public class AppInfo
                 AppInfo.sdcardRoot = AppInfo.sdcardWritable.substring(0, AppInfo.sdcardWritable.indexOf("/Android/data"));
             }
         }
-
+        log.log(DebugLog.Level.D, "Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
         log.log(DebugLog.Level.D, "flashRoot = " + flashRoot);
         log.log(DebugLog.Level.D, "sdcardRoot = " + sdcardRoot);
         log.log(DebugLog.Level.D, "sdcardWritable = " + sdcardWritable);
