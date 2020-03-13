@@ -305,6 +305,12 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         log.log(D, "ERROR, setLauncher must be overridden");
     }
 
+    public View getExtraOptions()
+    {
+        // Override if we have extra options
+        return null;
+    }
+
     public  void setFocusMode(FocusMode mode)
     {
         log.log(D, "setFocusMode: mode = " + mode.toString());
@@ -601,9 +607,9 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     {
         if (selectedSubGame != null)
         {
-            argsFinal = launcher.getArgs(selectedSubGame);
+            argsFinal = launcher.getArgs(AppInfo.currentEngine,selectedSubGame);
             argsFinal += " " + engineData.getCurrentCustomArgs().getFinalArgs();
-            argsTextView.setText(argsFinal);
+            argsTextView.setText( AppInfo.replaceRootPaths(argsFinal));
         } else
         {
             argsTextView.setText("Select game");
@@ -648,6 +654,12 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         {
             engine.engineOptions.showDialog(getActivity(), engine, selectedVersion, AppInfo.getAppDirectory(), version ->
             {
+                // For redraw of items incase changed layouts
+                recyclerView.setAdapter(null);
+                recyclerView.setLayoutManager(null);
+                recyclerView.setAdapter(subGameAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
                 selectedVersion = version;
                 selectEngine(AppInfo.currentEngine);
                 return null;
@@ -666,7 +678,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         } else if (code == TOOL_BUTTON_SETTINGS)
         {
 
-            new OptionsDialog(getActivity(), null)
+            new OptionsDialog(getActivity(), getExtraOptions())
             {
                 public void dismiss()
                 {

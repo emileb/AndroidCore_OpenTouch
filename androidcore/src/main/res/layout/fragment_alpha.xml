@@ -20,8 +20,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#1b1b1b"
+        android:focusable="false"
         android:gravity="center_horizontal"
-        android:textSize="25sp"/>
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:textSize="20sp"/>
 
     <android.support.v7.widget.RecyclerView
 

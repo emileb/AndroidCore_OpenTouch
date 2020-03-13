@@ -28,8 +28,10 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
+        boolean useMini = AppSettings.getBoolOption(parent.getContext(),"use_mini_ui", false);
+
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_subgame, parent, false);
+                .inflate(useMini ? R.layout.list_item_subgame_mini : R.layout.list_item_subgame, parent, false);
         return new ViewHolder(view);
     }
 
@@ -39,8 +41,8 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         holder.mItem = mValues.get(position);
 
         holder.mIdView.setText(holder.mItem.title);
-        holder.mDetail1.setText(holder.mItem.detail1);
-        holder.mDetail2.setText(holder.mItem.detail2);
+        holder.mDetail1.setText(AppInfo.replaceRootPaths(holder.mItem.detail1));
+        holder.mDetail2.setText(AppInfo.replaceRootPaths(holder.mItem.detail2));
         if( holder.mItem.getImagePng() != null )
         {
             Glide.with(AppInfo.getContext())

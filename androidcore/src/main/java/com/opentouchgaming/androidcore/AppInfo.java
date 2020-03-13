@@ -11,6 +11,7 @@ import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Emile on 03/08/2017.
@@ -160,7 +161,7 @@ public class AppInfo
         }
     }
 
-    static public String getAppDirectory()
+    static public String getAppDirectory( String fileInfo)
     {
         String appDir = AppSettings.getStringOption(context, "app_dir", null);
         if (appDir == null)
@@ -169,9 +170,14 @@ public class AppInfo
             AppSettings.setStringOption(context, "app_dir", appDir);
         }
 
-        Utils.mkdirs( AppInfo.getContext(), appDir,"Put doom.wad here.txt" );
+        Utils.mkdirs( AppInfo.getContext(), appDir,fileInfo);
 
         return appDir;
+    }
+
+    static public String getAppDirectory()
+    {
+        return getAppDirectory( null);
     }
 
     static public String getAppSecDirectory()

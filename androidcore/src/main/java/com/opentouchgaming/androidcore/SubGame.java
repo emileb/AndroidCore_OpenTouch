@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.opentouchgaming.androidcore.ui.FileSelectDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,8 @@ public class SubGame {
     String detail2;
 
     String rootPath;
-    String path;
+
+    String name;
     int gameType;
 
     String tag; // unique tag for each sub-game
@@ -41,9 +43,9 @@ public class SubGame {
     String extraArgs;
     int wheelNbr;
 
-    public SubGame(String tag, String title, String path, String rootPath, int gameType, int image, String detail1, String detail2, int wheelNbr) {
+    public SubGame(String tag, String title, String name, String rootPath, int gameType, int image, String detail1, String detail2, int wheelNbr) {
         this.tag = tag;
-        this.path = path;
+        this.name = name;
         this.rootPath = rootPath;
         this.title = title;
         this.image = image;
@@ -59,6 +61,16 @@ public class SubGame {
             String title = AppSettings.getStringOption(ctx, tag + "title", null);
             if (title != null)
                 setTitle(title);
+
+            // Check for icon.png file
+            if( rootPath != null && name != null )
+            {
+                String icon = rootPath + "/" + name + "/icon.png";
+                if( new File(icon).exists())
+                {
+                    setImagePng(icon);
+                }
+            }
 
             String imageOverride = AppSettings.getStringOption(ctx, tag + "imageOverride", null);
             if (imageOverride != null)
@@ -92,6 +104,23 @@ public class SubGame {
         downloadPath = path;
         downloadFilename = filename;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRootPath() {
+        return rootPath;
+    }
+
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
+    }
+
 
     public String getDownloadPath() {
         return downloadPath;
@@ -141,13 +170,6 @@ public class SubGame {
         this.detail2 = detail2;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     public int getGameType() {
         return gameType;
@@ -215,7 +237,7 @@ public class SubGame {
                         }
                     };
 
-                    new FileSelectDialog(act, callback, rootPath + "/" + path, new String[]{".png", ".jpg"}, false);
+                    new FileSelectDialog(act, callback, rootPath + "/" + name, new String[]{".png", ".jpg"}, false);
                 }
             });
 
@@ -266,4 +288,24 @@ public class SubGame {
         }
     }
 
+    static public void addGame(ArrayList<SubGame> availableSubGames, String rootPath1, String rootPath2, String tag, String subDir, int gameType, int weaponWheel, String[] files, int defaultIconRes, String title, String installDetails, String mkdirFilename) {
+
+        String inPath = Utils.checkFilesInPaths(rootPath1, rootPath2, files);
+
+        if (inPath != null) {
+            String pathInfo = inPath + "/" + subDir;
+            String fileInfo = Utils.filesInfoString(pathInfo, null, 3);
+            SubGame quake = new SubGame(tag, title, subDir, inPath, gameType, defaultIconRes, pathInfo, fileInfo, weaponWheel);
+            availableSubGames.add(quake);
+        } else {
+            String fullPath = rootPath1 + "/" + subDir;
+
+            Utils.mkdirs(AppInfo.getContext(), fullPath, mkdirFilename);
+
+            if( AppSettings.getBoolOption(AppInfo.getContext(),"hide_install_hints", false) == false ) {
+                SubGame quake = new SubGame(null, title + " not yet installed", null, fullPath, gameType, R.drawable.questionmark, installDetails, fullPath, weaponWheel);
+                availableSubGames.add(quake);
+            }
+        }
+    }
 }

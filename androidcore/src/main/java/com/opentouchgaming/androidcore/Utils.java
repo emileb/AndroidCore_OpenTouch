@@ -71,20 +71,19 @@ public class Utils {
 
         if (!file.exists()) {
             if (!file.mkdirs()) {
-                log.log(DebugLog.Level.E, "ERROR, could not create folder: " + path );
+                log.log(DebugLog.Level.E, "ERROR, could not create folder: " + path);
             }
         }
 
-        if( infoFile == null )
+        if (infoFile == null)
             infoFile = ".tmp";
 
         File info = new File(path, infoFile);
-        if( !info.exists() )
-        {
+        if (!info.exists()) {
             try {
                 info.createNewFile();
                 // 2 ways to try to make the folder visible over USB
-                AppInfo.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,  Uri.parse("file://" + info.getAbsolutePath())));
+                AppInfo.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + info.getAbsolutePath())));
                 new SingleMediaScanner(context, false, info.getAbsolutePath());
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -178,6 +177,26 @@ public class Utils {
 
     }
 
+    static public boolean checkFilesInPath(String path1, String[] files) {
+        boolean filesPresent = true;
+        for (String file : files) {
+            if (new File(path1 + "/" + file).exists() == false) {
+                filesPresent = false;
+                break;
+            }
+        }
+        return filesPresent;
+    }
+
+    static public String checkFilesInPaths(String path1, String path2, String[] files) {
+        if ((path1 != null) && (checkFilesInPath(path1, files) == true))
+            return path1;
+        else if ((path1 != null) && (checkFilesInPath(path2, files) == true))
+            return path2;
+        else
+            return null;
+    }
+
     static public void copyPNGAssets(Context ctx, String dir) {
         copyPNGAssets(ctx, dir, "");
     }
@@ -223,6 +242,23 @@ public class Utils {
         ExtractAsset.ctx = ctx;
         ExtractAsset.totalSize = size;
         new ExtractAsset().execute(file, dest);
+    }
+
+    static public ArrayList<File> listFiles(String path1, String path2) {
+        ArrayList<File> files = new ArrayList<>();
+        if (path1 != null) {
+            File[] f = new File(path1).listFiles();
+            if (f != null)
+                files.addAll(Arrays.asList(f));
+        }
+
+        if (path2 != null) {
+            File[] f = new File(path2).listFiles();
+            if (f != null)
+                files.addAll(Arrays.asList(f));
+        }
+
+        return files;
     }
 
     static private class ExtractAsset extends AsyncTask<String, Integer, Long> {
@@ -674,21 +710,25 @@ public class Utils {
     }
 
     public static String filesInfoString(String path, String ext, int maxFiles) {
-        File files[] = new File(path).listFiles();
 
         String pakFiles = "[ ";
         int nbrFiles = 0;
         int nbrDirs = 0;
         int totalSize = 0;
-        for (File file : files) {
-            if (file.isDirectory()) {
-                nbrDirs++;
-            } else if (ext == null || file.getName().toLowerCase().endsWith(ext)) {
-                if (nbrFiles < maxFiles) {
-                    pakFiles += file.getName() + ", ";
+
+        File files[] = new File(path).listFiles();
+
+        if( files != null ) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    nbrDirs++;
+                } else if (ext == null || file.getName().toLowerCase().endsWith(ext)) {
+                    if (nbrFiles < maxFiles) {
+                        pakFiles += file.getName() + ", ";
+                    }
+                    totalSize += file.length();
+                    nbrFiles++;
                 }
-                totalSize += file.length();
-                nbrFiles++;
             }
         }
         pakFiles += "]";

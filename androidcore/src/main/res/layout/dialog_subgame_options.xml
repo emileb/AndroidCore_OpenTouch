@@ -58,6 +58,11 @@
             android:layout_toLeftOf="@id/subgame_image_choose_button"
             android:text=""/>
 
+        <TextView
+          android:layout_below="@id/image_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tip: Place a file called 'icon.png' in the mod folder."/>
         <Button
             android:id="@+id/subgame_image_choose_button"
             android:layout_width="wrap_content"

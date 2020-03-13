@@ -8,11 +8,10 @@
 
     <ImageView
         android:id="@+id/imageview"
-        android:layout_width="150dp"
-        android:layout_height="80dp"
-        android:layout_margin="5dp"
+        android:layout_width="88dp"
+        android:layout_height="50dp"
+        android:layout_margin="2dp"
         android:scaleType="fitXY" />
-
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -20,8 +19,8 @@
 
         <ImageView
             android:id="@+id/game_type_imageview"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:scaleType="fitXY" />
 
         <LinearLayout
@@ -33,7 +32,6 @@
                 android:id="@+id/textview_iwad_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
                 android:gravity="center_horizontal"
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -42,17 +40,15 @@
                 android:id="@+id/textview_iwad_detail1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:gravity="center_vertical"
-                android:textColor="#808080" />
+                android:textColor="#808080"
+                android:gravity="center_vertical" />
 
             <TextView
                 android:id="@+id/textview_iwad_detail2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
                 android:gravity="center_vertical"
-                android:textColor="#808080" />
+                android:visibility="gone"/>
 
         </LinearLayout>
     </RelativeLayout>

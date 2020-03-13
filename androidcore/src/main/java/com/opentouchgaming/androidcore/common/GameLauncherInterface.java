@@ -17,7 +17,9 @@ public interface GameLauncherInterface
 
     String getRunDirectory();
 
-    String getArgs( SubGame subGame );
+    String getSecondaryDirectory();
 
-    boolean checkForDownloads(Activity activity, SubGame subGame );
+    String getArgs( GameEngine engine, SubGame subGame );
+
+    boolean checkForDownloads(Activity activity, GameEngine engine, SubGame subGame);
 }
