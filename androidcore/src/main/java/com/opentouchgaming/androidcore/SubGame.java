@@ -62,6 +62,10 @@ public class SubGame {
             if (title != null)
                 setTitle(title);
 
+            String args = AppSettings.getStringOption(ctx, tag + "extraArgs", null);
+            if (args != null)
+                setExtraArgs(args);
+
             // Check for icon.png file
             if( rootPath != null && name != null )
             {
@@ -86,6 +90,7 @@ public class SubGame {
     public void save(Context ctx) {
         if (tag != null) {
             AppSettings.setStringOption(ctx, tag + "title", title);
+            AppSettings.setStringOption(ctx, tag + "extraArgs", extraArgs);
         }
     }
 
@@ -204,6 +209,9 @@ public class SubGame {
             final EditText title = dialog.findViewById(R.id.subgame_title_edittext);
             title.setText(getTitle());
 
+            final EditText args = dialog.findViewById(R.id.subgame_args_edittext);
+            args.setText(getExtraArgs());
+
             final Button imageChoose = dialog.findViewById(R.id.subgame_image_choose_button);
             final TextView imagePath = dialog.findViewById(R.id.subgame_image_path);
 
@@ -263,6 +271,7 @@ public class SubGame {
                 public void onNothingSelected(AdapterView<?> parent) {
                 }
             });
+
             int pos = 0;
             for (int n = 0; n < list.size(); n++) {
                 if(getWheelNbr() == Integer.parseInt(list.get(n)))
@@ -271,13 +280,17 @@ public class SubGame {
                     break;
                 }
             }
+
             wheelSpinner.setSelection(pos);
 
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     setTitle(title.getText().toString());
+                    setExtraArgs(args.getText().toString());
+
                     save(act);
+
                     if (callback != null) {
                         callback.dismiss();
                     }

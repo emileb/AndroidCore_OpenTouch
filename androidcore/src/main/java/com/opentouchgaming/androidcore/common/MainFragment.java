@@ -114,6 +114,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
     public GameLauncherInterface launcher;
 
+    private boolean multiselectEnable = false;
+    private ArrayList<SubGame> multiselectGames = new ArrayList<>();
 
 
     public final ToolsPanel.ToolsPanelButton[] toolsButtons = new ToolsPanel.ToolsPanelButton[]
@@ -184,7 +186,20 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         recyclerView.setFocusable(false); // We always intercept gamepad to control the list
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        subGameAdapter = new SubGameRecyclerViewAdapter(availableSubGames);
+
+        subGameAdapter = new SubGameRecyclerViewAdapter(availableSubGames, input -> {
+
+            if(multiselectEnable) {
+                if (multiselectGames.contains(input))
+                    multiselectGames.remove(input);
+                else
+                    multiselectGames.add(input);
+
+                updateArgs();
+            }
+            return null;
+        });
+
         recyclerView.setAdapter(subGameAdapter);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), LinearLayoutManager.VERTICAL);
@@ -562,6 +577,14 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         if (selectedVersion > engine.versions.length - 1)
             selectedVersion = 0;
 
+        // Only DP can multiselect
+        if( engine.engine == GameEngine.Engine.QUAKEDP)
+            multiselectEnable = true;
+        else
+            multiselectEnable = false;
+
+        subGameAdapter.setMultiSelect(multiselectEnable);
+
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new AccelerateInterpolator());
         fadeIn.setDuration(500);
@@ -608,6 +631,14 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         if (selectedSubGame != null)
         {
             argsFinal = launcher.getArgs(AppInfo.currentEngine,selectedSubGame);
+
+            for(SubGame sg : multiselectGames)
+            {
+                argsFinal +=  launcher.getArgs(AppInfo.currentEngine,sg);
+            }
+
+            argsFinal += " " + selectedSubGame.getExtraArgs();
+
             argsFinal += " " + engineData.getCurrentCustomArgs().getFinalArgs();
             argsTextView.setText( AppInfo.replaceRootPaths(argsFinal));
         } else
@@ -618,6 +649,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
     public  void selectSubGame(int newPos)
     {
+        multiselectGames.clear();
+
         if (availableSubGames.size() == 0)
             return;
 

@@ -301,14 +301,11 @@ public class EnginesPanel
             if (engine == gameEngines[n]) // Set selected image
             {
                 button.imageButton.setActivated(true);
-                if(useGroups)
-                    button.imageButtonCfg.setVisibility(View.VISIBLE);
-
+                button.imageButtonCfg.setVisibility(View.VISIBLE);
             } else
             {
                 button.imageButton.setActivated(false);
-                if(useGroups)
-                    button.imageButtonCfg.setVisibility(View.INVISIBLE);
+                button.imageButtonCfg.setVisibility(View.INVISIBLE);
             }
         }
 

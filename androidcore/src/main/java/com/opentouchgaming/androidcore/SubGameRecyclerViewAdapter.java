@@ -1,5 +1,6 @@
 package com.opentouchgaming.androidcore;
 
+import android.arch.core.util.Function;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +20,20 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
 
     private final ArrayList<SubGame> mValues;
 
-    public SubGameRecyclerViewAdapter(ArrayList<SubGame> items)
+    private final Function<SubGame,Void> subgameAdditional;
+
+    private boolean multiSelect = false;
+
+    public SubGameRecyclerViewAdapter(ArrayList<SubGame> items, Function<SubGame,Void> subgameAdditional)
     {
         mValues = items;
+        this.subgameAdditional = subgameAdditional;
     }
 
+    public void setMultiSelect(boolean ms)
+    {
+        multiSelect = ms;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
@@ -60,6 +70,20 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         {
             holder.mView.setBackgroundResource(0);
         }
+
+        if(multiSelect && ! holder.mItem.selected)
+        {
+            holder.mGameTypeImage.setImageResource(R.drawable.ic_add);
+        }
+        else
+        {
+            holder.mGameTypeImage.setImageResource(0);
+        }
+
+        holder.mGameTypeImage.setOnClickListener(v ->
+        {
+            subgameAdditional.apply(holder.mItem);
+        });
     }
 
     @Override
