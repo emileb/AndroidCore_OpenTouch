@@ -25,6 +25,8 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 import com.opentouchgaming.androidcore.license.LicenseCheck;
+import com.opentouchgaming.saffal.FileSAF;
+import com.opentouchgaming.saffal.UtilsSAF;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -244,18 +246,27 @@ public class Utils {
         new ExtractAsset().execute(file, dest);
     }
 
-    static public ArrayList<File> listFiles(String path1, String path2) {
-        ArrayList<File> files = new ArrayList<>();
-        if (path1 != null) {
-            File[] f = new File(path1).listFiles();
-            if (f != null)
-                files.addAll(Arrays.asList(f));
-        }
+    static public ArrayList<File> listFiles(String[] paths) {
 
-        if (path2 != null) {
-            File[] f = new File(path2).listFiles();
-            if (f != null)
-                files.addAll(Arrays.asList(f));
+        ArrayList<File> files = new ArrayList<>();
+
+        for (String path : paths) {
+            if (path != null) {
+                if (UtilsSAF.ready() && UtilsSAF.isInSAFRoot(path)) {
+
+                    FileSAF[] safFiles = new FileSAF(path).listFiles();
+
+                    if (safFiles != null)
+                        for (FileSAF safeFile : safFiles) {
+                            files.add(new File(safeFile.getPath()));
+                        }
+                }
+
+
+                File[] f = new File(path).listFiles();
+                if (f != null)
+                    files.addAll(Arrays.asList(f));
+            }
         }
 
         return files;
@@ -718,7 +729,7 @@ public class Utils {
 
         File files[] = new File(path).listFiles();
 
-        if( files != null ) {
+        if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
                     nbrDirs++;
