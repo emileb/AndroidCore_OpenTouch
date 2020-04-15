@@ -92,6 +92,10 @@ public class AppInfo
             }
         }
         log.log(DebugLog.Level.D, "Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
+        log.log(DebugLog.Level.D, "Build.VERSION.PREVIEW_SDK_INT = " + Build.VERSION.PREVIEW_SDK_INT);
+        log.log(DebugLog.Level.D, "Build.VERSION.CODENAME = " + Build.VERSION.CODENAME);
+        log.log(DebugLog.Level.D, "Build.VERSION.RELEASE = " + Build.VERSION.RELEASE);
+
         log.log(DebugLog.Level.D, "flashRoot = " + flashRoot);
         log.log(DebugLog.Level.D, "sdcardRoot = " + sdcardRoot);
         log.log(DebugLog.Level.D, "sdcardWritable = " + sdcardWritable);
@@ -114,7 +118,8 @@ public class AppInfo
 
     static public boolean isScoped()
     {
-        return  (Build.VERSION.SDK_INT >= SCOPED_VERSION);
+        //return true;
+        return  (Build.VERSION.SDK_INT >= SCOPED_VERSION) || Build.VERSION.CODENAME != null ? Build.VERSION.CODENAME.contentEquals("R") : false;
     }
 
     static public void setAppDirectory(String appDir)
@@ -222,6 +227,8 @@ public class AppInfo
         }
         return ret;
     }
+
+
 
     static public String getGamepadDirectory()
     {
