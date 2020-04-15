@@ -289,6 +289,9 @@ public class SDLActivity extends Activity implements Handler.Callback
                 SDLActivity.onNativeDropFile(filename);
             }
         }
+
+        UtilsSAF.setContext(getApplicationContext());
+        UtilsSAF.loadTreeRoot(getApplicationContext());
     }
 
 
