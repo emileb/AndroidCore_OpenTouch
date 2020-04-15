@@ -106,36 +106,53 @@ public class OptionsDialog {
         // SECONDARY folder options
         appSecDirButton.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(activity, appDirButton);
-            popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup, popup.getMenu());
-            popup.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.reset) {
-                    AppInfo.setAppSecDirectory(null); //This resets it
-                } else if (item.getItemId() == R.id.sdcard) {
 
-                    if (AppInfo.sdcardRoot != null) {
-                        if (AppInfo.isScoped()) { // Scoped storage can only read here now..
-                            AppInfo.setAppSecDirectory(AppInfo.sdcardWritable);
-                        } else {
-                            AppInfo.setAppSecDirectory(AppInfo.sdcardRoot);
-                        }
-                    } else
-                        Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG).show();
+            if (AppInfo.isScoped()) {
 
-                } else if (item.getItemId() == R.id.internal) {
-                    AppInfo.setAppSecDirectory(AppInfo.flashRoot);
-                } else if (item.getItemId() == R.id.choose) {
-                    DirectoryChooserDialog directoryChooserDialog =
-                            new DirectoryChooserDialog(activity,
-                                    chosenDir -> updateAppSecDir(chosenDir));
+                popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup_scoped, popup.getMenu());
+                popup.setOnMenuItemClickListener(item -> {
 
-                    directoryChooserDialog.chooseDirectory(AppInfo.getAppSecDirectory());
-                }
+                    if (item.getItemId() == R.id.choose) {
+                        new ScopedStorageDialog(activity, () -> {
+                            updateUI();
+                        });
+                    }
 
-                updateUI();
+                    updateUI();
 
-                return true;
-            });
+                    return true;
+                });
+            } else {
+                popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup, popup.getMenu());
+                popup.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId() == R.id.reset) {
+                        AppInfo.setAppSecDirectory(null); //This resets it
+                    } else if (item.getItemId() == R.id.sdcard) {
 
+                        if (AppInfo.sdcardRoot != null) {
+                            if (AppInfo.isScoped()) { // Scoped storage can only read here now..
+                                AppInfo.setAppSecDirectory(AppInfo.sdcardWritable);
+                            } else {
+                                AppInfo.setAppSecDirectory(AppInfo.sdcardRoot);
+                            }
+                        } else
+                            Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG).show();
+
+                    } else if (item.getItemId() == R.id.internal) {
+                        AppInfo.setAppSecDirectory(AppInfo.flashRoot);
+                    } else if (item.getItemId() == R.id.choose) {
+                        DirectoryChooserDialog directoryChooserDialog =
+                                new DirectoryChooserDialog(activity,
+                                        chosenDir -> updateAppSecDir(chosenDir));
+
+                        directoryChooserDialog.chooseDirectory(AppInfo.getAppSecDirectory());
+                    }
+
+                    updateUI();
+
+                    return true;
+                });
+            }
             popup.show();
         });
 
