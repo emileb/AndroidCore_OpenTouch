@@ -47,6 +47,7 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.8.0") {
         exclude group: "com.android.support"
     }
+    implementation 'net.lingala.zip4j:zip4j:2.5.1'
 
     implementation project(path: ':saffal')
     implementation 'android.arch.lifecycle:extensions:1.1.1'
