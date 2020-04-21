@@ -69,7 +69,7 @@ public class Utils {
 
     static public void mkdirs(Context context, String path, String infoFile) {
 
-        File file = new File(path);
+        File file = new FileSAF(path);
 
         if (!file.exists()) {
             if (!file.mkdirs()) {
@@ -80,7 +80,7 @@ public class Utils {
         if (infoFile == null)
             infoFile = ".tmp";
 
-        File info = new File(path, infoFile);
+        File info = new FileSAF(path, infoFile);
         if (!info.exists()) {
             try {
                 info.createNewFile();
@@ -182,7 +182,7 @@ public class Utils {
     static public boolean checkFilesInPath(String path1, String[] files) {
         boolean filesPresent = true;
         for (String file : files) {
-            if (new File(path1 + "/" + file).exists() == false) {
+            if (new FileSAF(path1 + "/" + file).exists() == false) {
                 filesPresent = false;
                 break;
             }
@@ -253,19 +253,19 @@ public class Utils {
         for (String path : paths) {
             if (path != null) {
                 if (UtilsSAF.ready() && UtilsSAF.isInSAFRoot(path)) {
-
+                    // SAF files
                     FileSAF[] safFiles = new FileSAF(path).listFiles();
 
                     if (safFiles != null)
-                        for (FileSAF safeFile : safFiles) {
-                            files.add(new File(safeFile.getPath()));
+                        for (FileSAF safFile : safFiles) {
+                            files.add(safFile);
                         }
                 }
-
-
-                File[] f = new File(path).listFiles();
-                if (f != null)
-                    files.addAll(Arrays.asList(f));
+                else { // Normal file
+                    File[] f = new File(path).listFiles();
+                    if (f != null)
+                        files.addAll(Arrays.asList(f));
+                }
             }
         }
 
@@ -720,14 +720,16 @@ public class Utils {
         return px;
     }
 
-    public static String filesInfoString(String path, String ext, int maxFiles) {
+    public static String
+
+    filesInfoString(String path, String ext, int maxFiles) {
 
         String pakFiles = "[ ";
         int nbrFiles = 0;
         int nbrDirs = 0;
         int totalSize = 0;
 
-        File files[] = new File(path).listFiles();
+        File files[] = new FileSAF(path).listFiles();
 
         if (files != null) {
             for (File file : files) {
