@@ -311,12 +311,20 @@ public class SubGame {
             SubGame quake = new SubGame(tag, title, subDir, inPath, gameType, defaultIconRes, pathInfo, fileInfo, weaponWheel);
             availableSubGames.add(quake);
         } else {
-            String fullPath = rootPath1 + "/" + subDir;
+            String fullPath1 = rootPath1 + "/" + subDir;
+            String fullPath2 = rootPath2 != null ?  rootPath2 + "/" + subDir : null;
 
-            Utils.mkdirs(AppInfo.getContext(), fullPath, mkdirFilename);
+            Utils.mkdirs(AppInfo.getContext(), fullPath1, mkdirFilename);
+
+            String pathText = fullPath1;
+            if(fullPath2 != null)
+            {
+                Utils.mkdirs(AppInfo.getContext(), fullPath2, mkdirFilename);
+                pathText += "\nOR\n" + fullPath2;
+            }
 
             if( AppSettings.getBoolOption(AppInfo.getContext(),"hide_install_hints", false) == false ) {
-                SubGame quake = new SubGame(null, title + " not yet installed", null, fullPath, gameType, R.drawable.questionmark, installDetails, fullPath, weaponWheel);
+                SubGame quake = new SubGame(null, title + " not yet installed", null, fullPath1, gameType, R.drawable.questionmark, installDetails, pathText, weaponWheel);
                 availableSubGames.add(quake);
             }
         }
