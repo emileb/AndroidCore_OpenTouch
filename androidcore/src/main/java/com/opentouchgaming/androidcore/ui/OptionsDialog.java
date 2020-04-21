@@ -112,10 +112,17 @@ public class OptionsDialog {
                 popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup_scoped, popup.getMenu());
                 popup.setOnMenuItemClickListener(item -> {
 
-                    if (item.getItemId() == R.id.choose) {
+                    if (item.getItemId() == R.id.choose_saf) {
                         new ScopedStorageDialog(activity, () -> {
                             updateUI();
                         });
+                    }
+                    if (item.getItemId() == R.id.choose_folder) {
+                        DirectoryChooserDialog directoryChooserDialog =
+                                new DirectoryChooserDialog(activity,
+                                        chosenDir -> updateAppSecDir(chosenDir));
+
+                        directoryChooserDialog.chooseDirectory(AppInfo.getAppDirectory());
                     }
 
                     updateUI();
@@ -322,7 +329,6 @@ public class OptionsDialog {
             return;
         }
         test_write.delete();
-
 
         if (dir.contains(" ")) {
             showError(dir + " must not contain any spaces");
