@@ -1,7 +1,6 @@
 package com.opentouchgaming.androidcore.common;
 
 import android.app.Activity;
-import android.arch.core.util.Function;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +36,7 @@ import com.opentouchgaming.androidcore.GamepadActivity;
 import com.opentouchgaming.androidcore.ItemClickSupport;
 import com.opentouchgaming.androidcore.LogViewDialog;
 import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.androidcore.ScopedStorage;
 import com.opentouchgaming.androidcore.SubGame;
 import com.opentouchgaming.androidcore.SubGameRecyclerViewAdapter;
 import com.opentouchgaming.androidcore.Utils;
@@ -46,7 +46,6 @@ import com.opentouchgaming.androidcore.ui.EnginesPanel;
 import com.opentouchgaming.androidcore.ui.OptionsDialog;
 import com.opentouchgaming.androidcore.ui.ToolsPanel;
 import com.opentouchgaming.androidcore.ui.tutorial.TutorialDialog;
-
 
 import java.util.ArrayList;
 
@@ -153,6 +152,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                              Bundle savedInstanceState)
     {
         log.log(D, "onCreateView");
+
+        ScopedStorage.checkStorageOK(getActivity());
 
         View view = inflater.inflate(R.layout.fragment_alpha, container, false);
 
@@ -430,6 +431,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public void onResume()
     {
         super.onResume();
+        ScopedStorage.checkStorageOK(getActivity());
         updateAll();
     }
 
