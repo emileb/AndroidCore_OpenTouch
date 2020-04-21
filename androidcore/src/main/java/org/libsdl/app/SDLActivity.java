@@ -188,8 +188,8 @@ public class SDLActivity extends Activity implements Handler.Callback
         // So we can call stuff from static callbacks
         mSingleton = this;
 
-        //UtilsSAF.setContext(getApplicationContext());
-        //UtilsSAF.loadTreeRoot(getApplicationContext());
+        UtilsSAF.setContext(getApplicationContext());
+        UtilsSAF.loadTreeRoot(getApplicationContext());
 
         // Load shared libraries
         String errorMsgBrokenLib = "";
@@ -290,8 +290,6 @@ public class SDLActivity extends Activity implements Handler.Callback
             }
         }
 
-        UtilsSAF.setContext(getApplicationContext());
-        UtilsSAF.loadTreeRoot(getApplicationContext());
     }
 
 
