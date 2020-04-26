@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -100,6 +99,7 @@ public class ToolsPanel
             AppCompatImageButton button = view.findViewById(R.id.image_button);
             TextView lableTextView = view.findViewById(R.id.label_textView);
             lableTextView.setText(buttons[n].label);
+            lableTextView.setTag(new Integer(n)); // Used for the click listener callback
 
             buttons[n].imageButton = button;
             button.setTag(new Integer(n)); // Used for the click listener callback
@@ -129,16 +129,18 @@ public class ToolsPanel
             button.setImageResource(buttons[n].imageRes);
             button.setScaleType(ImageView.ScaleType.FIT_CENTER);
             button.setBackgroundResource(R.drawable.focusable);
-            button.setOnClickListener(new View.OnClickListener()
-            {
+
+            View.OnClickListener pressListener = new View.OnClickListener() {
                 @Override
-                public void onClick(View view)
-                {
-                    int selected = (Integer) view.getTag();
+                public void onClick(View v) {
+                    int selected = (Integer) v.getTag();
                     listener.toolsOnClick( buttons[selected].code);
                     close();
                 }
-            });
+            };
+
+            button.setOnClickListener(pressListener);
+            lableTextView.setOnClickListener(pressListener);
 
         }
         updateFocus();
