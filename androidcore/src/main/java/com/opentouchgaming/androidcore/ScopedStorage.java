@@ -29,11 +29,13 @@ public class ScopedStorage {
     // Check if storage is setup, true if OK
     static public boolean checkStorageOK(Activity activity) {
 
+        // Always set context, this also loads the saffal library, needed if even not used
+        UtilsSAF.setContext(activity);
+
         if (AppInfo.isScoped() == false) {
             //Thank fuck scoped storage not necessary
             return true;
         } else {
-            UtilsSAF.setContext(activity);
             UtilsSAF.loadTreeRoot(activity);
             /*
             if( !UtilsSAF.ready())
