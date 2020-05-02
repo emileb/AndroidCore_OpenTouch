@@ -191,6 +191,10 @@ public class SDLActivity extends Activity implements Handler.Callback
         UtilsSAF.setContext(getApplicationContext());
         UtilsSAF.loadTreeRoot(getApplicationContext());
 
+        org.fmod.FMOD.init(this);
+
+
+
         // Load shared libraries
         String errorMsgBrokenLib = "";
         try
