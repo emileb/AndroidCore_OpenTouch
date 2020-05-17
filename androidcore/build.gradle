@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -55,4 +57,9 @@ dependencies {
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
     implementation project(path: ':changeloglib')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.anko:anko:0.10.8"
+}
+repositories {
+    mavenCentral()
 }

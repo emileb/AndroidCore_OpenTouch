@@ -687,7 +687,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     {
         if (engine.engineOptions != null)
         {
-            engine.engineOptions.showDialog(getActivity(), engine, selectedVersion, AppInfo.getAppDirectory(), version ->
+            engine.engineOptions.showDialog(getActivity(), engine, selectedVersion, version ->
             {
                 // For redraw of items incase changed layouts
                 recyclerView.setAdapter(null);
