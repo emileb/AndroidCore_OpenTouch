@@ -84,4 +84,9 @@ public class GameEngine
     final Class engineOptionsClass;
 
     public EngineOptionsInterface engineOptions;
+
+    public String getLogFilename()
+    {
+        return AppInfo.internalFiles + "/" + name + ".txt";
+    }
 }

@@ -723,14 +723,14 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         } else if (code == TOOL_BUTTON_LOG)
         {
-            new LogViewDialog(getActivity(), AppInfo.internalFiles + "/" + AppInfo.currentEngine.name, AppInfo.currentEngine.name);
+            new LogViewDialog(getActivity(), AppInfo.currentEngine.getLogFilename(), AppInfo.currentEngine.name);
 
         } else if (code == TOOL_BUTTON_INFO) {
             AboutDialog.show(getActivity());
         }
             else if (code == TOOL_BUTTON_EMAIL)
         {
-            Utils.SendDebugEmail(getActivity(), AppInfo.emailAddress, AppInfo.packageId, AppInfo.internalFiles + "/" + AppInfo.currentEngine.name);
+            Utils.SendDebugEmail(getActivity(), AppInfo.emailAddress, AppInfo.packageId,  AppInfo.currentEngine.getLogFilename());
         } else if (code == TOOL_BUTTON_HELP)
         {
             new TutorialDialog(getActivity(), AppInfo.tutorials);
