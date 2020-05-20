@@ -31,6 +31,7 @@ import com.opentouchgaming.saffal.UtilsSAF;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -93,6 +94,12 @@ public class Utils {
             }
 
         }
+    }
+
+    static public void copyFile(File in, File out) throws IOException {
+        InputStream isIn = new FileInputStream(in);
+        OutputStream inOut = new FileOutputStream(out);
+        copyFile(isIn, inOut);
     }
 
     static public void copyFile(InputStream in, OutputStream out) throws IOException {

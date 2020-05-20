@@ -2,12 +2,17 @@ package com.opentouchgaming.androidcore
 
 import android.app.Activity
 import android.app.Dialog
+import android.os.Build
+import android.util.Log
 import android.view.Window
 import android.widget.ProgressBar
 import android.widget.TextView
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 class FileMover {
 
@@ -27,7 +32,7 @@ class FileMover {
         val progressBar = dialog.findViewById<ProgressBar>(R.id.progressBar)
         var text =  dialog.findViewById<TextView>(R.id.title)
 
-        dialog.setCancelable(false)
+        dialog.setCancelable(true)
         dialog.setCanceledOnTouchOutside(false)
 
         progressBar.max = filesFiltered.size;
@@ -39,7 +44,18 @@ class FileMover {
                 // Move (rename file)
                 var fileReal = File(file)
                 var fileName = fileReal.name
-                fileReal.renameTo(File(destination + "/" + fileName))
+                if( !fileReal.renameTo(File(destination + "/" + fileName)))
+                {
+                    Log.e("FileMover", "Failed to move: " + fileReal.absolutePath)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        try {
+                            Files.copy(Paths.get(file),Paths.get(destination + "/" + fileName))
+                        }catch (ex: Exception)
+                        {
+
+                        }
+                    }
+                }
 
                 uiThread {
                     progressBar.progress++
