@@ -41,6 +41,7 @@ public class OpenTouchSDL {
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
         String logFilename = intent.getStringExtra("log_filename");
+        String userFiles =intent.getStringExtra("user_files");
 
         String nativeSoPath = nativeLibs;
 
@@ -55,7 +56,7 @@ public class OpenTouchSDL {
             }
         }
         Log.v("SDL", "Native .so path = " + nativeSoPath);
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", options,10, args_array, gameType, gamePath, logFilename,nativeSoPath);
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", options,10, args_array, gameType, gamePath, logFilename,nativeSoPath,userFiles);
 
         Log.v("SDL", "SDL thread terminated");
     }

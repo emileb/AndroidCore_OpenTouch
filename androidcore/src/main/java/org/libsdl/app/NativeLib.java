@@ -1,14 +1,11 @@
 package org.libsdl.app;
 
 
-import android.util.Log;
-import android.view.KeyEvent;
-
 import com.opentouchgaming.androidcore.controls.ControlInterface;
 
 public class NativeLib implements ControlInterface {
 
-    public static native int init(String graphics_dir, int options, int wheelNbr, String[] args, int game, String path, String filesPath, String nativeLibs);
+    public static native int init(String graphics_dir, int options, int wheelNbr, String[] args, int game, String path, String filesPath, String nativeLibs, String userFiles);
 
     public static native void setScreenSize(int width, int height);
 
@@ -32,7 +29,10 @@ public class NativeLib implements ControlInterface {
 
     public static native void weaponWheelSettings(int useMoveStick, int mode, int autoTimeout);
 
-    public static native void audioOverride(int freq, int samples);
+    public static native int audioOverride(int freq, int samples);
+
+    public static native int loadTouchSettings(String filename);
+    public static native int saveTouchSettings(String filename);
 
 
     @Override
@@ -48,7 +48,6 @@ public class NativeLib implements ControlInterface {
     @Override
     public void keyPress_if(int down, int qkey, int unicode) {
         keypress(down, qkey, unicode);
-
     }
 
     @Override
@@ -79,6 +78,16 @@ public class NativeLib implements ControlInterface {
     @Override
     public void analogYaw_if(int mode, float v, float raw) {
         analogYaw(mode, v, raw);
+    }
+
+    @Override
+    public int loadSettings_if(String filename) {
+        return loadTouchSettings(filename);
+    }
+
+    @Override
+    public int saveSettings_if(String filename) {
+        return saveTouchSettings(filename);
     }
 
 }

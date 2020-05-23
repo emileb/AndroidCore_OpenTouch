@@ -15,7 +15,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -60,6 +59,7 @@ import com.opentouchgaming.androidcore.controls.ControlConfig;
 import com.opentouchgaming.androidcore.controls.ControlInterpreter;
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 import com.opentouchgaming.androidcore.ui.GyroDialog;
+import com.opentouchgaming.androidcore.ui.TouchSettingsSaveLoad;
 import com.opentouchgaming.saffal.UtilsSAF;
 
 import java.io.File;
@@ -89,6 +89,8 @@ public class SDLActivity extends Activity implements Handler.Callback
     public static boolean mBrokenLibraries;
 
     public static boolean useMouse;
+
+    public static String userFiles;
 
     // If we want to separate mouse and touch events.
     //  This is only toggled in native code when a hint is set!
@@ -262,7 +264,7 @@ public class SDLActivity extends Activity implements Handler.Callback
 
         useMouse =   AppSettings.getBoolOption(this, "use_mouse", true);
 
-
+        userFiles =   getIntent().getStringExtra("user_files");
 
         // fullscreen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -488,8 +490,9 @@ public class SDLActivity extends Activity implements Handler.Callback
     protected static final int COMMAND_SET_BACKLIGHT = 0x8001;
     protected static final int COMMAND_SHOW_GYRO_OPTIONS = 0x8002;
     protected static final int COMMAND_SHOW_KEYBOARD = 0x8003;
-    protected static final int COMMAND_SHOW_GAMEPAD= 0x8004;
-    protected static final int COMMAND_VIBRATE= 0x8005;
+    protected static final int COMMAND_SHOW_GAMEPAD = 0x8004;
+    protected static final int COMMAND_VIBRATE = 0x8005;
+    protected static final int COMMAND_LOAD_SAVE_CONTROLS = 0x8006;
     /**
      * This method is called by SDL if SDL did not handle a message itself.
      * This happens if a received message contains an unsupported command.
@@ -632,6 +635,10 @@ public class SDLActivity extends Activity implements Handler.Callback
                 {
                     Integer value = (Integer) msg.obj;
                     vibrate(value);
+                    break;
+                }
+                case COMMAND_LOAD_SAVE_CONTROLS: {
+                    new TouchSettingsSaveLoad(SDLActivity.mSingleton, SDLActivity.userFiles, SDLActivity.mSurface.engine);
                     break;
                 }
                 default:
@@ -1459,6 +1466,7 @@ class SDLMain implements Runnable
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
         String logFilename = SDLActivity.mSingleton.getIntent().getStringExtra("log_filename");
+        String userFiles = SDLActivity.mSingleton.getIntent().getStringExtra("user_files");
 
         String nativeSoPath = SDLActivity.mSingleton.getApplicationInfo().nativeLibraryDir;
 
@@ -1476,7 +1484,7 @@ class SDLMain implements Runnable
         Log.v("SDL", "gamePath = " + gamePath);
         Log.v("SDL", "logFilename = " + logFilename);
 
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath);
+        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles);
 
         Log.v("SDL", "SDL thread terminated");
     }
@@ -1514,7 +1522,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     protected static int mWidth, mHeight;
 
     private ControlInterpreter controlInterp;
-
+    NativeLib engine;
     // Startup
     public SDLSurface(Context context, int div)
     {
@@ -1756,7 +1764,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         }
 
 
-        NativeLib engine = new NativeLib();
+        engine = new NativeLib();
 
         controlInterp = new ControlInterpreter(getContext(), engine, AppInfo.currentEngine.gamepadDefiniton, TouchSettings.gamePadEnabled, TouchSettings.altTouchCode);
 

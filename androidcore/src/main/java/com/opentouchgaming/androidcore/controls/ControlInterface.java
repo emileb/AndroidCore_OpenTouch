@@ -13,5 +13,8 @@ public interface ControlInterface {
 	public void    analogPitch_if(int mode,float v,float raw);
 	public void    analogYaw_if(int mode,float v,float raw);
 
+	public int    loadSettings_if(String filename);
+	public int    saveSettings_if(String filename);
+
 }
  
