@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -42,7 +41,6 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.I;
 
 public class TouchSettingsSaveLoad {
 
-    // WARNING! DO NOT MOVE THIS CLASS!!!
 
     static DebugLog log;
 
@@ -60,24 +58,13 @@ public class TouchSettingsSaveLoad {
     EditText nameEditText;
 
 
-    ArrayList<SaveInfo> layouts = new ArrayList<>();
+    ArrayList<TouchSettingSaveInfo> layouts = new ArrayList<>();
 
 
     boolean saving = false;
     ControlInterface nativeIf;
     final Activity activity;
     final Dialog dialog;
-
-    static private class SaveInfo implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        // Saved
-        String name;
-        long timeSaved;
-
-        // Gets updated when read, the folder number
-        long folder;
-    }
 
     private String getLayoutsFolder() {
         return userFolder + "/" + layoutsFolder;
@@ -97,7 +84,7 @@ public class TouchSettingsSaveLoad {
 
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        
+
         dialog.setContentView(R.layout.dialog_touch_settings_load_save);
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(true);
@@ -142,7 +129,7 @@ public class TouchSettingsSaveLoad {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 //Remove swiped item from list and notify the RecyclerView
                 RecyclerViewAdapter.ViewHolder h = (RecyclerViewAdapter.ViewHolder) viewHolder;
-                SaveInfo info = h.item;
+                TouchSettingSaveInfo info = h.item;
                 File layoutDir = new File(getLayoutsFolder() + "/" + info.folder);
 
                 // Delete layout files
@@ -202,8 +189,8 @@ public class TouchSettingsSaveLoad {
 
         if(error == 0) {
 
-            // Create new SaveInfo object
-            SaveInfo info = new SaveInfo();
+            // Create new TouchSettingSaveInfo object
+            TouchSettingSaveInfo info = new TouchSettingSaveInfo();
             info.name = name;
             info.timeSaved = new Date().getTime();
 
@@ -239,7 +226,7 @@ public class TouchSettingsSaveLoad {
         File layoutDir = null;
 
         // Check if a name already exists
-        for(SaveInfo info : layouts)
+        for(TouchSettingSaveInfo info : layouts)
         {
             if( info.name.contentEquals(name))
                 layoutDir = new File(getLayoutsFolder() + "/" + info.folder);
@@ -289,7 +276,7 @@ public class TouchSettingsSaveLoad {
                     File infoFile = new File(dir, layoutsInfoFilename);
 
                     // Try to De-seraialize the file
-                    SaveInfo info = null;
+                    TouchSettingSaveInfo info = null;
                     try {
                         InputStream fis = null;
                         ObjectInputStream in = null;
@@ -297,7 +284,7 @@ public class TouchSettingsSaveLoad {
                         fis = new FileInputStream(infoFile);
                         in = new ObjectInputStream(fis);
 
-                        info = (SaveInfo) in.readObject();
+                        info = (TouchSettingSaveInfo) in.readObject();
                         in.close();
                         log.log(I, "File " + infoFile + " loaded");
                     } catch (FileNotFoundException e) {
@@ -361,7 +348,7 @@ public class TouchSettingsSaveLoad {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            public SaveInfo item;
+            public TouchSettingSaveInfo item;
             public final TextView textView;
             public final View view;
 
