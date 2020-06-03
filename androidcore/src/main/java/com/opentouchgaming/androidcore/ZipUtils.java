@@ -23,21 +23,53 @@ import java.util.zip.ZipInputStream;
 public class ZipUtils {
 
     public static boolean extractFile(String zipFilename, String filename, String outputFile) {
+
+        Log.i("ZipUtils", "extractFile zip: " + zipFilename + " Extract: " + filename + " Output: " + outputFile);
+
         boolean fileFound = false;
-        try {
-            File file = new File(zipFilename);
-            if (file != null) {
-                ZipFile zipFile = new ZipFile(file);
-                File outFile = new File(outputFile);
-                FileHeader header = zipFile.getFileHeader(filename);
-                if (header != null) {
-                    zipFile.extractFile(header, outFile.getParent(), outFile.getName());
-                    fileFound = true;
+
+        if (UtilsSAF.isInSAFRoot(zipFilename)) {
+            try {
+                FileSAF file = new FileSAF(zipFilename);
+                InputStream inputStream = file.getInputStream();
+                ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
+                ZipEntry entry;
+                while ((entry = zipInputStream.getNextEntry()) != null) {
+
+                    if (entry.getName().contentEquals(filename)) {
+
+                        Log.i("ZipUtils", "FOUND");
+
+                        new File(outputFile).getParentFile().mkdirs();
+
+                        OutputStream out = new FileOutputStream(outputFile);
+                        Utils.copyFile(zipInputStream, out);
+                        inputStream.close();
+                        fileFound = true;
+                        break;
+                    }
                 }
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (ZipException e) {
-            e.printStackTrace();
-            fileFound = false;
+        }
+        else {
+            try {
+                File file = new File(zipFilename);
+                if (file != null) {
+                    ZipFile zipFile = new ZipFile(file);
+                    File outFile = new File(outputFile);
+                    FileHeader header = zipFile.getFileHeader(filename);
+                    if (header != null) {
+                        zipFile.extractFile(header, outFile.getParent(), outFile.getName());
+                        fileFound = true;
+                    }
+                }
+            } catch (ZipException e) {
+                e.printStackTrace();
+                fileFound = false;
+            }
         }
         return fileFound;
     }
