@@ -37,7 +37,7 @@ public class CustomArgsHistoryDialog {
         dialog.setContentView(R.layout.dialog_args_history);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
-        dialog.show();
+
 
         recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
         //recyclerView.setHasFixedSize(true);
@@ -74,6 +74,7 @@ public class CustomArgsHistoryDialog {
             }
         });
 
+        dialog.show();
     }
 
     public void selected(int position) {
