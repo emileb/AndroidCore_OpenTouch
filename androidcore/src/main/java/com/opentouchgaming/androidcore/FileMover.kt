@@ -16,7 +16,7 @@ import java.nio.file.Paths
 
 class FileMover {
 
-    fun doMove(activity: Activity, destination: String, files: ArrayList<String>): Boolean {
+    fun doMove(activity: Activity, destination: String, files: ArrayList<Pair<String,String>>): Boolean {
 
         var filesFiltered = fileFiles(files);
 
@@ -42,14 +42,17 @@ class FileMover {
 
             for (file in filesFiltered) {
                 // Move (rename file)
-                var fileReal = File(file)
+                var fileReal = File(file.first)
                 var fileName = fileReal.name
+                if(file.second != null)
+                    fileName = file.second
+
                 if( !fileReal.renameTo(File(destination + "/" + fileName)))
                 {
                     Log.e("FileMover", "Failed to move: " + fileReal.absolutePath)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         try {
-                            Files.copy(Paths.get(file),Paths.get(destination + "/" + fileName))
+                            Files.copy(Paths.get(file.first),Paths.get(destination + "/" + fileName))
                         }catch (ex: Exception)
                         {
 
@@ -71,11 +74,11 @@ class FileMover {
     }
 
 
-    fun fileFiles(files: ArrayList<String>): ArrayList<String> {
-        var filesFiltered = ArrayList<String>()
+    fun fileFiles(files: ArrayList<Pair<String,String>>): ArrayList<Pair<String,String>> {
+        var filesFiltered = ArrayList<Pair<String,String>>()
 
         for (file in files) {
-            if (File(file).exists()) {
+            if (File(file.first).exists()) {
                 filesFiltered.add(file);
             }
         }
