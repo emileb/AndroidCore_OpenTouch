@@ -181,8 +181,8 @@ public class AppInfo {
     }
 
     // User files (engine config, savegames, touch control saves)
-    static public String getUserFiles(String subFolder) {
-        String userFiles = getAppDirectory() + (subFolder != null ?  "/" + subFolder : "") +  "/user_files";
+    static public String getUserFiles() {
+        String userFiles = getAppDirectory() + "/user_files";
 
         new File(userFiles).mkdirs();
 
@@ -220,7 +220,7 @@ public class AppInfo {
         File oldFiles = new File(AppInfo.internalFiles + "/gamepad");
         if(oldFiles.exists())
         {
-            File newLoc =  new File(AppInfo.getUserFiles(null) + "/gamepad");
+            File newLoc =  new File(AppInfo. getUserFiles() + "/gamepad");
             newLoc.mkdirs();
 
             File files[] = oldFiles.listFiles();
@@ -244,7 +244,7 @@ public class AppInfo {
         }
 
         //return AppInfo.internalFiles + "/gamepad/";
-        return AppInfo.getUserFiles(null) + "/gamepad";
+        return AppInfo.getUserFiles() + "/gamepad";
     }
 
     // JNI
