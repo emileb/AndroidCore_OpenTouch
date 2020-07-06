@@ -207,6 +207,15 @@ public class ControlInterpreter {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean used = false;
 
+
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) ||
+                (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            // If this returns 1 it means the volume key was used
+            int ret = controlInterface.doAction_if(1, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
+            if (ret == 1) return true;
+        }
+
+
         if (gamePadEnabled) {
             for (ActionInput ai : config.actions) {
                 if (((ai.sourceType == ActionInput.SourceType.BUTTON)) && (ai.source == keyCode)) {
@@ -224,7 +233,6 @@ public class ControlInterpreter {
         if (used)
             return true;
 
-
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
                 (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
             return false;
@@ -239,7 +247,15 @@ public class ControlInterpreter {
     }
 
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+
         boolean used = false;
+
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) ||
+                (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            // If this returns 1 it means the volume key was used
+            int ret = controlInterface.doAction_if(0, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
+            if (ret == 1) return true;
+        }
 
         if (gamePadEnabled) {
             for (ActionInput ai : config.actions) {
@@ -297,11 +313,11 @@ public class ControlInterpreter {
                     if (ai.actionCode == PortActDefs.ACTION_ANALOG_PITCH) {
                         controlInterface.analogPitch_if(ControlConfig.LOOK_MODE_JOYSTICK, rawDeadZone * invert * ai.scale, raw);
                     } else if (ai.actionCode == PortActDefs.ACTION_ANALOG_YAW) {
-                        controlInterface.analogYaw_if(ControlConfig.LOOK_MODE_JOYSTICK, -rawDeadZone * invert * ai.scale,raw);
+                        controlInterface.analogYaw_if(ControlConfig.LOOK_MODE_JOYSTICK, -rawDeadZone * invert * ai.scale, raw);
                     } else if (ai.actionCode == PortActDefs.ACTION_ANALOG_FWD) {
-                        controlInterface.analogFwd_if(-rawDeadZone * invert * ai.scale,raw);
+                        controlInterface.analogFwd_if(-rawDeadZone * invert * ai.scale, raw);
                     } else if (ai.actionCode == PortActDefs.ACTION_ANALOG_STRAFE) {
-                        controlInterface.analogSide_if(rawDeadZone * invert * ai.scale,raw);
+                        controlInterface.analogSide_if(rawDeadZone * invert * ai.scale, raw);
                     } else //Must be using analog as a button
                     {
                         float value = event.getAxisValue(ai.source);

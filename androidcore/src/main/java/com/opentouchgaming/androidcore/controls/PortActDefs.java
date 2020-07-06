@@ -154,4 +154,6 @@ public class PortActDefs
 
     public static final int PORT_ACT_MENU_SHOW = 0x208;
 
+    public static final int PORT_ACT_VOLUME_UP       = 0x242;
+    public static final int PORT_ACT_VOLUME_DOWN     = 0x243;
 }

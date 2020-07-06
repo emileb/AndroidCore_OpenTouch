@@ -6,7 +6,7 @@ public interface ControlInterface {
 	
 	public boolean touchEvent_if( int action, int pid, float x, float y);
 	public void    keyPress_if(int down, int qkey, int unicode);
-	public void    doAction_if(int state, int action);
+	public int     doAction_if(int state, int action);
 	public void    backButton_if();
 	public void    analogFwd_if(float v,float raw);
 	public void    analogSide_if(float v,float raw);

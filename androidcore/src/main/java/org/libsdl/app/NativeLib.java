@@ -15,7 +15,7 @@ public class NativeLib implements ControlInterface {
 
     public static native void keypress(int down, int qkey, int unicode);
 
-    public static native void doAction(int state, int action);
+    public static native int doAction(int state, int action);
 
     public static native void backButton();
 
@@ -51,8 +51,8 @@ public class NativeLib implements ControlInterface {
     }
 
     @Override
-    public void doAction_if(int state, int action) {
-        doAction(state, action);
+    public int doAction_if(int state, int action) {
+        return doAction(state, action);
     }
 
     @Override
