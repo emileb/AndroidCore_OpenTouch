@@ -16,7 +16,7 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/imagebutton_entry_open_right"
         android:layout_width="50dp"
         android:layout_height="80dp"
@@ -26,5 +26,5 @@
         android:focusable="false"
         app:srcCompat="@drawable/right_arrow">
 
-    </android.support.v7.widget.AppCompatImageButton>
+    </androidx.appcompat.widget.AppCompatImageButton>
 </RelativeLayout>

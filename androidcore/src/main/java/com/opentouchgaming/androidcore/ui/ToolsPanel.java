@@ -2,7 +2,7 @@ package com.opentouchgaming.androidcore.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.v7.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;

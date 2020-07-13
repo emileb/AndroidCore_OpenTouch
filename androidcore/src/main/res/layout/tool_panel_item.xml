@@ -14,11 +14,11 @@
         android:textSize="15dp"
         android:text="Settings" />
 
-    <android.support.v7.widget.AppCompatImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/image_button"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentRight="true"
         app:srcCompat="@drawable/left_arrow">
-    </android.support.v7.widget.AppCompatImageButton>
+    </androidx.appcompat.widget.AppCompatImageButton>
 </RelativeLayout>

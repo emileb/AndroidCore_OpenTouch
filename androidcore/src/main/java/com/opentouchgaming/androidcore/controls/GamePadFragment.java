@@ -5,7 +5,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.widget.PopupMenu;
+import androidx.appcompat.widget.PopupMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -29,8 +29,6 @@ import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
-import com.opentouchgaming.androidcore.ServerAPI;
-import com.opentouchgaming.androidcore.license.LicenseCheck;
 import com.opentouchgaming.androidcore.ui.GamepadSaveLoad;
 
 import java.io.IOException;

@@ -19,7 +19,7 @@
 package it.gmariotti.changelibs.library.internal;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -33,7 +33,6 @@ import java.util.List;
 
 import it.gmariotti.changelibs.R;
 import it.gmariotti.changelibs.library.Constants;
-import it.gmariotti.changelibs.library.view.ChangeLogRecyclerView;
 
 /**
  * Created by g.mariotti on 17/06/2015.

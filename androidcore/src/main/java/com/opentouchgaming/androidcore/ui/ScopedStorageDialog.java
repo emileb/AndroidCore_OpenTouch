@@ -3,7 +3,7 @@ package com.opentouchgaming.androidcore.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;

@@ -23,8 +23,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
@@ -33,9 +33,7 @@ import it.gmariotti.changelibs.R;
 import it.gmariotti.changelibs.library.Constants;
 import it.gmariotti.changelibs.library.Util;
 import it.gmariotti.changelibs.library.internal.ChangeLog;
-import it.gmariotti.changelibs.library.internal.ChangeLogAdapter;
 import it.gmariotti.changelibs.library.internal.ChangeLogRecyclerViewAdapter;
-import it.gmariotti.changelibs.library.internal.ChangeLogRow;
 import it.gmariotti.changelibs.library.parser.XmlParser;
 
 /**

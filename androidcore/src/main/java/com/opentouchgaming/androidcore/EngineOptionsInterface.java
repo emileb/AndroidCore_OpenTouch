@@ -1,7 +1,7 @@
 package com.opentouchgaming.androidcore;
 
 import android.app.Activity;
-import android.arch.core.util.Function;
+import androidx.arch.core.util.Function;
 
 
 /**
