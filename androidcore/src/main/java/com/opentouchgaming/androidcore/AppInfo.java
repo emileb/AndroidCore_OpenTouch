@@ -56,6 +56,16 @@ public class AppInfo {
 
     private static final int SCOPED_VERSION = 30;
 
+    static public void setContext(Context ctx)
+    {
+        context = ctx;
+    }
+
+    static public void setApp(Apps app)
+    {
+        AppInfo.app = app;
+    }
+
     static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email, boolean isAndroidTv) {
         AppInfo.context = ctx;
         AppInfo.app = app;
@@ -69,9 +79,7 @@ public class AppInfo {
 
         AppInfo.isAndroidTv = isAndroidTv;
 
-
         AppInfo.flashRoot = Environment.getExternalStorageDirectory().toString();
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             File files[] = context.getExternalFilesDirs(null);
@@ -110,7 +118,7 @@ public class AppInfo {
     static public boolean isScoped() {
         return false;
         //return true;
-        //return  (Build.VERSION.SDK_INT >= SCOPED_VERSION) || Build.VERSION.CODENAME != null ? Build.VERSION.CODENAME.contentEquals("R") : false;
+        //return  (Build.VERSION.SDK_INT >= SCOPED_VERSION) ? true : false;
     }
 
     static public void setAppDirectory(String appDir) {

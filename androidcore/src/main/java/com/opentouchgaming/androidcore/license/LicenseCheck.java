@@ -36,7 +36,7 @@ public class LicenseCheck
 
     public static boolean checkLicenseFile(Context context, String key)
     {
-        boolean ok = false;
+        boolean ok = false;//BuildConfig.DEBUG;
 
         try
         {
@@ -102,7 +102,6 @@ public class LicenseCheck
         } catch (IOException e)
         {
             log.log(D, "l.dat file not opened: " + e.toString());
-
         }
 
         // Delete the file if failed
