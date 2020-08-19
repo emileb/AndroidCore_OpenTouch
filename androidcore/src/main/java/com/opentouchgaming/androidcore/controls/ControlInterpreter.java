@@ -207,14 +207,16 @@ public class ControlInterpreter {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean used = false;
 
-
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) ||
                 (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+
+            if(event.getRepeatCount() > 0)
+                return true;
+
             // If this returns 1 it means the volume key was used
             int ret = controlInterface.doAction_if(1, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
             if (ret == 1) return true;
         }
-
 
         if (gamePadEnabled) {
             for (ActionInput ai : config.actions) {
@@ -252,6 +254,10 @@ public class ControlInterpreter {
 
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) ||
                 (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+
+            if(event.getRepeatCount() > 0)
+                return true;
+
             // If this returns 1 it means the volume key was used
             int ret = controlInterface.doAction_if(0, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
             if (ret == 1) return true;
