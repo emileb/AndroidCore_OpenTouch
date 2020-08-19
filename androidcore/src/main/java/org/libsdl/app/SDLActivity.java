@@ -57,6 +57,7 @@ import com.opentouchgaming.androidcore.GamepadActivity;
 import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.ControlConfig;
 import com.opentouchgaming.androidcore.controls.ControlInterpreter;
+import com.opentouchgaming.androidcore.controls.GamepadDefinitions;
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 import com.opentouchgaming.androidcore.ui.GyroDialog;
 import com.opentouchgaming.androidcore.ui.TouchSettingsSaveLoad;
@@ -71,6 +72,7 @@ import java.util.Arrays;
 import static android.content.Context.SENSOR_SERVICE;
 import static android.media.AudioTrack.PLAYSTATE_PAUSED;
 import static android.media.AudioTrack.PLAYSTATE_PLAYING;
+import static org.libsdl.app.SDLActivity.internalFiles;
 
 /**
  * SDL Activity
@@ -112,6 +114,8 @@ public class SDLActivity extends Activity implements Handler.Callback
     protected static AudioRecord mAudioRecord;
 
     static Handler handlerUI;
+
+    static String internalFiles;
 
     /**
      * This method is called by SDL before loading the native shared libraries.
@@ -179,9 +183,16 @@ public class SDLActivity extends Activity implements Handler.Callback
         Log.v(TAG, "Device: " + android.os.Build.DEVICE);
         Log.v(TAG, "Model: " + android.os.Build.MODEL);
         Log.v(TAG, "onCreate(): " + mSingleton);
+
         super.onCreate(savedInstanceState);
 
         AppSettings.reloadSettings(getApplicationContext());
+
+        AppInfo.Apps app = AppInfo.Apps.valueOf(getIntent().getStringExtra("app"));
+
+        AppInfo.setContext(this);
+        AppInfo.setApp(app);
+
         enableVibrate =  AppSettings.getBoolOption(this,"enable_vibrate", true);
 
         handlerUI = new Handler(this);
@@ -195,7 +206,7 @@ public class SDLActivity extends Activity implements Handler.Callback
 
         org.fmod.FMOD.init(this);
 
-
+        Log.v(TAG, "FMOD loaded");
 
         // Load shared libraries
         String errorMsgBrokenLib = "";
@@ -222,16 +233,12 @@ public class SDLActivity extends Activity implements Handler.Callback
             mBrokenLibraries = true;
             errorMsgBrokenLib = e.getMessage();
         }
+        Log.v(TAG, "Libraries loaded");
 
-        // Occurs if Android tries to launch this again on its own
-        if (AppInfo.internalFiles == null)
-        {
-            finish();
-            return;
-        }
+        internalFiles =  getFilesDir().getAbsolutePath();
 
         AssetFileAccess.setAssetManager(mSingleton.getAssets());
-        Utils.copyPNGAssets(getApplicationContext(), AppInfo.internalFiles);
+        Utils.copyPNGAssets(getApplicationContext(), internalFiles);
         NativeConsoleBox.init(this);
 
         if (mBrokenLibraries)
@@ -296,6 +303,7 @@ public class SDLActivity extends Activity implements Handler.Callback
             }
         }
 
+        Log.v(TAG, "onCreate finished");
     }
 
 
@@ -1430,6 +1438,13 @@ class SDLMain implements Runnable
 
         String args = SDLActivity.mSingleton.getIntent().getStringExtra("args");
 
+        args = args.replace("$W2", Integer.toString(SDLSurface.mWidth/2));
+        args = args.replace("$H2", Integer.toString(SDLSurface.mHeight/2));
+        args = args.replace("$W3", Integer.toString(SDLSurface.mWidth/3));
+        args = args.replace("$H3", Integer.toString(SDLSurface.mHeight/3));
+        args = args.replace("$W4", Integer.toString(SDLSurface.mWidth/4));
+        args = args.replace("$H4", Integer.toString(SDLSurface.mHeight/4));
+
         args = args.replace("$W", Integer.toString(SDLSurface.mWidth));
         args = args.replace("$H", Integer.toString(SDLSurface.mHeight));
 
@@ -1484,7 +1499,7 @@ class SDLMain implements Runnable
         Log.v("SDL", "gamePath = " + gamePath);
         Log.v("SDL", "logFilename = " + logFilename);
 
-        int ret = NativeLib.init(AppInfo.internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles);
+        int ret = NativeLib.init(internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles);
 
         Log.v("SDL", "SDL thread terminated");
     }
@@ -1763,10 +1778,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 break;
         }
 
-
         engine = new NativeLib();
 
-        controlInterp = new ControlInterpreter(getContext(), engine, AppInfo.currentEngine.gamepadDefiniton, TouchSettings.gamePadEnabled, TouchSettings.altTouchCode);
+        controlInterp = new ControlInterpreter(getContext(), engine, GamepadDefinitions.getDefinition(AppInfo.app), TouchSettings.gamePadEnabled, TouchSettings.altTouchCode);
 
         controlInterp.setScreenSize(width * resDiv, height * resDiv);
 
