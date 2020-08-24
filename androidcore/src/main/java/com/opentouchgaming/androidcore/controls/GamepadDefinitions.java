@@ -112,6 +112,12 @@ public class GamepadDefinitions {
                 gamepadDefinition.addAction("flash_light", "Flash light", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_FLASH_LIGHT,
                         ActionInput.SourceType.BUTTON, -1);
 
+                gamepadDefinition.addAction("doom3_pda", "Show PDA", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_HELPCOMP,
+                        ActionInput.SourceType.BUTTON, -1);
+
+                gamepadDefinition.addAction("doom3_sprint", "Sprint toggle", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SPRINT,
+                        ActionInput.SourceType.BUTTON, -1);
+
                 gamepadDefinition.addHeader("Common menu navigation keys");
 
 

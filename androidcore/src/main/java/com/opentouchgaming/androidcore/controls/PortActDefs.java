@@ -140,6 +140,7 @@ public class PortActDefs
 
     //Doom 3
     public static final int PORT_ACT_FLASH_LIGHT = 200;
+    public static final int PORT_ACT_SPRINT = 201;
 
     //Menu
     public static final int PORT_ACT_MENU_UP = 0x200;
