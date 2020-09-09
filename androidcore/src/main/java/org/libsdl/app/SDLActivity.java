@@ -1482,6 +1482,7 @@ class SDLMain implements Runnable
         //NativeLib.setScreenSize(1280,736);
         String logFilename = SDLActivity.mSingleton.getIntent().getStringExtra("log_filename");
         String userFiles = SDLActivity.mSingleton.getIntent().getStringExtra("user_files");
+        String tmpFiles = SDLActivity.mSingleton.getCacheDir().getAbsolutePath();
 
         String nativeSoPath = SDLActivity.mSingleton.getApplicationInfo().nativeLibraryDir;
 
@@ -1499,7 +1500,7 @@ class SDLMain implements Runnable
         Log.v("SDL", "gamePath = " + gamePath);
         Log.v("SDL", "logFilename = " + logFilename);
 
-        int ret = NativeLib.init(internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles);
+        int ret = NativeLib.init(internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles);
 
         Log.v("SDL", "SDL thread terminated");
     }
