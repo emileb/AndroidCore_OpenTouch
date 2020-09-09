@@ -1483,6 +1483,7 @@ class SDLMain implements Runnable
         String logFilename = SDLActivity.mSingleton.getIntent().getStringExtra("log_filename");
         String userFiles = SDLActivity.mSingleton.getIntent().getStringExtra("user_files");
         String tmpFiles = SDLActivity.mSingleton.getCacheDir().getAbsolutePath();
+        String sourceDir = SDLActivity.mSingleton.getApplicationContext().getApplicationInfo().sourceDir;
 
         String nativeSoPath = SDLActivity.mSingleton.getApplicationInfo().nativeLibraryDir;
 
@@ -1500,7 +1501,7 @@ class SDLMain implements Runnable
         Log.v("SDL", "gamePath = " + gamePath);
         Log.v("SDL", "logFilename = " + logFilename);
 
-        int ret = NativeLib.init(internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles);
+        int ret = NativeLib.init(internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir);
 
         Log.v("SDL", "SDL thread terminated");
     }

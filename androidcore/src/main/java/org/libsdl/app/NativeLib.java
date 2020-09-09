@@ -5,7 +5,7 @@ import com.opentouchgaming.androidcore.controls.ControlInterface;
 
 public class NativeLib implements ControlInterface {
 
-    public static native int init(String graphics_dir, int options, int wheelNbr, String[] args, int game, String path, String filesPath, String nativeLibs, String userFiles, String tmpFiles);
+    public static native int init(String graphics_dir, int options, int wheelNbr, String[] args, int game, String path, String filesPath, String nativeLibs, String userFiles, String tmpFiles, String sourceDir);
 
     public static native void setScreenSize(int width, int height);
 
