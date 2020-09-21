@@ -376,14 +376,8 @@ public class SDLActivity extends Activity implements Handler.Callback
     {
         Log.v(TAG, "onDestroy()");
 
-        if (SDLActivity.mBrokenLibraries)
-        {
-            super.onDestroy();
-            // Reset everything in case the user re opens the app
-            SDLActivity.initialize();
-            return;
-        }
-
+        super.onDestroy();
+/*
         // Send a quit message to the application
         SDLActivity.mExitCalledFromJava = true;
         SDLActivity.nativeQuit();
@@ -402,10 +396,8 @@ public class SDLActivity extends Activity implements Handler.Callback
 
             //Log.v(TAG, "Finished waiting for SDL thread");
         }
-
-        super.onDestroy();
-        // Reset everything in case the user re opens the app
-        SDLActivity.initialize();
+*/
+        System.exit(0);
     }
 /*
     @Override
@@ -501,6 +493,9 @@ public class SDLActivity extends Activity implements Handler.Callback
     protected static final int COMMAND_SHOW_GAMEPAD = 0x8004;
     protected static final int COMMAND_VIBRATE = 0x8005;
     protected static final int COMMAND_LOAD_SAVE_CONTROLS = 0x8006;
+    protected static final int COMMAND_EXIT_APP = 0x8007;
+
+
     /**
      * This method is called by SDL if SDL did not handle a message itself.
      * This happens if a received message contains an unsupported command.
@@ -647,6 +642,11 @@ public class SDLActivity extends Activity implements Handler.Callback
                 }
                 case COMMAND_LOAD_SAVE_CONTROLS: {
                     new TouchSettingsSaveLoad(SDLActivity.mSingleton, SDLActivity.userFiles, SDLActivity.mSurface.engine);
+                    break;
+                }
+                case COMMAND_EXIT_APP:
+                {
+                    SDLActivity.mSingleton.finish();
                     break;
                 }
                 default:
@@ -1504,6 +1504,7 @@ class SDLMain implements Runnable
         int ret = NativeLib.init(internalFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir);
 
         Log.v("SDL", "SDL thread terminated");
+        SDLActivity.mSingleton.finish();
     }
 }
 
@@ -2147,11 +2148,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             yawDx *= gyroXSens;
             pitchDx *= gyroYSens;
 
-            NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, (yawDx) * gyroXSens,0);
-            NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, (pitchDx) * gyroYSens,0);
+            if(yawDx > -2 && yawDx < 2) // Quick range check, and check for NaN
+                NativeLib.analogYaw(ControlConfig.LOOK_MODE_MOUSE, (yawDx) * gyroXSens,0);
 
-            //Log.d("gyro", "Time = " + timeDiff + " 0 = " +  event.values[0] + " 1 ="+  event.values[1] + " 2 = " +  event.values[2]);
-
+            if(pitchDx > -2 && pitchDx < 2) // Quick range check, and check for NaN
+                NativeLib.analogPitch(ControlConfig.LOOK_MODE_MOUSE, (pitchDx) * gyroYSens,0);
         }
     }
 }
