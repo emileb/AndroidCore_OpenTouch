@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -72,6 +73,7 @@ public class OptionsDialog {
         CheckBox enableVibrate = dialog.findViewById(R.id.enable_vibrate_checkBox);
         ImageView appDirButton = dialog.findViewById(R.id.app_dir_options_button);
         ImageView appSecDirButton = dialog.findViewById(R.id.appSec_dir_options_button);
+        Button resetButton = dialog.findViewById(R.id.reset_button);
 
         // PRIMARY folder options
         appDirButton.setOnClickListener(v -> {
@@ -285,8 +287,22 @@ public class OptionsDialog {
         enableVibrate.setChecked(AppSettings.getBoolOption(act, "enable_vibrate", true));
         enableVibrate.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(act, "enable_vibrate", isChecked));
 
+
+        resetButton.setOnClickListener(v -> {
+
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+            dialogBuilder.setTitle("WARNING: This will reset all app settings!");
+            dialogBuilder.setPositiveButton("OK", (dialog1, which) -> {
+                AppSettings.deleteAllOptions(act);
+                dialog.dismiss();
+            });
+
+            dialogBuilder.create().show();
+        });
+
+
         if (extraOptions != null) {
-            LinearLayout layout = dialog.findViewById(R.id.top_linearlayout);
+            LinearLayout layout = dialog.findViewById(R.id.extras_linearlayout);
             layout.addView(extraOptions);
         }
 

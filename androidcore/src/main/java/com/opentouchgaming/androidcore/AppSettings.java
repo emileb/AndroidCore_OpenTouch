@@ -109,4 +109,12 @@ public class AppSettings
         editor.commit();
     }
 
+    public static void deleteAllOptions(Context ctx)
+    {
+        SharedPreferences settings = ctx.getSharedPreferences("OPTIONS", Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.clear();
+        editor.commit();
+    }
+
 }
