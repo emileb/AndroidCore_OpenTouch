@@ -237,6 +237,8 @@ public class OptionsDialog {
         list.add("2");
         list.add("3");
         list.add("4");
+        list.add("5");
+        list.add("6");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(act, android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
