@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.appcompat.widget.PopupMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -15,15 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.PopupMenu;
 
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
@@ -63,10 +60,7 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        config = new ControlConfig(AppInfo.currentEngine.gamepadDefiniton, this);
-
-
+        config = new ControlConfig(GamepadDefinitions.getDefinition(AppInfo.app), this);
     }
 
     void loadConfigFile(String file) {
@@ -150,26 +144,18 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener 
         CheckBox enableCb = mainView.findViewById(R.id.gamepad_enable_checkbox);
         enableCb.setChecked(TouchSettings.gamePadEnabled);
 
-        enableCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
-                TouchSettings.gamePadEnabled = isChecked;
-                setListViewEnabled(TouchSettings.gamePadEnabled);
-            }
+        enableCb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
+            TouchSettings.gamePadEnabled = isChecked;
+            setListViewEnabled(TouchSettings.gamePadEnabled);
         });
 
         CheckBox showTouchcd = mainView.findViewById(R.id.gamepad_hide_touch_checkbox);
         showTouchcd.setChecked(TouchSettings.gamepadHidetouch);
 
-        showTouchcd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                TouchSettings.setBoolOption(getActivity(), "gamepad_hide_touch", isChecked);
-                TouchSettings.gamepadHidetouch = isChecked;
-            }
+        showTouchcd.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            TouchSettings.setBoolOption(getActivity(), "gamepad_hide_touch", isChecked);
+            TouchSettings.gamepadHidetouch = isChecked;
         });
 
         listView = (ListView) mainView.findViewById(R.id.gamepad_listview);
@@ -179,26 +165,12 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener 
         setListViewEnabled(TouchSettings.gamePadEnabled);
 
         //listView.setSelector(R.drawable.layout_sel_background);
-        listView.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View v, int pos,
-                                    long id) {
-                config.startMonitor(getActivity(), pos);
-                adapter.notifyDataSetChanged();
-            }
+        listView.setOnItemClickListener((arg0, v, pos, id) -> {
+            config.startMonitor(getActivity(), pos);
+            adapter.notifyDataSetChanged();
         });
 
-        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View v, int pos,
-                                           long id) {
-                return config.showExtraOptions(getActivity(), pos);
-            }
-        });
-
-
+        listView.setOnItemLongClickListener((arg0, v, pos, id) -> config.showExtraOptions(getActivity(), pos));
 
         info = mainView.findViewById(R.id.gamepad_info_textview);
         finishedMonitoring();

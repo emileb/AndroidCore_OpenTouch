@@ -9,11 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,6 +21,12 @@ import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.opentouchgaming.androidcore.AboutDialog;
 import com.opentouchgaming.androidcore.AppInfo;
@@ -709,6 +710,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         if (code == TOOL_BUTTON_GAMEPAD)
         {
             Intent intent = new Intent(getContext(), GamepadActivity.class);
+            intent.putExtra("app", AppInfo.app.name());
             startActivity(intent);
         } else if (code == TOOL_BUTTON_SETTINGS)
         {

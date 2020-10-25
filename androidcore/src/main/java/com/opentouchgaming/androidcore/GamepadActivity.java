@@ -19,6 +19,12 @@ public class GamepadActivity extends Activity
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        AppInfo.Apps app = AppInfo.Apps.valueOf(getIntent().getStringExtra("app"));
+        AppInfo.setApp(app);
+
+        if(AppInfo.getContext() == null)
+            AppInfo.setContext(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gamepad);
 
@@ -39,7 +45,6 @@ public class GamepadActivity extends Activity
             return true;
         else
             return super.onKeyDown(keyCode, event);
-
     }
 
     @Override

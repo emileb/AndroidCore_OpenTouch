@@ -615,6 +615,7 @@ public class SDLActivity extends Activity implements Handler.Callback
                 case COMMAND_SHOW_GAMEPAD:
                 {
                     Intent intent = new Intent(getContext(), GamepadActivity.class);
+                    intent.putExtra("app", AppInfo.app.name());
                     SDLActivity.mSingleton.startActivity(intent);
                     break;
                 }
@@ -1727,6 +1728,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         if (resDiv != 1 && !divDone)
         {
             getHolder().setFixedSize(mWidth / resDiv, mHeight / resDiv);
+            //getHolder().setFixedSize(640, 480);
             divDone = true;
             return;
         }
