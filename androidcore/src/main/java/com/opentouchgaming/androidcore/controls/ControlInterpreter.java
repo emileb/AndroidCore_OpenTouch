@@ -8,8 +8,6 @@ import android.view.MotionEvent;
 import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.DebugLog;
 
-import org.libsdl.app.SDLActivity;
-
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -234,7 +232,9 @@ public class ControlInterpreter {
 
         if (used)
             return true;
-
+        else
+            return false;
+        /*
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
                 (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
             return false;
@@ -246,6 +246,7 @@ public class ControlInterpreter {
             SDLActivity.onNativeKeyDown(keyCode, unicode);
             return true;
         }
+         */
     }
 
     public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -276,7 +277,9 @@ public class ControlInterpreter {
 
         if (used)
             return true;
-
+        else
+            return false;
+        /*
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
                 (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
             return false;
@@ -284,6 +287,7 @@ public class ControlInterpreter {
             SDLActivity.onNativeKeyUp(keyCode);
             return true;
         }
+         */
     }
 
     public void onBackButton() {
