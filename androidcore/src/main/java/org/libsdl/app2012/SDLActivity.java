@@ -540,9 +540,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
 
         int keyCode = event.getKeyCode();
         // Ignore certain special keys so they're handled by Android
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
-            keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
-            keyCode == KeyEvent.KEYCODE_CAMERA ||
+        if (keyCode == KeyEvent.KEYCODE_CAMERA ||
             keyCode == KeyEvent.KEYCODE_ZOOM_IN || /* API 11 */
             keyCode == KeyEvent.KEYCODE_ZOOM_OUT /* API 11 */
             ) {
@@ -1941,6 +1939,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         if(SDLOpenTouch.onKey(keyCode,event) == true)
             return true;
+
+        if(SDLActivity.OPENTOUCH_SDL_EXTRA) { // Allow volume keys to work if not used
+           if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP))
+               return false;
+        }
 
         if(!SDLActivity.OPENTOUCH_SDL_EXTRA) {
             // Dispatch the different events depending on where they come from
