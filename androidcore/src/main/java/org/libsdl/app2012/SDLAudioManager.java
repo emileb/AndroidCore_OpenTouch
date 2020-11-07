@@ -4,6 +4,9 @@ import android.media.*;
 import android.os.Build;
 import android.util.Log;
 
+import static android.media.AudioTrack.PLAYSTATE_PAUSED;
+import static android.media.AudioTrack.PLAYSTATE_PLAYING;
+
 public class SDLAudioManager
 {
     protected static final String TAG = "SDLAudio";
@@ -17,6 +20,26 @@ public class SDLAudioManager
     }
 
     // Audio
+
+    static void onPause()
+    {
+        if (mAudioTrack != null) {
+            if (mAudioTrack.getPlayState() == PLAYSTATE_PLAYING) {
+                Log.d("mAudioTrack", "Pausing");
+                mAudioTrack.pause();
+            }
+        }
+    }
+
+    static void onResume()
+    {
+        if (mAudioTrack != null) {
+            if (mAudioTrack.getPlayState() == PLAYSTATE_PAUSED) {
+                Log.d("mAudioTrack", "Resuming");
+                mAudioTrack.play();
+            }
+        }
+    }
 
     protected static String getAudioFormatString(int audioFormat) {
         switch (audioFormat) {
