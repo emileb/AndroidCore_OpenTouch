@@ -1,41 +1,68 @@
 package org.libsdl.app2012;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.lang.reflect.Method;
-import java.lang.Math;
-
-import android.app.*;
-import android.content.*;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.UiModeManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.InputType;
-import android.view.*;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.SparseArray;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.InputDevice;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.PointerIcon;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.RelativeLayout;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.os.*;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.SparseArray;
-import android.graphics.*;
-import android.graphics.drawable.Drawable;
-import android.hardware.*;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ApplicationInfo;
+
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.Hashtable;
 
 /**
     SDL Activity
 */
 public class SDLActivity extends Activity implements View.OnSystemUiVisibilityChangeListener {
     private static final String TAG = "SDL";
+
+    static boolean OPENTOUCH_SDL_EXTRA = true;
 
     public static boolean mIsResumedCalled, mHasFocus;
     public static final boolean mHasMultiWindow = (Build.VERSION.SDK_INT >= 24);
@@ -91,13 +118,18 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
 
     protected static SDLGenericMotionListener_API12 getMotionListener() {
         if (mMotionListener == null) {
-            if (Build.VERSION.SDK_INT >= 26) {
-                mMotionListener = new SDLGenericMotionListener_API26();
-            } else
-            if (Build.VERSION.SDK_INT >= 24) {
-                mMotionListener = new SDLGenericMotionListener_API24();
-            } else {
-                mMotionListener = new SDLGenericMotionListener_API12();
+            if(SDLActivity.OPENTOUCH_SDL_EXTRA) {
+                mMotionListener = new SDLOpenTouchControllerManager();
+            }
+            else {
+                if (Build.VERSION.SDK_INT >= 26) {
+                    mMotionListener = new SDLGenericMotionListener_API26();
+                } else
+                if (Build.VERSION.SDK_INT >= 24) {
+                    mMotionListener = new SDLGenericMotionListener_API24();
+                } else {
+                    mMotionListener = new SDLGenericMotionListener_API12();
+                }
             }
         }
 
@@ -139,11 +171,11 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         return new String[] {
             "hidapi",
             "SDL2",
-            // "SDL2_image",
-            // "SDL2_mixer",
+            "SDL2_image",
+            "SDL2_mixer",
             // "SDL2_net",
             // "SDL2_ttf",
-            "main"
+            // "main"
         };
     }
 
@@ -251,18 +283,26 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mSurface = new SDLSurface(getApplication());
 
         mLayout = new RelativeLayout(this);
-        mLayout.addView(mSurface);
+        if(OPENTOUCH_SDL_EXTRA) // Directly use the surface, otherwise screen scaling does not work and it's a box in the corner
+        {
+            SDLOpenTouch.Setup(this, this.getIntent());
+            setContentView(mSurface);
+        }
+        else {
+            mLayout.addView(mSurface);
+            setContentView(mLayout);
+        }
 
         // Get our current screen orientation and pass it down.
         mCurrentOrientation = SDLActivity.getCurrentOrientation();
         // Only record current orientation
         SDLActivity.onNativeOrientationChanged(mCurrentOrientation);
 
-        setContentView(mLayout);
-
         setWindowStyle(false);
 
-        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(this);
+        if(!OPENTOUCH_SDL_EXTRA) { // We do our own for immersive mode
+            getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(this);
+        }
 
         // Get filename from "Open with" of another application
         Intent intent = getIntent();
@@ -303,6 +343,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         Log.v(TAG, "onPause()");
         super.onPause();
 
+        SDLOpenTouch.onPause(getContext());
+
         if (mHIDDeviceManager != null) {
             mHIDDeviceManager.setFrozen(true);
         }
@@ -315,6 +357,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     protected void onResume() {
         Log.v(TAG, "onResume()");
         super.onResume();
+
+        SDLOpenTouch.onResume(getContext());
 
         if (mHIDDeviceManager != null) {
             mHIDDeviceManager.setFrozen(false);
@@ -411,32 +455,39 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     protected void onDestroy() {
         Log.v(TAG, "onDestroy()");
 
-        if (mHIDDeviceManager != null) {
-            HIDDeviceManager.release(mHIDDeviceManager);
-            mHIDDeviceManager = null;
+        if(OPENTOUCH_SDL_EXTRA) {
+            super.onDestroy();
+            System.exit(0);
         }
+        else {
 
-        if (SDLActivity.mBrokenLibraries) {
-           super.onDestroy();
-           return;
-        }
-
-        if (SDLActivity.mSDLThread != null) {
-
-            // Send Quit event to "SDLThread" thread
-            SDLActivity.nativeSendQuit();
-
-            // Wait for "SDLThread" thread to end
-            try {
-                SDLActivity.mSDLThread.join();
-            } catch(Exception e) {
-                Log.v(TAG, "Problem stopping SDLThread: " + e);
+            if (mHIDDeviceManager != null) {
+                HIDDeviceManager.release(mHIDDeviceManager);
+                mHIDDeviceManager = null;
             }
+
+            if (SDLActivity.mBrokenLibraries) {
+                super.onDestroy();
+                return;
+            }
+
+            if (SDLActivity.mSDLThread != null) {
+
+                // Send Quit event to "SDLThread" thread
+                SDLActivity.nativeSendQuit();
+
+                // Wait for "SDLThread" thread to end
+                try {
+                    SDLActivity.mSDLThread.join();
+                } catch (Exception e) {
+                    Log.v(TAG, "Problem stopping SDLThread: " + e);
+                }
+            }
+
+            SDLActivity.nativeQuit();
+
+            super.onDestroy();
         }
-
-        SDLActivity.nativeQuit();
-
-        super.onDestroy();
     }
 
     @Override
@@ -657,33 +708,37 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
             }
             case COMMAND_CHANGE_SURFACEVIEW_FORMAT:
             {
-                int format = (Integer) msg.obj;
-                int pf;
+                if(!OPENTOUCH_SDL_EXTRA) {
 
-                if (SDLActivity.mSurface == null) {
-                    return;
+                    int format = (Integer) msg.obj;
+                    int pf;
+
+                    if (SDLActivity.mSurface == null) {
+                        return;
+                    }
+
+                    SurfaceHolder holder = SDLActivity.mSurface.getHolder();
+                    if (holder == null) {
+                        return;
+                    }
+
+                    if (format == 1) {
+                        pf = PixelFormat.RGBA_8888;
+                    } else if (format == 2) {
+                        pf = PixelFormat.RGBX_8888;
+                    } else {
+                        pf = PixelFormat.RGB_565;
+                    }
+
+                    holder.setFormat(pf);
                 }
-
-                SurfaceHolder holder = SDLActivity.mSurface.getHolder();
-                if (holder == null) {
-                    return;
-                }
-
-                if (format == 1) {
-                    pf = PixelFormat.RGBA_8888;
-                } else if (format == 2) {
-                    pf = PixelFormat.RGBX_8888;
-                } else {
-                    pf = PixelFormat.RGB_565;
-                }
-
-                holder.setFormat(pf);
-
                 break;
             }
             default:
-                if ((context instanceof SDLActivity) && !((SDLActivity) context).onUnhandledMessage(msg.arg1, msg.obj)) {
-                    Log.e(TAG, "error handling message, command is " + msg.arg1);
+                if(SDLOpenTouch.CommandHandler(SDLActivity.mSingleton,msg) == false) {
+                    if ((context instanceof SDLActivity) && !((SDLActivity) context).onUnhandledMessage(msg.arg1, msg.obj)) {
+                        Log.e(TAG, "error handling message, command is " + msg.arg1);
+                    }
                 }
             }
         }
@@ -798,7 +853,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      */
     public static void setWindowStyle(boolean fullscreen) {
         // Called from SDLMain() thread and can't directly affect the view
-        mSingleton.sendCommand(COMMAND_CHANGE_WINDOW_STYLE, fullscreen ? 1 : 0);
+        if(!OPENTOUCH_SDL_EXTRA)// DONT CALL THIS, otherwise it invalidates the surface, we do it at the start
+            mSingleton.sendCommand(COMMAND_CHANGE_WINDOW_STYLE, fullscreen ? 1 : 0);
     }
 
     /**
@@ -818,62 +874,64 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      */
     public void setOrientationBis(int w, int h, boolean resizable, String hint)
     {
-        int orientation_landscape = -1;
-        int orientation_portrait = -1;
+        if(!OPENTOUCH_SDL_EXTRA) {
+            int orientation_landscape = -1;
+            int orientation_portrait = -1;
 
-        /* If set, hint "explicitly controls which UI orientations are allowed". */
-        if (hint.contains("LandscapeRight") && hint.contains("LandscapeLeft")) {
-            orientation_landscape = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
-        } else if (hint.contains("LandscapeRight")) {
-            orientation_landscape = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-        } else if (hint.contains("LandscapeLeft")) {
-            orientation_landscape = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-        }
-
-        if (hint.contains("Portrait") && hint.contains("PortraitUpsideDown")) {
-            orientation_portrait = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
-        } else if (hint.contains("Portrait")) {
-            orientation_portrait = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        } else if (hint.contains("PortraitUpsideDown")) {
-            orientation_portrait = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
-        }
-
-        boolean is_landscape_allowed = (orientation_landscape == -1 ? false : true);
-        boolean is_portrait_allowed = (orientation_portrait == -1 ? false : true);
-        int req = -1; /* Requested orientation */
-
-        /* No valid hint, nothing is explicitly allowed */
-        if (!is_portrait_allowed && !is_landscape_allowed) {
-            if (resizable) {
-                /* All orientations are allowed */
-                req = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR;
-            } else {
-                /* Fixed window and nothing specified. Get orientation from w/h of created window */
-                req = (w > h ? ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            /* If set, hint "explicitly controls which UI orientations are allowed". */
+            if (hint.contains("LandscapeRight") && hint.contains("LandscapeLeft")) {
+                orientation_landscape = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
+            } else if (hint.contains("LandscapeRight")) {
+                orientation_landscape = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+            } else if (hint.contains("LandscapeLeft")) {
+                orientation_landscape = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
             }
-        } else {
-            /* At least one orientation is allowed */
-            if (resizable) {
-                if (is_portrait_allowed && is_landscape_allowed) {
-                    /* hint allows both landscape and portrait, promote to full sensor */
+
+            if (hint.contains("Portrait") && hint.contains("PortraitUpsideDown")) {
+                orientation_portrait = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
+            } else if (hint.contains("Portrait")) {
+                orientation_portrait = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            } else if (hint.contains("PortraitUpsideDown")) {
+                orientation_portrait = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+            }
+
+            boolean is_landscape_allowed = (orientation_landscape == -1 ? false : true);
+            boolean is_portrait_allowed = (orientation_portrait == -1 ? false : true);
+            int req = -1; /* Requested orientation */
+
+            /* No valid hint, nothing is explicitly allowed */
+            if (!is_portrait_allowed && !is_landscape_allowed) {
+                if (resizable) {
+                    /* All orientations are allowed */
                     req = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR;
                 } else {
-                    /* Use the only one allowed "orientation" */
-                    req = (is_landscape_allowed ? orientation_landscape : orientation_portrait);
+                    /* Fixed window and nothing specified. Get orientation from w/h of created window */
+                    req = (w > h ? ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
                 }
             } else {
-                /* Fixed window and both orientations are allowed. Choose one. */
-                if (is_portrait_allowed && is_landscape_allowed) {
-                    req = (w > h ? orientation_landscape : orientation_portrait);
+                /* At least one orientation is allowed */
+                if (resizable) {
+                    if (is_portrait_allowed && is_landscape_allowed) {
+                        /* hint allows both landscape and portrait, promote to full sensor */
+                        req = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR;
+                    } else {
+                        /* Use the only one allowed "orientation" */
+                        req = (is_landscape_allowed ? orientation_landscape : orientation_portrait);
+                    }
                 } else {
-                    /* Use the only one allowed "orientation" */
-                    req = (is_landscape_allowed ? orientation_landscape : orientation_portrait);
+                    /* Fixed window and both orientations are allowed. Choose one. */
+                    if (is_portrait_allowed && is_landscape_allowed) {
+                        req = (w > h ? orientation_landscape : orientation_portrait);
+                    } else {
+                        /* Use the only one allowed "orientation" */
+                        req = (is_landscape_allowed ? orientation_landscape : orientation_portrait);
+                    }
                 }
             }
-        }
 
-        Log.v("SDL", "setOrientation() requestedOrientation=" + req + " width=" + w +" height="+ h +" resizable=" + resizable + " hint=" + hint);
-        mSingleton.setRequestedOrientation(req);
+            Log.v("SDL", "setOrientation() requestedOrientation=" + req + " width=" + w + " height=" + h + " resizable=" + resizable + " hint=" + hint);
+            mSingleton.setRequestedOrientation(req);
+        }
     }
 
     /**
@@ -962,11 +1020,16 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      */
     public static boolean setRelativeMouseEnabled(boolean enabled)
     {
-        if (enabled && !supportsRelativeMouse()) {
-            return false;
+        if(OPENTOUCH_SDL_EXTRA) { // I handle relative mouse mode
+            return true;
         }
+        else {
+            if (enabled && !supportsRelativeMouse()) {
+                return false;
+            }
 
-        return SDLActivity.getMotionListener().setRelativeMouseEnabled(enabled);
+            return SDLActivity.getMotionListener().setRelativeMouseEnabled(enabled);
+        }
     }
 
     /**
@@ -1090,7 +1153,10 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     // This method is called by SDLControllerManager's API 26 Generic Motion Handler.
     public static View getContentView()
     {
-        return mSingleton.mLayout;
+        if(OPENTOUCH_SDL_EXTRA)
+            return mSurface;
+        else
+            return mSingleton.mLayout;
     }
 
     static class ShowTextInputTask implements Runnable {
@@ -1653,6 +1719,8 @@ class SDLMain implements Runnable {
 
         SDLActivity.nativeRunMain(library, function, arguments);
 
+        SDLOpenTouch.RunApplication(SDLActivity.mSingleton,SDLActivity.mSingleton.getIntent(), SDLActivity.mSurface.mWidth, SDLActivity.mSurface.mHeight );
+
         Log.v("SDL", "Finished main function");
 
         if (SDLActivity.mSingleton == null || SDLActivity.mSingleton.isFinishing()) {
@@ -1754,6 +1822,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         if (SDLActivity.mSingleton == null) {
             return;
         }
+
+        if( SDLOpenTouch.surfaceChanged(SDLActivity.mSingleton, getHolder(), width, height) == true)
+            return;
 
         int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
         switch (format) {
@@ -1868,22 +1939,27 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         int deviceId = event.getDeviceId();
         int source = event.getSource();
 
-        // Dispatch the different events depending on where they come from
-        // Some SOURCE_JOYSTICK, SOURCE_DPAD or SOURCE_GAMEPAD are also SOURCE_KEYBOARD
-        // So, we try to process them as JOYSTICK/DPAD/GAMEPAD events first, if that fails we try them as KEYBOARD
-        //
-        // Furthermore, it's possible a game controller has SOURCE_KEYBOARD and
-        // SOURCE_JOYSTICK, while its key events arrive from the keyboard source
-        // So, retrieve the device itself and check all of its sources
-        if (SDLControllerManager.isDeviceSDLJoystick(deviceId)) {
-            // Note that we process events with specific key codes here
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                if (SDLControllerManager.onNativePadDown(deviceId, keyCode) == 0) {
-                    return true;
-                }
-            } else if (event.getAction() == KeyEvent.ACTION_UP) {
-                if (SDLControllerManager.onNativePadUp(deviceId, keyCode) == 0) {
-                    return true;
+        if(SDLOpenTouch.onKey(keyCode,event) == true)
+            return true;
+
+        if(!SDLActivity.OPENTOUCH_SDL_EXTRA) {
+            // Dispatch the different events depending on where they come from
+            // Some SOURCE_JOYSTICK, SOURCE_DPAD or SOURCE_GAMEPAD are also SOURCE_KEYBOARD
+            // So, we try to process them as JOYSTICK/DPAD/GAMEPAD events first, if that fails we try them as KEYBOARD
+            //
+            // Furthermore, it's possible a game controller has SOURCE_KEYBOARD and
+            // SOURCE_JOYSTICK, while its key events arrive from the keyboard source
+            // So, retrieve the device itself and check all of its sources
+            if (SDLControllerManager.isDeviceSDLJoystick(deviceId)) {
+                // Note that we process events with specific key codes here
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (SDLControllerManager.onNativePadDown(deviceId, keyCode) == 0) {
+                        return true;
+                    }
+                } else if (event.getAction() == KeyEvent.ACTION_UP) {
+                    if (SDLControllerManager.onNativePadUp(deviceId, keyCode) == 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -1939,6 +2015,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         int mouseButton;
         int i = -1;
         float x,y,p;
+Log.d("TEST", "onTouch : " + event.toString());
 
         // 12290 = Samsung DeX mode desktop mouse
         // 12290 = 0x3002 = 0x2002 | 0x1002 = SOURCE_MOUSE | SOURCE_TOUCHSCREEN
@@ -1958,9 +2035,38 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
             SDLActivity.onNativeMouse(mouseButton, action, x, y, motionListener.inRelativeMode());
         } else {
-            switch(action) {
-                case MotionEvent.ACTION_MOVE:
-                    for (i = 0; i < pointerCount; i++) {
+            if(SDLActivity.OPENTOUCH_SDL_EXTRA) {
+                return SDLOpenTouch.onTouchEvent(event);
+            }
+            else {
+
+                switch (action) {
+                    case MotionEvent.ACTION_MOVE:
+                        for (i = 0; i < pointerCount; i++) {
+                            pointerFingerId = event.getPointerId(i);
+                            x = event.getX(i) / mWidth;
+                            y = event.getY(i) / mHeight;
+                            p = event.getPressure(i);
+                            if (p > 1.0f) {
+                                // may be larger than 1.0f on some devices
+                                // see the documentation of getPressure(i)
+                                p = 1.0f;
+                            }
+                            SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_DOWN:
+                        // Primary pointer up/down, the index is always zero
+                        i = 0;
+                    case MotionEvent.ACTION_POINTER_UP:
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        // Non primary pointer up/down
+                        if (i == -1) {
+                            i = event.getActionIndex();
+                        }
+
                         pointerFingerId = event.getPointerId(i);
                         x = event.getX(i) / mWidth;
                         y = event.getY(i) / mHeight;
@@ -1971,49 +2077,26 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                             p = 1.0f;
                         }
                         SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
-                    }
-                    break;
+                        break;
 
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_DOWN:
-                    // Primary pointer up/down, the index is always zero
-                    i = 0;
-                case MotionEvent.ACTION_POINTER_UP:
-                case MotionEvent.ACTION_POINTER_DOWN:
-                    // Non primary pointer up/down
-                    if (i == -1) {
-                        i = event.getActionIndex();
-                    }
-
-                    pointerFingerId = event.getPointerId(i);
-                    x = event.getX(i) / mWidth;
-                    y = event.getY(i) / mHeight;
-                    p = event.getPressure(i);
-                    if (p > 1.0f) {
-                        // may be larger than 1.0f on some devices
-                        // see the documentation of getPressure(i)
-                        p = 1.0f;
-                    }
-                    SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
-                    break;
-
-                case MotionEvent.ACTION_CANCEL:
-                    for (i = 0; i < pointerCount; i++) {
-                        pointerFingerId = event.getPointerId(i);
-                        x = event.getX(i) / mWidth;
-                        y = event.getY(i) / mHeight;
-                        p = event.getPressure(i);
-                        if (p > 1.0f) {
-                            // may be larger than 1.0f on some devices
-                            // see the documentation of getPressure(i)
-                            p = 1.0f;
+                    case MotionEvent.ACTION_CANCEL:
+                        for (i = 0; i < pointerCount; i++) {
+                            pointerFingerId = event.getPointerId(i);
+                            x = event.getX(i) / mWidth;
+                            y = event.getY(i) / mHeight;
+                            p = event.getPressure(i);
+                            if (p > 1.0f) {
+                                // may be larger than 1.0f on some devices
+                                // see the documentation of getPressure(i)
+                                p = 1.0f;
+                            }
+                            SDLActivity.onNativeTouch(touchDevId, pointerFingerId, MotionEvent.ACTION_UP, x, y, p);
                         }
-                        SDLActivity.onNativeTouch(touchDevId, pointerFingerId, MotionEvent.ACTION_UP, x, y, p);
-                    }
-                    break;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -2022,14 +2105,17 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     // Sensor events
     public void enableSensor(int sensortype, boolean enabled) {
-        // TODO: This uses getDefaultSensor - what if we have >1 accels?
-        if (enabled) {
-            mSensorManager.registerListener(this,
-                            mSensorManager.getDefaultSensor(sensortype),
-                            SensorManager.SENSOR_DELAY_GAME, null);
-        } else {
-            mSensorManager.unregisterListener(this,
-                            mSensorManager.getDefaultSensor(sensortype));
+        if(!SDLActivity.OPENTOUCH_SDL_EXTRA) //Disable this, we do our own sensor stuff
+        {
+            // TODO: This uses getDefaultSensor - what if we have >1 accels?
+            if (enabled) {
+                mSensorManager.registerListener(this,
+                        mSensorManager.getDefaultSensor(sensortype),
+                        SensorManager.SENSOR_DELAY_GAME, null);
+            } else {
+                mSensorManager.unregisterListener(this,
+                        mSensorManager.getDefaultSensor(sensortype));
+            }
         }
     }
 
