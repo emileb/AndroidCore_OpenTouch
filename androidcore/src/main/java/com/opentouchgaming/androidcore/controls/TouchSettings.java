@@ -22,6 +22,7 @@ public class TouchSettings {
 	public static final int GAME_OPTION_USE_SYSTEM_KEYBOARD = 4;
 	public static final int GAME_OPTION_GLES2               = 8;
 	public static final int GAME_OPTION_GLES3               = 16;
+	public static final int GAME_OPTION_SDL_OLD_AUDIO       = 32;
 
 	public static String gamePadControlsFile;
 

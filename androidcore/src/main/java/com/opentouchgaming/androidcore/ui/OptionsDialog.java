@@ -71,6 +71,8 @@ public class OptionsDialog {
         CheckBox useMouse = dialog.findViewById(R.id.capture_mouse_checkBox);
         CheckBox groupSimilar = dialog.findViewById(R.id.group_similar_engines_checkBox);
         CheckBox enableVibrate = dialog.findViewById(R.id.enable_vibrate_checkBox);
+        CheckBox oldSDLAudio = dialog.findViewById(R.id.sdl_old_audio_checkBox);
+
         ImageView appDirButton = dialog.findViewById(R.id.app_dir_options_button);
         ImageView appSecDirButton = dialog.findViewById(R.id.appSec_dir_options_button);
         Button resetButton = dialog.findViewById(R.id.reset_button);
@@ -289,6 +291,8 @@ public class OptionsDialog {
         enableVibrate.setChecked(AppSettings.getBoolOption(act, "enable_vibrate", true));
         enableVibrate.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(act, "enable_vibrate", isChecked));
 
+        oldSDLAudio.setChecked(AppSettings.getBoolOption(act, "old_sdl_audio", false));
+        oldSDLAudio.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(act, "old_sdl_audio", isChecked));
 
         resetButton.setOnClickListener(v -> {
 
