@@ -29,7 +29,6 @@ import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.ui.GamepadSaveLoad;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 import static com.opentouchgaming.androidcore.DebugLog.Level.I;
@@ -54,16 +53,14 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener 
 
     String configFilename;
 
-    //This is a bit shit, set this before instantiat the fragment
-    public static ArrayList<ActionInput> gamepadActions;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        config = new ControlConfig(GamepadDefinitions.getDefinition(AppInfo.app), this);
+
     }
 
     void loadConfigFile(String file) {
+
         configFilename = file;
 
         if (configFilename == null) {
@@ -139,6 +136,10 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        config = new ControlConfig(GamepadDefinitions.getDefinition(AppInfo.app), this);
+
+
         View mainView = inflater.inflate(R.layout.fragment_gamepad, null);
 
         CheckBox enableCb = mainView.findViewById(R.id.gamepad_enable_checkbox);

@@ -2020,7 +2020,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         int mouseButton;
         int i = -1;
         float x,y,p;
-Log.d("TEST", "onTouch : " + event.toString());
 
         // 12290 = Samsung DeX mode desktop mouse
         // 12290 = 0x3002 = 0x2002 | 0x1002 = SOURCE_MOUSE | SOURCE_TOUCHSCREEN

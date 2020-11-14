@@ -13,7 +13,7 @@ public class GamepadDefinitions {
 
     static public ActionInputDefinition getDefinition(AppInfo.Apps app)
     {
-        if(gamepadDefinition == null)
+        //if(gamepadDefinition == null)
         {
             gamepadDefinition = new ActionInputDefinition();
             if(app == AppInfo.Apps.DELTA_TOUCH)
