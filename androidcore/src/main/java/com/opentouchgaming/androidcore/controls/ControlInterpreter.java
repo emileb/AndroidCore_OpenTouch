@@ -46,9 +46,8 @@ public class ControlInterpreter {
         loadGameControlsFile();
 
         for (ActionInput ai : config.actions) {
-            if ((ai.sourceType == ActionInput.SourceType.AXIS) && ((ai.actionType == ActionInput.ActionType.MENU) || (ai.actionType == ActionInput.ActionType.BUTTON))) {
+                // Put all possible actions in here, fixes crash when configuring gamepad in game and an axis is assigned to a new button
                 analogButtonState.put(ai.actionCode, false);
-            }
         }
 
         controlInterface = qif;
