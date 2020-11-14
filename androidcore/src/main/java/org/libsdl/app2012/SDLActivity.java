@@ -277,7 +277,9 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
 
         mClipboardHandler = new SDLClipboardHandler_API11();
 
-        mHIDDeviceManager = HIDDeviceManager.acquire(this);
+        if(!OPENTOUCH_SDL_EXTRA) {
+            mHIDDeviceManager = HIDDeviceManager.acquire(this);
+        }
 
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
