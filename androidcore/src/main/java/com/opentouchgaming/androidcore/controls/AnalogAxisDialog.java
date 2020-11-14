@@ -3,23 +3,13 @@ package com.opentouchgaming.androidcore.controls;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 
-import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
-import com.opentouchgaming.androidcore.Utils;
-
-import java.util.ArrayList;
-import java.util.function.Function;
 
 /**
  * Created by Emile on 31/10/2017.
@@ -64,7 +54,7 @@ public class AnalogAxisDialog implements ActionInput.ActionInputExtra {
 
         invert.setChecked(action.invert);
 
-        sensitivity.setMax(100);
+        sensitivity.setMax(150);
         sensitivity.setProgress((int) (action.scale * 50));
 
         deadZone.setMax(95);
