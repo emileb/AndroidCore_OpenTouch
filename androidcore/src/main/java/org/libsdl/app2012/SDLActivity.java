@@ -1093,6 +1093,10 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      * This method is called by SDL using JNI.
      */
     public static boolean isChromebook() {
+
+        if(OPENTOUCH_SDL_EXTRA == true) //Possibly breaking the mouse
+            return false;
+
         if (getContext() == null) {
             return false;
         }
@@ -1103,6 +1107,10 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      * This method is called by SDL using JNI.
      */
     public static boolean isDeXMode() {
+
+        if(OPENTOUCH_SDL_EXTRA == true)  //Possibly breaking the mouse
+            return false;
+
         if (Build.VERSION.SDK_INT < 24) {
             return false;
         }
