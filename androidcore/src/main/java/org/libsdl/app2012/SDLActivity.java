@@ -2220,6 +2220,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 return true;
         }
 
+        if(SDLActivity.OPENTOUCH_SDL_EXTRA == true) // Consume all events, otherwise onKey events set produced on mouse buttons
+            return true;
+
         return false;
     }
 
