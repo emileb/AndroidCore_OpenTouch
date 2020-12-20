@@ -15,9 +15,18 @@ public interface EngineOptionsInterface
         void launch( String mpArgs );
     }
 
+    class RunInfo
+    {
+        public String args;
+        public int glesVersion;
+        public String frameBufferWidth;
+        public String frameBufferHeight;
+    }
+
     void showDialog(final Activity act, GameEngine engine, int version, Function<Integer, Void> update);
-    String getArgs(int version);
-    int getGLESVersion(int version);
+
+    RunInfo getRunInfo(int version);
+
     boolean hasMultiplayer();
     void launchMultiplayer(Activity ac,GameEngine engine, int version, String mainArgs, MultiplayerCallback callback );
 

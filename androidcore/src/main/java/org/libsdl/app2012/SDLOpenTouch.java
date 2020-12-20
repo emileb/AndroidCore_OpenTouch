@@ -94,12 +94,10 @@ public class SDLOpenTouch {
 
         // fullscreen
         activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // keep screen on
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Utils.setImmersionMode(activity);
         Utils.expandToCutout(activity);
@@ -107,24 +105,52 @@ public class SDLOpenTouch {
         gyro = new SDLOpenTouchGyro(activity, activity.getWindowManager().getDefaultDisplay().getRotation());
 
         engine = new NativeLib();
-        controlInterp = new ControlInterpreter(activity, engine, GamepadDefinitions.getDefinition(AppInfo.app), TouchSettings.gamePadEnabled, TouchSettings.altTouchCode);
+        controlInterp = new ControlInterpreter(activity, engine, GamepadDefinitions.getDefinition(AppInfo.app), TouchSettings.gamePadEnabled,
+                                               TouchSettings.altTouchCode);
 
         enableVibrate = AppSettings.getBoolOption(activity, "enable_vibrate", true);
         resDiv = intent.getIntExtra("res_div", 1);
     }
 
+    static String ReplaceDisplaySize(String test, float width, float height) {
+        test = test.replace("$W2", Integer.toString((int) (width / 2)));
+        test = test.replace("$H2", Integer.toString((int) (height / 2)));
+        test = test.replace("$W3", Integer.toString((int) (width / 3)));
+        test = test.replace("$H3", Integer.toString((int) (height / 3)));
+        test = test.replace("$W4", Integer.toString((int) (width / 4)));
+        test = test.replace("$H4", Integer.toString((int) (height / 4)));
+
+        test = test.replace("$W", Integer.toString((int) (width)));
+        test = test.replace("$H", Integer.toString((int) (height)));
+
+        return test;
+    }
+
     static void RunApplication(Activity activity, Intent intent, float displayWidth, float displayHeight) {
+
+        {
+            int fbWidth = 0;
+            int fbHeight = 0;
+
+            String frameBufferWidth = intent.getStringExtra("framebuffer_width");
+            String frameBufferHeight = intent.getStringExtra("framebuffer_height");
+
+            if (frameBufferWidth != null && frameBufferHeight != null) {
+                frameBufferWidth = ReplaceDisplaySize(frameBufferWidth, displayWidth, displayHeight);
+                frameBufferHeight = ReplaceDisplaySize(frameBufferHeight, displayWidth, displayHeight);
+                try {
+                    fbWidth = Integer.decode(frameBufferWidth);
+                    fbHeight = Integer.decode(frameBufferHeight);
+                } catch (Exception e) {
+
+                }
+            }
+            NativeLib.setFramebufferSize(fbWidth, fbHeight);
+        }
+
         String args = intent.getStringExtra("args");
 
-        args = args.replace("$W2", Integer.toString((int) (displayWidth / 2)));
-        args = args.replace("$H2", Integer.toString((int) (displayHeight / 2)));
-        args = args.replace("$W3", Integer.toString((int) (displayWidth / 3)));
-        args = args.replace("$H3", Integer.toString((int) (displayHeight / 3)));
-        args = args.replace("$W4", Integer.toString((int) (displayWidth / 4)));
-        args = args.replace("$H4", Integer.toString((int) (displayHeight / 4)));
-
-        args = args.replace("$W", Integer.toString((int) (displayWidth)));
-        args = args.replace("$H", Integer.toString((int) (displayHeight)));
+        args = ReplaceDisplaySize(args, displayWidth, displayHeight);
 
         String[] args_array = Utils.creatArgs(args);
 
@@ -148,7 +174,7 @@ public class SDLOpenTouch {
         if (gles_version == 3)
             options |= TouchSettings.GAME_OPTION_GLES3;
 
-        if(AppSettings.getBoolOption(activity, "old_sdl_audio", false))
+        if (AppSettings.getBoolOption(activity, "old_sdl_audio", false))
             options |= TouchSettings.GAME_OPTION_SDL_OLD_AUDIO;
 
         int freq = intent.getIntExtra("audio_freq", 0);
@@ -184,7 +210,8 @@ public class SDLOpenTouch {
         Log.v(TAG, "gamePath = " + gamePath);
         Log.v(TAG, "logFilename = " + logFilename);
 
-        int ret = NativeLib.init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir);
+        int ret = NativeLib
+                .init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir);
 
         Log.v(TAG, "SDL thread terminated");
         //context.finish();
@@ -202,6 +229,7 @@ public class SDLOpenTouch {
         }
 
         NativeLib.setScreenSize(width, height);
+
         controlInterp.setScreenSize(width * resDiv, height * resDiv);
 
         gyro.reload(context);
@@ -219,8 +247,7 @@ public class SDLOpenTouch {
 
         int source = event.getSource();
         // Stop right mouse button being backbutton
-        if ((source == InputDevice.SOURCE_MOUSE)
-                || (source == InputDevice.SOURCE_MOUSE_RELATIVE)) {
+        if ((source == InputDevice.SOURCE_MOUSE) || (source == InputDevice.SOURCE_MOUSE_RELATIVE)) {
             Log.v(TAG, "SDLSurface::onKey: is mouse");
             return true;
         }
@@ -300,8 +327,7 @@ public class SDLOpenTouch {
             case COMMAND_SHOW_KEYBOARD: {
                 //showTextInput(0,0,100,10);
 
-                InputMethodManager imm = (InputMethodManager)
-                        activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     //imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
                     SDLActivity.mSurface.clearFocus();

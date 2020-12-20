@@ -119,6 +119,9 @@ public class GamepadDefinitions {
                 gamepadDefinition.addAction("doom3_sprint", "Sprint toggle or press", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SPRINT,
                         ActionInput.SourceType.BUTTON, -1);
 
+                gamepadDefinition.addAction("doom3_zoom", "Zoom toggle or press", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_ZOOM_IN,
+                                            ActionInput.SourceType.BUTTON, -1);
+
                 gamepadDefinition.addHeader("Common menu navigation keys");
 
 

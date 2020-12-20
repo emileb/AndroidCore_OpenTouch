@@ -9,6 +9,8 @@ public class NativeLib implements ControlInterface {
 
     public static native void setScreenSize(int width, int height);
 
+    public static native void setFramebufferSize(int width, int height);
+
     public static native int frame();
 
     public static native boolean touchEvent(int action, int pid, float x, float y);
