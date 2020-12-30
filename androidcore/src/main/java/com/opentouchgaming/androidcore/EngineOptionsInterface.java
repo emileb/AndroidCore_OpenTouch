@@ -1,6 +1,7 @@
 package com.opentouchgaming.androidcore;
 
 import android.app.Activity;
+
 import androidx.arch.core.util.Function;
 
 
@@ -8,15 +9,12 @@ import androidx.arch.core.util.Function;
  * Created by Emile on 10/12/2017.
  */
 
-public interface EngineOptionsInterface
-{
-    interface MultiplayerCallback
-    {
-        void launch( String mpArgs );
+public interface EngineOptionsInterface {
+    interface MultiplayerCallback {
+        void launch(String mpArgs);
     }
 
-    class RunInfo
-    {
+    class RunInfo {
         public String args;
         public int glesVersion;
         public String frameBufferWidth;
@@ -28,15 +26,14 @@ public interface EngineOptionsInterface
     RunInfo getRunInfo(int version);
 
     boolean hasMultiplayer();
-    void launchMultiplayer(Activity ac,GameEngine engine, int version, String mainArgs, MultiplayerCallback callback );
 
-    default int audioOverrideFreq()
-    {
+    void launchMultiplayer(Activity ac, GameEngine engine, int version, String mainArgs, MultiplayerCallback callback);
+
+    default int audioOverrideFreq() {
         return 0;
     }
 
-    default int audioOverrideSamples()
-    {
+    default int audioOverrideSamples() {
         return 0;
     }
 

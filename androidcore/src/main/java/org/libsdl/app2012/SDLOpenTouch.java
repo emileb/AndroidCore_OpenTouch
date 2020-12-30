@@ -236,6 +236,7 @@ public class SDLOpenTouch {
 
         SDLActivity.getMotionListener().setRelativeMouseEnabled(true);
 
+
         return false;
     }
 

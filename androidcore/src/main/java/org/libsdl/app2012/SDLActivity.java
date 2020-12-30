@@ -62,7 +62,7 @@ import java.util.Hashtable;
 public class SDLActivity extends Activity implements View.OnSystemUiVisibilityChangeListener {
     private static final String TAG = "SDL";
 
-    static boolean OPENTOUCH_SDL_EXTRA = true;
+    static final boolean OPENTOUCH_SDL_EXTRA = true;
 
     public static boolean mIsResumedCalled, mHasFocus;
     public static final boolean mHasMultiWindow = (Build.VERSION.SDK_INT >= 24);
