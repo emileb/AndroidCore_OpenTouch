@@ -17,6 +17,8 @@ public interface EngineOptionsInterface {
     class RunInfo {
         public String args;
         public int glesVersion;
+        public boolean useGL4ES;
+
         public String frameBufferWidth;
         public String frameBufferHeight;
     }

@@ -177,6 +177,9 @@ public class SDLOpenTouch {
         if (AppSettings.getBoolOption(activity, "old_sdl_audio", false))
             options |= TouchSettings.GAME_OPTION_SDL_OLD_AUDIO;
 
+        if (intent.getBooleanExtra("use_gl4es", false))
+            options |= TouchSettings.GAME_OPTION_GL4ES;
+
         int freq = intent.getIntExtra("audio_freq", 0);
         int samples = intent.getIntExtra("audio_samples", 0);
 
