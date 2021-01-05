@@ -541,12 +541,12 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         }
 
         int keyCode = event.getKeyCode();
-        // Ignore certain special keys so they're handled by Android
-        if (keyCode == KeyEvent.KEYCODE_CAMERA ||
-            keyCode == KeyEvent.KEYCODE_ZOOM_IN || /* API 11 */
-            keyCode == KeyEvent.KEYCODE_ZOOM_OUT /* API 11 */
-            ) {
-            return false;
+        if(!OPENTOUCH_SDL_EXTRA) {
+            // Ignore certain special keys so they're handled by Android
+            if (keyCode == KeyEvent.KEYCODE_CAMERA || keyCode == KeyEvent.KEYCODE_ZOOM_IN || /* API 11 */
+                    keyCode == KeyEvent.KEYCODE_ZOOM_OUT /* API 11 */) {
+                return false;
+            }
         }
         return super.dispatchKeyEvent(event);
     }
