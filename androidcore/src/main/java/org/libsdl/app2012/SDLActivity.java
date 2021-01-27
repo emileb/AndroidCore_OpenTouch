@@ -1782,6 +1782,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         mHeight = 1.0f;
 
         mIsSurfaceReady = false;
+
     }
 
     public void handlePause() {
