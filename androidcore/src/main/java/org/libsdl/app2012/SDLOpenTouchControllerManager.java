@@ -15,14 +15,15 @@ public class SDLOpenTouchControllerManager extends SDLGenericMotionListener_API1
     @Override
     public boolean onGenericMotion(View v, MotionEvent event) {
 
-        if ((mRelativeModeEnabled) && (event.getSource() == InputDevice.SOURCE_MOUSE))
+        if ((mRelativeModeEnabled) && (event.getSource() == InputDevice.SOURCE_MOUSE) || (event.getSource() == (InputDevice.SOURCE_MOUSE | InputDevice.SOURCE_TOUCHSCREEN)))
         {
             // If this happens it means the mouse has lost capture somehow
-            if (event.getAction() == MotionEvent.ACTION_HOVER_MOVE)
+            //if (event.getAction() == MotionEvent.ACTION_HOVER_MOVE)
             {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 {
-                    SDLActivity.getContentView().requestPointerCapture();
+                    setRelativeMouseEnabled(true);
+                    //SDLActivity.getContentView().requestPointerCapture();
                 }
             }
             return true;
@@ -42,7 +43,7 @@ public class SDLOpenTouchControllerManager extends SDLGenericMotionListener_API1
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean setRelativeMouseEnabled(boolean enabled) {
-        if (!SDLActivity.isDeXMode() && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)) {
             if (enabled) {
                 Log.d("TEST", "MOUSE ENABLED");
                 SDLActivity.getContentView().requestPointerCapture();
