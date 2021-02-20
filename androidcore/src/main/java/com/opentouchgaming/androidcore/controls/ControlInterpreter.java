@@ -35,7 +35,8 @@ public class ControlInterpreter {
 
     Dpad mDpad = new Dpad();
 
-    public ControlInterpreter(Context ctx, ControlInterface qif, ActionInputDefinition gamepadDefinition, boolean ctrlEn, boolean alternatePointerCode) {
+    public ControlInterpreter(Context ctx, ControlInterface qif, ActionInputDefinition gamepadDefinition, boolean ctrlEn,
+                              boolean alternatePointerCode) {
         context = ctx;
         gamePadEnabled = ctrlEn;
 
@@ -46,8 +47,8 @@ public class ControlInterpreter {
         loadGameControlsFile();
 
         for (ActionInput ai : config.actions) {
-                // Put all possible actions in here, fixes crash when configuring gamepad in game and an axis is assigned to a new button
-                analogButtonState.put(ai.actionCode, false);
+            // Put all possible actions in here, fixes crash when configuring gamepad in game and an axis is assigned to a new button
+            analogButtonState.put(ai.actionCode, false);
         }
 
         controlInterface = qif;
@@ -204,15 +205,16 @@ public class ControlInterpreter {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean used = false;
 
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) ||
-                (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
 
-            if(event.getRepeatCount() > 0)
+            if (event.getRepeatCount() > 0)
                 return true;
 
             // If this returns 1 it means the volume key was used
-            int ret = controlInterface.doAction_if(1, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
-            if (ret == 1) return true;
+            int ret = controlInterface
+                    .doAction_if(1, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
+            if (ret == 1)
+                return true;
         }
 
         if (gamePadEnabled) {
@@ -252,15 +254,16 @@ public class ControlInterpreter {
 
         boolean used = false;
 
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) ||
-                (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
 
-            if(event.getRepeatCount() > 0)
+            if (event.getRepeatCount() > 0)
                 return true;
 
             // If this returns 1 it means the volume key was used
-            int ret = controlInterface.doAction_if(0, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
-            if (ret == 1) return true;
+            int ret = controlInterface
+                    .doAction_if(0, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
+            if (ret == 1)
+                return true;
         }
 
         if (gamePadEnabled) {
@@ -310,6 +313,10 @@ public class ControlInterpreter {
 
     public boolean onGenericMotionEvent(MotionEvent event) {
         //log.log(D, "onGenericMotionEvent");
+        int action = event.getAction() & MotionEvent.ACTION_MASK;
+
+        if (action != MotionEvent.ACTION_MOVE && action != MotionEvent.ACTION_BUTTON_PRESS && action != MotionEvent.ACTION_BUTTON_RELEASE)
+            return false;
 
         boolean used = false;
         if (gamePadEnabled) {
@@ -333,8 +340,7 @@ public class ControlInterpreter {
                         //log.log(D, "Analog as button, value = " + value);
                         //log.log(D, ai.toString());
 
-                        if (((ai.sourcePositive) && (value) > 0.5) ||
-                                ((!ai.sourcePositive) && (value) < -0.5)) {
+                        if (((ai.sourcePositive) && (value) > 0.5) || ((!ai.sourcePositive) && (value) < -0.5)) {
                             if (!analogButtonState.get(ai.actionCode)) //Check internal state, only send if different
                             {
                                 controlInterface.doAction_if(1, ai.actionCode); //press
