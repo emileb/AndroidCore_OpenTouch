@@ -360,7 +360,10 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         Log.v(TAG, "onResume()");
         super.onResume();
 
-        SDLOpenTouch.onResume(getContext());
+        Context context = getContext();
+
+        if(context !=null)
+            SDLOpenTouch.onResume(getContext());
 
         if (mHIDDeviceManager != null) {
             mHIDDeviceManager.setFrozen(false);
