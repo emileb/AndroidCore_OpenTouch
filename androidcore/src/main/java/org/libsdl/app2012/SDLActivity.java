@@ -1951,6 +1951,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         int deviceId = event.getDeviceId();
         int source = event.getSource();
 
+        //Log.d("TEST","onKey :" + event.toString());
+
         if(SDLOpenTouch.onKey(keyCode,event) == true)
             return true;
 
