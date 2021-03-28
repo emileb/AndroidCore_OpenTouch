@@ -2,12 +2,10 @@ package com.opentouchgaming.androidcore.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -49,40 +47,27 @@ public class GyroCalibrateDialog implements SensorEventListener
         this.sensor = sensor;
 
         final Dialog dialog = new Dialog(act);
-        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_gyro_calibrate);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
 
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
-        {
-            @Override
-            public void onDismiss(DialogInterface dialog)
-            {
-                dismissFirst();
-            }
-        });
+        dialog.setOnDismissListener(dialog1 -> dismissFirst());
 
         counterTextView = dialog.findViewById(R.id.calib_count_textView);
 
         Button go = dialog.findViewById(R.id.gyro_calibrate_button);
 
-        go.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                registerSensor( true );
-                startTime = System.currentTimeMillis();
+        go.setOnClickListener(v -> {
+            registerSensor( true );
+            startTime = System.currentTimeMillis();
 
-                // Reset averaging
-                count = 0;
-                values[0] = 0;
-                values[1] = 0;
-                values[2] = 0;
-            }
+            // Reset averaging
+            count = 0;
+            values[0] = 0;
+            values[1] = 0;
+            values[2] = 0;
         });
 
         dialog.show();

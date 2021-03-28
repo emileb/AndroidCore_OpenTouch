@@ -40,11 +40,11 @@ import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.ScopedStorage;
 import com.opentouchgaming.androidcore.SubGame;
 import com.opentouchgaming.androidcore.SubGameRecyclerViewAdapter;
-import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.Dpad;
 import com.opentouchgaming.androidcore.license.LicenseCheck;
 import com.opentouchgaming.androidcore.ui.EnginesPanel;
 import com.opentouchgaming.androidcore.ui.OptionsDialog;
+import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.ToolsPanel;
 import com.opentouchgaming.androidcore.ui.tutorial.TutorialDialog;
 
@@ -729,9 +729,10 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         } else if (code == TOOL_BUTTON_INFO) {
             AboutDialog.show(getActivity());
-        }
-            else if (code == TOOL_BUTTON_EMAIL)
+        } else if (code == TOOL_BUTTON_EMAIL)
         {
+            //StorageConfigDialog scd = new StorageConfigDialog(getActivity());
+
             Utils.SendDebugEmail(getActivity(), AppInfo.emailAddress, AppInfo.packageId,  AppInfo.currentEngine.getLogFilename());
         } else if (code == TOOL_BUTTON_HELP)
         {
