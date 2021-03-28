@@ -19,6 +19,7 @@ public class SDLOpenTouchGyro implements SensorEventListener {
     float gyroXSens = 1;
     float gyroYSens = 1;
 
+    boolean rollToTurn = false;
     boolean gyroInvertX = false;
     boolean gyroInvertY = false;
     boolean gyroSwapXY = false;
@@ -40,6 +41,7 @@ public class SDLOpenTouchGyro implements SensorEventListener {
 
         gyroXSens = AppSettings.getFloatOption(context, "gyro_x_sens", 1);
         gyroYSens = AppSettings.getFloatOption(context, "gyro_y_sens", 1);
+        rollToTurn = AppSettings.getBoolOption(context, "gyro_roll_to_turn", false);
         gyroInvertX = AppSettings.getBoolOption(context, "gyro_invert_x", false);
         gyroInvertY = AppSettings.getBoolOption(context, "gyro_invert_y", false);
         gyroSwapXY = AppSettings.getBoolOption(context, "gyro_swap_xy", false);
@@ -79,12 +81,14 @@ public class SDLOpenTouchGyro implements SensorEventListener {
             float yawDx;
             float pitchDx;
 
+            int turnAxis = rollToTurn ? 2: 0;
+
             if (!gyroSwapXY) {
-                yawDx = event.values[0] - gyroXOffset;
+                yawDx = event.values[turnAxis] - gyroXOffset;
                 pitchDx = event.values[1] - gyroYOffset;
             } else {
                 yawDx = event.values[1] - gyroYOffset;
-                pitchDx = event.values[0] - gyroXOffset;
+                pitchDx = event.values[turnAxis] - gyroXOffset;
             }
 
             if (gyroInvertX)

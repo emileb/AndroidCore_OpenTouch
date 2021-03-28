@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.hardware.Sensor;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
@@ -50,6 +49,7 @@ public class GyroDialog
         final Switch enableSwitch = dialog.findViewById(R.id.gyro_enable_switch);
         final SeekBar xSens = dialog.findViewById(R.id.gyro_x_seekBar);
         final SeekBar ySens = dialog.findViewById(R.id.gyro_y_seekBar);
+        final CheckBox rollToTurn = dialog.findViewById(R.id.gyro_roll_to_turn_checkBox);
         final CheckBox invertX = dialog.findViewById(R.id.gyro_invert_x_checkBox);
         final CheckBox invertY = dialog.findViewById(R.id.gyro_invert_y_checkBox);
         final CheckBox swapXY = dialog.findViewById(R.id.gyro_swap_xy_checkBox);
@@ -84,6 +84,7 @@ public class GyroDialog
                     AppSettings.setBoolOption(activity, "gyro_enable", isChecked);
                     xSens.setEnabled(isChecked);
                     ySens.setEnabled(isChecked);
+                    rollToTurn.setEnabled(isChecked);
                     invertX.setEnabled(isChecked);
                     invertY.setEnabled(isChecked);
                     swapXY.setEnabled(isChecked);
@@ -133,36 +134,17 @@ public class GyroDialog
             }
         });
 
-        invertX.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                AppSettings.setBoolOption(activity, "gyro_invert_x", isChecked);
-            }
-        });
+        rollToTurn.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(activity, "gyro_roll_to_turn", isChecked));
 
-        invertY.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                AppSettings.setBoolOption(activity, "gyro_invert_y", isChecked);
-            }
-        });
+        invertX.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(activity, "gyro_invert_x", isChecked));
 
-        swapXY.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                AppSettings.setBoolOption(activity, "gyro_swap_xy", isChecked);
-            }
-        });
+        invertY.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(activity, "gyro_invert_y", isChecked));
+
+        swapXY.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(activity, "gyro_swap_xy", isChecked));
 
         xSens.setProgress((int)(AppSettings.getFloatOption(activity,"gyro_x_sens",1) * 100));
         ySens.setProgress((int)(AppSettings.getFloatOption(activity,"gyro_y_sens",1) * 100));
-
+        rollToTurn.setChecked(AppSettings.getBoolOption(activity,"gyro_roll_to_turn", false));
         invertX.setChecked(AppSettings.getBoolOption(activity,"gyro_invert_x", false));
         invertY.setChecked(AppSettings.getBoolOption(activity,"gyro_invert_y", false));
         swapXY.setChecked(AppSettings.getBoolOption(activity,"gyro_swap_xy", false));
@@ -170,18 +152,13 @@ public class GyroDialog
         enableSwitch.setChecked(AppSettings.getBoolOption(activity,"gyro_enable", false));
         xSens.setEnabled(enableSwitch.isChecked());
         ySens.setEnabled(enableSwitch.isChecked());
+        rollToTurn.setEnabled(enableSwitch.isChecked());
         invertX.setEnabled(enableSwitch.isChecked());
         invertY.setEnabled(enableSwitch.isChecked());
         swapXY.setEnabled(enableSwitch.isChecked());
 
-        gyroCalib.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                new GyroCalibrateDialog(activity, sensor);
-            }
-        });
+        gyroCalib.setOnClickListener(v -> new GyroCalibrateDialog(activity, sensor));
+
         dialog.show();
     }
 

@@ -83,7 +83,6 @@ public class AppInfo {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             File files[] = context.getExternalFilesDirs(null);
-            log.log(DebugLog.Level.D, "files lenth = " + files.length);
             if (files != null && files.length > 1 && files[1] != null) {
 
                 if (!files[1].exists())
@@ -93,11 +92,8 @@ public class AppInfo {
                 AppInfo.sdcardRoot = AppInfo.sdcardWritable.substring(0, AppInfo.sdcardWritable.indexOf("/Android/data"));
             }
         }
-        log.log(DebugLog.Level.D, "Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
-        // log.log(DebugLog.Level.D, "Build.VERSION.PREVIEW_SDK_INT = " + Build.VERSION.PREVIEW_SDK_INT);
-        // log.log(DebugLog.Level.D, "Build.VERSION.CODENAME = " + Build.VERSION.CODENAME);
-        // log.log(DebugLog.Level.D, "Build.VERSION.RELEASE = " + Build.VERSION.RELEASE);
 
+        log.log(DebugLog.Level.D, "Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
         log.log(DebugLog.Level.D, "flashRoot = " + flashRoot);
         log.log(DebugLog.Level.D, "sdcardRoot = " + sdcardRoot);
         log.log(DebugLog.Level.D, "sdcardWritable = " + sdcardWritable);
@@ -177,13 +173,11 @@ public class AppInfo {
 
     static public String getAppSecDirectory() {
         String appDir = AppSettings.getStringOption(context, "app_sec_dir", null);
+
         if (appDir == null) {
             appDir = getDefaultAppSecDirectory();
             AppSettings.setStringOption(context, "app_sec_dir", appDir);
         }
-
-        //if (appDir == null)
-        //    appDir = "/";
 
         return appDir;
     }

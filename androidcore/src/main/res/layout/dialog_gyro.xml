@@ -56,16 +56,22 @@
     </LinearLayout>
 
     <CheckBox
+        android:id="@+id/gyro_roll_to_turn_checkBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Roll device to turn"/>
+
+    <CheckBox
         android:id="@+id/gyro_invert_x_checkBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Invert Turn"/>
+        android:text="Invert turn"/>
 
     <CheckBox
         android:id="@+id/gyro_invert_y_checkBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Invert Look"/>
+        android:text="Invert look"/>
 
     <CheckBox
         android:id="@+id/gyro_swap_xy_checkBox"
