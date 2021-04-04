@@ -5,11 +5,15 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 
+import androidx.core.util.Pair;
+
+import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Emile on 03/08/2017.
@@ -23,10 +27,7 @@ public class AppInfo {
     }
 
     public enum Apps {
-        MOD_ENGINE,
-        DELTA_TOUCH,
-        ALPHA_TOUCH,
-        QUAD_TOUCH
+        MOD_ENGINE, DELTA_TOUCH, ALPHA_TOUCH, QUAD_TOUCH
     }
 
     public static Apps app;
@@ -52,17 +53,17 @@ public class AppInfo {
 
     public static ArrayList<Tutorial> tutorials = new ArrayList<>();
 
+    public static List<StorageConfigDialog.StorageExamples> storageExamples;
+
     private static Context context;
 
     private static final int SCOPED_VERSION = 30;
 
-    static public void setContext(Context ctx)
-    {
+    static public void setContext(Context ctx) {
         context = ctx;
     }
 
-    static public void setApp(Apps app)
-    {
+    static public void setApp(Apps app) {
         AppInfo.app = app;
     }
 
@@ -111,10 +112,24 @@ public class AppInfo {
         return ret;
     }
 
-    static public boolean isScoped() {
-        return false;
-        //return true;
-        //return  (Build.VERSION.SDK_INT >= SCOPED_VERSION) ? true : false;
+    static public void setScoped(boolean enabled)
+    {
+        AppSettings.setBoolOption(AppInfo.getContext(), "scoped_storage_enabled", enabled);
+        setAppDirectory(getDefaultAppDirectory());
+        setAppSecDirectory(getDefaultAppSecDirectory());
+    }
+
+    static public boolean isScopedAllowed() {
+        return  (Build.VERSION.SDK_INT >= SCOPED_VERSION);
+    }
+
+    static public boolean isScopedEnabled() {
+        if (isScopedAllowed())
+        {
+            return AppSettings.getBoolOption(AppInfo.getContext(),"scoped_storage_enabled",false);
+        }
+        else
+            return false;
     }
 
     static public void setAppDirectory(String appDir) {
@@ -129,7 +144,7 @@ public class AppInfo {
     // PRIMARY DEFAULT
     @SuppressLint("NewApi")
     static public String getDefaultAppDirectory() {
-        if (isScoped() == false) {
+        if (isScopedEnabled() == false) {
             return flashRoot + "/OpenTouch/" + directory;
         } else // Android R!!!! FUCKK
         {
@@ -145,7 +160,7 @@ public class AppInfo {
     // SECONDARY DEFAULT
     static public String getDefaultAppSecDirectory() {
         if (sdcardRoot != null) {
-            if (isScoped() == false) {
+            if (isScopedEnabled() == false) {
                 return sdcardRoot + "/OpenTouch/" + directory;
             } else {
                 return sdcardWritable;
@@ -203,6 +218,37 @@ public class AppInfo {
         }
     }
 
+    public static Pair<String, Integer> getDisplayPathAndImage(String path) {
+
+        String newPath = path;
+        Integer image = R.drawable.ic_baseline_phone_android_black;
+
+        if (path != null) {
+            if (path.contains("/[internal]"))  // SAF paths
+            {
+                newPath = path.replace("/[internal]", "");
+                image = R.drawable.ic_baseline_phone_android_black;
+            } else if (path.contains("/[SD-Card]"))  // SAF paths
+            {
+                newPath = path.replace("/[SD-Card]", "");
+                image = R.drawable.ic_baseline_sd_card_black;
+            } else if (path.contains(flashRoot)) {
+                newPath = path.replace(flashRoot, "");
+                image = R.drawable.ic_baseline_phone_android_black;
+            } else if ((sdcardRoot != null) && (path.contains(sdcardRoot))) {
+                newPath = path.replace(sdcardRoot, "");
+                image = R.drawable.ic_baseline_sd_card_black;
+            }
+        }
+        else
+        {
+            newPath = " -- Not Set --";
+            image = R.drawable.ic_baseline_error_outline_black;
+        }
+
+        return new androidx.core.util.Pair(newPath, image);
+    }
+
     static public String hideAppPaths(String path) {
         String appPath = getAppDirectory();
         String appSecPath = getAppSecDirectory();
@@ -220,21 +266,18 @@ public class AppInfo {
 
         // 20/05/20, removes this after a couple of releases
         File oldFiles = new File(AppInfo.internalFiles + "/gamepad");
-        if(oldFiles.exists())
-        {
-            File newLoc =  new File(AppInfo. getUserFiles() + "/gamepad");
+        if (oldFiles.exists()) {
+            File newLoc = new File(AppInfo.getUserFiles() + "/gamepad");
             newLoc.mkdirs();
 
             File files[] = oldFiles.listFiles();
-            if( files != null)
-            {
-                for(File fileOld: files)
-                {
+            if (files != null) {
+                for (File fileOld : files) {
                     File newFile = new File(newLoc.getAbsolutePath() + "/" + fileOld.getName());
-                    log.log(DebugLog.Level.D,"Copying from: " + fileOld.getAbsolutePath() + " to " + newFile.getAbsolutePath());
+                    log.log(DebugLog.Level.D, "Copying from: " + fileOld.getAbsolutePath() + " to " + newFile.getAbsolutePath());
 
                     try {
-                        Utils.copyFile(fileOld,newFile);
+                        Utils.copyFile(fileOld, newFile);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

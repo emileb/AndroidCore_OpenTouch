@@ -40,11 +40,11 @@ import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.ScopedStorage;
 import com.opentouchgaming.androidcore.SubGame;
 import com.opentouchgaming.androidcore.SubGameRecyclerViewAdapter;
+import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.Dpad;
 import com.opentouchgaming.androidcore.license.LicenseCheck;
 import com.opentouchgaming.androidcore.ui.EnginesPanel;
 import com.opentouchgaming.androidcore.ui.OptionsDialog;
-import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.ToolsPanel;
 import com.opentouchgaming.androidcore.ui.tutorial.TutorialDialog;
 
@@ -67,18 +67,18 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         GAMES, LAUNCH, ENGINE, TOOLS
     }
 
-    public final int TOOL_BUTTON_GAMEPAD  = 0;
+    public final int TOOL_BUTTON_GAMEPAD = 0;
     public final int TOOL_BUTTON_SETTINGS = 1;
-    public final int TOOL_BUTTON_LOG      = 2;
-    public final int TOOL_BUTTON_INFO     = 3;
-    public final int TOOL_BUTTON_HELP     = 4;
-    public final int TOOL_BUTTON_EMAIL    = 5;
+    public final int TOOL_BUTTON_LOG = 2;
+    public final int TOOL_BUTTON_INFO = 3;
+    public final int TOOL_BUTTON_HELP = 4;
+    public final int TOOL_BUTTON_EMAIL = 5;
 
     // Set by the entry activity
     public static GameEngine[] gameEngines;
 
     // App data to be saved/loaded
-    public AppData    appData;
+    public AppData appData;
     // Data to be saved for the current engine, currently the argument history
     public EngineData engineData;
 
@@ -87,24 +87,24 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
     // Left/right panels
     public EnginesPanel enginesLeftPanel;
-    public ToolsPanel   toolsPanel;
+    public ToolsPanel toolsPanel;
 
     public SubGameRecyclerViewAdapter subGameAdapter;
 
     // UI elements
     public RecyclerView recyclerView;
-    public ImageView    backgroundImageView;
-    public TextView     titleTextView;
-    public TextView     argsTextView;
-    public ImageButton  swapVerImageButton;
-    public ImageButton  startButton;
-    public ImageButton  showArgsButton;
-    public Drawable     subgameSeparatorLine; // So we cna change the color of the line
+    public ImageView backgroundImageView;
+    public TextView titleTextView;
+    public TextView argsTextView;
+    public ImageButton swapVerImageButton;
+    public ImageButton startButton;
+    public ImageButton showArgsButton;
+    public Drawable subgameSeparatorLine; // So we cna change the color of the line
 
     public int selectedVersion = 0;
 
     public ArrayList<SubGame> availableSubGames = new ArrayList<>();
-    public  SubGame selectedSubGame;
+    public SubGame selectedSubGame;
 
     public String argsFinal = "";
     //CustomArgs customArgs = new CustomArgs();
@@ -118,15 +118,13 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     private ArrayList<SubGame> multiselectGames = new ArrayList<>();
 
 
-    public final ToolsPanel.ToolsPanelButton[] toolsButtons = new ToolsPanel.ToolsPanelButton[]
-            {
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_GAMEPAD, "Gamepad",R.drawable.ic_videogame_asset_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_SETTINGS, "Settings",R.drawable.ic_settings_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_LOG, "View last log",R.drawable.ic_computer_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_INFO,"Changes", R.drawable.ic_info_outline_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log",R.drawable.ic_email_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_HELP, "Tutorials",R.drawable.ic_help_green),
-            };
+    public final ToolsPanel.ToolsPanelButton[] toolsButtons =
+            new ToolsPanel.ToolsPanelButton[]{new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_GAMEPAD, "Gamepad", R.drawable.ic_videogame_asset_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_SETTINGS, "Settings", R.drawable.ic_settings_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_LOG, "View last log", R.drawable.ic_computer_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_INFO, "Changes", R.drawable.ic_info_outline_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log", R.drawable.ic_email_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_HELP, "Tutorials", R.drawable.ic_help_green),};
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -149,8 +147,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         log.log(D, "onCreateView");
 
@@ -158,7 +155,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         View view = inflater.inflate(R.layout.fragment_alpha, container, false);
 
-        boolean uiGroup = AppSettings.getBoolOption(getContext(),"group_similar_engines", false);
+        boolean uiGroup = AppSettings.getBoolOption(getContext(), "group_similar_engines", false);
         enginesLeftPanel = new EnginesPanel(getContext(), view, gameEngines, uiGroup, this);
 
         toolsPanel = new ToolsPanel(getContext(), view, toolsButtons, this);
@@ -189,9 +186,11 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        subGameAdapter = new SubGameRecyclerViewAdapter(availableSubGames, input -> {
+        subGameAdapter = new SubGameRecyclerViewAdapter(availableSubGames, input ->
+        {
 
-            if(multiselectEnable) {
+            if (multiselectEnable)
+            {
                 if (multiselectGames.contains(input))
                     multiselectGames.remove(input);
                 else
@@ -275,7 +274,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                 if (!ok)
                 {
                     LicenseCheck.fetchLicense(getActivity(), true, AppInfo.key);
-                } else
+                }
+                else
                 {
                     launchGame(AppInfo.currentEngine, true, "");
                 }
@@ -328,7 +328,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         return null;
     }
 
-    public  void setFocusMode(FocusMode mode)
+    public void setFocusMode(FocusMode mode)
     {
         log.log(D, "setFocusMode: mode = " + mode.toString());
 
@@ -359,7 +359,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         }
     }
 
-    public  void setLaunchButtonsFocus(boolean enabled)
+    public void setLaunchButtonsFocus(boolean enabled)
     {
         startButton.setFocusable(enabled);
         showArgsButton.setFocusable(enabled);
@@ -369,7 +369,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             startButton.requestFocus();
     }
 
-    public  void cycleVersion()
+    public void cycleVersion()
     {
         selectedVersion++;
         if (selectedVersion > AppInfo.currentEngine.versions.length - 1)
@@ -379,7 +379,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         selectEngine(AppInfo.currentEngine);
     }
 
-    public  boolean onBackPressed()
+    public boolean onBackPressed()
     {
         boolean ret = false;
         if (enginesLeftPanel.isOpen())
@@ -436,7 +436,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         updateAll();
     }
 
-    public  void updateAll()
+    public void updateAll()
     {
         appData = AppData.loadFromFile(AppInfo.internalFiles + "/AppData.dat");
 
@@ -473,8 +473,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     {
         log.log(D, "onKeyDown: event = " + event.toString() + " keyCode = " + keyCode);
 
-        if ((event.getSource() & InputDevice.SOURCE_GAMEPAD)
-                == InputDevice.SOURCE_GAMEPAD)
+        if ((event.getSource() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
         {
             if (event.getRepeatCount() == 0)
             {
@@ -581,7 +580,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             selectedVersion = 0;
 
         // Only DP can multiselect
-        if( engine.engine == GameEngine.Engine.QUAKEDP)
+        if (engine.engine == GameEngine.Engine.QUAKEDP)
             multiselectEnable = true;
         else
             multiselectEnable = false;
@@ -597,7 +596,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         {
             swapVerImageButton.setVisibility(View.VISIBLE);
             swapVerImageButton.startAnimation(fadeIn);
-        } else
+        }
+        else
         {
             swapVerImageButton.setVisibility(View.GONE);
         }
@@ -623,34 +623,35 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     }
 
 
-    public  void refreshSubGames()
+    public void refreshSubGames()
     {
         launcher.updateSubGames(AppInfo.currentEngine, availableSubGames);
         subGameAdapter.notifyDataSetChanged();
     }
 
-    public  void updateArgs()
+    public void updateArgs()
     {
         if (selectedSubGame != null)
         {
-            argsFinal = launcher.getArgs(AppInfo.currentEngine,selectedSubGame);
+            argsFinal = launcher.getArgs(AppInfo.currentEngine, selectedSubGame);
 
-            for(SubGame sg : multiselectGames)
+            for (SubGame sg : multiselectGames)
             {
-                argsFinal +=  launcher.getArgs(AppInfo.currentEngine,sg);
+                argsFinal += launcher.getArgs(AppInfo.currentEngine, sg);
             }
 
             argsFinal += " " + selectedSubGame.getExtraArgs();
 
             argsFinal += " " + engineData.getCurrentCustomArgs().getFinalArgs();
-            argsTextView.setText( AppInfo.replaceRootPaths(argsFinal));
-        } else
+            argsTextView.setText(AppInfo.replaceRootPaths(argsFinal));
+        }
+        else
         {
             argsTextView.setText("Select game");
         }
     }
 
-    public  void selectSubGame(int newPos)
+    public void selectSubGame(int newPos)
     {
         multiselectGames.clear();
 
@@ -674,7 +675,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         recyclerView.scrollToPosition(engineData.selectedSubGamePos);
         updateArgs();
     }
-
 
 
     @Override
@@ -712,29 +712,27 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             Intent intent = new Intent(getContext(), GamepadActivity.class);
             intent.putExtra("app", AppInfo.app.name());
             startActivity(intent);
-        } else if (code == TOOL_BUTTON_SETTINGS)
+        }
+        else if (code == TOOL_BUTTON_SETTINGS)
         {
 
-            new OptionsDialog(getActivity(), getExtraOptions())
-            {
-                public void dismiss()
-                {
-                    updateAll();
-                }
-            };
+            new OptionsDialog(getActivity(), getExtraOptions(), () -> updateAll());
 
-        } else if (code == TOOL_BUTTON_LOG)
+        }
+        else if (code == TOOL_BUTTON_LOG)
         {
             new LogViewDialog(getActivity(), AppInfo.currentEngine.getLogFilename(), AppInfo.currentEngine.name);
 
-        } else if (code == TOOL_BUTTON_INFO) {
-            AboutDialog.show(getActivity());
-        } else if (code == TOOL_BUTTON_EMAIL)
+        }
+        else if (code == TOOL_BUTTON_INFO)
         {
-            //StorageConfigDialog scd = new StorageConfigDialog(getActivity());
-
-            Utils.SendDebugEmail(getActivity(), AppInfo.emailAddress, AppInfo.packageId,  AppInfo.currentEngine.getLogFilename());
-        } else if (code == TOOL_BUTTON_HELP)
+            AboutDialog.show(getActivity());
+        }
+        else if (code == TOOL_BUTTON_EMAIL)
+        {
+            Utils.SendDebugEmail(getActivity(), AppInfo.emailAddress, AppInfo.packageId, AppInfo.currentEngine.getLogFilename());
+        }
+        else if (code == TOOL_BUTTON_HELP)
         {
             new TutorialDialog(getActivity(), AppInfo.tutorials);
         }

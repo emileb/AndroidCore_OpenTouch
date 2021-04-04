@@ -32,7 +32,7 @@ public class ScopedStorage {
         // Always set context, this also loads the saffal library, needed if even not used
         UtilsSAF.setContext(activity);
 
-        if (AppInfo.isScoped() == false) {
+        if (AppInfo.isScopedEnabled() == false) {
             //Thank fuck scoped storage not necessary
             return true;
         } else {
