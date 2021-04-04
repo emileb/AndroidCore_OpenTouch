@@ -55,16 +55,13 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 public class MainFragment extends Fragment implements ToolsPanel.Listener, EnginesPanel.Listener
 {
+    // Set by the entry activity
+    public static GameEngine[] gameEngines;
     static DebugLog log;
 
     static
     {
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "MainFragment");
-    }
-
-    public enum FocusMode
-    {
-        GAMES, LAUNCH, ENGINE, TOOLS
     }
 
     public final int TOOL_BUTTON_GAMEPAD = 0;
@@ -73,10 +70,13 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public final int TOOL_BUTTON_INFO = 3;
     public final int TOOL_BUTTON_HELP = 4;
     public final int TOOL_BUTTON_EMAIL = 5;
-
-    // Set by the entry activity
-    public static GameEngine[] gameEngines;
-
+    public final ToolsPanel.ToolsPanelButton[] toolsButtons =
+            new ToolsPanel.ToolsPanelButton[]{new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_GAMEPAD, "Gamepad", R.drawable.ic_videogame_asset_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_SETTINGS, "Settings", R.drawable.ic_settings_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_LOG, "View last log", R.drawable.ic_computer_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_INFO, "Changes", R.drawable.ic_info_outline_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log", R.drawable.ic_email_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_HELP, "Tutorials", R.drawable.ic_help_green),};
     // App data to be saved/loaded
     public AppData appData;
     // Data to be saved for the current engine, currently the argument history
@@ -118,14 +118,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     private ArrayList<SubGame> multiselectGames = new ArrayList<>();
 
 
-    public final ToolsPanel.ToolsPanelButton[] toolsButtons =
-            new ToolsPanel.ToolsPanelButton[]{new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_GAMEPAD, "Gamepad", R.drawable.ic_videogame_asset_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_SETTINGS, "Settings", R.drawable.ic_settings_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_LOG, "View last log", R.drawable.ic_computer_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_INFO, "Changes", R.drawable.ic_info_outline_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log", R.drawable.ic_email_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_HELP, "Tutorials", R.drawable.ic_help_green),};
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -134,7 +126,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     {
         log.log(D, "New instant created!");
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -571,7 +562,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         return false;
     }
 
-
     public void selectEngine(GameEngine engine)
     {
         backgroundImageView.setImageResource(engine.iconRes);
@@ -621,7 +611,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         refreshSubGames();
         selectSubGame(engineData.selectedSubGamePos);
     }
-
 
     public void refreshSubGames()
     {
@@ -676,7 +665,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         updateArgs();
     }
 
-
     @Override
     public void engineSelected(GameEngine engine)
     {
@@ -702,7 +690,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             });
         }
     }
-
 
     @Override
     public void toolsOnClick(int code)
@@ -755,5 +742,10 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             setFocusMode(FocusMode.ENGINE);
         else
             setFocusMode(FocusMode.GAMES);
+    }
+
+    public enum FocusMode
+    {
+        GAMES, LAUNCH, ENGINE, TOOLS
     }
 }

@@ -15,26 +15,31 @@ import com.opentouchgaming.androidcore.R;
  * Created by Emile on 31/10/2017.
  */
 
-public class AnalogAxisDialog implements ActionInput.ActionInputExtra {
+public class AnalogAxisDialog implements ActionInput.ActionInputExtra
+{
     static DebugLog log;
 
-    static {
+    static
+    {
         log = new DebugLog(DebugLog.Module.CONTROLS, "AnalogAxisDialog");
     }
 
     Activity activity;
 
 
-    public AnalogAxisDialog() {
+    public AnalogAxisDialog()
+    {
 
     }
 
-    public void dismiss() {
+    public void dismiss()
+    {
         //Override me
     }
 
     @Override
-    public void show(Activity activity, ActionInput action,Runnable runnable) {
+    public void show(Activity activity, ActionInput action, Runnable runnable)
+    {
         log.log(DebugLog.Level.D, "SHOW");
 
         this.activity = activity;
@@ -60,10 +65,12 @@ public class AnalogAxisDialog implements ActionInput.ActionInputExtra {
         deadZone.setMax(95);
         deadZone.setProgress((int) ((action.deadZone) * 100) - 5);
 
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
+        {
 
             @Override
-            public void onDismiss(DialogInterface dialog) {
+            public void onDismiss(DialogInterface dialog)
+            {
                 action.scale = (float) sensitivity.getProgress() / 50.f;
                 action.invert = invert.isChecked();
                 action.deadZone = (float) (deadZone.getProgress() + 5) / 100.f;

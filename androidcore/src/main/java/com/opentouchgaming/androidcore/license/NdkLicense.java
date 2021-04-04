@@ -14,6 +14,7 @@ import com.opentouchgaming.androidcore.Utils;
 
 public class NdkLicense
 {
+    static final String SERVICE = "com.android.vending.licensing.ILicensingService";
     static DebugLog log;
 
     static
@@ -21,51 +22,46 @@ public class NdkLicense
         log = new DebugLog(DebugLog.Module.LICENSE, "NdkLicense");
     }
 
-    static final String SERVICE = "com.android.vending.licensing.ILicensingService";
-
     public static void check(final Context context, final String key, final NdkLicenseCallback callback)
     {
         Intent intent = new Intent(SERVICE);
         intent.setPackage("com.android.vending");
 
-        log.log(DebugLog.Level.D,"Binding service...");
+        log.log(DebugLog.Level.D, "Binding service...");
 
-        boolean res = context.bindService(
-                intent,
-                new ServiceConnection()
+        boolean res = context.bindService(intent, new ServiceConnection()
+        {
+            public void onServiceConnected(ComponentName name, IBinder binder)
+            {
+                log.log(DebugLog.Level.D, "onServiceConnected");
+
+                Parcel d = Parcel.obtain();
+
+                long id = Utils.getSecureID(context);
+
+                try
                 {
-                    public void onServiceConnected(ComponentName name, IBinder binder)
-                    {
-                        log.log(DebugLog.Level.D,"onServiceConnected");
+                    d.writeInterfaceToken(SERVICE);
+                    d.writeLong(id);
+                    d.writeString(context.getPackageName());
+                    d.writeStrongBinder(new NdkLicenseListener(callback, key));
+                    binder.transact(1, d, null, IBinder.FLAG_ONEWAY);
+                } catch (RemoteException e)
+                {
+                    log.log(DebugLog.Level.E, "Error connecting to l server:" + e.toString());
+                }
+                d.recycle();
+            }
 
-                        Parcel d = Parcel.obtain();
+            public void onServiceDisconnected(ComponentName name)
+            {
+                log.log(DebugLog.Level.D, "onServiceDisconnected");
+            }
+        }, Context.BIND_AUTO_CREATE);
 
-                        long id = Utils.getSecureID(context);
-
-                        try
-                        {
-                            d.writeInterfaceToken(SERVICE);
-                            d.writeLong(id);
-                            d.writeString(context.getPackageName());
-                            d.writeStrongBinder(new NdkLicenseListener(callback, key));
-                            binder.transact(1, d, null, IBinder.FLAG_ONEWAY);
-                        } catch (RemoteException e)
-                        {
-                            log.log(DebugLog.Level.E,"Error connecting to l server:" + e.toString());
-                        }
-                        d.recycle();
-                    }
-
-                    public void onServiceDisconnected(ComponentName name)
-                    {
-                        log.log(DebugLog.Level.D,"onServiceDisconnected");
-                    }
-                },
-                Context.BIND_AUTO_CREATE);
-
-        if( res )
-            log.log(DebugLog.Level.D,"Bound OK");
+        if (res)
+            log.log(DebugLog.Level.D, "Bound OK");
         else
-            log.log(DebugLog.Level.D,"NOT BOUND");
+            log.log(DebugLog.Level.D, "NOT BOUND");
     }
 }

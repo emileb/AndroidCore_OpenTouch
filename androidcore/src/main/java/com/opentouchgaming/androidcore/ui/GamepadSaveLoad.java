@@ -2,9 +2,6 @@ package com.opentouchgaming.androidcore.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.ItemClickSupport;
@@ -25,24 +26,26 @@ import java.util.Arrays;
  * Created by Emile on 31/10/2017.
  */
 
-public class GamepadSaveLoad {
+public class GamepadSaveLoad
+{
     RecyclerView recyclerView;
     ArgsRecyclerViewAdapter rvAdapter;
 
-    ArrayList<String>  files = new ArrayList<>();
+    ArrayList<String> files = new ArrayList<>();
 
     boolean load;
 
     EditText nameEditText;
 
-    public GamepadSaveLoad(final Activity act, final boolean load) {
+    public GamepadSaveLoad(final Activity act, final boolean load)
+    {
         this.load = load;
 
         final Dialog dialog = new Dialog(act);
         //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        if(load)
+        if (load)
             dialog.setTitle("Load");
         else
             dialog.setTitle("Save As");
@@ -53,10 +56,10 @@ public class GamepadSaveLoad {
 
 
         RelativeLayout saveLayout = dialog.findViewById(R.id.save_layout);
-        if( load )
+        if (load)
             saveLayout.setVisibility(View.GONE);
 
-        nameEditText =  dialog.findViewById(R.id.name_edittext);
+        nameEditText = dialog.findViewById(R.id.name_edittext);
 
         recyclerView = dialog.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(act));
@@ -65,10 +68,13 @@ public class GamepadSaveLoad {
         recyclerView.setAdapter(rvAdapter);
 
         Button saveButton = dialog.findViewById(R.id.save_button);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                if(nameEditText.getText().toString().length() > 0) {
+            public void onClick(View v)
+            {
+                if (nameEditText.getText().toString().length() > 0)
+                {
                     selected(nameEditText.getText().toString());
                     dialog.dismiss();
                 }
@@ -76,15 +82,18 @@ public class GamepadSaveLoad {
         });
 
         // Swipe to dismiss
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        {
 
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+            {
                 return false;
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir)
+            {
                 //Remove swiped item from list and notify the RecyclerView
                 ArgsRecyclerViewAdapter.ViewHolder h = (ArgsRecyclerViewAdapter.ViewHolder) viewHolder;
 
@@ -97,10 +106,12 @@ public class GamepadSaveLoad {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener()
+        {
             @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                if( load )
+            public void onItemClicked(RecyclerView recyclerView, int position, View v)
+            {
+                if (load)
                 {
                     selected(files.get(position));
                     dialog.dismiss();
@@ -115,7 +126,8 @@ public class GamepadSaveLoad {
         findFiles();
     }
 
-    public void selected(String file) {
+    public void selected(String file)
+    {
         // Override me
     }
 
@@ -127,38 +139,44 @@ public class GamepadSaveLoad {
         rvAdapter.notifyDataSetChanged();
     }
 
-    public class ArgsRecyclerViewAdapter extends RecyclerView.Adapter<ArgsRecyclerViewAdapter.ViewHolder> {
-        public ArgsRecyclerViewAdapter() {
+    public class ArgsRecyclerViewAdapter extends RecyclerView.Adapter<ArgsRecyclerViewAdapter.ViewHolder>
+    {
+        public ArgsRecyclerViewAdapter()
+        {
 
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_item_gamepad_load, parent, false);
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_gamepad_load, parent, false);
             view.setFocusable(true);
             view.setBackgroundResource(R.drawable.focusable);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, int position)
+        {
             holder.item = files.get(position);
 
             holder.textView.setText(holder.item);
         }
 
         @Override
-        public int getItemCount() {
+        public int getItemCount()
+        {
             return files.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public String item;
+        public class ViewHolder extends RecyclerView.ViewHolder
+        {
             public final TextView textView;
             public final View view;
+            public String item;
 
-            public ViewHolder(View view) {
+            public ViewHolder(View view)
+            {
                 super(view);
 
                 this.view = view;

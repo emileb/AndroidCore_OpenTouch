@@ -22,19 +22,20 @@ public class EngineData implements Serializable
         {
             // Remove duplicates
             Iterator<CustomArgs> it = getArgsHistory().iterator();
-            while (it.hasNext()) {
+            while (it.hasNext())
+            {
                 CustomArgs c = it.next();
                 if (c.getFinalArgs().contentEquals(currentCustomArgs.getFinalArgs()))
                     it.remove();
             }
 
             //Limit size
-            while (argsHistory.size()>50)
-                getArgsHistory().remove(getArgsHistory().size()-1);
+            while (argsHistory.size() > 50)
+                getArgsHistory().remove(getArgsHistory().size() - 1);
 
             // This creates a copy, otherwise the reference will go in
             CustomArgs args = new CustomArgs(currentCustomArgs);
-            getArgsHistory().add(0,args);
+            getArgsHistory().add(0, args);
         }
     }
 

@@ -59,39 +59,38 @@ public class GyroCalibrateDialog implements SensorEventListener
 
         Button go = dialog.findViewById(R.id.gyro_calibrate_button);
 
-        go.setOnClickListener(v -> {
-            registerSensor( true );
-            startTime = System.currentTimeMillis();
+        go.setOnClickListener(v ->
+                              {
+                                  registerSensor(true);
+                                  startTime = System.currentTimeMillis();
 
-            // Reset averaging
-            count = 0;
-            values[0] = 0;
-            values[1] = 0;
-            values[2] = 0;
-        });
+                                  // Reset averaging
+                                  count = 0;
+                                  values[0] = 0;
+                                  values[1] = 0;
+                                  values[2] = 0;
+                              });
 
         dialog.show();
     }
 
-    private void registerSensor( boolean yes )
+    private void registerSensor(boolean yes)
     {
         SensorManager sm = (SensorManager) activity.getSystemService(SENSOR_SERVICE);
 
-        if( yes )
+        if (yes)
         {
-            sm.registerListener(GyroCalibrateDialog.this,
-                    sensor,
-                    SensorManager.SENSOR_DELAY_GAME);
+            sm.registerListener(GyroCalibrateDialog.this, sensor, SensorManager.SENSOR_DELAY_GAME);
         }
         else
         {
-            sm.unregisterListener(this,
-                    sensor);
+            sm.unregisterListener(this, sensor);
         }
     }
+
     private void dismissFirst()
     {
-        registerSensor( false );
+        registerSensor(false);
         dismiss();
     }
 
@@ -108,14 +107,14 @@ public class GyroCalibrateDialog implements SensorEventListener
             long timeNow = System.currentTimeMillis();
             long diff = timeNow - startTime;
 
-            int seconds = (int)(diff / 1000);
+            int seconds = (int) (diff / 1000);
 
             int cntDown = (COUNTDOWN_TIME - seconds);
 
-            counterTextView.setText(Integer.toString(cntDown ));
+            counterTextView.setText(Integer.toString(cntDown));
 
             // Start averaging from 3 seconds
-            if( cntDown < 3)
+            if (cntDown < 3)
             {
                 values[0] += event.values[0];
                 values[1] += event.values[1];
@@ -123,17 +122,17 @@ public class GyroCalibrateDialog implements SensorEventListener
                 count++;
             }
 
-            if( cntDown <= 0)
+            if (cntDown <= 0)
             {
                 float xAverage = values[0] / count;
                 float yAverage = values[1] / count;
 
                 //log.log(DebugLog.Level.D, "count = " + count + "xAverage = " + xAverage + " yAverage = " + yAverage);
 
-                AppSettings.setFloatOption(activity,"gyro_x_offset",xAverage);
-                AppSettings.setFloatOption(activity,"gyro_y_offset",yAverage);
+                AppSettings.setFloatOption(activity, "gyro_x_offset", xAverage);
+                AppSettings.setFloatOption(activity, "gyro_y_offset", yAverage);
 
-                registerSensor( false );
+                registerSensor(false);
 
                 counterTextView.setText("Done");
             }

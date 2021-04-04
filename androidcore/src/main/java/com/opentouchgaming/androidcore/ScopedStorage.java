@@ -5,37 +5,40 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
+
 import androidx.annotation.RequiresApi;
 
 import com.opentouchgaming.saffal.UtilsSAF;
 
 import java.util.function.Function;
 
-public class ScopedStorage {
+public class ScopedStorage
+{
 
+    public static final int OPENDOCUMENT_TREE_RESULT = 5005;
+    // The string will be null on OK, or contain an error message
+    public static Function<String, Void> openDocumentCallback;
     static DebugLog log;
 
-    static {
+    static
+    {
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "ScopedStorage");
     }
 
-
-    public static final int OPENDOCUMENT_TREE_RESULT = 5005;
-
-
-    // The string will be null on OK, or contain an error message
-    public static Function<String, Void> openDocumentCallback;
-
     // Check if storage is setup, true if OK
-    static public boolean checkStorageOK(Activity activity) {
+    static public boolean checkStorageOK(Activity activity)
+    {
 
         // Always set context, this also loads the saffal library, needed if even not used
         UtilsSAF.setContext(activity);
 
-        if (AppInfo.isScopedEnabled() == false) {
+        if (AppInfo.isScopedEnabled() == false)
+        {
             //Thank fuck scoped storage not necessary
             return true;
-        } else {
+        }
+        else
+        {
             UtilsSAF.loadTreeRoot(activity);
             /*
             if( !UtilsSAF.ready())
@@ -44,7 +47,8 @@ public class ScopedStorage {
             }
 */
             // Check if the first time are checking this
-            if (AppSettings.getBoolOption(activity, "storage_checked", false) == false) {
+            if (AppSettings.getBoolOption(activity, "storage_checked", false) == false)
+            {
                 // First reset the primary folder, do this in call cases even an upgrade
                 // Example will be set to: /Android/data/com.opentouchgaming.deltatouch/files
                 AppInfo.setAppDirectory(AppInfo.getDefaultAppDirectory());
@@ -56,12 +60,13 @@ public class ScopedStorage {
     }
 
 
-
     @RequiresApi(api = Build.VERSION_CODES.N)
-    static public void activityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+    static public void activityResult(Activity activity, int requestCode, int resultCode, Intent data)
+    {
 
-        if (requestCode == OPENDOCUMENT_TREE_RESULT ) {
-            if(resultCode == Activity.RESULT_OK)
+        if (requestCode == OPENDOCUMENT_TREE_RESULT)
+        {
+            if (resultCode == Activity.RESULT_OK)
             {
                 Uri treeUri = data.getData();
 
@@ -71,7 +76,7 @@ public class ScopedStorage {
                 log.log(DebugLog.Level.D, "rootDocumentId = " + rootDocumentId);
                 log.log(DebugLog.Level.D, "getAuthority = " + treeUri.getAuthority());
 
-                if(treeUri.getAuthority().contentEquals("com.android.externalstorage.documents") == false)
+                if (treeUri.getAuthority().contentEquals("com.android.externalstorage.documents") == false)
                 {
                     openDocumentCallback.apply("Did not choose a valid folder.");
                     return;
@@ -80,16 +85,16 @@ public class ScopedStorage {
                 String root;
 
                 // Work out if internal memory or SD card was selected
-                if(rootDocumentId != null)
+                if (rootDocumentId != null)
                 {
                     String[] split = rootDocumentId.split(":", -1);
 
-                    if(split[0].contentEquals("primary"))
+                    if (split[0].contentEquals("primary"))
                         root = "/[internal]";
                     else
                         root = "/[SD-Card]";
 
-                    if(split.length > 1 && split[1].length() > 0)
+                    if (split.length > 1 && split[1].length() > 0)
                     {
                         root = root + "/" + split[1];
                     }
@@ -107,9 +112,7 @@ public class ScopedStorage {
                 UtilsSAF.saveTreeRoot(activity);
 
                 // Take permissions for ever
-                final int takeFlags = data.getFlags()
-                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 activity.getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
 
                 openDocumentCallback.apply(null);

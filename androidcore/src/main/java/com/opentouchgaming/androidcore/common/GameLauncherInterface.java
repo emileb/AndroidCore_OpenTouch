@@ -19,7 +19,7 @@ public interface GameLauncherInterface
 
     String getSecondaryDirectory();
 
-    String getArgs( GameEngine engine, SubGame subGame );
+    String getArgs(GameEngine engine, SubGame subGame);
 
     boolean checkForDownloads(Activity activity, GameEngine engine, SubGame subGame);
 }

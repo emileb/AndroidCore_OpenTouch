@@ -37,29 +37,20 @@ public class FileSelectDialog
         log = new DebugLog(DebugLog.Module.CONTROLS, "FileSelectDialog");
     }
 
-    String basePath;
     final String[] extensions;
     final boolean multiselect;
-
-    ArrayList<String> filesArray = new ArrayList<String>();
-
-    ArrayList<String> selectedFiles = new ArrayList<String>();
-
     final Dialog dialog;
+    final FileSelectCallback callback;
+    String basePath;
+    ArrayList<String> filesArray = new ArrayList<String>();
+    ArrayList<String> selectedFiles = new ArrayList<String>();
     Activity activity;
     ListView listView;
     TextView resultTextView;
     TextView infoTextView;
-
     ModsListAdapter listAdapter;
 
-    final FileSelectCallback callback;
-
-    public interface FileSelectCallback{
-        void dismiss(ArrayList<String> filesArray);
-    }
-
-    public FileSelectDialog(final Activity act,final FileSelectCallback callback, String path, final  String[] extensions, final boolean multiselect)
+    public FileSelectDialog(final Activity act, final FileSelectCallback callback, String path, final String[] extensions, final boolean multiselect)
     {
         activity = act;
         this.extensions = extensions;
@@ -76,8 +67,7 @@ public class FileSelectDialog
         {
 
             @Override
-            public boolean onKey(DialogInterface arg0, int keyCode,
-                                 KeyEvent event)
+            public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event)
             {
                 // TODO Auto-generated method stub
                 if (keyCode == KeyEvent.KEYCODE_BACK)
@@ -99,19 +89,20 @@ public class FileSelectDialog
         {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id)
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
 
                 if (filesArray.get(position).contentEquals(".."))
                 {
                     goUp();
-                } else if (filesArray.get(position).startsWith("/"))
+                }
+                else if (filesArray.get(position).startsWith("/"))
                 {
                     populateList(basePath + filesArray.get(position));
-                } else //select/deselect
+                }
+                else //select/deselect
                 {
-                    if( multiselect )
+                    if (multiselect)
                     {
                         boolean removed = false;
                         for (Iterator<String> iter = selectedFiles.listIterator(); iter.hasNext(); )
@@ -245,7 +236,8 @@ public class FileSelectDialog
                     if (extensions == null) // If null, view ALL files
                     {
                         filesArray.add(f.getName());
-                    } else
+                    }
+                    else
                     {
                         String file = f.getName().toLowerCase();
                         for (String ext : extensions)
@@ -257,7 +249,8 @@ public class FileSelectDialog
                             }
                         }
                     }
-                } else //Now also do directories
+                }
+                else //Now also do directories
                 {
                     filesArray.add("/" + f.getName());
                 }
@@ -272,16 +265,21 @@ public class FileSelectDialog
 
         listAdapter.notifyDataSetChanged();
         String extStr = "";
-        if( extensions != null )
+        if (extensions != null)
         {
             extStr = "  (";
-            for( String ext: extensions )
+            for (String ext : extensions)
             {
                 extStr += ext + ", ";
             }
             extStr += ")";
         }
         resultTextView.setText(basePath + extStr);
+    }
+
+    public interface FileSelectCallback
+    {
+        void dismiss(ArrayList<String> filesArray);
     }
 
     class ModsListAdapter extends BaseAdapter

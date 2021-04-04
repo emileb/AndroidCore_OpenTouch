@@ -29,7 +29,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class DirectoryChooserDialog {
+public class DirectoryChooserDialog
+{
     private boolean m_isNewFolderEnabled = true;
     private String m_sdcardDirectory = "";
     private Context m_context;
@@ -40,34 +41,38 @@ public class DirectoryChooserDialog {
     private ChosenDirectoryListener m_chosenDirectoryListener = null;
     private ArrayAdapter<String> m_listAdapter = null;
 
-    //////////////////////////////////////////////////////
-    // Callback interface for selected directory
-    //////////////////////////////////////////////////////
-    public interface ChosenDirectoryListener {
-        public void onChosenDir(String chosenDir);
-    }
-
-    public DirectoryChooserDialog(Context context, ChosenDirectoryListener chosenDirectoryListener) {
+    public DirectoryChooserDialog(Context context, ChosenDirectoryListener chosenDirectoryListener)
+    {
         m_context = context;
         m_sdcardDirectory = Environment.getExternalStorageDirectory().getAbsolutePath();
         m_chosenDirectoryListener = chosenDirectoryListener;
 
-        try {
+        try
+        {
             m_sdcardDirectory = new File(m_sdcardDirectory).getCanonicalPath();
-        } catch (IOException ioe) {
+        } catch (IOException ioe)
+        {
         }
+    }
+
+    public boolean getNewFolderEnabled()
+    {
+        return m_isNewFolderEnabled;
     }
 
     ///////////////////////////////////////////////////////////////////////
     // setNewFolderEnabled() - enable/disable new folder button
     ///////////////////////////////////////////////////////////////////////
 
-    public void setNewFolderEnabled(boolean isNewFolderEnabled) {
+    public void setNewFolderEnabled(boolean isNewFolderEnabled)
+    {
         m_isNewFolderEnabled = isNewFolderEnabled;
     }
 
-    public boolean getNewFolderEnabled() {
-        return m_isNewFolderEnabled;
+    public void chooseDirectory()
+    {
+        // Initial directory is sdcard directory
+        chooseDirectory(m_sdcardDirectory);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -75,17 +80,8 @@ public class DirectoryChooserDialog {
     // default sdcard directory
     ///////////////////////////////////////////////////////////////////////
 
-    public void chooseDirectory() {
-        // Initial directory is sdcard directory
-        chooseDirectory(m_sdcardDirectory);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // chooseDirectory(String dir) - load directory chooser dialog for initial
-    // input 'dir' directory
-    ////////////////////////////////////////////////////////////////////////////////
-
-    public void chooseDirectory(String dir) {
+    public void chooseDirectory(String dir)
+    {
 
         if (dir == null)
             dir = AppInfo.getDefaultAppDirectory();
@@ -95,13 +91,16 @@ public class DirectoryChooserDialog {
 
         Log.d("dir", "dir = " + dir);
 
-        if (!dirFile.exists() || !dirFile.isDirectory()) {
+        if (!dirFile.exists() || !dirFile.isDirectory())
+        {
             dir = m_sdcardDirectory;
         }
 
-        try {
+        try
+        {
             dir = new File(dir).getCanonicalPath();
-        } catch (IOException ioe) {
+        } catch (IOException ioe)
+        {
             return;
         }
 
@@ -109,14 +108,18 @@ public class DirectoryChooserDialog {
 
         m_subdirs = getDirectories(dir);
 
-        class DirectoryOnClickListener implements DialogInterface.OnClickListener {
-            public void onClick(DialogInterface dialog, int item) {
+        class DirectoryOnClickListener implements DialogInterface.OnClickListener
+        {
+            public void onClick(DialogInterface dialog, int item)
+            {
                 // Navigate into the sub-directory
                 m_dir += "/" + ((AlertDialog) dialog).getListView().getAdapter().getItem(item);
 
-                try {
+                try
+                {
                     m_dir = new File(m_dir).getCanonicalPath();
-                } catch (IOException e) {
+                } catch (IOException e)
+                {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -125,14 +128,16 @@ public class DirectoryChooserDialog {
             }
         }
 
-        AlertDialog.Builder dialogBuilder =
-                createDirectoryChooserDialog(dir, m_subdirs, new DirectoryOnClickListener());
+        AlertDialog.Builder dialogBuilder = createDirectoryChooserDialog(dir, m_subdirs, new DirectoryOnClickListener());
 
-        dialogBuilder.setPositiveButton("OK", new OnClickListener() {
+        dialogBuilder.setPositiveButton("OK", new OnClickListener()
+        {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
                 // Current directory chosen
-                if (m_chosenDirectoryListener != null) {
+                if (m_chosenDirectoryListener != null)
+                {
                     // Call registered listener supplied with the chosen directory
                     m_chosenDirectoryListener.onChosenDir(m_dir);
                 }
@@ -141,22 +146,30 @@ public class DirectoryChooserDialog {
 
         final AlertDialog dirsDialog = dialogBuilder.create();
 
-        dirsDialog.setOnKeyListener(new OnKeyListener() {
+        dirsDialog.setOnKeyListener(new OnKeyListener()
+        {
             @Override
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
+            {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN)
+                {
                     // Back button pressed
-                    if (m_dir.equals("/")) {
+                    if (m_dir.equals("/"))
+                    {
                         // The very top level directory, do nothing
                         return false;
-                    } else {
+                    }
+                    else
+                    {
                         // Navigate back to an upper directory
                         m_dir = new File(m_dir).getParent();
                         updateDirectory();
                     }
 
                     return true;
-                } else {
+                }
+                else
+                {
                     return false;
                 }
             }
@@ -166,36 +179,51 @@ public class DirectoryChooserDialog {
         dirsDialog.show();
     }
 
-    private boolean createSubDir(String newDir) {
+    ////////////////////////////////////////////////////////////////////////////////
+    // chooseDirectory(String dir) - load directory chooser dialog for initial
+    // input 'dir' directory
+    ////////////////////////////////////////////////////////////////////////////////
+
+    private boolean createSubDir(String newDir)
+    {
         File newDirFile = new File(newDir);
-        if (!newDirFile.exists()) {
+        if (!newDirFile.exists())
+        {
             return newDirFile.mkdir();
         }
 
         return false;
     }
 
-    private List<String> getDirectories(String dir) {
+    private List<String> getDirectories(String dir)
+    {
         List<String> dirs = new ArrayList<String>();
 
         dirs.add("..");
 
-        try {
+        try
+        {
             File dirFile = new File(dir);
-            if (!dirFile.exists() || !dirFile.isDirectory()) {
+            if (!dirFile.exists() || !dirFile.isDirectory())
+            {
                 return dirs;
             }
 
-            for (File file : dirFile.listFiles()) {
-                if (file.isDirectory()) {
+            for (File file : dirFile.listFiles())
+            {
+                if (file.isDirectory())
+                {
                     dirs.add(file.getName());
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
         }
 
-        Collections.sort(dirs, new Comparator<String>() {
-            public int compare(String o1, String o2) {
+        Collections.sort(dirs, new Comparator<String>()
+        {
+            public int compare(String o1, String o2)
+            {
                 return o1.compareTo(o2);
             }
         });
@@ -203,8 +231,8 @@ public class DirectoryChooserDialog {
         return dirs;
     }
 
-    private AlertDialog.Builder createDirectoryChooserDialog(String title, List<String> listItems,
-                                                             DialogInterface.OnClickListener onClickListener) {
+    private AlertDialog.Builder createDirectoryChooserDialog(String title, List<String> listItems, DialogInterface.OnClickListener onClickListener)
+    {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(m_context);
 
         // Create custom view for AlertDialog title containing
@@ -223,34 +251,40 @@ public class DirectoryChooserDialog {
         Button newDirButton = new Button(m_context);
         newDirButton.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         newDirButton.setText("New folder");
-        newDirButton.setOnClickListener(new View.OnClickListener() {
+        newDirButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 final EditText input = new EditText(m_context);
 
                 // Show new folder name input dialog
                 new AlertDialog.Builder(m_context).
                         setTitle("New folder name").
-                        setView(input).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                        setView(input).setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int whichButton)
+                    {
                         Editable newDir = input.getText();
                         String newDirName = newDir.toString();
                         // Create new directory
-                        if (createSubDir(m_dir + "/" + newDirName)) {
+                        if (createSubDir(m_dir + "/" + newDirName))
+                        {
                             // Navigate into the new directory
                             m_dir += "/" + newDirName;
                             updateDirectory();
-                        } else {
-                            Toast.makeText(
-                                    m_context, "Failed to create '" + newDirName +
-                                            "' folder", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(m_context, "Failed to create '" + newDirName + "' folder", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).setNegativeButton("Cancel", null).show();
             }
         });
 
-        if (!m_isNewFolderEnabled) {
+        if (!m_isNewFolderEnabled)
+        {
             newDirButton.setVisibility(View.GONE);
         }
 
@@ -267,7 +301,8 @@ public class DirectoryChooserDialog {
         return dialogBuilder;
     }
 
-    private void updateDirectory() {
+    private void updateDirectory()
+    {
         m_subdirs.clear();
         m_subdirs.addAll(getDirectories(m_dir));
         m_titleView.setText(AppInfo.replaceRootPaths(m_dir));
@@ -275,15 +310,17 @@ public class DirectoryChooserDialog {
         m_listAdapter.notifyDataSetChanged();
     }
 
-    private ArrayAdapter<String> createListAdapter(List<String> items) {
-        return new ArrayAdapter<String>(m_context,
-                android.R.layout.select_dialog_item, android.R.id.text1, items) {
+    private ArrayAdapter<String> createListAdapter(List<String> items)
+    {
+        return new ArrayAdapter<String>(m_context, android.R.layout.select_dialog_item, android.R.id.text1, items)
+        {
             @Override
-            public View getView(int position, View convertView,
-                                ViewGroup parent) {
+            public View getView(int position, View convertView, ViewGroup parent)
+            {
                 View v = super.getView(position, convertView, parent);
 
-                if (v instanceof TextView) {
+                if (v instanceof TextView)
+                {
                     // Enable list item (directory) text wrapping
                     TextView tv = (TextView) v;
                     tv.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
@@ -292,5 +329,13 @@ public class DirectoryChooserDialog {
                 return v;
             }
         };
+    }
+
+    //////////////////////////////////////////////////////
+    // Callback interface for selected directory
+    //////////////////////////////////////////////////////
+    public interface ChosenDirectoryListener
+    {
+        public void onChosenDir(String chosenDir);
     }
 }

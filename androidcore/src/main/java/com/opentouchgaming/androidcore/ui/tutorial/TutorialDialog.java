@@ -6,11 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.AppCompatImageView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +20,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -49,16 +50,11 @@ public class TutorialDialog
 
     ViewPager pager;
     ViewPagerAdapter pagerAdapter;
-
-    private RelativeLayout tutorialLayout;
-
-    private ListView mainList;
-
     int tutorialActive = -1;
-
     ArrayList<Tutorial> tutorials;
-
     Tutorial activeTutorial;
+    private RelativeLayout tutorialLayout;
+    private ListView mainList;
 
     public TutorialDialog(final Activity act, ArrayList<Tutorial> tut)
     {
@@ -73,7 +69,8 @@ public class TutorialDialog
                 if (activeTutorial != null)
                 {
                     showTutorial(null);
-                } else
+                }
+                else
                 {
                     dialog.dismiss();
                 }
@@ -87,8 +84,7 @@ public class TutorialDialog
         dialog.setOnKeyListener(new Dialog.OnKeyListener()
         {
             @Override
-            public boolean onKey(DialogInterface arg0, int keyCode,
-                                 KeyEvent event)
+            public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event)
             {
 
                 return false;
@@ -102,7 +98,6 @@ public class TutorialDialog
         pagerAdapter = new ViewPagerAdapter(activity);
 
         pager.setAdapter(pagerAdapter);
-
 
 
         ListAdapter customAdapter = new ListAdapter(act, R.layout.list_item_tutorial, tutorials);
@@ -150,7 +145,8 @@ public class TutorialDialog
             mainList.startAnimation(fadeIn);
             mainList.setVisibility(View.VISIBLE);
 
-        } else
+        }
+        else
         {
             Animation fadeIn = new AlphaAnimation(0, 1);
             fadeIn.setInterpolator(new AccelerateInterpolator());
@@ -172,8 +168,7 @@ public class TutorialDialog
     {
         @Override
         @Nullable
-        public View onCreateView(LayoutInflater inflater,
-                                 @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
         {
             View view = inflater.inflate(R.layout.tutorial_slider_view, container, false);
             return view;
@@ -227,7 +222,7 @@ public class TutorialDialog
             final ImageView imageView = view.findViewById(R.id.imageView);
 
 
-            if( textView != null)
+            if (textView != null)
                 textView.setText(tutorial.getScreens().get(position).title);
             else
                 textView.setVisibility(View.GONE);
@@ -235,14 +230,11 @@ public class TutorialDialog
 
             pageTextView.setText((position + 1) + "/" + getCount());
 
-            Glide.with(activity)
-                    .load(tutorial.getScreens().get(position).image)
-                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
-                    .apply(new RequestOptions()
-                            //.placeholder(R.drawable.ic_tut_cloud_download)
-                            .placeholder( android.R.drawable.stat_sys_download)
-                            .fitCenter())
-                    .into(imageView);
+            Glide.with(activity).load(tutorial.getScreens().get(position).image).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)).apply(new RequestOptions()
+                                                                                                                                                                 //.placeholder(R.drawable.ic_tut_cloud_download)
+                                                                                                                                                                 .placeholder(
+                                                                                                                                                                         android.R.drawable.stat_sys_download)
+                                                                                                                                                                 .fitCenter()).into(imageView);
 
             container.addView(view);
             return view;

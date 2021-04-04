@@ -30,7 +30,8 @@ public class AppSettings
                 editor.putInt("last_opened_version", versionCode);
                 editor.commit();
                 return true;
-            } else
+            }
+            else
                 return false;
 
         } catch (NameNotFoundException e)

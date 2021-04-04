@@ -7,12 +7,11 @@ public interface NdkLicenseCallback
     public static final int NO_GOOD = 50;
     public static final int ERROR = 90;
 
+    public void status(LicStatus ret);
 
     public class LicStatus
     {
         public int code;
         public String desc;
     }
-
-    public void status(LicStatus ret);
 }

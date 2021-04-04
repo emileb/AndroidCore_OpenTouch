@@ -17,18 +17,17 @@ import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * Created by Emile on 31/10/2017.
  */
 
-public class WeaponWheelDialog implements ActionInput.ActionInputExtra {
+public class WeaponWheelDialog implements ActionInput.ActionInputExtra
+{
     static DebugLog log;
 
-    static {
+    static
+    {
         log = new DebugLog(DebugLog.Module.CONTROLS, "WeaponWheelDialog");
     }
 
@@ -38,16 +37,19 @@ public class WeaponWheelDialog implements ActionInput.ActionInputExtra {
     LinearLayout mode0Layout;
     LinearLayout mode1Layout;
 
-    public WeaponWheelDialog() {
+    public WeaponWheelDialog()
+    {
 
     }
 
-    public void dismiss() {
+    public void dismiss()
+    {
         //Override me
     }
 
     @Override
-    public void show(Activity activity, ActionInput action, Runnable runnable) {
+    public void show(Activity activity, ActionInput action, Runnable runnable)
+    {
         log.log(DebugLog.Level.D, "SHOW");
 
         this.activity = activity;
@@ -69,36 +71,46 @@ public class WeaponWheelDialog implements ActionInput.ActionInputExtra {
         Spinner spinner = dialog.findViewById(R.id.auto_select_spinner);
         setupAutoTimout(spinner);
 
-        moveLayout.setOnClickListener(new View.OnClickListener() {
+        moveLayout.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 setStickUI(true);
             }
         });
-        lookLayout.setOnClickListener(new View.OnClickListener() {
+        lookLayout.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 setStickUI(false);
             }
         });
 
-        mode0Layout.setOnClickListener(new View.OnClickListener() {
+        mode0Layout.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 setModeUI(0);
             }
         });
 
-        mode1Layout.setOnClickListener(new View.OnClickListener() {
+        mode1Layout.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 setModeUI(1);
             }
         });
 
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
+        {
             @Override
-            public void onDismiss(DialogInterface dialog) {
+            public void onDismiss(DialogInterface dialog)
+            {
                 dismiss();
             }
         });
@@ -109,7 +121,8 @@ public class WeaponWheelDialog implements ActionInput.ActionInputExtra {
         dialog.show();
     }
 
-    private void setupAutoTimout(Spinner spinner) {
+    private void setupAutoTimout(Spinner spinner)
+    {
         // LinkedHasMap so order is maintained
 
         final ArrayList<Utils.SpinnerValues> values = new ArrayList<>();
@@ -126,23 +139,27 @@ public class WeaponWheelDialog implements ActionInput.ActionInputExtra {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(dataAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
 
                 AppSettings.setIntOption(activity, "weapon_wheel_auto_timeout", values.get(position).getIntValue());
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent)
+            {
             }
         });
 
         int autoTimeout = AppSettings.getIntOption(activity, "weapon_wheel_auto_timeout", 0);
         int pos = 0;
-        for (int n = 0; n < values.size(); n++) {
-            if (autoTimeout == values.get(n).getIntValue()) {
+        for (int n = 0; n < values.size(); n++)
+        {
+            if (autoTimeout == values.get(n).getIntValue())
+            {
                 pos = n;
                 break;
             }
@@ -150,25 +167,33 @@ public class WeaponWheelDialog implements ActionInput.ActionInputExtra {
         spinner.setSelection(pos);
     }
 
-    private void setStickUI(boolean moveStick) {
+    private void setStickUI(boolean moveStick)
+    {
         AppSettings.setBoolOption(activity, "weapon_wheel_move_stick", moveStick);
 
-        if (moveStick) {
+        if (moveStick)
+        {
             moveLayout.setBackgroundResource(R.drawable.layout_sel_background);
             lookLayout.setBackgroundResource(0);
-        } else {
+        }
+        else
+        {
             moveLayout.setBackgroundResource(0);
             lookLayout.setBackgroundResource(R.drawable.layout_sel_background);
         }
     }
 
-    private void setModeUI(int mode) {
+    private void setModeUI(int mode)
+    {
         AppSettings.setIntOption(activity, "weapon_wheel_button_mode", mode);
 
-        if (mode == 0) {
+        if (mode == 0)
+        {
             mode0Layout.setBackgroundResource(R.drawable.layout_sel_background);
             mode1Layout.setBackgroundResource(0);
-        } else { // mode 1
+        }
+        else
+        { // mode 1
             mode0Layout.setBackgroundResource(0);
             mode1Layout.setBackgroundResource(R.drawable.layout_sel_background);
         }

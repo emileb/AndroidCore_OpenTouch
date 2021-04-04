@@ -20,23 +20,29 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ZipUtils {
+public class ZipUtils
+{
 
-    public static boolean extractFile(String zipFilename, String filename, String outputFile) {
+    public static boolean extractFile(String zipFilename, String filename, String outputFile)
+    {
 
         Log.i("ZipUtils", "extractFile zip: " + zipFilename + " Extract: " + filename + " Output: " + outputFile);
 
         boolean fileFound = false;
 
-        if (UtilsSAF.isInSAFRoot(zipFilename)) {
-            try {
+        if (UtilsSAF.isInSAFRoot(zipFilename))
+        {
+            try
+            {
                 FileSAF file = new FileSAF(zipFilename);
                 InputStream inputStream = file.getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
                 ZipEntry entry;
-                while ((entry = zipInputStream.getNextEntry()) != null) {
+                while ((entry = zipInputStream.getNextEntry()) != null)
+                {
 
-                    if (entry.getName().contentEquals(filename)) {
+                    if (entry.getName().contentEquals(filename))
+                    {
 
                         Log.i("ZipUtils", "FOUND");
 
@@ -50,23 +56,29 @@ public class ZipUtils {
                     }
                 }
                 inputStream.close();
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
                 e.printStackTrace();
             }
         }
-        else {
-            try {
+        else
+        {
+            try
+            {
                 File file = new File(zipFilename);
-                if (file != null) {
+                if (file != null)
+                {
                     ZipFile zipFile = new ZipFile(file);
                     File outFile = new File(outputFile);
                     FileHeader header = zipFile.getFileHeader(filename);
-                    if (header != null) {
+                    if (header != null)
+                    {
                         zipFile.extractFile(header, outFile.getParent(), outFile.getName());
                         fileFound = true;
                     }
                 }
-            } catch (ZipException e) {
+            } catch (ZipException e)
+            {
                 e.printStackTrace();
                 fileFound = false;
             }
@@ -75,16 +87,21 @@ public class ZipUtils {
     }
 
     // Different from above because it is just looking at the filename in any directory
-    public static boolean searchZip(String zipFilename, String searchName, String outputFile) {
-        if (UtilsSAF.isInSAFRoot(zipFilename)) {
-            try {
+    public static boolean searchZip(String zipFilename, String searchName, String outputFile)
+    {
+        if (UtilsSAF.isInSAFRoot(zipFilename))
+        {
+            try
+            {
                 FileSAF file = new FileSAF(zipFilename);
                 InputStream inputStream = file.getInputStream();
                 ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
                 ZipEntry entry;
-                while ((entry = zipInputStream.getNextEntry()) != null) {
+                while ((entry = zipInputStream.getNextEntry()) != null)
+                {
                     //Log.e("field", entry.getName());
-                    if (entry.getName().toLowerCase().contains(searchName)) {
+                    if (entry.getName().toLowerCase().contains(searchName))
+                    {
                         OutputStream out = new FileOutputStream(outputFile);
                         Utils.copyFile(zipInputStream, out);
                         inputStream.close();
@@ -92,21 +109,29 @@ public class ZipUtils {
                     }
                 }
                 inputStream.close();
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
                 e.printStackTrace();
             }
             return false;
-        } else {
+        }
+        else
+        {
             boolean fileFound = false;
-            try {
+            try
+            {
                 File file = new File(zipFilename);
 
-                if (file != null) {
+                if (file != null)
+                {
                     ZipFile zipFile = new ZipFile(file);
-                    for (FileHeader header : (List<FileHeader>) zipFile.getFileHeaders()) {
-                        if (!header.isDirectory()) {
+                    for (FileHeader header : (List<FileHeader>) zipFile.getFileHeaders())
+                    {
+                        if (!header.isDirectory())
+                        {
                             // log.log(D,header.getFileName());
-                            if (header.getFileName().toLowerCase().contains(searchName)) {
+                            if (header.getFileName().toLowerCase().contains(searchName))
+                            {
                                 File outFile = new File(outputFile);
                                 zipFile.extractFile(header, outFile.getParent(), outFile.getName());
                                 fileFound = true;
@@ -115,21 +140,26 @@ public class ZipUtils {
                         }
                     }
                 }
-            } catch (ZipException e) {
+            } catch (ZipException e)
+            {
                 e.printStackTrace();
             }
             return fileFound;
         }
     }
 
-    public static ZipFile findAllFilesExtension(String zipFilename, String extension, ArrayList<String> output) throws ZipException {
+    public static ZipFile findAllFilesExtension(String zipFilename, String extension, ArrayList<String> output) throws ZipException
+    {
         File file = new File(zipFilename);
 
         ZipFile zipFile = new ZipFile(file);
-        for (FileHeader header : (List<FileHeader>) zipFile.getFileHeaders()) {
-            if (!header.isDirectory()) {
+        for (FileHeader header : (List<FileHeader>) zipFile.getFileHeaders())
+        {
+            if (!header.isDirectory())
+            {
                 // log.log(D,header.getFileName());
-                if (header.getFileName().toLowerCase().endsWith(extension)) {
+                if (header.getFileName().toLowerCase().endsWith(extension))
+                {
                     output.add(header.getFileName());
 
                 }
@@ -138,13 +168,16 @@ public class ZipUtils {
         return zipFile;
     }
 
-    public static InputStream getInputStream(String zipFilename, String filename) {
+    public static InputStream getInputStream(String zipFilename, String filename)
+    {
 
         ZipFile zip = new ZipFile(zipFilename);
         InputStream is = null;
-        try {
+        try
+        {
             is = zip.getInputStream(zip.getFileHeader(filename));
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
         return is;

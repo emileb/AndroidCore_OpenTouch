@@ -11,12 +11,11 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 
 class FileMover {
 
-    fun doMove(activity: Activity, destination: String, files: ArrayList<Pair<String,String>>): Boolean {
+    fun doMove(activity: Activity, destination: String, files: ArrayList<Pair<String, String>>): Boolean {
 
         var filesFiltered = fileFiles(files);
 
@@ -30,7 +29,7 @@ class FileMover {
         dialog.setContentView(R.layout.dialog_move_files)
 
         val progressBar = dialog.findViewById<ProgressBar>(R.id.progressBar)
-        var text =  dialog.findViewById<TextView>(R.id.title)
+        var text = dialog.findViewById<TextView>(R.id.title)
 
         dialog.setCancelable(true)
         dialog.setCanceledOnTouchOutside(false)
@@ -44,17 +43,15 @@ class FileMover {
                 // Move (rename file)
                 var fileReal = File(file.first)
                 var fileName = fileReal.name
-                if(file.second != null)
+                if (file.second != null)
                     fileName = file.second
 
-                if( !fileReal.renameTo(File(destination + "/" + fileName)))
-                {
+                if (!fileReal.renameTo(File(destination + "/" + fileName))) {
                     Log.e("FileMover", "Failed to move: " + fileReal.absolutePath)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         try {
-                            Files.copy(Paths.get(file.first),Paths.get(destination + "/" + fileName))
-                        }catch (ex: Exception)
-                        {
+                            Files.copy(Paths.get(file.first), Paths.get(destination + "/" + fileName))
+                        } catch (ex: Exception) {
 
                         }
                     }
@@ -74,8 +71,8 @@ class FileMover {
     }
 
 
-    fun fileFiles(files: ArrayList<Pair<String,String>>): ArrayList<Pair<String,String>> {
-        var filesFiltered = ArrayList<Pair<String,String>>()
+    fun fileFiles(files: ArrayList<Pair<String, String>>): ArrayList<Pair<String, String>> {
+        var filesFiltered = ArrayList<Pair<String, String>>()
 
         for (file in files) {
             if (File(file.first).exists()) {

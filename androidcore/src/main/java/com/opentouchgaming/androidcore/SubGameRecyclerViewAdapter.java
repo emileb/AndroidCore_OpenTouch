@@ -1,12 +1,13 @@
 package com.opentouchgaming.androidcore;
 
-import androidx.arch.core.util.Function;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.arch.core.util.Function;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -20,11 +21,11 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
 
     private final ArrayList<SubGame> mValues;
 
-    private final Function<SubGame,Void> subgameAdditional;
+    private final Function<SubGame, Void> subgameAdditional;
 
     private boolean multiSelect = false;
 
-    public SubGameRecyclerViewAdapter(ArrayList<SubGame> items, Function<SubGame,Void> subgameAdditional)
+    public SubGameRecyclerViewAdapter(ArrayList<SubGame> items, Function<SubGame, Void> subgameAdditional)
     {
         mValues = items;
         this.subgameAdditional = subgameAdditional;
@@ -38,10 +39,9 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        boolean useMini = AppSettings.getBoolOption(parent.getContext(),"use_mini_ui", false);
+        boolean useMini = AppSettings.getBoolOption(parent.getContext(), "use_mini_ui", false);
 
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(useMini ? R.layout.list_item_subgame_mini : R.layout.list_item_subgame, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(useMini ? R.layout.list_item_subgame_mini : R.layout.list_item_subgame, parent, false);
         return new ViewHolder(view);
     }
 
@@ -53,12 +53,9 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         holder.mIdView.setText(holder.mItem.title);
         holder.mDetail1.setText(AppInfo.replaceRootPaths(holder.mItem.detail1));
         holder.mDetail2.setText(AppInfo.replaceRootPaths(holder.mItem.detail2));
-        if( holder.mItem.getImagePng() != null )
+        if (holder.mItem.getImagePng() != null)
         {
-            Glide.with(AppInfo.getContext())
-                    .load(holder.mItem.getImagePng())
-                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
-                    .into(holder.mImage);
+            Glide.with(AppInfo.getContext()).load(holder.mItem.getImagePng()).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE)).into(holder.mImage);
         }
         else
             holder.mImage.setImageResource(holder.mItem.image);
@@ -66,12 +63,13 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         if (holder.mItem.selected)
         {
             holder.mView.setBackgroundResource(R.drawable.subgame_selected);
-        } else
+        }
+        else
         {
             holder.mView.setBackgroundResource(0);
         }
 
-        if(multiSelect && ! holder.mItem.selected)
+        if (multiSelect && !holder.mItem.selected)
         {
             holder.mGameTypeImage.setImageResource(R.drawable.ic_add);
         }
@@ -81,9 +79,9 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         }
 
         holder.mGameTypeImage.setOnClickListener(v ->
-        {
-            subgameAdditional.apply(holder.mItem);
-        });
+                                                 {
+                                                     subgameAdditional.apply(holder.mItem);
+                                                 });
     }
 
     @Override
@@ -106,11 +104,11 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         public ViewHolder(View view)
         {
             super(view);
-            mView          = view;
-            mIdView        =  view.findViewById(R.id.textview_iwad_title);
-            mDetail1       =  view.findViewById(R.id.textview_iwad_detail1);
-            mDetail2       =  view.findViewById(R.id.textview_iwad_detail2);
-            mImage         =  view.findViewById(R.id.imageview);
+            mView = view;
+            mIdView = view.findViewById(R.id.textview_iwad_title);
+            mDetail1 = view.findViewById(R.id.textview_iwad_detail1);
+            mDetail2 = view.findViewById(R.id.textview_iwad_detail2);
+            mImage = view.findViewById(R.id.imageview);
             mGameTypeImage = view.findViewById(R.id.game_type_imageview);
         }
     }

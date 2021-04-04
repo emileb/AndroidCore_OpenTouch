@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.ItemClickSupport;
@@ -39,40 +40,33 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 import static com.opentouchgaming.androidcore.DebugLog.Level.E;
 import static com.opentouchgaming.androidcore.DebugLog.Level.I;
 
-public class TouchSettingsSaveLoad {
+public class TouchSettingsSaveLoad
+{
 
 
     static DebugLog log;
 
-    static {
+    static
+    {
         log = new DebugLog(DebugLog.Module.APP, "TouchSettingsSaveLoad");
     }
 
     final String layoutsFolder = "touch_layouts";
     final String layoutsInfoFilename = "info.dat";
-
+    final Activity activity;
+    final Dialog dialog;
     String userFolder;
-
     RecyclerView recyclerView;
     RecyclerViewAdapter rvAdapter;
     EditText nameEditText;
-
-
     ArrayList<TouchSettingSaveInfo> layouts = new ArrayList<>();
-
-
     boolean saving = false;
     ControlInterface nativeIf;
-    final Activity activity;
-    final Dialog dialog;
 
-    private String getLayoutsFolder() {
-        return userFolder + "/" + layoutsFolder;
-    }
+    public TouchSettingsSaveLoad(final Activity act, String userFolder, ControlInterface nativeIf)
+    {
 
-    public TouchSettingsSaveLoad(final Activity act, String userFolder, ControlInterface nativeIf) {
-
-        log.log(D,"userFolder = " + userFolder);
+        log.log(D, "userFolder = " + userFolder);
 
         this.userFolder = userFolder;
         this.nativeIf = nativeIf;
@@ -103,30 +97,36 @@ public class TouchSettingsSaveLoad {
 
         // Toggle save
         ImageView addButton = dialog.findViewById(R.id.add_imageview);
-        addButton.setOnClickListener(v -> {
-            saving = !saving;
-            saveLayout.setVisibility(saving ? View.VISIBLE : View.GONE);
-        });
+        addButton.setOnClickListener(v ->
+                                     {
+                                         saving = !saving;
+                                         saveLayout.setVisibility(saving ? View.VISIBLE : View.GONE);
+                                     });
 
         // Save button
         Button saveButton = dialog.findViewById(R.id.save_button);
-        saveButton.setOnClickListener(v -> {
-            String name = nameEditText.getText().toString().trim();
-            if (name.length() > 0) {
-                saveLayout(name);
-            }
-        });
+        saveButton.setOnClickListener(v ->
+                                      {
+                                          String name = nameEditText.getText().toString().trim();
+                                          if (name.length() > 0)
+                                          {
+                                              saveLayout(name);
+                                          }
+                                      });
 
         // Swipe to dismiss
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        {
 
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+            {
                 return false;
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir)
+            {
                 //Remove swiped item from list and notify the RecyclerView
                 RecyclerViewAdapter.ViewHolder h = (RecyclerViewAdapter.ViewHolder) viewHolder;
                 TouchSettingSaveInfo info = h.item;
@@ -134,8 +134,10 @@ public class TouchSettingsSaveLoad {
 
                 // Delete layout files
                 File[] contents = layoutDir.listFiles();
-                if (contents != null) {
-                    for (File f : contents) {
+                if (contents != null)
+                {
+                    for (File f : contents)
+                    {
                         f.delete();
                     }
                 }
@@ -150,44 +152,57 @@ public class TouchSettingsSaveLoad {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) -> {
-            if (saving) {
-                nameEditText.setText(layouts.get(position).name);
-            } else {
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) ->
+                                                                    {
+                                                                        if (saving)
+                                                                        {
+                                                                            nameEditText.setText(layouts.get(position).name);
+                                                                        }
+                                                                        else
+                                                                        {
 
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
-                //dialogBuilder.setTitle("Load settings");
-                dialogBuilder.setMessage("Load touch settings? (" + layouts.get(position).name + ")");
-                dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface alertdialog, int which) {
-                        String layoutDir = getLayoutsFolder() + "/" + layouts.get(position).folder;
-                        // Call native to code to load
-                        int error = nativeIf.loadSettings_if(layoutDir);
+                                                                            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+                                                                            //dialogBuilder.setTitle("Load settings");
+                                                                            dialogBuilder.setMessage("Load touch settings? (" + layouts.get(position).name + ")");
+                                                                            dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                                                            {
+                                                                                @Override
+                                                                                public void onClick(DialogInterface alertdialog, int which)
+                                                                                {
+                                                                                    String layoutDir = getLayoutsFolder() + "/" + layouts.get(position).folder;
+                                                                                    // Call native to code to load
+                                                                                    int error = nativeIf.loadSettings_if(layoutDir);
 
-                        if(error == 0) {
-                            Toast.makeText(act, "Loaded layout", Toast.LENGTH_LONG).show();
-                            dialog.dismiss();
-                        }
-                        else
-                            Toast.makeText(act,"ERROR loading layout: " + error,Toast.LENGTH_LONG).show();
-                    }
-                });
-                AlertDialog alertdialog = dialogBuilder.create();
-                alertdialog.show();
-            }
-        });
+                                                                                    if (error == 0)
+                                                                                    {
+                                                                                        Toast.makeText(act, "Loaded layout", Toast.LENGTH_LONG).show();
+                                                                                        dialog.dismiss();
+                                                                                    }
+                                                                                    else
+                                                                                        Toast.makeText(act, "ERROR loading layout: " + error, Toast.LENGTH_LONG).show();
+                                                                                }
+                                                                            });
+                                                                            AlertDialog alertdialog = dialogBuilder.create();
+                                                                            alertdialog.show();
+                                                                        }
+                                                                    });
 
         findLayouts();
 
         dialog.show();
     }
 
+    private String getLayoutsFolder()
+    {
+        return userFolder + "/" + layoutsFolder;
+    }
+
     private void saveLayout(String name, File path)
     {
         int error = nativeIf.saveSettings_if(path.getAbsolutePath());
 
-        if(error == 0) {
+        if (error == 0)
+        {
 
             // Create new TouchSettingSaveInfo object
             TouchSettingSaveInfo info = new TouchSettingSaveInfo();
@@ -196,7 +211,8 @@ public class TouchSettingsSaveLoad {
 
             // Serialise new file
             File infoFile = new File(path, layoutsInfoFilename);
-            try {
+            try
+            {
                 FileOutputStream fos = null;
                 ObjectOutputStream out = null;
 
@@ -210,39 +226,43 @@ public class TouchSettingsSaveLoad {
                 log.log(D, "Saved: " + infoFile.getAbsolutePath());
 
                 dialog.dismiss();
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException e)
+            {
                 log.log(E, "Could not open file " + infoFile.getAbsolutePath() + " :" + e.toString());
                 e.printStackTrace();
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
                 log.log(E, "Error writing file " + infoFile.getAbsolutePath() + " :" + e.toString());
                 e.printStackTrace();
             }
         }
     }
 
-    private void saveLayout(String name) {
+    private void saveLayout(String name)
+    {
         long nextDir = findLayouts() + 1;
 
         File layoutDir = null;
 
         // Check if a name already exists
-        for(TouchSettingSaveInfo info : layouts)
+        for (TouchSettingSaveInfo info : layouts)
         {
-            if( info.name.contentEquals(name))
+            if (info.name.contentEquals(name))
                 layoutDir = new File(getLayoutsFolder() + "/" + info.folder);
         }
 
         // No existing name was found, choose the next
-        if(layoutDir == null)
+        if (layoutDir == null)
             layoutDir = new File(getLayoutsFolder() + "/" + nextDir);
 
-        if(layoutDir.exists())
+        if (layoutDir.exists())
         {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
             //dialogBuilder.setTitle("Load settings");
             dialogBuilder.setMessage("Overwrite setting? (" + name + ")");
             File finalLayoutDir = layoutDir;
-            dialogBuilder.setPositiveButton("OK", (alertdialog, which) -> {
+            dialogBuilder.setPositiveButton("OK", (alertdialog, which) ->
+            {
                 saveLayout(name, finalLayoutDir);
                 dialog.dismiss();
             });
@@ -257,17 +277,21 @@ public class TouchSettingsSaveLoad {
         }
     }
 
-    private long findLayouts() {
+    private long findLayouts()
+    {
 
         layouts.clear();
 
         long lastLayoutNumber = 0;
 
         File layoutsDirs[] = new File(getLayoutsFolder()).listFiles();
-        if (layoutsDirs != null) {
-            for (File dir : layoutsDirs) {
+        if (layoutsDirs != null)
+        {
+            for (File dir : layoutsDirs)
+            {
                 // Only dirs which are numbers are valid
-                try {
+                try
+                {
                     long num = Long.parseLong(dir.getName());
                     if (num > lastLayoutNumber)
                         lastLayoutNumber = num;
@@ -277,7 +301,8 @@ public class TouchSettingsSaveLoad {
 
                     // Try to De-seraialize the file
                     TouchSettingSaveInfo info = null;
-                    try {
+                    try
+                    {
                         InputStream fis = null;
                         ObjectInputStream in = null;
 
@@ -287,72 +312,85 @@ public class TouchSettingsSaveLoad {
                         info = (TouchSettingSaveInfo) in.readObject();
                         in.close();
                         log.log(I, "File " + infoFile + " loaded");
-                    } catch (FileNotFoundException e) {
+                    } catch (FileNotFoundException e)
+                    {
                         log.log(I, "File " + infoFile + " not found");
-                    } catch (IOException e) {
+                    } catch (IOException e)
+                    {
                         log.log(E, "Could not open file " + infoFile + " :" + e.toString());
 
-                    } catch (ClassNotFoundException e) {
+                    } catch (ClassNotFoundException e)
+                    {
                         log.log(E, "Error reading file " + infoFile + " :" + e.toString());
                     }
 
-                    if (info != null) {
+                    if (info != null)
+                    {
                         log.log(E, "Loaded folder " + num + " name = " + info.name);
 
                         // Update folder to real folder
                         info.folder = num;
 
                         layouts.add(info);
-                    } else {
+                    }
+                    else
+                    {
                         log.log(E, "Failed to load info file");
                     }
 
-                } catch (NumberFormatException nfe) {
+                } catch (NumberFormatException nfe)
+                {
                     // Not a number, ignore
                 }
             }
         }
 
 
-        Collections.sort(layouts, (o1, o2) -> (int)(o2.timeSaved - o1.timeSaved));
+        Collections.sort(layouts, (o1, o2) -> (int) (o2.timeSaved - o1.timeSaved));
 
         rvAdapter.notifyDataSetChanged();
 
         return lastLayoutNumber;
     }
 
-    public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-        public RecyclerViewAdapter() {
+    public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
+    {
+        public RecyclerViewAdapter()
+        {
 
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_item_gamepad_load, parent, false);
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_gamepad_load, parent, false);
             view.setFocusable(true);
             view.setBackgroundResource(R.drawable.focusable);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, int position)
+        {
             holder.item = layouts.get(position);
 
             holder.textView.setText(holder.item.name);
         }
 
         @Override
-        public int getItemCount() {
+        public int getItemCount()
+        {
             return layouts.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public TouchSettingSaveInfo item;
+        public class ViewHolder extends RecyclerView.ViewHolder
+        {
             public final TextView textView;
             public final View view;
+            public TouchSettingSaveInfo item;
 
-            public ViewHolder(View view) {
+            public ViewHolder(View view)
+            {
                 super(view);
 
                 this.view = view;

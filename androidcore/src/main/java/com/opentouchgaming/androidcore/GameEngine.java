@@ -11,28 +11,23 @@ import com.opentouchgaming.androidcore.controls.ActionInputDefinition;
 
 public class GameEngine
 {
-    public enum Engine
-    {
-        GZDOOM,
-        PRBOOM,
-        CHOC,
-        RETRO,
-        BLAKE,
-        ROTT,
-        WOLF,
-        QUAKESDL,
-        QUAKEDP,
-        QUAKEFTEQW,
-        QUAKE2,
-        YQUAKE2,
-        IOQUAKE3,
-        HEXEN2,
-        ZANDRONUM,
-        LZDOOM,
-        D3ES
-    }
-
-    public GameEngine(Engine engine, int uiGroup, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes, int color, Class opCls)
+    final public int iconRes;
+    final public int color;
+    final public Engine engine;
+    final public String title;
+    final public String name;
+    final public String args;
+    final public String directory;
+    final public String[] versions;
+    final public ActionInputDefinition gamepadDefiniton;
+    final public String[][] loadLibs;
+    final public int uiGroup;
+    final Class engineOptionsClass;
+    public ImageView imageButton;
+    public ImageView imageButtonCfg;
+    public EngineOptionsInterface engineOptions;
+    public GameEngine(Engine engine, int uiGroup, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes,
+                      int color, Class opCls)
     {
         this.title = title;
         this.name = name;
@@ -65,28 +60,13 @@ public class GameEngine
         }
     }
 
-    final public int iconRes;
-    final public int color;
-    final public Engine engine;
-    final public String title;
-    final public String name;
-    final public String args;
-    final public String directory;
-    final public String[] versions;
-    final public ActionInputDefinition gamepadDefiniton;
-    final public String[][] loadLibs;
-
-    final public int uiGroup;
-
-    public ImageView imageButton;
-    public ImageView imageButtonCfg;
-
-    final Class engineOptionsClass;
-
-    public EngineOptionsInterface engineOptions;
-
     public String getLogFilename()
     {
         return AppInfo.internalFiles + "/" + name + ".txt";
+    }
+
+    public enum Engine
+    {
+        GZDOOM, PRBOOM, CHOC, RETRO, BLAKE, ROTT, WOLF, QUAKESDL, QUAKEDP, QUAKEFTEQW, QUAKE2, YQUAKE2, IOQUAKE3, HEXEN2, ZANDRONUM, LZDOOM, D3ES
     }
 }

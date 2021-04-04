@@ -26,33 +26,14 @@ public class AppData implements Serializable
     static final long serialVersionUID = 1;
 
     static DebugLog log;
+
     static
     {
         log = new DebugLog(DebugLog.Module.APP, "AppData");
     }
 
 
-    private EnumMap<GameEngine.Engine,EngineData> engineData = new EnumMap<>(GameEngine.Engine.class);
-
-    public EngineData getEngineData( GameEngine.Engine engine)
-    {
-        EngineData data = engineData.get(engine);
-
-        // This will happen first time
-        if( data == null )
-        {
-            log.log(D, "Could not find EngineData for " + engine.toString() );
-            data = new EngineData();
-            engineData.put(engine, data);
-        }
-        else
-        {
-            log.log(D, "Found EngineData for " + engine.toString() );
-        }
-
-        return data;
-    }
-
+    private EnumMap<GameEngine.Engine, EngineData> engineData = new EnumMap<>(GameEngine.Engine.class);
 
     public static void saveToFile(String file, AppData appData)
     {
@@ -110,6 +91,25 @@ public class AppData implements Serializable
         if (data == null)
         {
             data = new AppData();
+        }
+
+        return data;
+    }
+
+    public EngineData getEngineData(GameEngine.Engine engine)
+    {
+        EngineData data = engineData.get(engine);
+
+        // This will happen first time
+        if (data == null)
+        {
+            log.log(D, "Could not find EngineData for " + engine.toString());
+            data = new EngineData();
+            engineData.put(engine, data);
+        }
+        else
+        {
+            log.log(D, "Found EngineData for " + engine.toString());
         }
 
         return data;

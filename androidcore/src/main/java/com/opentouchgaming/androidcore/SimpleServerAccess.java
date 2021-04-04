@@ -17,116 +17,127 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class SimpleServerAccess {
-	String LOG = "SimpleServerAccess";
-	Context ctx;
-	void returnData(ByteArrayOutputStream data)
-	{
-		//OVerride me
-	}
+public class SimpleServerAccess
+{
+    String LOG = "SimpleServerAccess";
+    Context ctx;
+
+    SimpleServerAccess(Context context, String url)
+    {
+        ctx = context;
+        new ServerAccessThread().execute(url);
+    }
+
+    void returnData(ByteArrayOutputStream data)
+    {
+        //OVerride me
+    }
+
+    private class ServerAccessThread extends AsyncTask<String, Integer, Long>
+    {
+
+        String errorstring = null;
+        ByteArrayOutputStream data_out = new ByteArrayOutputStream();
+        private ProgressDialog progressBar;
+
+        @Override
+        protected void onPreExecute()
+        {
+            progressBar = new ProgressDialog(ctx);
+            progressBar.setMessage("Accessing Server..");
+            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressBar.setCancelable(false);
+            progressBar.show();
+        }
+
+        protected Long doInBackground(String... url)
+        {
+
+            String url_full = url[0];
 
 
-	SimpleServerAccess(Context context,String url)
-	{
-		ctx = context;
-		new ServerAccessThread().execute(url);
-	}
+            try
+            {
 
-	private class ServerAccessThread extends AsyncTask<String, Integer, Long> {
+                if (GD.DEBUG)
+                    Log.d(LOG, url_full);
 
-		private ProgressDialog progressBar;
-		String errorstring= null;
-		ByteArrayOutputStream data_out = new ByteArrayOutputStream();
-
-		@Override
-		protected void onPreExecute() {
-			progressBar = new ProgressDialog(ctx); 
-			progressBar.setMessage("Accessing Server..");
-			progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			progressBar.setCancelable(false);
-			progressBar.show();
-		}
-
-		protected Long doInBackground(String... url) {
-
-			String url_full = url[0];
-
-			
-			try
-			{
-
-				if (GD.DEBUG) Log.d(LOG,url_full);
-
-				HttpClient httpclient = new DefaultHttpClient();
+                HttpClient httpclient = new DefaultHttpClient();
 
 
-				HttpPost httppost = new HttpPost(url_full);
+                HttpPost httppost = new HttpPost(url_full);
 
-				HttpResponse httpResponse = null;
-				httpResponse = httpclient.execute(httppost);
+                HttpResponse httpResponse = null;
+                httpResponse = httpclient.execute(httppost);
 
-				int code = httpResponse.getStatusLine().getStatusCode();
+                int code = httpResponse.getStatusLine().getStatusCode();
 
-				if (GD.DEBUG) Log.d(LOG,"code = " + code);
-				if (GD.DEBUG)Log.d(LOG,"reason = " + httpResponse.getStatusLine().getReasonPhrase());
+                if (GD.DEBUG)
+                    Log.d(LOG, "code = " + code);
+                if (GD.DEBUG)
+                    Log.d(LOG, "reason = " + httpResponse.getStatusLine().getReasonPhrase());
 
-				if (code != 200)
-				{
-					errorstring = httpResponse.getStatusLine().getReasonPhrase();
-					return 1L;
-				}
+                if (code != 200)
+                {
+                    errorstring = httpResponse.getStatusLine().getReasonPhrase();
+                    return 1L;
+                }
 
-				int dlSize = (int)httpResponse.getEntity().getContentLength();
+                int dlSize = (int) httpResponse.getEntity().getContentLength();
 
-				BufferedInputStream in = null;
+                BufferedInputStream in = null;
 
-				InputStream ins = httpResponse.getEntity().getContent();
+                InputStream ins = httpResponse.getEntity().getContent();
 
-				progressBar.setMax(dlSize);
-				if (GD.DEBUG) Log.d(LOG,"File size = " + dlSize);
+                progressBar.setMax(dlSize);
+                if (GD.DEBUG)
+                    Log.d(LOG, "File size = " + dlSize);
 
-				in = new BufferedInputStream(ins);
+                in = new BufferedInputStream(ins);
 
-				byte data[] = new byte[1024];
-				int count;
-				while ((count = in.read(data, 0, 1024)) != -1)
-				{
-					data_out.write(data, 0, count);
-				}
-				in.close();
+                byte data[] = new byte[1024];
+                int count;
+                while ((count = in.read(data, 0, 1024)) != -1)
+                {
+                    data_out.write(data, 0, count);
+                }
+                in.close();
 
 
-			} catch (IOException e) {
-				errorstring = e.toString();
-				return 1l;
-			}
+            } catch (IOException e)
+            {
+                errorstring = e.toString();
+                return 1l;
+            }
 
-			return 0l;
-		}
+            return 0l;
+        }
 
-		protected void onProgressUpdate(Integer... progress) {
+        protected void onProgressUpdate(Integer... progress)
+        {
 
-		}
+        }
 
-		protected void onPostExecute(Long result) {
-			progressBar.dismiss();
-			if (errorstring!=null)
-			{
-				AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-				builder.setMessage("Error accessing server: " + errorstring)
-				.setCancelable(true)
-				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
+        protected void onPostExecute(Long result)
+        {
+            progressBar.dismiss();
+            if (errorstring != null)
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                builder.setMessage("Error accessing server: " + errorstring).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
 
-					}
-				});
+                    }
+                });
 
-				builder.show();
-			}
-			else
-			{
-				returnData(data_out);
-			}
-		}
-	}
+                builder.show();
+            }
+            else
+            {
+                returnData(data_out);
+            }
+        }
+    }
 }

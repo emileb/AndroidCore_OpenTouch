@@ -2,13 +2,14 @@ package com.opentouchgaming.androidcore.common;
 
 import android.app.Activity;
 import android.app.Dialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.opentouchgaming.androidcore.ItemClickSupport;
 import com.opentouchgaming.androidcore.R;
@@ -19,13 +20,15 @@ import java.util.ArrayList;
  * Created by Emile on 31/10/2017.
  */
 
-public class CustomArgsHistoryDialog {
+public class CustomArgsHistoryDialog
+{
     RecyclerView recyclerView;
     ArgsRecyclerViewAdapter rvAdapter;
 
     ArrayList<CustomArgs> argsHistory;
 
-    CustomArgsHistoryDialog(final Activity act, final ArrayList<CustomArgs> argsHistory) {
+    CustomArgsHistoryDialog(final Activity act, final ArrayList<CustomArgs> argsHistory)
+    {
 
         this.argsHistory = argsHistory;
 
@@ -47,15 +50,18 @@ public class CustomArgsHistoryDialog {
         recyclerView.setAdapter(rvAdapter);
 
         // Swipe to dismiss
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        {
 
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+            {
                 return false;
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir)
+            {
                 //Remove swiped item from list and notify the RecyclerView
                 ArgsRecyclerViewAdapter.ViewHolder h = (ArgsRecyclerViewAdapter.ViewHolder) viewHolder;
                 argsHistory.remove(h.item);
@@ -66,9 +72,11 @@ public class CustomArgsHistoryDialog {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener()
+        {
             @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+            public void onItemClicked(RecyclerView recyclerView, int position, View v)
+            {
                 selected(position);
                 dialog.dismiss();
             }
@@ -77,46 +85,52 @@ public class CustomArgsHistoryDialog {
         dialog.show();
     }
 
-    public void selected(int position) {
+    public void selected(int position)
+    {
         // Override me
     }
 
-    public class ArgsRecyclerViewAdapter extends RecyclerView.Adapter<ArgsRecyclerViewAdapter.ViewHolder> {
-        public ArgsRecyclerViewAdapter() {
+    public class ArgsRecyclerViewAdapter extends RecyclerView.Adapter<ArgsRecyclerViewAdapter.ViewHolder>
+    {
+        public ArgsRecyclerViewAdapter()
+        {
 
         }
 
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_item_args_history, parent, false);
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_args_history, parent, false);
             view.setFocusable(true);
             view.setBackgroundResource(R.drawable.focusable);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, int position)
+        {
             holder.item = argsHistory.get(position);
 
             holder.textView.setText(holder.item.getFinalArgs());
         }
 
         @Override
-        public int getItemCount() {
+        public int getItemCount()
+        {
             //return 10;
             return argsHistory.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
-
-            public CustomArgs item;
+        public class ViewHolder extends RecyclerView.ViewHolder
+        {
 
             public final TextView textView;
             public final View view;
+            public CustomArgs item;
 
-            public ViewHolder(View view) {
+            public ViewHolder(View view)
+            {
                 super(view);
                 this.view = view;
                 this.textView = view.findViewById(R.id.textView);

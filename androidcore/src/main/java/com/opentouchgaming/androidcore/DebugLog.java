@@ -9,22 +9,8 @@ import android.util.Log;
 public class DebugLog
 {
 
-    public enum Module
-    {
-        CONTROLS,
-        GAMEFRAGMENT,
-        APP,
-        LICENSE,
-        CORE,
-    }
-
-    public enum Level
-    {
-        D,
-        I,
-        W,
-        E
-    }
+    final String tag;
+    final Module module;
 
     public DebugLog(Module module, String tag)
     {
@@ -51,6 +37,12 @@ public class DebugLog
         }
     }
 
-    final String tag;
-    final Module module;
+    public enum Module
+    {
+        CONTROLS, GAMEFRAGMENT, APP, LICENSE, CORE,
+    }
+    public enum Level
+    {
+        D, I, W, E
+    }
 }

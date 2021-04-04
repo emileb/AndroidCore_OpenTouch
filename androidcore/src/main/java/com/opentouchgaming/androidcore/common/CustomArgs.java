@@ -26,7 +26,7 @@ public class CustomArgs implements Serializable
 
     public boolean isEmpty()
     {
-        return ( args.contentEquals(""));
+        return (args.contentEquals(""));
     }
 
     public void setArgs(String args)
@@ -39,7 +39,9 @@ public class CustomArgs implements Serializable
         if (s.contains(" "))
         {
             return "\"" + s + "\"";
-        } else return s;
+        }
+        else
+            return s;
     }
 
 

@@ -2,12 +2,13 @@ package com.opentouchgaming.androidcore.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import androidx.appcompat.widget.AppCompatImageView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.GameEngine;
@@ -29,31 +30,11 @@ public class EnginesPanel
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "EnginesPanel");
     }
 
-    public interface Listener
-    {
-        void engineSelected(GameEngine engine);
-
-        void engineConfig(GameEngine engine);
-
-        void enginePanelStateChange(boolean open);
-    }
-
     GameEngine[] gameEngines;
-
     GameEngine currentEngine;
-
     SlidePanel leftSlidePanel;
-
     EnginesPanel.Listener listener;
-
     boolean useGroups;
-
-    private class EngineGroup
-    {
-        ArrayList<GameEngine> engines = new ArrayList<>();
-        ImageButton button;
-    }
-
     ArrayList<EngineGroup> engineGroups = new ArrayList<>();
 
     public EnginesPanel(Context context, View topView, GameEngine[] engines, boolean useGroups, final Listener listener)
@@ -63,9 +44,9 @@ public class EnginesPanel
 
         gameEngines = engines;
 
-        View         leftPanelTopView = topView.findViewById(R.id.relative_top_left_panel);
-        LinearLayout leftPanelLayout  = topView.findViewById(R.id.linear_left_hidden_panel);
-        ImageButton  leftPanelButton  = topView.findViewById(R.id.imagebutton_entry_open_left);
+        View leftPanelTopView = topView.findViewById(R.id.relative_top_left_panel);
+        LinearLayout leftPanelLayout = topView.findViewById(R.id.linear_left_hidden_panel);
+        ImageButton leftPanelButton = topView.findViewById(R.id.imagebutton_entry_open_left);
 
 
         // Collect the engines into the UI groups
@@ -73,7 +54,7 @@ public class EnginesPanel
         int uiGroup = -1;
         for (int n = 0; n < gameEngines.length; n++)
         {
-            if( useGroups )
+            if (useGroups)
             {
                 // New (or first ui group)
                 if (uiGroup != gameEngines[n].uiGroup)
@@ -94,11 +75,11 @@ public class EnginesPanel
 
         // Find largest number of engines in a group
         int largestGroup = 1;
-        for( EngineGroup g : engineGroups )
+        for (EngineGroup g : engineGroups)
         {
-            log.log(DebugLog.Level.D,"Group has " + g.engines.size());
-            if( g.engines.size() > largestGroup)
-                largestGroup =  g.engines.size();
+            log.log(DebugLog.Level.D, "Group has " + g.engines.size());
+            if (g.engines.size() > largestGroup)
+                largestGroup = g.engines.size();
         }
 
         // Button to open panel
@@ -131,19 +112,19 @@ public class EnginesPanel
         // Give equal size for each ui group
         int buttonSize = screenHeightPx / engineGroups.size();
         int buttonCfgSize = buttonSize / 3;
-        int totalWidth ;
-        if( useGroups )
+        int totalWidth;
+        if (useGroups)
         {
             buttonCfgSize = buttonSize / 3;
             totalWidth = buttonSize * largestGroup;
         }
         else
         {
-            buttonCfgSize = (int)(buttonSize * cfgButtonSize);
+            buttonCfgSize = (int) (buttonSize * cfgButtonSize);
             totalWidth = buttonSize + buttonCfgSize;
         }
         // Set the layout width, equal to the button size x largest group
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)leftPanelLayout.getLayoutParams();
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) leftPanelLayout.getLayoutParams();
         lp.width = totalWidth;
         leftPanelLayout.setLayoutParams(lp);
         leftPanelSlideAmmount = lp.width;
@@ -162,11 +143,11 @@ public class EnginesPanel
             LinearLayout groupLayout = new LinearLayout(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
             params.weight = 1;
-            params.setMargins(margin,margin,margin,margin);
+            params.setMargins(margin, margin, margin, margin);
             groupLayout.setLayoutParams(params);
 
             // Add buttons to the group
-            for( int e = 0; e < group.engines.size(); e++ )
+            for (int e = 0; e < group.engines.size(); e++)
             {
                 GameEngine engine = group.engines.get(e);
 
@@ -198,15 +179,15 @@ public class EnginesPanel
                 AppCompatImageView buttonCfg;
                 buttonCfg = new AppCompatImageView(context);
                 params = new LinearLayout.LayoutParams(buttonCfgSize, buttonCfgSize);
-                if( useGroups )
+                if (useGroups)
                 {
                     // Move to bottom right
-                    params.setMargins( -buttonCfgSize, buttonSize - buttonCfgSize, 0 ,0 );
+                    params.setMargins(-buttonCfgSize, buttonSize - buttonCfgSize, 0, 0);
                 }
                 else
                 {
                     // Put next to the button
-                    params.setMargins( 0, (int)(buttonCfgSize * (1 - cfgButtonSize)), 0 ,0 );
+                    params.setMargins(0, (int) (buttonCfgSize * (1 - cfgButtonSize)), 0, 0);
                 }
                 buttonCfg.setTag(engine); // Used for the click listener callback
                 buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -254,7 +235,8 @@ public class EnginesPanel
                 {
                     button.imageButton.requestFocus();
                 }
-            } else
+            }
+            else
             {
                 button.imageButton.setFocusable(false);
                 button.imageButtonCfg.setFocusable(false);
@@ -302,7 +284,8 @@ public class EnginesPanel
             {
                 button.imageButton.setActivated(true);
                 button.imageButtonCfg.setVisibility(View.VISIBLE);
-            } else
+            }
+            else
             {
                 button.imageButton.setActivated(false);
                 button.imageButtonCfg.setVisibility(View.INVISIBLE);
@@ -311,5 +294,20 @@ public class EnginesPanel
 
         currentEngine = engine;
         listener.engineSelected(currentEngine);
+    }
+
+    public interface Listener
+    {
+        void engineSelected(GameEngine engine);
+
+        void engineConfig(GameEngine engine);
+
+        void enginePanelStateChange(boolean open);
+    }
+
+    private class EngineGroup
+    {
+        ArrayList<GameEngine> engines = new ArrayList<>();
+        ImageButton button;
     }
 }

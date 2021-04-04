@@ -30,12 +30,12 @@ public class LogViewDialog
 
         dialog.setContentView(R.layout.dialog_log_view);
 
-        dialog.setTitle("Game log for: " +  name);
+        dialog.setTitle("Game log for: " + name);
 
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
 
-        textView = (TextView)dialog.findViewById(R.id.textView);
+        textView = (TextView) dialog.findViewById(R.id.textView);
         textView.setText(readFile(file));
 
         dialog.show();

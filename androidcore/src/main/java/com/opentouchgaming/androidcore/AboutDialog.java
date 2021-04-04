@@ -7,7 +7,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -21,12 +20,14 @@ import java.io.InputStream;
 
 import it.gmariotti.changelibs.library.view.ChangeLogRecyclerView;
 
-public class AboutDialog {
+public class AboutDialog
+{
 
     public static int aboutRes;
 
 
-    public static void show(final Context ctx) {
+    public static void show(final Context ctx)
+    {
         final Dialog dialog;
 
         dialog = new Dialog(ctx);
@@ -43,20 +44,22 @@ public class AboutDialog {
 
         //set up button
         Button button = dialog.findViewById(R.id.about_changes_button);
-        button.setOnClickListener(v -> {
-            dialog.setTitle("Changes");
-            text.setVisibility(View.INVISIBLE);
-            changeLogView.setVisibility(View.VISIBLE);
-        });
+        button.setOnClickListener(v ->
+                                  {
+                                      dialog.setTitle("Changes");
+                                      text.setVisibility(View.INVISIBLE);
+                                      changeLogView.setVisibility(View.VISIBLE);
+                                  });
 
 
         button = dialog.findViewById(R.id.about_license_button);
-        button.setOnClickListener(v -> {
-            dialog.setTitle("About");
-            text.setText(readTxt(ctx, aboutRes));
-            text.setVisibility(View.VISIBLE);
-            changeLogView.setVisibility(View.INVISIBLE);
-        });
+        button.setOnClickListener(v ->
+                                  {
+                                      dialog.setTitle("About");
+                                      text.setText(readTxt(ctx, aboutRes));
+                                      text.setVisibility(View.VISIBLE);
+                                      changeLogView.setVisibility(View.INVISIBLE);
+                                  });
 
         button = dialog.findViewById(R.id.about_rate_button);
 
@@ -67,11 +70,11 @@ public class AboutDialog {
         mAnimation.setRepeatMode(Animation.REVERSE);
         button.startAnimation(mAnimation);
 
-        button.setOnClickListener(v -> {
-            Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                    "http://play.google.com/store/apps/details?id=" + ctx.getPackageName()));
-            ctx.startActivity(marketIntent);
-        });
+        button.setOnClickListener(v ->
+                                  {
+                                      Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + ctx.getPackageName()));
+                                      ctx.startActivity(marketIntent);
+                                  });
 
         button = dialog.findViewById(R.id.about_ok_button);
         button.setOnClickListener(v -> dialog.dismiss());
@@ -90,39 +93,48 @@ public class AboutDialog {
         dialog.show();
     }
 
-    private static String readTxt(Context ctx, int id) {
+    private static String readTxt(Context ctx, int id)
+    {
 
         InputStream inputStream = ctx.getResources().openRawResource(id);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         int i;
-        try {
+        try
+        {
             i = inputStream.read();
-            while (i != -1) {
+            while (i != -1)
+            {
                 byteArrayOutputStream.write(i);
                 i = inputStream.read();
             }
             inputStream.close();
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
 
         return byteArrayOutputStream.toString();
     }
 
-    public static boolean showAbout(Context ctx) {
-        try {
+    public static boolean showAbout(Context ctx)
+    {
+        try
+        {
             int versionCode = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
             int last_ver = AppSettings.getIntOption(ctx, "last_opened_version", -1);
             //Log.d("test"," ver = " +  versionCode + " last =" + last_ver);
-            if (versionCode != last_ver) {
+            if (versionCode != last_ver)
+            {
                 AppSettings.setIntOption(ctx, "last_opened_version", versionCode);
                 return true;
-            } else
+            }
+            else
                 return false;
 
-        } catch (NameNotFoundException e) {
+        } catch (NameNotFoundException e)
+        {
             return false;
         }
     }

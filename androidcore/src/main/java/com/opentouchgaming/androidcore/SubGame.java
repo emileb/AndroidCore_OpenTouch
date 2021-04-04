@@ -23,27 +23,25 @@ import java.util.List;
  * Created by Emile on 20/05/2018.
  */
 
-public class SubGame {
+public class SubGame
+{
+    public boolean selected;
     String title;
     int image;
     String imagePng;
     String detail1;
     String detail2;
-
     String rootPath;
-
     String name;
     int gameType;
-
     String tag; // unique tag for each sub-game
-
     String downloadPath;
     String downloadFilename;
-
     String extraArgs;
     int wheelNbr;
 
-    public SubGame(String tag, String title, String name, String rootPath, int gameType, int image, String detail1, String detail2, int wheelNbr) {
+    public SubGame(String tag, String title, String name, String rootPath, int gameType, int image, String detail1, String detail2, int wheelNbr)
+    {
         this.tag = tag;
         this.name = name;
         this.rootPath = rootPath;
@@ -56,8 +54,45 @@ public class SubGame {
         this.wheelNbr = wheelNbr;
     }
 
-    public void load(Context ctx) {
-        if (tag != null) {
+    static public void addGame(ArrayList<SubGame> availableSubGames, String rootPath1, String rootPath2, String tag, String subDir, int gameType, int weaponWheel, String[] files, int defaultIconRes,
+                               String title, String installDetails, String mkdirFilename)
+    {
+
+        String inPath = Utils.checkFilesInPaths(rootPath1, rootPath2, files);
+
+        if (inPath != null)
+        {
+            String pathInfo = inPath + "/" + subDir;
+            String fileInfo = Utils.filesInfoString(pathInfo, null, 3);
+            SubGame quake = new SubGame(tag, title, subDir, inPath, gameType, defaultIconRes, pathInfo, fileInfo, weaponWheel);
+            availableSubGames.add(quake);
+        }
+        else
+        {
+            String fullPath1 = rootPath1 + "/" + subDir;
+            String fullPath2 = rootPath2 != null ? rootPath2 + "/" + subDir : null;
+
+            Utils.mkdirs(AppInfo.getContext(), fullPath1, mkdirFilename);
+
+            String pathText = fullPath1;
+            if (fullPath2 != null)
+            {
+                Utils.mkdirs(AppInfo.getContext(), fullPath2, mkdirFilename);
+                pathText += "\nOR\n" + fullPath2;
+            }
+
+            if (AppSettings.getBoolOption(AppInfo.getContext(), "hide_install_hints", false) == false)
+            {
+                SubGame quake = new SubGame(null, title + " not yet installed", null, fullPath1, gameType, R.drawable.questionmark, installDetails, pathText, weaponWheel);
+                availableSubGames.add(quake);
+            }
+        }
+    }
+
+    public void load(Context ctx)
+    {
+        if (tag != null)
+        {
             String title = AppSettings.getStringOption(ctx, tag + "title", null);
             if (title != null)
                 setTitle(title);
@@ -67,10 +102,10 @@ public class SubGame {
                 setExtraArgs(args);
 
             // Check for icon.png file
-            if( rootPath != null && name != null )
+            if (rootPath != null && name != null)
             {
                 String icon = rootPath + "/" + name + "/icon.png";
-                if( new File(icon).exists())
+                if (new File(icon).exists())
                 {
                     setImagePng(icon);
                 }
@@ -86,120 +121,138 @@ public class SubGame {
         }
     }
 
-
-    public void save(Context ctx) {
-        if (tag != null) {
+    public void save(Context ctx)
+    {
+        if (tag != null)
+        {
             AppSettings.setStringOption(ctx, tag + "title", title);
             AppSettings.setStringOption(ctx, tag + "extraArgs", extraArgs);
         }
     }
 
-    public String getExtraArgs() {
+    public String getExtraArgs()
+    {
         if (extraArgs == null)
             return "";
         else
             return extraArgs;
     }
 
-    public void setExtraArgs(String extraArgs) {
+    public void setExtraArgs(String extraArgs)
+    {
         this.extraArgs = extraArgs;
     }
 
-    public void setDownloadInfo(String path, String filename) {
+    public void setDownloadInfo(String path, String filename)
+    {
         downloadPath = path;
         downloadFilename = filename;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public String getRootPath() {
+    public String getRootPath()
+    {
         return rootPath;
     }
 
-    public void setRootPath(String rootPath) {
+    public void setRootPath(String rootPath)
+    {
         this.rootPath = rootPath;
     }
 
-
-    public String getDownloadPath() {
+    public String getDownloadPath()
+    {
         return downloadPath;
     }
 
-    public String getDownloadFilename() {
+    public String getDownloadFilename()
+    {
         return downloadFilename;
     }
 
-    public String getImagePng() {
+    public String getImagePng()
+    {
         return imagePng;
     }
 
-    public void setImagePng(String imagePng) {
+    public void setImagePng(String imagePng)
+    {
         this.imagePng = imagePng;
     }
 
-    public String getTitle() {
+    public String getTitle()
+    {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(String title)
+    {
         this.title = title;
     }
 
-    public int getImage() {
+    public int getImage()
+    {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(int image)
+    {
         this.image = image;
     }
 
-    public String getDetail1() {
+    public String getDetail1()
+    {
         return detail1;
     }
 
-    public void setDetail1(String detail1) {
+    public void setDetail1(String detail1)
+    {
         this.detail1 = detail1;
     }
 
-    public String getDetail2() {
+    public String getDetail2()
+    {
         return detail2;
     }
 
-    public void setDetail2(String detail2) {
+    public void setDetail2(String detail2)
+    {
         this.detail2 = detail2;
     }
 
-
-    public int getGameType() {
+    public int getGameType()
+    {
         return gameType;
     }
 
-    public void setGameType(int gameType) {
+    public void setGameType(int gameType)
+    {
         this.gameType = gameType;
     }
 
-    public int getWheelNbr() {
+    public int getWheelNbr()
+    {
         return wheelNbr;
     }
 
-    public void setWheelNbr(int wheelNbr) {
+    public void setWheelNbr(int wheelNbr)
+    {
         this.wheelNbr = wheelNbr;
     }
 
-    public boolean selected;
-
-    public interface DialogCallback {
-        void dismiss();
-    }
-
-    public void edit(final Activity act, final DialogCallback callback) {
-        if (tag != null) {
+    public void edit(final Activity act, final DialogCallback callback)
+    {
+        if (tag != null)
+        {
             Dialog dialog = new Dialog(act);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.dialog_subgame_options);
@@ -222,17 +275,24 @@ public class SubGame {
             else
                 imagePath.setText("[default]");
 
-            imageChoose.setOnClickListener(new View.OnClickListener() {
+            imageChoose.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(View v) {
-                    FileSelectDialog.FileSelectCallback callback = new FileSelectDialog.FileSelectCallback() {
+                public void onClick(View v)
+                {
+                    FileSelectDialog.FileSelectCallback callback = new FileSelectDialog.FileSelectCallback()
+                    {
                         @Override
-                        public void dismiss(ArrayList<String> filesArray) {
+                        public void dismiss(ArrayList<String> filesArray)
+                        {
                             String imageOverride;
 
-                            if (filesArray == null || filesArray.size() == 0) {
+                            if (filesArray == null || filesArray.size() == 0)
+                            {
                                 imageOverride = null;
-                            } else {
+                            }
+                            else
+                            {
                                 imageOverride = filesArray.get(0);
                             }
 
@@ -259,22 +319,25 @@ public class SubGame {
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
             wheelSpinner.setAdapter(dataAdapter);
-            wheelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            wheelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+            {
                 @Override
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int position, long id) {
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+                {
                     setWheelNbr(Integer.parseInt(list.get(position)));
                     AppSettings.setIntOption(act, tag + "wheel_nbr", getWheelNbr());
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+                public void onNothingSelected(AdapterView<?> parent)
+                {
                 }
             });
 
             int pos = 0;
-            for (int n = 0; n < list.size(); n++) {
-                if(getWheelNbr() == Integer.parseInt(list.get(n)))
+            for (int n = 0; n < list.size(); n++)
+            {
+                if (getWheelNbr() == Integer.parseInt(list.get(n)))
                 {
                     pos = n;
                     break;
@@ -283,15 +346,18 @@ public class SubGame {
 
             wheelSpinner.setSelection(pos);
 
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
+            {
                 @Override
-                public void onDismiss(DialogInterface dialog) {
+                public void onDismiss(DialogInterface dialog)
+                {
                     setTitle(title.getText().toString());
                     setExtraArgs(args.getText().toString());
 
                     save(act);
 
-                    if (callback != null) {
+                    if (callback != null)
+                    {
                         callback.dismiss();
                     }
                 }
@@ -301,32 +367,8 @@ public class SubGame {
         }
     }
 
-    static public void addGame(ArrayList<SubGame> availableSubGames, String rootPath1, String rootPath2, String tag, String subDir, int gameType, int weaponWheel, String[] files, int defaultIconRes, String title, String installDetails, String mkdirFilename) {
-
-        String inPath = Utils.checkFilesInPaths(rootPath1, rootPath2, files);
-
-        if (inPath != null) {
-            String pathInfo = inPath + "/" + subDir;
-            String fileInfo = Utils.filesInfoString(pathInfo, null, 3);
-            SubGame quake = new SubGame(tag, title, subDir, inPath, gameType, defaultIconRes, pathInfo, fileInfo, weaponWheel);
-            availableSubGames.add(quake);
-        } else {
-            String fullPath1 = rootPath1 + "/" + subDir;
-            String fullPath2 = rootPath2 != null ?  rootPath2 + "/" + subDir : null;
-
-            Utils.mkdirs(AppInfo.getContext(), fullPath1, mkdirFilename);
-
-            String pathText = fullPath1;
-            if(fullPath2 != null)
-            {
-                Utils.mkdirs(AppInfo.getContext(), fullPath2, mkdirFilename);
-                pathText += "\nOR\n" + fullPath2;
-            }
-
-            if( AppSettings.getBoolOption(AppInfo.getContext(),"hide_install_hints", false) == false ) {
-                SubGame quake = new SubGame(null, title + " not yet installed", null, fullPath1, gameType, R.drawable.questionmark, installDetails, pathText, weaponWheel);
-                availableSubGames.add(quake);
-            }
-        }
+    public interface DialogCallback
+    {
+        void dismiss();
     }
 }

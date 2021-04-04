@@ -2,7 +2,8 @@ package com.opentouchgaming.androidcore.ui;
 
 import java.io.Serializable;
 
-class TouchSettingSaveInfo implements Serializable {
+class TouchSettingSaveInfo implements Serializable
+{
 
     // WARNING! DO NOT MOVE THIS CLASS!!!
 

@@ -17,16 +17,13 @@ import com.opentouchgaming.androidcore.R;
 
 public class CustomArgsDialog
 {
+    public final Dialog dialog;
+    final EngineData engineData;
     String basePath;
     String extraPath = "";
-
-    public final Dialog dialog;
     Activity activity;
-
     TextView customModsTextView;
     EditText customArgsEditText;
-
-    final EngineData engineData;
 
     public CustomArgsDialog(final Activity act, final String path, EngineData ed)
     {
@@ -43,8 +40,7 @@ public class CustomArgsDialog
         {
 
             @Override
-            public boolean onKey(DialogInterface arg0, int keyCode,
-                                 KeyEvent event)
+            public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event)
             {
 
                 return false;
@@ -72,7 +68,7 @@ public class CustomArgsDialog
             {
                 new CustomArgsHistoryDialog(act, engineData.getArgsHistory())
                 {
-                    public void selected (int position )
+                    public void selected(int position)
                     {
                         // Set the current args to one of the ones in history
                         engineData.getCurrentCustomArgs().setArgs(engineData.getArgsHistory().get(position).getArgsString());

@@ -73,7 +73,7 @@ public class PortActDefs
     public static final int PORT_MALICE_CYCLE = 61;
 
     //SMD for Q2
-    public static final int  PORT_SMD_USE  =  62;
+    public static final int PORT_SMD_USE = 62;
 
     //JK2
     //public static final int   PORT_ACT_FORCE_LIGHTNING = 60;
@@ -103,20 +103,20 @@ public class PortActDefs
     public static final int PORT_ACT_FLY_UP = 93;
     public static final int PORT_ACT_FLY_DOWN = 94;
 
-    public static final int PORT_ACT_WEAP0  =            100;
-    public static final int PORT_ACT_WEAP1  =            101;
-    public static final int PORT_ACT_WEAP2  =            102;
-    public static final int PORT_ACT_WEAP3  =            103;
-    public static final int PORT_ACT_WEAP4  =            104;
-    public static final int PORT_ACT_WEAP5  =            105;
-    public static final int PORT_ACT_WEAP6  =            106;
-    public static final int PORT_ACT_WEAP7  =            107;
-    public static final int PORT_ACT_WEAP8  =            108;
-    public static final int PORT_ACT_WEAP9  =            109;
-    public static final int PORT_ACT_WEAP10 =            110;
-    public static final int PORT_ACT_WEAP11 =            111;
-    public static final int PORT_ACT_WEAP12 =            112;
-    public static final int PORT_ACT_WEAP13 =            113;
+    public static final int PORT_ACT_WEAP0 = 100;
+    public static final int PORT_ACT_WEAP1 = 101;
+    public static final int PORT_ACT_WEAP2 = 102;
+    public static final int PORT_ACT_WEAP3 = 103;
+    public static final int PORT_ACT_WEAP4 = 104;
+    public static final int PORT_ACT_WEAP5 = 105;
+    public static final int PORT_ACT_WEAP6 = 106;
+    public static final int PORT_ACT_WEAP7 = 107;
+    public static final int PORT_ACT_WEAP8 = 108;
+    public static final int PORT_ACT_WEAP9 = 109;
+    public static final int PORT_ACT_WEAP10 = 110;
+    public static final int PORT_ACT_WEAP11 = 111;
+    public static final int PORT_ACT_WEAP12 = 112;
+    public static final int PORT_ACT_WEAP13 = 113;
 
     //Custom
     public static final int PORT_ACT_CUSTOM_0 = 150;
@@ -155,6 +155,6 @@ public class PortActDefs
 
     public static final int PORT_ACT_MENU_SHOW = 0x208;
 
-    public static final int PORT_ACT_VOLUME_UP       = 0x242;
-    public static final int PORT_ACT_VOLUME_DOWN     = 0x243;
+    public static final int PORT_ACT_VOLUME_UP = 0x242;
+    public static final int PORT_ACT_VOLUME_DOWN = 0x243;
 }

@@ -13,13 +13,12 @@ import android.widget.RelativeLayout;
 public class SlidePanel
 {
 
-    enum SlideSide
-    {
-        LEFT,
-        RIGHT,
-        TOP,
-        BOTTOM
-    }
+    final int distance;
+    final View view;
+    SlideSide side;
+    boolean isOpen = false;
+    ValueAnimator valueAnimator;
+    AnimatorSet animatorSet;
 
     SlidePanel(final View view, final SlideSide side, final int distance, final int duration)
     {
@@ -44,7 +43,8 @@ public class SlidePanel
                         if (isOpen == true)
                         {
                             Params.leftMargin = value.intValue() - distance;
-                        } else //Closing left panel
+                        }
+                        else //Closing left panel
                         {
                             Params.leftMargin = -value.intValue();
                         }
@@ -56,7 +56,8 @@ public class SlidePanel
                         if (isOpen == true)
                         {
                             Params.rightMargin = value.intValue() - distance;
-                        } else //Closing left panel
+                        }
+                        else //Closing left panel
                         {
                             Params.rightMargin = -value.intValue();
                         }
@@ -68,7 +69,8 @@ public class SlidePanel
                         if (isOpen == true)
                         {
                             Params.bottomMargin = value.intValue() - distance;
-                        } else //Closing left panel
+                        }
+                        else //Closing left panel
                         {
                             Params.bottomMargin = -value.intValue();
                         }
@@ -122,13 +124,9 @@ public class SlidePanel
     {
         return isOpen;
     }
-
-    SlideSide side;
-    boolean isOpen = false;
-    final int distance;
-
-    final View view;
-    ValueAnimator valueAnimator;
-    AnimatorSet animatorSet;
+    enum SlideSide
+    {
+        LEFT, RIGHT, TOP, BOTTOM
+    }
 
 }

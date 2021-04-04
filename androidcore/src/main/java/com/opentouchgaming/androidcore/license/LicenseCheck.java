@@ -28,6 +28,9 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 public class LicenseCheck
 {
     static DebugLog log;
+    // Yes yes yes very bad don't care for this.
+    static Activity activity;
+    static ProgressDialog progressDialog;
 
     static
     {
@@ -72,7 +75,8 @@ public class LicenseCheck
                                 if (lId == pInfo.versionCode) // Check correct version of app
                                 {
                                     ok = true;
-                                } else
+                                }
+                                else
                                 {
                                     log.log(D, "Id failed " + lId + " != " + pInfo.versionCode);
                                 }
@@ -81,15 +85,18 @@ public class LicenseCheck
                                 e.printStackTrace();
                             }
 
-                        } else
+                        }
+                        else
                         {
                             log.log(D, "Sec id failed: " + thisId + " != " + fileId);
                         }
-                    } else
+                    }
+                    else
                     {
                         log.log(D, "Not licensed: " + fields[0]);
                     }
-                } else
+                }
+                else
                 {
                     log.log(D, "Wrong number of fields");
                 }
@@ -105,7 +112,7 @@ public class LicenseCheck
         }
 
         // Delete the file if failed
-        if( ok == false )
+        if (ok == false)
         {
             File f = new File(AppInfo.internalFiles + "/l.dat");
             f.delete();
@@ -114,9 +121,34 @@ public class LicenseCheck
         return ok;
     }
 
-    // Yes yes yes very bad don't care for this.
-    static Activity activity;
-    static ProgressDialog progressDialog;
+    public static void fetchLicense(final Activity activity_, boolean showDialog, final String key)
+    {
+        if (showDialog)
+        {
+            activity = activity_;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setMessage("License not yet found. Press OK to fetch license from Google").setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
+            {
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    NdkLicense.check(activity, key, new LCallback());
+
+
+                    progressDialog = new ProgressDialog(activity);
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setMessage("Please wait...");
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
+
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+    }
 
     static class LCallback implements NdkLicenseCallback
     {
@@ -128,10 +160,11 @@ public class LicenseCheck
             {
                 log.log(D, "Google says it is licensed");
 
-            } else if (ret.code == NdkLicenseCallback.NO_GOOD)
+            }
+            else if (ret.code == NdkLicenseCallback.NO_GOOD)
             {
                 log.log(D, "Google says it is unlicensed");
-                if( activity != null )
+                if (activity != null)
                 {
                     activity.runOnUiThread(new Runnable()
                     {
@@ -141,15 +174,13 @@ public class LicenseCheck
                             Toast.makeText(activity, "Unlicensed, reason: " + ret.desc, Toast.LENGTH_LONG).show();
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                            builder.setMessage("Unlicensed, reason: " + ret.desc)
-                                    .setCancelable(true)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
-                                    {
-                                        public void onClick(DialogInterface dialog, int id)
-                                        {
-                                            dialog.cancel();
-                                        }
-                                    });
+                            builder.setMessage("Unlicensed, reason: " + ret.desc).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
+                            {
+                                public void onClick(DialogInterface dialog, int id)
+                                {
+                                    dialog.cancel();
+                                }
+                            });
 
                             AlertDialog alert = builder.create();
                             alert.show();
@@ -157,10 +188,11 @@ public class LicenseCheck
                     });
                 }
 
-            } else
+            }
+            else
             {
-                log.log(D,  "Got responce " + ret.code + " Desc = " + ret.desc);
-                if( activity != null )
+                log.log(D, "Got responce " + ret.code + " Desc = " + ret.desc);
+                if (activity != null)
                 {
                     activity.runOnUiThread(new Runnable()
                     {
@@ -170,8 +202,7 @@ public class LicenseCheck
                             Toast.makeText(activity, "Can not check license: " + ret.desc, Toast.LENGTH_LONG).show();
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                            builder.setMessage("Can not check license. Please make sure you have working internet. " + ret.desc)
-                                    .setCancelable(true)
+                            builder.setMessage("Can not check license. Please make sure you have working internet. " + ret.desc).setCancelable(true)
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener()
                                     {
                                         public void onClick(DialogInterface dialog, int id)
@@ -187,42 +218,11 @@ public class LicenseCheck
                 }
             }
 
-            if(progressDialog != null)
+            if (progressDialog != null)
             {
                 progressDialog.dismiss();
                 progressDialog = null;
             }
-        }
-    }
-
-    public static void fetchLicense(final Activity activity_, boolean showDialog,final String key)
-    {
-        if( showDialog)
-        {
-            activity = activity_;
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage("License not yet found. Press OK to fetch license from Google")
-                    .setCancelable(true)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int id)
-                        {
-                            NdkLicense.check(activity, key, new LCallback());
-
-
-                            progressDialog = new ProgressDialog(activity);
-                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            progressDialog.setMessage("Please wait...");
-                            progressDialog.setIndeterminate(true);
-                            progressDialog.setCanceledOnTouchOutside(false);
-                            progressDialog.show();
-
-                        }
-                    });
-
-            AlertDialog alert = builder.create();
-            alert.show();
         }
     }
 

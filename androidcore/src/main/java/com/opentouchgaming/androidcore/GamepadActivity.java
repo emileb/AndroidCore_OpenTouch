@@ -22,7 +22,7 @@ public class GamepadActivity extends Activity
         AppInfo.Apps app = AppInfo.Apps.valueOf(getIntent().getStringExtra("app"));
         AppInfo.setApp(app);
 
-        if(AppInfo.getContext() == null)
+        if (AppInfo.getContext() == null)
             AppInfo.setContext(this);
 
         super.onCreate(savedInstanceState);
@@ -50,7 +50,7 @@ public class GamepadActivity extends Activity
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event)
     {
-        if ( fragment.onKeyUp(keyCode, event))
+        if (fragment.onKeyUp(keyCode, event))
             return true;
         else
             return super.onKeyUp(keyCode, event);

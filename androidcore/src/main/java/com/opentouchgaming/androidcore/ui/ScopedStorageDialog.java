@@ -3,10 +3,11 @@ package com.opentouchgaming.androidcore.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+
+import androidx.annotation.RequiresApi;
 
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.DebugLog;
@@ -19,18 +20,21 @@ import java.util.function.Function;
 import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 
-public class ScopedStorageDialog {
+public class ScopedStorageDialog
+{
 
     static DebugLog log;
 
-    static {
+    static
+    {
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "ScopedStorageDialog");
     }
 
     Activity activity;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public ScopedStorageDialog(final Activity activity, Runnable update) {
+    public ScopedStorageDialog(final Activity activity, Runnable update)
+    {
         this.activity = activity;
 
         final Dialog dialog = new Dialog(activity);
@@ -45,19 +49,23 @@ public class ScopedStorageDialog {
 
         Button goButton = dialog.findViewById(R.id.go_button);
 
-        goButton.setOnClickListener(v -> {
-            UtilsSAF.openDocumentTree(activity, ScopedStorage.OPENDOCUMENT_TREE_RESULT);
-        });
+        goButton.setOnClickListener(v ->
+                                    {
+                                        UtilsSAF.openDocumentTree(activity, ScopedStorage.OPENDOCUMENT_TREE_RESULT);
+                                    });
 
         dialog.setOnDismissListener(dialog1 -> update.run());
 
         dialog.show();
 
 
-        ScopedStorage.openDocumentCallback = new Function<String, Void>() {
+        ScopedStorage.openDocumentCallback = new Function<String, Void>()
+        {
             @Override
-            public Void apply(String error) {
-                if(error != null) {
+            public Void apply(String error)
+            {
+                if (error != null)
+                {
                     log.log(D, "ERROR: " + error);
                     AppInfo.setAppSecDirectory(null);
                 }
@@ -70,7 +78,8 @@ public class ScopedStorageDialog {
         };
     }
 
-    public void dismiss() {
+    public void dismiss()
+    {
         //Override me
     }
 

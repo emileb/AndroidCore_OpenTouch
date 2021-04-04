@@ -9,21 +9,7 @@ public class Tutorial
 
     public ArrayList<Screen> screens = new ArrayList<>();
 
-    static public class Screen
-    {
-        public Screen(String title, String description, String image)
-        {
-            this.title = title;
-            this.description = description;
-            this.image = image;
-        }
-
-        public String title;
-        public String description;
-        public String image;
-    }
-
-    public Tutorial(String title,String icon)
+    public Tutorial(String title, String icon)
     {
         this.title = title;
         this.icon = icon;
@@ -37,5 +23,18 @@ public class Tutorial
     public void addScreen(Screen screen)
     {
         screens.add(screen);
+    }
+
+    static public class Screen
+    {
+        public String title;
+        public String description;
+        public String image;
+        public Screen(String title, String description, String image)
+        {
+            this.title = title;
+            this.description = description;
+            this.image = image;
+        }
     }
 }

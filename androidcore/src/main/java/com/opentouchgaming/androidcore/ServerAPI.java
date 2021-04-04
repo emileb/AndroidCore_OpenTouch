@@ -32,20 +32,14 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 public class ServerAPI
 {
     static DebugLog log;
+    static Activity ctx;
+    static int size;
+    static Callback callback;
 
     static
     {
         log = new DebugLog(DebugLog.Module.CORE, "ServerAPI");
     }
-
-    public interface Callback {
-        public void callback( boolean complete );
-    }
-
-    static Activity ctx;
-    static int size;
-
-    static Callback callback;
 
     public static void downloadFile(Activity ctx, String file, String path, int size, Callback cb)
     {
@@ -56,14 +50,23 @@ public class ServerAPI
         new DLFileThread().execute(file, path);
     }
 
+    public interface Callback
+    {
+        public void callback(boolean complete);
+    }
+
     static private class DLFileThread extends AsyncTask<String, Integer, Long>
     {
+        final int STATUS_COMPLETE = 0;
+        final int STATUS_FILE_ERROR = -1;
+        final int STATUS_BAD_CONNECTION = -2;
+        final int STATUS_BAD_RESP_CODE = -3;
+        final int STATUS_INCOMPLETE = -4;
+        final int STATUS_EXCEP_WHILE_DL = -5;
         ProgressDialog progressBar;
         String errorstring = null;
-
         long downloadSize = -1;
         long downloadedBytes = 0;
-
         boolean cancel = false;
 
         @Override
@@ -85,8 +88,6 @@ public class ServerAPI
             progressBar.show();
         }
 
-
-
         int getTotalZipSize(String file) throws IOException
         {
             int ret = 0;
@@ -101,26 +102,6 @@ public class ServerAPI
 
             return ret;
         }
-
-
-        class Status
-        {
-            int code;
-            String message;
-
-            Status(int code, String message)
-            {
-                this.code = code;
-                this.message = message;
-            }
-        }
-
-        final int STATUS_COMPLETE = 0;
-        final int STATUS_FILE_ERROR = -1;
-        final int STATUS_BAD_CONNECTION = -2;
-        final int STATUS_BAD_RESP_CODE = -3;
-        final int STATUS_INCOMPLETE = -4;
-        final int STATUS_EXCEP_WHILE_DL = -5;
 
         private Status tryDownload(String downloadFilename, String destFilename)
         {
@@ -144,12 +125,8 @@ public class ServerAPI
 
                 String apk_hash = PackageVerif.bytesToString(PackageVerif.packageSig(ctx).sig);
 
-                urlString = "http://opentouchgaming.com/api/download_v4.php?" + ""
-                        + "ldata=" + URLEncoder.encode(lic_data, "UTF-8")
-                        + "&lsig=" + URLEncoder.encode(lic_sig, "UTF-8")
-                        + "&apkhash=" + URLEncoder.encode(apk_hash, "UTF-8")
-                        + "&file=" + URLEncoder.encode(downloadFilename, "UTF-8")
-                        + "&pos=" + downloadedBytes;
+                urlString = "http://opentouchgaming.com/api/download_v4.php?" + "" + "ldata=" + URLEncoder.encode(lic_data, "UTF-8") + "&lsig=" + URLEncoder
+                        .encode(lic_sig, "UTF-8") + "&apkhash=" + URLEncoder.encode(apk_hash, "UTF-8") + "&file=" + URLEncoder.encode(downloadFilename, "UTF-8") + "&pos=" + downloadedBytes;
 
                 log.log(D, "urlString = " + urlString);
 
@@ -227,7 +204,7 @@ public class ServerAPI
             } catch (IOException e)
             {
                 e.printStackTrace();
-                if( didDownload )
+                if (didDownload)
                     return new Status(STATUS_EXCEP_WHILE_DL, e.toString());
                 else
                     return new Status(STATUS_BAD_CONNECTION, e.toString());
@@ -240,12 +217,12 @@ public class ServerAPI
             if (downloadedBytes >= downloadSize)
             {
                 return new Status(STATUS_COMPLETE, "");
-            } else
+            }
+            else
             {
                 return new Status(STATUS_INCOMPLETE, "Expected: " + downloadSize + " got: " + downloadedBytes);
             }
         }
-
 
         protected Long doInBackground(String... info)
         {
@@ -262,7 +239,7 @@ public class ServerAPI
 
             int connectionTries = 10; // This number of connection attempts
 
-            while( true )
+            while (true)
             {
                 status = tryDownload(downloadFilename, cachedDownload);
                 log.log(D, "status.code = " + status.code + ", status.message = " + status.message);
@@ -276,12 +253,12 @@ public class ServerAPI
                 {
                     break;
                 }
-                else if(status.code == STATUS_BAD_CONNECTION)
+                else if (status.code == STATUS_BAD_CONNECTION)
                 {
                     log.log(D, "connectionTries = " + connectionTries);
                     //progressBar.setMessage("connectionTries = " + connectionTries);
                     connectionTries--;
-                    if( connectionTries > 0 )
+                    if (connectionTries > 0)
                     {
                         // Wait a second
                         try
@@ -298,7 +275,7 @@ public class ServerAPI
                         return 0l;
                     }
                 }
-                else if(status.code == STATUS_EXCEP_WHILE_DL) // If it did download something, don't decrement the attempts
+                else if (status.code == STATUS_EXCEP_WHILE_DL) // If it did download something, don't decrement the attempts
                 {
                     // Wait a second
                     try
@@ -367,7 +344,8 @@ public class ServerAPI
                         new File(cachedDownload).delete();
                     }
 
-                } else // Copy
+                }
+                else // Copy
                 {
                     progressBar.setMax((int) downloadSize);
                     progressBar.setProgress(0);
@@ -425,7 +403,8 @@ public class ServerAPI
                     {
                         dismissWithExceptionHandling(progressBar);
                     }
-                } else
+                }
+                else
                 {
                     // Api < 17. Unfortunately cannot check for isDestroyed()
                     if (!ctx.isFinishing())
@@ -439,23 +418,33 @@ public class ServerAPI
             if (errorstring != null)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                builder.setMessage("Error accessing server: " + errorstring)
-                        .setCancelable(true)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
+                builder.setMessage("Error accessing server: " + errorstring).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
 
-                            }
-                        });
+                    }
+                });
 
                 builder.show();
             }
 
-            if(  ServerAPI.callback!= null )
+            if (ServerAPI.callback != null)
             {
                 ServerAPI.callback.callback(errorstring != null);
                 ServerAPI.callback = null;
+            }
+        }
+
+        class Status
+        {
+            int code;
+            String message;
+
+            Status(int code, String message)
+            {
+                this.code = code;
+                this.message = message;
             }
         }
     }

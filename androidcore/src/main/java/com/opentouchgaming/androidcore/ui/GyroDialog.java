@@ -60,12 +60,12 @@ public class GyroDialog
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                if( sensor == null )
+                if (sensor == null)
                 {
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
                     dialogBuilder.setTitle("Gyroscope not found");
-                    dialogBuilder.setMessage("Your device does not appear to have a gyroscope sensor. Download the app called 'Sensors test' to confirm."
-                            + " Email support@opentouchgaming.com if you believe this is an error. Thank you.");
+                    dialogBuilder.setMessage(
+                            "Your device does not appear to have a gyroscope sensor. Download the app called 'Sensors test' to confirm." + " Email support@opentouchgaming.com if you believe this is an error. Thank you.");
                     dialogBuilder.setPositiveButton("OK", new android.content.DialogInterface.OnClickListener()
                     {
                         @Override
@@ -97,7 +97,7 @@ public class GyroDialog
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
-                AppSettings.setFloatOption(activity,"gyro_x_sens", progress / 100.f);
+                AppSettings.setFloatOption(activity, "gyro_x_sens", progress / 100.f);
             }
 
             @Override
@@ -118,7 +118,7 @@ public class GyroDialog
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
-                AppSettings.setFloatOption(activity,"gyro_y_sens", progress / 100.f);
+                AppSettings.setFloatOption(activity, "gyro_y_sens", progress / 100.f);
             }
 
             @Override
@@ -142,14 +142,14 @@ public class GyroDialog
 
         swapXY.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(activity, "gyro_swap_xy", isChecked));
 
-        xSens.setProgress((int)(AppSettings.getFloatOption(activity,"gyro_x_sens",1) * 100));
-        ySens.setProgress((int)(AppSettings.getFloatOption(activity,"gyro_y_sens",1) * 100));
-        rollToTurn.setChecked(AppSettings.getBoolOption(activity,"gyro_roll_to_turn", false));
-        invertX.setChecked(AppSettings.getBoolOption(activity,"gyro_invert_x", false));
-        invertY.setChecked(AppSettings.getBoolOption(activity,"gyro_invert_y", false));
-        swapXY.setChecked(AppSettings.getBoolOption(activity,"gyro_swap_xy", false));
+        xSens.setProgress((int) (AppSettings.getFloatOption(activity, "gyro_x_sens", 1) * 100));
+        ySens.setProgress((int) (AppSettings.getFloatOption(activity, "gyro_y_sens", 1) * 100));
+        rollToTurn.setChecked(AppSettings.getBoolOption(activity, "gyro_roll_to_turn", false));
+        invertX.setChecked(AppSettings.getBoolOption(activity, "gyro_invert_x", false));
+        invertY.setChecked(AppSettings.getBoolOption(activity, "gyro_invert_y", false));
+        swapXY.setChecked(AppSettings.getBoolOption(activity, "gyro_swap_xy", false));
 
-        enableSwitch.setChecked(AppSettings.getBoolOption(activity,"gyro_enable", false));
+        enableSwitch.setChecked(AppSettings.getBoolOption(activity, "gyro_enable", false));
         xSens.setEnabled(enableSwitch.isChecked());
         ySens.setEnabled(enableSwitch.isChecked());
         rollToTurn.setEnabled(enableSwitch.isChecked());

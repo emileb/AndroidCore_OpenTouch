@@ -15,14 +15,13 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 public class NdkLicenseListener extends android.os.Binder
 {
 
+    static final String LISTENER = "com.android.vending.licensing.ILicenseResultListener";
     static DebugLog log;
 
     static
     {
         log = new DebugLog(DebugLog.Module.LICENSE, "NdkLicenseListener");
     }
-
-    static final String LISTENER = "com.android.vending.licensing.ILicenseResultListener";
 
     NdkLicenseCallback cb;
     String key;
@@ -88,7 +87,8 @@ public class NdkLicenseListener extends android.os.Binder
                     }
 
                     return true;
-                } else
+                }
+                else
                 {
                     ret.code = NdkLicenseCallback.NO_GOOD;
                     ret.desc = "Bad DATA code: " + data;
@@ -97,13 +97,15 @@ public class NdkLicenseListener extends android.os.Binder
                 }
 
 
-            } else if (code == 1)
+            }
+            else if (code == 1)
             {
                 ret.code = NdkLicenseCallback.NO_GOOD;
                 ret.desc = "Bad code: " + code;
                 cb.status(ret);
                 return true;
-            } else
+            }
+            else
             {
                 ret.code = NdkLicenseCallback.ERROR;
                 ret.desc = "Bad code: " + code;
