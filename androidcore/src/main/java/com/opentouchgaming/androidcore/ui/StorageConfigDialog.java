@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -59,6 +60,8 @@ public class StorageConfigDialog
         dialog.setContentView(R.layout.dialog_storage_config);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
+        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         appDirTextView = dialog.findViewById(R.id.app_dir_textview);
         appDirIcon = dialog.findViewById(R.id.app_dir_image);
