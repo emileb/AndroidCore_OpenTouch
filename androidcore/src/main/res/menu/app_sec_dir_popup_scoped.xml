@@ -3,8 +3,4 @@
     <item
         android:id="@+id/choose_saf"
         android:title="Choose SAF folder"/>
-
-    <item
-        android:id="@+id/choose_folder"
-        android:title="Choose folder"/>
 </menu>

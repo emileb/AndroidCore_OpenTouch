@@ -42,9 +42,11 @@ dependencies {
     implementation project(path: ':changeloglib')
 
     implementation 'net.lingala.zip4j:zip4j:2.5.1'
+    implementation 'com.google.android.material:material:1.3.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

@@ -40,7 +40,7 @@
                 android:id="@+id/textview_iwad_detail1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#808080"
+                android:textColor="#A0A0A0"
                 android:gravity="center_vertical" />
 
             <TextView

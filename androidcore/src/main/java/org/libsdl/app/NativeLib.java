@@ -36,6 +36,7 @@ public class NativeLib implements ControlInterface {
     public static native int loadTouchSettings(String filename);
     public static native int saveTouchSettings(String filename);
 
+    public static native int executeCommand(String command);
 
     @Override
     public void initTouchControls_if(String pngPath, int width, int height) {

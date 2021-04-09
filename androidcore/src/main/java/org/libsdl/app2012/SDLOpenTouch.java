@@ -25,6 +25,7 @@ import com.opentouchgaming.androidcore.controls.ControlInterpreter;
 import com.opentouchgaming.androidcore.controls.GamepadDefinitions;
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 import com.opentouchgaming.androidcore.ui.GyroDialog;
+import com.opentouchgaming.androidcore.ui.QuickCommandDialog;
 import com.opentouchgaming.androidcore.ui.TouchSettingsSaveLoad;
 import com.opentouchgaming.saffal.UtilsSAF;
 
@@ -33,7 +34,8 @@ import org.libsdl.app.NativeLib;
 
 import java.io.File;
 
-public class SDLOpenTouch {
+public class SDLOpenTouch
+{
 
     static final String TAG = "SDLOpenTouch";
 
@@ -49,19 +51,27 @@ public class SDLOpenTouch {
 
     static SDLOpenTouchGyro gyro;
 
-    static void onPause(Context context) {
+    static QuickCommandDialog quickCommandDialog;
+    static String quickCommandMainPath;
+    static String quickCommandModPath;
+
+    static void onPause(Context context)
+    {
         SDLAudioManager.onPause();
     }
 
-    static void onResume(Context context) {
-        if (controlInterp != null) {
+    static void onResume(Context context)
+    {
+        if (controlInterp != null)
+        {
             controlInterp.loadGameControlsFile();
         }
         sendWeaponWheelSettings(context);
         SDLAudioManager.onResume();
     }
 
-    static void Setup(Activity activity, Intent intent) {
+    static void Setup(Activity activity, Intent intent)
+    {
         AppSettings.reloadSettings(activity);
 
         AppInfo.Apps app = AppInfo.Apps.valueOf(intent.getStringExtra("app"));
@@ -77,18 +87,22 @@ public class SDLOpenTouch {
 
 
         // LOAD liraries
-        try {
+        try
+        {
             System.loadLibrary("core_shared");
             // Load game libs
             String[] loadLibs = intent.getStringArrayExtra("load_libs");
-            for (String lib : loadLibs) {
+            for (String lib : loadLibs)
+            {
                 Log.d(TAG, "Loading: " + lib);
                 System.loadLibrary(lib);
             }
 
-        } catch (UnsatisfiedLinkError e) {
+        } catch (UnsatisfiedLinkError e)
+        {
             System.err.println(e.getMessage());
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             System.err.println(e.getMessage());
         }
 
@@ -105,14 +119,14 @@ public class SDLOpenTouch {
         gyro = new SDLOpenTouchGyro(activity, activity.getWindowManager().getDefaultDisplay().getRotation());
 
         engine = new NativeLib();
-        controlInterp = new ControlInterpreter(activity, engine, GamepadDefinitions.getDefinition(AppInfo.app), TouchSettings.gamePadEnabled,
-                                               TouchSettings.altTouchCode);
+        controlInterp = new ControlInterpreter(activity, engine, GamepadDefinitions.getDefinition(AppInfo.app), TouchSettings.gamePadEnabled, TouchSettings.altTouchCode);
 
         enableVibrate = AppSettings.getBoolOption(activity, "enable_vibrate", true);
         resDiv = intent.getIntExtra("res_div", 1);
     }
 
-    static String ReplaceDisplaySize(String test, float width, float height) {
+    static String ReplaceDisplaySize(String test, float width, float height)
+    {
         test = test.replace("$W2", Integer.toString((int) (width / 2)));
         test = test.replace("$H2", Integer.toString((int) (height / 2)));
         test = test.replace("$W3", Integer.toString((int) (width / 3)));
@@ -126,7 +140,8 @@ public class SDLOpenTouch {
         return test;
     }
 
-    static void RunApplication(Activity activity, Intent intent, float displayWidth, float displayHeight) {
+    static void RunApplication(Activity activity, Intent intent, float displayWidth, float displayHeight)
+    {
 
         {
             int fbWidth = 0;
@@ -135,13 +150,16 @@ public class SDLOpenTouch {
             String frameBufferWidth = intent.getStringExtra("framebuffer_width");
             String frameBufferHeight = intent.getStringExtra("framebuffer_height");
 
-            if (frameBufferWidth != null && frameBufferHeight != null) {
+            if (frameBufferWidth != null && frameBufferHeight != null)
+            {
                 frameBufferWidth = ReplaceDisplaySize(frameBufferWidth, displayWidth, displayHeight);
                 frameBufferHeight = ReplaceDisplaySize(frameBufferHeight, displayWidth, displayHeight);
-                try {
+                try
+                {
                     fbWidth = Integer.decode(frameBufferWidth);
                     fbHeight = Integer.decode(frameBufferHeight);
-                } catch (Exception e) {
+                } catch (Exception e)
+                {
 
                 }
             }
@@ -188,6 +206,9 @@ public class SDLOpenTouch {
         int gameType = intent.getIntExtra("game_type", 0);
         int wheelNbr = intent.getIntExtra("wheel_nbr", 10);
 
+        quickCommandMainPath = intent.getStringExtra("quick_command_main_path");
+        quickCommandModPath = intent.getStringExtra("quick_command_mod_path");
+
         //NativeLib.setScreenSize(1920,1104);
         //NativeLib.setScreenSize(1280,736);
         userFiles = intent.getStringExtra("user_files");
@@ -202,10 +223,14 @@ public class SDLOpenTouch {
         File folder = new File(nativeSoPath);
         File[] listOfFiles = folder.listFiles();
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
+        for (int i = 0; i < listOfFiles.length; i++)
+        {
+            if (listOfFiles[i].isFile())
+            {
                 Log.v(TAG, "File " + listOfFiles[i].getName());
-            } else if (listOfFiles[i].isDirectory()) {
+            }
+            else if (listOfFiles[i].isDirectory())
+            {
                 Log.v(TAG, "Directory " + listOfFiles[i].getName());
             }
         }
@@ -213,19 +238,19 @@ public class SDLOpenTouch {
         Log.v(TAG, "gamePath = " + gamePath);
         Log.v(TAG, "logFilename = " + logFilename);
 
-        int ret = NativeLib
-                .init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir);
+        int ret = NativeLib.init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir);
 
         Log.v(TAG, "SDL thread terminated");
         //context.finish();
     }
 
 
-    static public boolean surfaceChanged(Context context, SurfaceHolder holder, int width, int height) {
-
+    static public boolean surfaceChanged(Context context, SurfaceHolder holder, int width, int height)
+    {
         Log.v(TAG, "surfaceChanged: " + width + " x " + height);
 
-        if (resDiv != 1 && !divDone) {
+        if (resDiv != 1 && !divDone)
+        {
             holder.setFixedSize(width / resDiv, height / resDiv);
             divDone = true;
             return true;
@@ -242,31 +267,39 @@ public class SDLOpenTouch {
         return false;
     }
 
-    static public boolean onTouchEvent(MotionEvent event) {
+    static public boolean onTouchEvent(MotionEvent event)
+    {
         return controlInterp.onTouchEvent(event);
     }
 
-    static public boolean onKey(int keyCode, KeyEvent event) {
+    static public boolean onKey(int keyCode, KeyEvent event)
+    {
 
         int source = event.getSource();
         // Stop right mouse button being backbutton
-        if ((source == InputDevice.SOURCE_MOUSE) || (source == InputDevice.SOURCE_MOUSE_RELATIVE)) {
+        if ((source == InputDevice.SOURCE_MOUSE) || (source == InputDevice.SOURCE_MOUSE_RELATIVE))
+        {
             Log.v(TAG, "SDLSurface::onKey: is mouse");
             return true;
         }
 
         // We always want the back button to do an escape
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
                 controlInterp.onBackButton();
             }
             return true;
         }
 
 
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN)
+        {
             return controlInterp.onKeyDown(keyCode, event);
-        } else if (event.getAction() == KeyEvent.ACTION_UP) {
+        }
+        else if (event.getAction() == KeyEvent.ACTION_UP)
+        {
             return controlInterp.onKeyUp(keyCode, event);
         }
 
@@ -274,14 +307,20 @@ public class SDLOpenTouch {
     }
 
     @SuppressLint("MissingPermission")
-    private static void vibrate(Context context, int duration) {
-        if (enableVibrate) {
+    private static void vibrate(Context context, int duration)
+    {
+        if (enableVibrate)
+        {
             Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             // Vibrate for 500 milliseconds
-            if (v != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (v != null)
+            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                {
                     v.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE));
-                } else {
+                }
+                else
+                {
                     //deprecated in API 26
                     v.vibrate(duration);
                 }
@@ -296,12 +335,16 @@ public class SDLOpenTouch {
     protected static final int COMMAND_VIBRATE = 0x8005;
     protected static final int COMMAND_LOAD_SAVE_CONTROLS = 0x8006;
     protected static final int COMMAND_EXIT_APP = 0x8007;
+    protected static final int COMMAND_SHOW_QUICK_COMMANDS = 0x8008;
 
-    static public boolean CommandHandler(Activity activity, Message msg) {
+    static public boolean CommandHandler(Activity activity, Message msg)
+    {
         boolean handled = true;
 
-        switch (msg.arg1) {
-            case COMMAND_SET_BACKLIGHT: {
+        switch (msg.arg1)
+        {
+            case COMMAND_SET_BACKLIGHT:
+            {
                 Integer value = (Integer) msg.obj;
                 Log.d(TAG, "Set backlight " + value);
                 String text = "";
@@ -313,25 +356,31 @@ public class SDLOpenTouch {
 
                 break;
             }
-            case COMMAND_SHOW_GYRO_OPTIONS: {
-                new GyroDialog(SDLActivity.mSingleton, gyro.getRotationSensor()) {
-                    public void dismiss() {
+            case COMMAND_SHOW_GYRO_OPTIONS:
+            {
+                new GyroDialog(SDLActivity.mSingleton, gyro.getRotationSensor())
+                {
+                    public void dismiss()
+                    {
                         gyro.reload(activity);
                     }
                 };
                 break;
             }
-            case COMMAND_SHOW_GAMEPAD: {
+            case COMMAND_SHOW_GAMEPAD:
+            {
                 Intent intent = new Intent(activity, GamepadActivity.class);
                 intent.putExtra("app", AppInfo.app.name());
                 activity.startActivity(intent);
                 break;
             }
-            case COMMAND_SHOW_KEYBOARD: {
+            case COMMAND_SHOW_KEYBOARD:
+            {
                 //showTextInput(0,0,100,10);
 
                 InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
+                if (imm != null)
+                {
                     //imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
                     SDLActivity.mSurface.clearFocus();
                     SDLActivity.mSurface.requestFocus();
@@ -341,16 +390,33 @@ public class SDLOpenTouch {
 
                 break;
             }
-            case COMMAND_VIBRATE: {
+            case COMMAND_VIBRATE:
+            {
                 Integer value = (Integer) msg.obj;
                 vibrate(activity, value);
                 break;
             }
-            case COMMAND_LOAD_SAVE_CONTROLS: {
+            case COMMAND_LOAD_SAVE_CONTROLS:
+            {
                 new TouchSettingsSaveLoad(activity, userFiles, engine);
                 break;
             }
-            case COMMAND_EXIT_APP: {
+            case COMMAND_SHOW_QUICK_COMMANDS:
+            {
+                if(quickCommandDialog == null)
+                {
+                    quickCommandDialog = new QuickCommandDialog(activity, quickCommandMainPath, quickCommandModPath, input ->
+                    {
+                        NativeLib.executeCommand(input);
+                        return null;
+                    });
+                }
+
+                quickCommandDialog.show();
+            break;
+            }
+            case COMMAND_EXIT_APP:
+            {
                 activity.finish();
                 break;
             }
@@ -361,7 +427,8 @@ public class SDLOpenTouch {
         return handled;
     }
 
-    static void sendWeaponWheelSettings(Context context) {
+    static void sendWeaponWheelSettings(Context context)
+    {
         int useMoveStick = AppSettings.getBoolOption(context, "weapon_wheel_move_stick", true) ? 1 : 0;
         int mode = AppSettings.getIntOption(context, "weapon_wheel_button_mode", 0);
         int autoTimeout = AppSettings.getIntOption(context, "weapon_wheel_auto_timeout", 0);

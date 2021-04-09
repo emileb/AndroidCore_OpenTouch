@@ -2,6 +2,8 @@ package com.opentouchgaming.androidcore.common;
 
 import android.app.Activity;
 
+import androidx.core.util.Pair;
+
 import com.opentouchgaming.androidcore.GameEngine;
 import com.opentouchgaming.androidcore.SubGame;
 
@@ -18,6 +20,8 @@ public interface GameLauncherInterface
     String getRunDirectory();
 
     String getSecondaryDirectory();
+
+    Pair<String, String> getQuickCommandsDirectory(SubGame subGame);
 
     String getArgs(GameEngine engine, SubGame subGame);
 

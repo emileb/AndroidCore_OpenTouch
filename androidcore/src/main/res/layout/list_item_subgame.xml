@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:gravity="center_vertical"
-                android:textColor="#808080" />
+                android:textColor="#A0A0A0" />
 
             <TextView
                 android:id="@+id/textview_iwad_detail2"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:gravity="center_vertical"
-                android:textColor="#808080" />
+                android:textColor="#A0A0A0" />
 
         </LinearLayout>
     </RelativeLayout>

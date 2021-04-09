@@ -327,21 +327,13 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         switch (focusMode)
         {
-            case GAMES:
-            {
-                setLaunchButtonsFocus(false);
-                break;
-            }
             case LAUNCH:
             {
                 setLaunchButtonsFocus(true);
                 break;
             }
+            case GAMES:
             case ENGINE:
-            {
-                setLaunchButtonsFocus(false);
-                break;
-            }
             case TOOLS:
             {
                 setLaunchButtonsFocus(false);
