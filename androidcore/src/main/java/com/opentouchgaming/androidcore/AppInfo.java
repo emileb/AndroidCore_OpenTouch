@@ -153,7 +153,8 @@ public class AppInfo
             }
             else
             {
-                return sdcardWritable;
+                return null;
+                //return sdcardWritable;
             }
         }
         else
