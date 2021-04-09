@@ -54,7 +54,6 @@ public class StorageConfigDialog
         this.update = update;
 
         final Dialog dialog = new Dialog(act, R.style.DialogThemeFullscreen);
-        //final Dialog dialog = new Dialog(act);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_storage_config);
@@ -139,7 +138,6 @@ public class StorageConfigDialog
                                                    popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup_scoped, popup.getMenu());
                                                    popup.setOnMenuItemClickListener(item ->
                                                                                     {
-
                                                                                         if (item.getItemId() == R.id.choose_saf)
                                                                                         {
                                                                                             new ScopedStorageDialog(activity, () ->
@@ -147,16 +145,6 @@ public class StorageConfigDialog
                                                                                                 updateUI();
                                                                                             });
                                                                                         }
-                                                                                        if (item.getItemId() == R.id.choose_folder)
-                                                                                        {
-                                                                                            DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(activity, chosenDir ->
-                                                                                            {
-                                                                                                updateAppSecDir(chosenDir);
-                                                                                                updateUI();
-                                                                                            });
-                                                                                            directoryChooserDialog.chooseDirectory(AppInfo.getAppDirectory());
-                                                                                        }
-
                                                                                         updateUI();
                                                                                         return true;
                                                                                     });
