@@ -8,6 +8,7 @@ import android.provider.DocumentsContract;
 
 import androidx.annotation.RequiresApi;
 
+import com.opentouchgaming.saffal.FileSAF;
 import com.opentouchgaming.saffal.UtilsSAF;
 
 import java.util.function.Function;
@@ -25,10 +26,12 @@ public class ScopedStorage
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "ScopedStorage");
     }
 
+    // This is so we can ignore the SAF test in onResume if we JUST set it, the permission is not ready to use yet
+    static boolean justGotNewSaf = false;
+
     // Check if storage is setup, true if OK
     static public boolean checkStorageOK(Activity activity)
     {
-
         // Always set context, this also loads the saffal library, needed if even not used
         UtilsSAF.setContext(activity);
 
@@ -40,12 +43,7 @@ public class ScopedStorage
         else
         {
             UtilsSAF.loadTreeRoot(activity);
-            /*
-            if( !UtilsSAF.ready())
-            {
-                UtilsSAF.openDocumentTree(activity, OPENDOCUMENT_TREE_RESULT);
-            }
-*/
+
             // Check if the first time are checking this
             if (AppSettings.getBoolOption(activity, "storage_checked", false) == false)
             {
@@ -54,6 +52,33 @@ public class ScopedStorage
                 AppInfo.setAppDirectory(AppInfo.getDefaultAppDirectory());
                 AppSettings.setBoolOption(activity, "storage_checked", true);
             }
+
+            if(justGotNewSaf == false)
+            {
+                // Check we can still access the SAF folder OK, to avoid security exceptions later on
+                if (AppInfo.getAppSecDirectory() != null)
+                {
+                    if (UtilsSAF.isInSAFRoot(AppInfo.getAppSecDirectory()) == true)
+                    {
+                        FileSAF root = new FileSAF(AppInfo.getAppSecDirectory());
+                        try
+                        {
+                            // Do a quick test to see if it create exceptions
+                            if (root.exists())
+                            {
+                                root.listFiles();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            log.log(DebugLog.Level.D, "Can not read root from SAF, resetting to default");
+                            AppInfo.setAppSecDirectory(AppInfo.getDefaultAppSecDirectory());
+                        }
+                    }
+                }
+            }
+
+            justGotNewSaf = false;
 
             return false;
         }
@@ -114,6 +139,8 @@ public class ScopedStorage
                 // Take permissions for ever
                 final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 activity.getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+
+                justGotNewSaf = true;
 
                 openDocumentCallback.apply(null);
             }

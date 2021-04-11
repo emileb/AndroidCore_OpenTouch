@@ -47,6 +47,7 @@ public class StorageConfigDialog
     RecyclerView examplesRecyclerView;
     PathExampleViewAdapter examplesViewAdapter;
     List<StorageExamples> examples;
+
     public StorageConfigDialog(final Activity act, List<StorageExamples> examples, Runnable update)
     {
         this.activity = act;
@@ -59,8 +60,7 @@ public class StorageConfigDialog
         dialog.setContentView(R.layout.dialog_storage_config);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
-        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         appDirTextView = dialog.findViewById(R.id.app_dir_textview);
         appDirIcon = dialog.findViewById(R.id.app_dir_image);
@@ -134,20 +134,11 @@ public class StorageConfigDialog
 
                                                if (AppInfo.isScopedEnabled())
                                                {
-
-                                                   popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup_scoped, popup.getMenu());
-                                                   popup.setOnMenuItemClickListener(item ->
-                                                                                    {
-                                                                                        if (item.getItemId() == R.id.choose_saf)
-                                                                                        {
-                                                                                            new ScopedStorageDialog(activity, () ->
-                                                                                            {
-                                                                                                updateUI();
-                                                                                            });
-                                                                                        }
-                                                                                        updateUI();
-                                                                                        return true;
-                                                                                    });
+                                                   new ScopedStorageDialog(activity, () ->
+                                                   {
+                                                       updateUI();
+                                                   });
+                                                   updateUI();
                                                }
                                                else
                                                {
@@ -309,6 +300,7 @@ public class StorageConfigDialog
         String files;
         PathLocation pathLocation;
         String path;
+
         public StorageExamples(String info, String files, PathLocation pathLocation, String path)
         {
             this.title = info;
