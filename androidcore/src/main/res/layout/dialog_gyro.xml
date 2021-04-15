@@ -59,7 +59,7 @@
         android:id="@+id/gyro_roll_to_turn_checkBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Roll device to turn"/>
+        android:text="'Yaw' device to turn"/>
 
     <CheckBox
         android:id="@+id/gyro_invert_x_checkBox"

@@ -3,6 +3,7 @@ package com.opentouchgaming.androidcore.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +83,30 @@ public class StorageConfigDialog
         scopedStorage.setChecked(AppInfo.isScopedEnabled());
         scopedStorage.setOnCheckedChangeListener((buttonView, isChecked) ->
                                                  {
-                                                     AppInfo.setScoped(isChecked);
+                                                     if (isChecked)
+                                                     {
+                                                         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                                                         builder.setMessage(
+                                                                 "Enabled experimental Scoped Storage?\nNovember 2021 this mode will be mandatory for Android 11+ devices due to Google's rules, please test it out if you can.")
+                                                                 .setCancelable(false).setPositiveButton("Yes", (dialog13, id) ->
+                                                         {
+                                                             AppInfo.setScoped(true);
+                                                             updateUI();
+                                                         }).setNegativeButton("No", (dialog1, which) ->
+                                                         {
+                                                             scopedStorage.setChecked(false);
+                                                             updateUI();
+                                                         });
+
+                                                         AlertDialog alert = builder.create();
+                                                         alert.show();
+
+                                                     }
+                                                     else
+                                                     {
+                                                         AppInfo.setScoped(false);
+                                                     }
+
                                                      updateUI();
                                                  });
 
