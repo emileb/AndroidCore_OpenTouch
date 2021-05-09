@@ -161,7 +161,7 @@ public class StorageConfigDialog
 
                                                if (AppInfo.isScopedEnabled())
                                                {
-                                                   new ScopedStorageDialog(activity, () ->
+                                                   new ScopedStorageDialog(activity, AppInfo.scopedTutorial, () ->
                                                    {
                                                        updateUI();
                                                    });
@@ -236,7 +236,7 @@ public class StorageConfigDialog
         appSecDirIcon.setImageResource(pathAppSec.second);
 
 
-        if(AppInfo.isScopedEnabled() && AppInfo.getAppSecDirectory() == null)
+        if (AppInfo.isScopedEnabled() && AppInfo.getAppSecDirectory() == null)
         {
             Animation mAnimation = new AlphaAnimation(1, 0);
             mAnimation.setDuration(500);

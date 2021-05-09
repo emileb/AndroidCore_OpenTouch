@@ -24,7 +24,6 @@ import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.ScopedStorage;
 import com.opentouchgaming.saffal.UtilsSAF;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -41,15 +40,23 @@ public class ScopedStorageDialog
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "ScopedStorageDialog");
     }
 
+
+    public static class Tutorial
+    {
+        public String folder;
+        public List<Pair<Integer, String>> items;
+    }
+
     Activity activity;
     RecyclerView recyclerView;
     ViewAdapter viewAdapter;
-    List<Pair<Integer,String>> items;
+    Tutorial tutorial;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public ScopedStorageDialog(final Activity activity, Runnable update)
+    public ScopedStorageDialog(final Activity activity, Tutorial tutorial, Runnable update)
     {
         this.activity = activity;
+        this.tutorial = tutorial;
 
         final Dialog dialog = new Dialog(activity);
         //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -59,13 +66,10 @@ public class ScopedStorageDialog
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(true);
 
-        items = new ArrayList<>();
-        //items.add(R.drawable.ss_1);
-        items.add(new Pair<>(R.drawable.ss_2, "Select where you want your files."));
-        items.add(new Pair<>(R.drawable.ss_3, "Create (or select) the 'OpenTouch' folder."));
-        items.add(new Pair<>(R.drawable.ss_4, "Create (or select) the 'Quad' folder."));
-        items.add(new Pair<>(R.drawable.ss_5, "Check the path is correct and press 'USE THIS FOLDER'"));
-
+        TextView t = dialog.findViewById(R.id.suggested_folder_textView);
+        t.setText(tutorial.folder);
+        t = dialog.findViewById(R.id.suggested_folder_1_textView);
+        t.setText(tutorial.folder);
 
         recyclerView = dialog.findViewById(R.id.image_recyclerView);
         //recyclerView.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false));
@@ -124,16 +128,16 @@ public class ScopedStorageDialog
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position)
         {
-            holder.image.setImageResource(items.get(position).first);
+            holder.image.setImageResource(tutorial.items.get(position).first);
             holder.number.setText("");
-            holder.info.setText(items.get(position).second);
+            holder.info.setText(tutorial.items.get(position).second);
         }
 
 
         @Override
         public int getItemCount()
         {
-            return items.size();
+            return tutorial.items.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder
@@ -141,11 +145,12 @@ public class ScopedStorageDialog
             public final ImageView image;
             public final TextView number;
             public final TextView info;
+
             public ViewHolder(View view)
             {
                 super(view);
                 this.image = view.findViewById(R.id.imageView);
-                this.number =  view.findViewById(R.id.number_textView);
+                this.number = view.findViewById(R.id.number_textView);
                 this.info = view.findViewById(R.id.info_textView);
             }
         }
