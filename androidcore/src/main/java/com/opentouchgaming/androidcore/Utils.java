@@ -510,6 +510,8 @@ public class Utils
         InputStream in = null;
         OutputStream out = null;
 
+        new File(destdir).mkdirs();
+
         try
         {
             in = assetManager.open(file);
