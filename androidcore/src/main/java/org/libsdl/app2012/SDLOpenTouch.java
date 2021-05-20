@@ -85,11 +85,9 @@ public class SDLOpenTouch
         org.fmod.FMOD.init(activity);
         NativeConsoleBox.init(activity);
 
-
-        // LOAD liraries
+        // Load libraries
         try
         {
-            //System.loadLibrary("core_shared");
             // Load game libs
             String[] loadLibs = intent.getStringArrayExtra("load_libs");
             for (String lib : loadLibs)

@@ -59,6 +59,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public static GameEngine[] gameEngines;
     static DebugLog log;
 
+    public boolean noLicCheck = false;
+
     static
     {
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "MainFragment");
@@ -179,7 +181,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         subGameAdapter = new SubGameRecyclerViewAdapter(availableSubGames, input ->
         {
-
             if (multiselectEnable)
             {
                 if (multiselectGames.contains(input))
@@ -259,8 +260,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             @Override
             public void onClick(View view)
             {
-
-                boolean ok = LicenseCheck.checkLicenseFile(getContext(), AppInfo.key);
+                boolean ok = noLicCheck || LicenseCheck.checkLicenseFile(getContext(), AppInfo.key);
 
                 if (!ok)
                 {
