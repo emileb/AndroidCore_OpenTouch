@@ -7,6 +7,7 @@ import android.os.Environment;
 
 import androidx.core.util.Pair;
 
+import com.opentouchgaming.androidcore.ui.ScopedStorageDialog;
 import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
 
@@ -38,6 +39,8 @@ public class AppInfo
     public static GameEngine currentEngine;
     public static ArrayList<Tutorial> tutorials = new ArrayList<>();
     public static List<StorageConfigDialog.StorageExamples> storageExamples;
+    public static ScopedStorageDialog.Tutorial scopedTutorial;
+
     static DebugLog log;
     private static Context context;
 

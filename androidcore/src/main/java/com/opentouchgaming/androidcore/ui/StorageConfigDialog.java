@@ -3,12 +3,14 @@ package com.opentouchgaming.androidcore.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -45,6 +47,7 @@ public class StorageConfigDialog
     ImageView appDirIcon;
     TextView appSecDirTextView;
     ImageView appSecDirIcon;
+    ImageView appSecDirButton;
     RecyclerView examplesRecyclerView;
     PathExampleViewAdapter examplesViewAdapter;
     List<StorageExamples> examples;
@@ -68,7 +71,7 @@ public class StorageConfigDialog
         appSecDirTextView = dialog.findViewById(R.id.appSec_dir_textview);
         appSecDirIcon = dialog.findViewById(R.id.appSec_dir_image);
         ImageView appDirButton = dialog.findViewById(R.id.app_dir_options_button);
-        ImageView appSecDirButton = dialog.findViewById(R.id.appSec_dir_options_button);
+        appSecDirButton = dialog.findViewById(R.id.appSec_dir_options_button);
 
         examplesRecyclerView = dialog.findViewById(R.id.examples_RecyclerView);
         examplesRecyclerView.setLayoutManager(new LinearLayoutManager(act));
@@ -158,7 +161,7 @@ public class StorageConfigDialog
 
                                                if (AppInfo.isScopedEnabled())
                                                {
-                                                   new ScopedStorageDialog(activity, () ->
+                                                   new ScopedStorageDialog(activity, AppInfo.scopedTutorial, () ->
                                                    {
                                                        updateUI();
                                                    });
@@ -231,6 +234,21 @@ public class StorageConfigDialog
         Pair<String, Integer> pathAppSec = AppInfo.getDisplayPathAndImage(AppInfo.getAppSecDirectory());
         appSecDirTextView.setText(pathAppSec.first);
         appSecDirIcon.setImageResource(pathAppSec.second);
+
+
+        if (AppInfo.isScopedEnabled() && AppInfo.getAppSecDirectory() == null)
+        {
+            Animation mAnimation = new AlphaAnimation(1, 0);
+            mAnimation.setDuration(500);
+            mAnimation.setInterpolator(new LinearInterpolator());
+            mAnimation.setRepeatCount(Animation.INFINITE);
+            mAnimation.setRepeatMode(Animation.REVERSE);
+            appSecDirButton.startAnimation(mAnimation);
+        }
+        else
+        {
+            appSecDirButton.clearAnimation();
+        }
 
         examplesViewAdapter.notifyDataSetChanged();
     }

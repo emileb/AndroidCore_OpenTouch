@@ -32,7 +32,7 @@
             android:id="@+id/gyro_x_seekBar"
             android:layout_width="200dp"
             android:layout_gravity="center_vertical"
-            android:max="300"
+            android:max="400"
 
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -50,7 +50,7 @@
         <SeekBar
             android:id="@+id/gyro_y_seekBar"
             android:layout_width="200dp"
-            android:max="300"
+            android:max="400"
             android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"/>
     </LinearLayout>

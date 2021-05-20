@@ -89,7 +89,7 @@ public class SDLOpenTouch
         // LOAD liraries
         try
         {
-            System.loadLibrary("core_shared");
+            //System.loadLibrary("core_shared");
             // Load game libs
             String[] loadLibs = intent.getStringArrayExtra("load_libs");
             for (String lib : loadLibs)

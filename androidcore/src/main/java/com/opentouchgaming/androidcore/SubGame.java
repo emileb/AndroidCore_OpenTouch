@@ -57,6 +57,15 @@ public class SubGame
     static public SubGame addGame(ArrayList<SubGame> availableSubGames, String rootPath1, String rootPath2, String tag, String subDir, int gameType, int weaponWheel, String[] files, int defaultIconRes,
                                String title, String installDetails, String mkdirFilename)
     {
+        String fullPath1 = rootPath1 + "/" + subDir;
+        String fullPath2 = rootPath2 != null ? rootPath2 + "/" + subDir : null;
+
+        // Always create the directories
+        Utils.mkdirs(AppInfo.getContext(), fullPath1, mkdirFilename);
+
+        if(fullPath2 != null)
+            Utils.mkdirs(AppInfo.getContext(), fullPath2, mkdirFilename);
+
         String inPath = Utils.checkFilesInPaths(rootPath1, rootPath2, files);
 
         if (inPath != null)
@@ -69,15 +78,10 @@ public class SubGame
         }
         else
         {
-            String fullPath1 = rootPath1 + "/" + subDir;
-            String fullPath2 = rootPath2 != null ? rootPath2 + "/" + subDir : null;
-
-            Utils.mkdirs(AppInfo.getContext(), fullPath1, mkdirFilename);
-
             String pathText = fullPath1;
+
             if (fullPath2 != null)
             {
-                Utils.mkdirs(AppInfo.getContext(), fullPath2, mkdirFilename);
                 pathText += "\nOR\n" + fullPath2;
             }
 
