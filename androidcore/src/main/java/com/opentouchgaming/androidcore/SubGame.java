@@ -54,18 +54,18 @@ public class SubGame
         this.wheelNbr = wheelNbr;
     }
 
-    static public void addGame(ArrayList<SubGame> availableSubGames, String rootPath1, String rootPath2, String tag, String subDir, int gameType, int weaponWheel, String[] files, int defaultIconRes,
+    static public SubGame addGame(ArrayList<SubGame> availableSubGames, String rootPath1, String rootPath2, String tag, String subDir, int gameType, int weaponWheel, String[] files, int defaultIconRes,
                                String title, String installDetails, String mkdirFilename)
     {
-
         String inPath = Utils.checkFilesInPaths(rootPath1, rootPath2, files);
 
         if (inPath != null)
         {
             String pathInfo = inPath + "/" + subDir;
             String fileInfo = Utils.filesInfoString(pathInfo, null, 3);
-            SubGame quake = new SubGame(tag, title, subDir, inPath, gameType, defaultIconRes, pathInfo, fileInfo, weaponWheel);
-            availableSubGames.add(quake);
+            SubGame subGame = new SubGame(tag, title, subDir, inPath, gameType, defaultIconRes, pathInfo, fileInfo, weaponWheel);
+            availableSubGames.add(subGame);
+            return subGame;
         }
         else
         {
@@ -81,11 +81,13 @@ public class SubGame
                 pathText += "\nOR\n" + fullPath2;
             }
 
+            SubGame subGame = new SubGame(null, title + " not yet installed", null, fullPath1, gameType, R.drawable.questionmark, installDetails, pathText, weaponWheel);
+
             if (AppSettings.getBoolOption(AppInfo.getContext(), "hide_install_hints", false) == false)
             {
-                SubGame quake = new SubGame(null, title + " not yet installed", null, fullPath1, gameType, R.drawable.questionmark, installDetails, pathText, weaponWheel);
-                availableSubGames.add(quake);
+                availableSubGames.add(subGame);
             }
+            return subGame;
         }
     }
 
