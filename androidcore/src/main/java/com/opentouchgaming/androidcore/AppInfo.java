@@ -12,7 +12,6 @@ import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -218,6 +217,13 @@ public class AppInfo
         return userFiles;
     }
 
+    static public String getUserFiles_FROMSEC()
+    {
+        String userFiles = getAppSecDirectory() + "/user_files";
+
+        return userFiles;
+    }
+
     static public String replaceRootPaths(String path)
     {
         if (path != null)
@@ -289,37 +295,6 @@ public class AppInfo
 
     static public String getGamepadDirectory()
     {
-
-        // 20/05/20, removes this after a couple of releases
-        File oldFiles = new File(AppInfo.internalFiles + "/gamepad");
-        if (oldFiles.exists())
-        {
-            File newLoc = new File(AppInfo.getUserFiles() + "/gamepad");
-            newLoc.mkdirs();
-
-            File files[] = oldFiles.listFiles();
-            if (files != null)
-            {
-                for (File fileOld : files)
-                {
-                    File newFile = new File(newLoc.getAbsolutePath() + "/" + fileOld.getName());
-                    log.log(DebugLog.Level.D, "Copying from: " + fileOld.getAbsolutePath() + " to " + newFile.getAbsolutePath());
-
-                    try
-                    {
-                        Utils.copyFile(fileOld, newFile);
-                    } catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-
-                    fileOld.delete();
-                }
-            }
-            oldFiles.delete();
-        }
-
-        //return AppInfo.internalFiles + "/gamepad/";
         return AppInfo.getUserFiles() + "/gamepad";
     }
 
