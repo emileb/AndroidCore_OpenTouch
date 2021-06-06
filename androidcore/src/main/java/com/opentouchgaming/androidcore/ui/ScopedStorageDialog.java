@@ -1,7 +1,10 @@
 package com.opentouchgaming.androidcore.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +25,15 @@ import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.ScopedStorage;
+import com.opentouchgaming.androidcore.Utils;
+import com.opentouchgaming.saffal.FileSAF;
 import com.opentouchgaming.saffal.UtilsSAF;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.function.Function;
 
@@ -106,6 +116,8 @@ public class ScopedStorageDialog
                 {
                     AppInfo.setAppSecDirectory(UtilsSAF.getTreeRoot().rootPath);
                     dialog.dismiss();
+
+
                 }
                 return null;
             }
@@ -113,6 +125,8 @@ public class ScopedStorageDialog
 
         viewAdapter.notifyDataSetChanged();
     }
+
+
 
     public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder>
     {
