@@ -3,7 +3,6 @@ package com.opentouchgaming.androidcore;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -352,22 +351,18 @@ public class SubGame
 
             wheelSpinner.setSelection(pos);
 
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
-            {
-                @Override
-                public void onDismiss(DialogInterface dialog)
-                {
-                    setTitle(title.getText().toString());
-                    setExtraArgs(args.getText().toString());
+            dialog.setOnDismissListener(dialog1 ->
+                                        {
+                                            setTitle(title.getText().toString());
+                                            setExtraArgs(args.getText().toString());
 
-                    save(act);
+                                            save(act);
 
-                    if (callback != null)
-                    {
-                        callback.dismiss();
-                    }
-                }
-            });
+                                            if (callback != null)
+                                            {
+                                                callback.dismiss();
+                                            }
+                                        });
 
             dialog.show();
         }

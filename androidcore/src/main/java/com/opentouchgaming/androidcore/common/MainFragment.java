@@ -45,6 +45,7 @@ import com.opentouchgaming.androidcore.controls.Dpad;
 import com.opentouchgaming.androidcore.license.LicenseCheck;
 import com.opentouchgaming.androidcore.ui.EnginesPanel;
 import com.opentouchgaming.androidcore.ui.OptionsDialog;
+import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.ToolsPanel;
 import com.opentouchgaming.androidcore.ui.tutorial.TutorialDialog;
 
@@ -72,9 +73,12 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public final int TOOL_BUTTON_INFO = 3;
     public final int TOOL_BUTTON_HELP = 4;
     public final int TOOL_BUTTON_EMAIL = 5;
+    final int TOOL_BUTTON_STORAGE = 6;
+
     public final ToolsPanel.ToolsPanelButton[] toolsButtons =
             new ToolsPanel.ToolsPanelButton[]{new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_GAMEPAD, "Gamepad", R.drawable.ic_videogame_asset_black_24dp),
                     new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_SETTINGS, "Settings", R.drawable.ic_settings_black_24dp),
+                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_STORAGE, "Files", R.drawable.ic_baseline_sd_card_black),
                     new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_LOG, "View last log", R.drawable.ic_computer_black_24dp),
                     new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_INFO, "Changes", R.drawable.ic_info_outline_black_24dp),
                     new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log", R.drawable.ic_email_black_24dp),
@@ -694,14 +698,15 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         }
         else if (code == TOOL_BUTTON_SETTINGS)
         {
-
             new OptionsDialog(getActivity(), getExtraOptions(), () -> updateAll());
-
+        }
+        else if (code == TOOL_BUTTON_STORAGE)
+        {
+            StorageConfigDialog scd = new StorageConfigDialog(getActivity(), AppInfo.storageExamples, () -> updateAll());
         }
         else if (code == TOOL_BUTTON_LOG)
         {
             new LogViewDialog(getActivity(), AppInfo.currentEngine.getLogFilename(), AppInfo.currentEngine.name);
-
         }
         else if (code == TOOL_BUTTON_INFO)
         {
