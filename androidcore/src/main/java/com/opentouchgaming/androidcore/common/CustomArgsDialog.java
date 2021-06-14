@@ -3,31 +3,39 @@ package com.opentouchgaming.androidcore.common;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.R;
 
 public class CustomArgsDialog
 {
     public final Dialog dialog;
     final EngineData engineData;
-    String basePath;
+    String appDir;
+    String appSecDir;
+
     String extraPath = "";
     Activity activity;
     TextView customModsTextView;
     EditText customArgsEditText;
 
-    public CustomArgsDialog(final Activity act, final String path, EngineData ed)
+    static CustomArgs copyPasteArgs = null;
+    ImageButton pasteButton;
+
+    public CustomArgsDialog(final Activity act, final String appDir, String appSecDir, EngineData ed, boolean hideModsWads)
     {
-        basePath = path;
+        this.appDir = appDir;
+        this.appSecDir = appSecDir;
+
         activity = act;
         this.engineData = ed;
 
@@ -36,45 +44,47 @@ public class CustomArgsDialog
         dialog.setContentView(R.layout.dialog_custom_args);
         dialog.setCancelable(true);
 
-        dialog.setOnKeyListener(new Dialog.OnKeyListener()
+        dialog.setOnKeyListener((arg0, keyCode, event) -> false);
+
+        // Hide the mods and wads if needed
+        LinearLayout modWadsLayout = dialog.findViewById(R.id.mod_wads_layout);
+        if (hideModsWads)
+            modWadsLayout.setVisibility(View.GONE);
+
+        customModsTextView = dialog.findViewById(R.id.textView_custom_mods);
+        customArgsEditText = dialog.findViewById(R.id.editText_custom_args);
+
+        ImageButton clearMods = dialog.findViewById(R.id.imagebutton_clear_mods);
+        clearMods.setOnClickListener(v ->
+                                     {
+                                         engineData.getCurrentCustomArgs().getFiles().clear();
+                                         update();
+                                     });
+
+        ImageButton selectMods = dialog.findViewById(R.id.imagebutton_select_mods);
+        selectMods.setOnClickListener(v -> new ModSelectDialog(act, appDir, appSecDir, engineData.getCurrentCustomArgs(), input ->
         {
+            update();
+            return null;
+        }));
 
-            @Override
-            public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event)
-            {
+        ImageButton clearArgs = dialog.findViewById(R.id.imagebutton_clear_custom);
+        clearArgs.setOnClickListener(v ->
+                                     {
+                                         engineData.getCurrentCustomArgs().setArgs("");
+                                         update();
+                                     });
 
-                return false;
-            }
-        });
-
-        customArgsEditText = (EditText) dialog.findViewById(R.id.editText_custom_args);
-
-        ImageButton clearArgs = (ImageButton) dialog.findViewById(R.id.imagebutton_clear_custom);
-        clearArgs.setOnClickListener(new View.OnClickListener()
+        ImageButton history = dialog.findViewById(R.id.imagebutton_args_history);
+        history.setOnClickListener(v -> new CustomArgsHistoryDialog(act, engineData.getArgsHistory())
         {
-            @Override
-            public void onClick(View v)
+            public void selected(int position)
             {
-                engineData.getCurrentCustomArgs().setArgs("");
+                // Set the current args to one of the ones in history
+                engineData.getCurrentCustomArgs().setArgs(engineData.getArgsHistory().get(position).getArgsString());
+                engineData.getCurrentCustomArgs().getFiles().clear();
+                engineData.getCurrentCustomArgs().getFiles().addAll(engineData.getArgsHistory().get(position).getFiles());
                 update();
-            }
-        });
-
-        ImageButton history = (ImageButton) dialog.findViewById(R.id.imagebutton_args_history);
-        history.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                new CustomArgsHistoryDialog(act, engineData.getArgsHistory())
-                {
-                    public void selected(int position)
-                    {
-                        // Set the current args to one of the ones in history
-                        engineData.getCurrentCustomArgs().setArgs(engineData.getArgsHistory().get(position).getArgsString());
-                        update();
-                    }
-                };
             }
         });
 
@@ -96,13 +106,39 @@ public class CustomArgsDialog
             {
             }
         });
+
+        customModsTextView.setOnClickListener(v ->
+                                              {
+                                                  if (engineData.getCurrentCustomArgs().getFiles().size() > 0)
+                                                      new CustomArgsFileRearrange(activity, engineData.getCurrentCustomArgs(), () -> update());
+                                              });
+
+        ImageButton copy = dialog.findViewById(R.id.imagebutton_copy);
+        copy.setOnClickListener(v ->
+                                {
+                                    copyPasteArgs = new CustomArgs();
+                                    copyPasteArgs.copy(engineData.getCurrentCustomArgs());
+                                    Toast.makeText(act, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                                    update();
+                                });
+
+        pasteButton = dialog.findViewById(R.id.imagebutton_paste);
+        pasteButton.setOnClickListener(v ->
+                                       {
+                                           if (copyPasteArgs != null)
+                                               engineData.getCurrentCustomArgs().copy(copyPasteArgs);
+                                           update();
+                                       });
+
         update();
         dialog.show();
     }
 
     private void update()
     {
+        customModsTextView.setText(AppInfo.hideAppPaths(engineData.getCurrentCustomArgs().getModsString()));
         customArgsEditText.setText(engineData.getCurrentCustomArgs().getArgsString());
+        pasteButton.setVisibility(copyPasteArgs == null ? View.GONE : View.VISIBLE);
     }
 
     public void resultResult(String result)

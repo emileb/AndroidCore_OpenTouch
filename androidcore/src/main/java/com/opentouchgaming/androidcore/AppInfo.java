@@ -241,6 +241,17 @@ public class AppInfo
         }
     }
 
+    static public String hidePaths(String path, String hide1, String hide2)
+    {
+        String ret = path.replace(hide1 + "/", "");
+
+        if (hide2 != null)
+        {
+            ret = ret.replace(hide2 + "/", "");
+        }
+        return ret;
+    }
+
     public static Pair<String, Integer> getDisplayPathAndImage(String path)
     {
 

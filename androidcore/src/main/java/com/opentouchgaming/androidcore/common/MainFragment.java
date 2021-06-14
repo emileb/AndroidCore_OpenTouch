@@ -2,7 +2,6 @@ package com.opentouchgaming.androidcore.common;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -163,14 +162,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         swapVerImageButton = view.findViewById(R.id.imagebutton_change_version);
         swapVerImageButton.setBackgroundResource(R.drawable.focusable);
-        swapVerImageButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                cycleVersion();
-            }
-        });
+        swapVerImageButton.setOnClickListener(view1 -> cycleVersion());
 
         // Title text and set font
         titleTextView = view.findViewById(R.id.textview_doom_title);
@@ -242,21 +234,9 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         showArgsButton = view.findViewById(R.id.imageview_doom_show_args);
 
         showArgsButton.setBackgroundResource(R.drawable.focusable);
-        showArgsButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                new CustomArgsDialog(getActivity(), launcher.getRunDirectory(), engineData).dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
-                {
-                    @Override
-                    public void onDismiss(DialogInterface dialog)
-                    {
-                        updateArgs();
-                    }
-                });
-            }
-        });
+        showArgsButton.setOnClickListener(
+                v -> new CustomArgsDialog(getActivity(), launcher.getRunDirectory(), launcher.getSecondaryDirectory(), engineData, false).dialog.setOnDismissListener(dialog -> updateArgs()));
+
         // START game
         startButton.setBackgroundResource(R.drawable.focusable);
         startButton.setOnClickListener(new View.OnClickListener()
@@ -628,7 +608,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             argsFinal += " " + selectedSubGame.getExtraArgs();
 
             argsFinal += " " + engineData.getCurrentCustomArgs().getFinalArgs();
-            argsTextView.setText(AppInfo.replaceRootPaths(argsFinal));
+            //argsTextView.setText(AppInfo.replaceRootPaths(argsFinal));
+            argsTextView.setText(AppInfo.hidePaths(argsFinal, launcher.getRunDirectory(), launcher.getSecondaryDirectory()));
         }
         else
         {
