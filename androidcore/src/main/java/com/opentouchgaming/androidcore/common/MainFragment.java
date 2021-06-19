@@ -45,6 +45,8 @@ import com.opentouchgaming.androidcore.license.LicenseCheck;
 import com.opentouchgaming.androidcore.ui.EnginesPanel;
 import com.opentouchgaming.androidcore.ui.OptionsDialog;
 import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
+import com.opentouchgaming.androidcore.ui.SuperMod.SuperModDialog;
+import com.opentouchgaming.androidcore.ui.SuperMod.SuperModItem;
 import com.opentouchgaming.androidcore.ui.ToolsPanel;
 import com.opentouchgaming.androidcore.ui.tutorial.TutorialDialog;
 
@@ -56,7 +58,6 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 public class MainFragment extends Fragment implements ToolsPanel.Listener, EnginesPanel.Listener
 {
     // Set by the entry activity
-    public static GameEngine[] gameEngines;
     static DebugLog log;
 
     public boolean noLicCheck = false;
@@ -104,6 +105,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public ImageButton swapVerImageButton;
     public ImageButton startButton;
     public ImageButton showArgsButton;
+    ImageButton superModButton;
     public Drawable subgameSeparatorLine; // So we cna change the color of the line
 
     public int selectedVersion = 0;
@@ -136,7 +138,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        for (GameEngine engine : gameEngines)
+        for (GameEngine engine : AppInfo.gameEngines)
         {
             engine.init(getActivity());
         }
@@ -152,7 +154,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         View view = inflater.inflate(R.layout.fragment_alpha, container, false);
 
         boolean uiGroup = AppSettings.getBoolOption(getContext(), "group_similar_engines", false);
-        enginesLeftPanel = new EnginesPanel(getContext(), view, gameEngines, uiGroup, this);
+        enginesLeftPanel = new EnginesPanel(getContext(), view, AppInfo.gameEngines, uiGroup, this);
 
         toolsPanel = new ToolsPanel(getContext(), view, toolsButtons, this);
 
@@ -163,6 +165,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         swapVerImageButton = view.findViewById(R.id.imagebutton_change_version);
         swapVerImageButton.setBackgroundResource(R.drawable.focusable);
         swapVerImageButton.setOnClickListener(view1 -> cycleVersion());
+        superModButton = view.findViewById(R.id.imageview_super_mod);
 
         // Title text and set font
         titleTextView = view.findViewById(R.id.textview_doom_title);
@@ -261,7 +264,50 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         recyclerView.setFocusable(false); // We always intercept gamepad to control the list
         recyclerView.setFocusableInTouchMode(false);
+        // SUPER MOD BUTTON
+        superModButton.setBackgroundResource(R.drawable.focusable);
+        superModButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (selectedSubGame != null)
+                {
+                    SuperModItem superMod = null;
 
+                    // Ones with blank filenames are downloads or other non games
+                    //if (!selectedSubGame.getFilename().contentEquals(""))
+                    {
+                        superMod = new SuperModItem(AppInfo.currentEngine.engine, selectedVersion, selectedSubGame.getTag(), selectedSubGame.getImagePng(), engineData.getCurrentCustomArgs());
+                    }
+
+                    new SuperModDialog(getActivity(), superMod, superModItem ->
+                    {
+                        // Called when a super mod is selected
+                        GameEngine engine = AppInfo.getGameEngine(superModItem.engine);
+                        // Set version first
+                        selectedVersion = superModItem.version;
+                        // Change engine, this reloads the iwads
+                        enginesLeftPanel.selectEngine(engine);
+
+                        // Replace args and files
+                        engineData.getCurrentCustomArgs().copy(superModItem.customArgs);
+                        // Try to find IWAD
+                        for (int n = 0; n < availableSubGames.size(); n++)
+                        {
+                            SubGame subgame = availableSubGames.get(n);
+                            if (subgame.getTag().contentEquals(superModItem.subgameTag))
+                            {
+                                // Found!
+                                selectSubGame(n);
+                                break;
+                            }
+                        }
+                    });
+
+                }
+            }
+        });
 /*
         String path = getActivity().getExternalFilesDir(null).toString();
         String myfile = path  + "/myfile.txt";
@@ -331,6 +377,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         startButton.setFocusable(enabled);
         showArgsButton.setFocusable(enabled);
         swapVerImageButton.setFocusable(enabled);
+        superModButton.setFocusable(enabled);
         //multiplayerButton.setFocusable(enabled);
         if (enabled)
             startButton.requestFocus();
@@ -412,7 +459,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         String lastEngine = AppSettings.getStringOption(getContext(), "last_engine", null);
         if (lastEngine != null)
         {
-            for (GameEngine engine : gameEngines)
+            for (GameEngine engine : AppInfo.gameEngines)
             {
                 if (lastEngine.equals(engine.engine.toString()))
                 {
@@ -429,7 +476,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         if (AppInfo.currentEngine == null)
         {
-            enginesLeftPanel.selectEngine(gameEngines[0]);
+            enginesLeftPanel.selectEngine(AppInfo.gameEngines[0]);
         }
 
         refreshSubGames();

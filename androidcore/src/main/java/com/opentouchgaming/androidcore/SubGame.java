@@ -254,6 +254,11 @@ public class SubGame
         this.wheelNbr = wheelNbr;
     }
 
+    public String getTag()
+    {
+        return tag;
+    }
+
     public void edit(final Activity act, final DialogCallback callback)
     {
         if (tag != null)

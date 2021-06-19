@@ -61,8 +61,8 @@
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/imageview_game_start"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="20dp"
@@ -73,8 +73,8 @@
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/imageview_doom_show_args"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="5dp"
@@ -82,6 +82,28 @@
         android:background="@null"
         android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_keyboard_black_24dp" />
+
+    <LinearLayout
+        android:id="@+id/background_layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="20dp"
+        android:background="#80808080"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/imageview_super_mod"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@null"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_playlist_play_black_24dp" />
+
+    </LinearLayout>
 
     <include layout="@layout/left_slide_panel" />
 

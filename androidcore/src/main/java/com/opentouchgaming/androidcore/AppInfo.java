@@ -40,6 +40,8 @@ public class AppInfo
     public static List<StorageConfigDialog.StorageExamples> storageExamples;
     public static ScopedStorageDialog.Tutorial scopedTutorial;
 
+    public static int defaultAppImage;
+
     static DebugLog log;
     private static Context context;
 
@@ -53,7 +55,7 @@ public class AppInfo
         AppInfo.app = app;
     }
 
-    static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email, boolean isAndroidTv)
+    static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email, boolean isAndroidTv, int defaultAppImage)
     {
         AppInfo.context = ctx;
         AppInfo.app = app;
@@ -66,6 +68,7 @@ public class AppInfo
         AppInfo.emailAddress = email;
 
         AppInfo.isAndroidTv = isAndroidTv;
+        AppInfo.defaultAppImage = defaultAppImage;
 
         AppInfo.flashRoot = Environment.getExternalStorageDirectory().toString();
 
