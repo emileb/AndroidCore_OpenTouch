@@ -51,6 +51,17 @@
         android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_swap_horiz_black" />
 
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/imagebutton_new_version"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/textview_doom_title"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_baseline_arrow_circle_down" />
+
     <TextView
         android:id="@+id/textview_doom_args"
         android:layout_width="match_parent"

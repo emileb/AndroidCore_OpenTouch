@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.core.util.Consumer;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -22,19 +24,28 @@ public class SimpleServerAccess
     String LOG = "SimpleServerAccess";
     Context ctx;
 
-    SimpleServerAccess(Context context, String url)
+    public static class AccessInfo
+    {
+        public String url;
+        public boolean showUI;
+        public Consumer<ByteArrayOutputStream> callback;
+    }
+
+    public SimpleServerAccess(Context context, AccessInfo accessInfo)
     {
         ctx = context;
-        new ServerAccessThread().execute(url);
+        new ServerAccessThread(accessInfo).execute();
     }
 
-    void returnData(ByteArrayOutputStream data)
+    private class ServerAccessThread extends AsyncTask<Void, Integer, Long>
     {
-        //OVerride me
-    }
 
-    private class ServerAccessThread extends AsyncTask<String, Integer, Long>
-    {
+        ServerAccessThread(AccessInfo accessInfo)
+        {
+            this.accessInfo = accessInfo;
+        }
+
+        final AccessInfo accessInfo;
 
         String errorstring = null;
         ByteArrayOutputStream data_out = new ByteArrayOutputStream();
@@ -43,18 +54,19 @@ public class SimpleServerAccess
         @Override
         protected void onPreExecute()
         {
-            progressBar = new ProgressDialog(ctx);
-            progressBar.setMessage("Accessing Server..");
-            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressBar.setCancelable(false);
-            progressBar.show();
+            if(accessInfo.showUI)
+            {
+                progressBar = new ProgressDialog(ctx);
+                progressBar.setMessage("Accessing Server..");
+                progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressBar.setCancelable(false);
+                progressBar.show();
+            }
         }
 
-        protected Long doInBackground(String... url)
+        protected Long doInBackground(Void... info)
         {
-
-            String url_full = url[0];
-
+            String url_full = accessInfo.url;
 
             try
             {
@@ -89,7 +101,9 @@ public class SimpleServerAccess
 
                 InputStream ins = httpResponse.getEntity().getContent();
 
-                progressBar.setMax(dlSize);
+                if(accessInfo.showUI)
+                    progressBar.setMax(dlSize);
+
                 if (GD.DEBUG)
                     Log.d(LOG, "File size = " + dlSize);
 
@@ -120,23 +134,27 @@ public class SimpleServerAccess
 
         protected void onPostExecute(Long result)
         {
-            progressBar.dismiss();
-            if (errorstring != null)
+            if(accessInfo.showUI)
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                builder.setMessage("Error accessing server: " + errorstring).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
+                progressBar.dismiss();
+                if (errorstring != null)
                 {
-                    public void onClick(DialogInterface dialog, int id)
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                    builder.setMessage("Error accessing server: " + errorstring).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
                     {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
 
-                    }
-                });
+                        }
+                    });
 
-                builder.show();
+                    builder.show();
+                }
             }
-            else
+
+            if (errorstring == null)
             {
-                returnData(data_out);
+                accessInfo.callback.accept(data_out);
             }
         }
     }
