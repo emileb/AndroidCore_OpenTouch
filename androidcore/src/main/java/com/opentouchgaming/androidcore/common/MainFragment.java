@@ -105,7 +105,9 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public ImageButton swapVerImageButton;
     public ImageButton startButton;
     public ImageButton showArgsButton;
-    ImageButton superModButton;
+    public ImageButton superModButton;
+    public ImageButton downloadNewVersion;
+
     public Drawable subgameSeparatorLine; // So we cna change the color of the line
 
     public int selectedVersion = 0;
@@ -166,6 +168,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         swapVerImageButton.setBackgroundResource(R.drawable.focusable);
         swapVerImageButton.setOnClickListener(view1 -> cycleVersion());
         superModButton = view.findViewById(R.id.imageview_super_mod);
+        downloadNewVersion =  view.findViewById(R.id.imagebutton_new_version);
 
         // Title text and set font
         titleTextView = view.findViewById(R.id.textview_doom_title);
@@ -433,7 +436,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                 {
                     if (AboutDialog.showAbout(getActivity()))
                     {
-                        AboutDialog.show(getActivity());
+                        AboutDialog.show(getActivity(), AppInfo.showRateButton);
                         // Also open the panel so people know about it
                         enginesLeftPanel.open();
                     }
@@ -738,7 +741,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         }
         else if (code == TOOL_BUTTON_INFO)
         {
-            AboutDialog.show(getActivity());
+            AboutDialog.show(getActivity(), AppInfo.showRateButton);
         }
         else if (code == TOOL_BUTTON_EMAIL)
         {

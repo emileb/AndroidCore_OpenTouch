@@ -42,6 +42,8 @@ public class AppInfo
 
     public static int defaultAppImage;
 
+    public static boolean showRateButton = true;
+
     static DebugLog log;
     private static Context context;
 

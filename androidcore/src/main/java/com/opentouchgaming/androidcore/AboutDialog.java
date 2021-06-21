@@ -26,7 +26,7 @@ public class AboutDialog
     public static int aboutRes;
 
 
-    public static void show(final Context ctx)
+    public static void show(final Context ctx, boolean includeRateButton)
     {
         final Dialog dialog;
 
@@ -61,20 +61,28 @@ public class AboutDialog
                                       changeLogView.setVisibility(View.INVISIBLE);
                                   });
 
+
         button = dialog.findViewById(R.id.about_rate_button);
+        if(includeRateButton)
+        {
+            Animation mAnimation = new AlphaAnimation(1, 0);
+            mAnimation.setDuration(500);
+            mAnimation.setInterpolator(new LinearInterpolator());
+            mAnimation.setRepeatCount(Animation.INFINITE);
+            mAnimation.setRepeatMode(Animation.REVERSE);
+            button.startAnimation(mAnimation);
 
-        Animation mAnimation = new AlphaAnimation(1, 0);
-        mAnimation.setDuration(500);
-        mAnimation.setInterpolator(new LinearInterpolator());
-        mAnimation.setRepeatCount(Animation.INFINITE);
-        mAnimation.setRepeatMode(Animation.REVERSE);
-        button.startAnimation(mAnimation);
+            button.setOnClickListener(v ->
+                                      {
+                                          Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + ctx.getPackageName()));
+                                          ctx.startActivity(marketIntent);
+                                      });
+        }
+        else
+        {
+            button.setVisibility(View.GONE);
+        }
 
-        button.setOnClickListener(v ->
-                                  {
-                                      Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + ctx.getPackageName()));
-                                      ctx.startActivity(marketIntent);
-                                  });
 
         button = dialog.findViewById(R.id.about_ok_button);
         button.setOnClickListener(v -> dialog.dismiss());
