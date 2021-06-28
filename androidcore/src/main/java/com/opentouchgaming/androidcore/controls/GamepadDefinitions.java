@@ -236,7 +236,7 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("jump", "Jump", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_JUMP, ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_X);
 
                 gamepadDefinition.addAction("crouch", "Crouch", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_DOWN, ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_B);
-                gamepadDefinition.addAction("crouch_toggle", "Crouch (toggle) (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_TOGGLE_CROUCH, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("crouch_toggle", "Crouch (toggle)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_TOGGLE_CROUCH, ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addAction("next_weapon", "Next weapon", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_NEXT_WEP, ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_R1);
 
