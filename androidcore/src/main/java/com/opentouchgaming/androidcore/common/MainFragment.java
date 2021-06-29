@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.InputDevice;
@@ -67,13 +68,14 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "MainFragment");
     }
 
-    public final int TOOL_BUTTON_GAMEPAD = 0;
-    public final int TOOL_BUTTON_SETTINGS = 1;
-    public final int TOOL_BUTTON_LOG = 2;
-    public final int TOOL_BUTTON_INFO = 3;
-    public final int TOOL_BUTTON_HELP = 4;
-    public final int TOOL_BUTTON_EMAIL = 5;
+    final int TOOL_BUTTON_GAMEPAD = 0;
+    final int TOOL_BUTTON_SETTINGS = 1;
+    final int TOOL_BUTTON_LOG = 2;
+    final int TOOL_BUTTON_INFO = 3;
+    final int TOOL_BUTTON_HELP = 4;
+    final int TOOL_BUTTON_EMAIL = 5;
     final int TOOL_BUTTON_STORAGE = 6;
+    final int TOOL_BUTTON_WEBSITE = 7;
 
     public final ToolsPanel.ToolsPanelButton[] toolsButtons =
             new ToolsPanel.ToolsPanelButton[]{new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_GAMEPAD, "Gamepad", R.drawable.ic_videogame_asset_black_24dp),
@@ -81,7 +83,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                     new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_STORAGE, "Files", R.drawable.ic_baseline_sd_card_black),
                     new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_LOG, "View last log", R.drawable.ic_computer_black_24dp),
                     new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_INFO, "Changes", R.drawable.ic_info_outline_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log", R.drawable.ic_email_black_24dp),
+                    AppInfo.website == null ? new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log", R.drawable.ic_email_black_24dp) :
+                            new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_WEBSITE, "Online", R.drawable.ic_baseline_world),
                     new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_HELP, "Tutorials", R.drawable.ic_help_green),};
     // App data to be saved/loaded
     public AppData appData;
@@ -168,7 +171,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         swapVerImageButton.setBackgroundResource(R.drawable.focusable);
         swapVerImageButton.setOnClickListener(view1 -> cycleVersion());
         superModButton = view.findViewById(R.id.imageview_super_mod);
-        downloadNewVersion =  view.findViewById(R.id.imagebutton_new_version);
+        downloadNewVersion = view.findViewById(R.id.imagebutton_new_version);
 
         // Title text and set font
         titleTextView = view.findViewById(R.id.textview_doom_title);
@@ -750,6 +753,11 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         else if (code == TOOL_BUTTON_HELP)
         {
             new TutorialDialog(getActivity(), AppInfo.tutorials);
+        }
+        else if (code == TOOL_BUTTON_WEBSITE)
+        {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppInfo.website));
+            startActivity(browserIntent);
         }
     }
 

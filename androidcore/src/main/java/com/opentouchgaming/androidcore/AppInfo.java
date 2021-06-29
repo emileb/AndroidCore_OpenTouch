@@ -39,6 +39,7 @@ public class AppInfo
     public static ArrayList<Tutorial> tutorials = new ArrayList<>();
     public static List<StorageConfigDialog.StorageExamples> storageExamples;
     public static ScopedStorageDialog.Tutorial scopedTutorial;
+    public static String website = null;
 
     public static int defaultAppImage;
 
