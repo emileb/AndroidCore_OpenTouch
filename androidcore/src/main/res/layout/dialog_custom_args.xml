@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/imagebutton_paste"
                 android:gravity="center_horizontal"
-                android:text="Mods and wads"
+                android:text="Mods and files"
                 android:textSize="25dp" />
 
             <androidx.appcompat.widget.AppCompatImageButton
