@@ -242,6 +242,8 @@ public class GamepadDefinitions
 
                 gamepadDefinition.addAction("prev_weapon", "Prev weapon", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_PREV_WEP, ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_L1);
 
+                gamepadDefinition.addAction("weapon_alt", "Weapon alternative", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_WEAP_ALT, ActionInput.SourceType.BUTTON, -1);
+
                 gamepadDefinition.addAction("show_utils", "Show Utils(Save,Load,Map,Keybrd etc)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SHOW_GP_UTILS, ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addAction("alt_attack", "Alt Attack", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_ALT_ATTACK, ActionInput.SourceType.BUTTON, -1);
