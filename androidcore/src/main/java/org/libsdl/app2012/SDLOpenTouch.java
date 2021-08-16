@@ -190,8 +190,11 @@ public class SDLOpenTouch
         if (gles_version == 3)
             options |= TouchSettings.GAME_OPTION_GLES3;
 
-        if (AppSettings.getBoolOption(activity, "old_sdl_audio", false))
+        int audioBackend = AppSettings.getIntOption(activity,"sdl_audio_backend",0);
+        if(audioBackend == 1)
             options |= TouchSettings.GAME_OPTION_SDL_OLD_AUDIO;
+        else if(audioBackend == 2)
+            options |= TouchSettings.GAME_OPTION_SDL_AAUDIO_AUDIO;
 
         if (intent.getBooleanExtra("use_gl4es", false))
             options |= TouchSettings.GAME_OPTION_GL4ES;
