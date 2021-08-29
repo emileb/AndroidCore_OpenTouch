@@ -39,7 +39,7 @@ public class CustomArgs implements Serializable
 
     public boolean isEmpty()
     {
-        return (files.isEmpty() && args.contentEquals(""));
+        return (getFiles().isEmpty() && args.contentEquals(""));
     }
 
     public void setArgs(String args)
