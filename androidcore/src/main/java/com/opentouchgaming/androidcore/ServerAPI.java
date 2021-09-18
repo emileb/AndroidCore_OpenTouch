@@ -125,7 +125,7 @@ public class ServerAPI
 
                 String apk_hash = PackageVerif.bytesToString(PackageVerif.packageSig(ctx).sig);
 
-                urlString = "http://opentouchgaming.com/api/download_v4.php?" + "" + "ldata=" + URLEncoder.encode(lic_data, "UTF-8") + "&lsig=" + URLEncoder
+                urlString = "http://opentouchgaming.com/api/download_v5.php?" + "" + "ldata=" + URLEncoder.encode(lic_data, "UTF-8") + "&lsig=" + URLEncoder
                         .encode(lic_sig, "UTF-8") + "&apkhash=" + URLEncoder.encode(apk_hash, "UTF-8") + "&file=" + URLEncoder.encode(downloadFilename, "UTF-8") + "&pos=" + downloadedBytes;
 
                 log.log(D, "urlString = " + urlString);
@@ -148,6 +148,7 @@ public class ServerAPI
                 connection.setRequestMethod("GET");
                 //connection.setDoOutput(true);
                 connection.setRequestProperty("Connection", "keep-alive");
+                
                 connection.connect();
 
                 int code = connection.getResponseCode();
