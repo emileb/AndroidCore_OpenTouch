@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +92,7 @@ public class StorageConfigDialog
         examplesViewAdapter = new PathExampleViewAdapter();
         examplesRecyclerView.setAdapter(examplesViewAdapter);
 
-        Switch scopedStorage = dialog.findViewById(R.id.scoped_stroage_switch);
+        Switch scopedStorage = dialog.findViewById(R.id.scoped_storage_switch);
 
 
         scopedStorage.setEnabled(AppInfo.isScopedAllowed());
@@ -260,10 +261,22 @@ public class StorageConfigDialog
             mAnimation.setRepeatCount(Animation.INFINITE);
             mAnimation.setRepeatMode(Animation.REVERSE);
             appSecDirButton.startAnimation(mAnimation);
+            appSecDirTextView.startAnimation(mAnimation);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+            {
+                appSecDirTextView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                appSecDirTextView.setGravity(Gravity.RIGHT);
+            }
         }
         else
         {
             appSecDirButton.clearAnimation();
+            appSecDirTextView.clearAnimation();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+            {
+                appSecDirTextView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                appSecDirTextView.setGravity(Gravity.LEFT);
+            }
         }
 
         examplesViewAdapter.notifyDataSetChanged();

@@ -10,6 +10,12 @@
         android:layout_height="220dp"
         android:scaleType="fitXY" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView2"
+        android:layout_width="250dp"
+        android:layout_height="220dp"
+        android:scaleType="fitXY" />
+
     <TextView
         android:id="@+id/number_textView"
         android:layout_width="wrap_content"

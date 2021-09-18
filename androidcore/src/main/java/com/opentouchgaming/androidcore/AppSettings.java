@@ -8,12 +8,10 @@ import com.opentouchgaming.androidcore.controls.TouchSettings;
 
 public class AppSettings
 {
-
     public static void reloadSettings(Context ctx)
     {
         TouchSettings.reloadSettings(ctx);
     }
-
 
     public static boolean showAbout(Context ctx)
     {

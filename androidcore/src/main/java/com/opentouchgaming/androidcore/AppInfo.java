@@ -80,7 +80,6 @@ public class AppInfo
             File files[] = context.getExternalFilesDirs(null);
             if (files != null && files.length > 1 && files[1] != null)
             {
-
                 if (!files[1].exists())
                     files[1].mkdirs();
 
@@ -162,7 +161,6 @@ public class AppInfo
             else
             {
                 return null;
-                //return sdcardWritable;
             }
         }
         else
@@ -289,7 +287,14 @@ public class AppInfo
         }
         else
         {
-            newPath = " -- Not Set --";
+            if(AppInfo.isScopedEnabled())
+            {
+                newPath = "Set Data path ----------->";
+            }
+            else
+            {
+                newPath = " -- Not Set --";
+            }
             image = R.drawable.ic_baseline_error_outline_black;
         }
 

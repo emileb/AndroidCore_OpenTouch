@@ -1,15 +1,15 @@
 package com.opentouchgaming.androidcore.ui;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.util.Pair;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,15 +24,8 @@ import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.ScopedStorage;
-import com.opentouchgaming.androidcore.Utils;
-import com.opentouchgaming.saffal.FileSAF;
 import com.opentouchgaming.saffal.UtilsSAF;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.function.Function;
 
@@ -50,11 +42,23 @@ public class ScopedStorageDialog
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "ScopedStorageDialog");
     }
 
-
     public static class Tutorial
     {
+        public static class Item
+        {
+            String desc;
+            int imageA;
+            int imageB;
+            public Item(String desc, int imageA, int imageB)
+            {
+                this.desc = desc;
+                this.imageA = imageA;
+                this.imageB = imageB;
+            }
+        };
+
         public String folder;
-        public List<Pair<Integer, String>> items;
+        public List<Item> items;
     }
 
     Activity activity;
@@ -142,9 +146,24 @@ public class ScopedStorageDialog
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position)
         {
-            holder.image.setImageResource(tutorial.items.get(position).first);
+            holder.image.setImageResource(tutorial.items.get(position).imageA);
+            if(tutorial.items.get(position).imageB != 0)
+            {
+                holder.image2.setImageResource(tutorial.items.get(position).imageB);
+
+                Animation animation = new AlphaAnimation(1, 0); //to change visibility from visible to invisible
+                animation.setDuration(300); //1 second duration for each animation cycle
+                animation.setInterpolator(new LinearInterpolator());
+                animation.setRepeatCount(Animation.INFINITE); //repeating indefinitely
+                animation.setRepeatMode(Animation.REVERSE); //animation will start from end point once ended.
+                holder.image2.startAnimation(animation); //to start animation
+            }
+            else
+            {
+                holder.image2.setVisibility(View.GONE);
+            }
             holder.number.setText("");
-            holder.info.setText(tutorial.items.get(position).second);
+            holder.info.setText(tutorial.items.get(position).desc);
         }
 
 
@@ -157,6 +176,7 @@ public class ScopedStorageDialog
         public class ViewHolder extends RecyclerView.ViewHolder
         {
             public final ImageView image;
+            public final ImageView image2;
             public final TextView number;
             public final TextView info;
 
@@ -164,6 +184,7 @@ public class ScopedStorageDialog
             {
                 super(view);
                 this.image = view.findViewById(R.id.imageView);
+                this.image2 = view.findViewById(R.id.imageView2);
                 this.number = view.findViewById(R.id.number_textView);
                 this.info = view.findViewById(R.id.info_textView);
             }
