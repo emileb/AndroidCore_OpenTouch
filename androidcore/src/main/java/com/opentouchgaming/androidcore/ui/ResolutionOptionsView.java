@@ -35,12 +35,13 @@ public class ResolutionOptionsView
     String prefix;
     EditText widthEdit;
     EditText heightEdit;
+    Spinner resSpinner;
+
     public ResolutionOptionsView(Context context, Dialog view, String prefix)
     {
-
         this.prefix = prefix;
 
-        Spinner resSpinner = view.findViewById(com.opentouchgaming.androidcore.R.id.resolution_spinner);
+        resSpinner = view.findViewById(com.opentouchgaming.androidcore.R.id.resolution_spinner);
         widthEdit = view.findViewById(com.opentouchgaming.androidcore.R.id.resolution_width_editText);
         heightEdit = view.findViewById(com.opentouchgaming.androidcore.R.id.resolution_height_editText);
 
@@ -77,6 +78,32 @@ public class ResolutionOptionsView
 
         int selected = AppSettings.getIntOption(context, prefix + "_resolution_spinner", 0);
         resSpinner.setSelection(selected);
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        if(enabled)
+        {
+            resSpinner.setEnabled(true);
+
+            ResolutionOptions option = getResOption(prefix);
+            if (option.type == ResolutionType.CUSTOM)
+            {
+                widthEdit.setEnabled(true);
+                heightEdit.setEnabled(true);
+            }
+            else
+            {
+                widthEdit.setEnabled(false);
+                heightEdit.setEnabled(false);
+            }
+        }
+        else
+        {
+            resSpinner.setEnabled(false);
+            widthEdit.setEnabled(false);
+            heightEdit.setEnabled(false);
+        }
     }
 
     public static ResolutionOptions getResOption(String prefix)
