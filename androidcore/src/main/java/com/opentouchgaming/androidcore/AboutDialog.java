@@ -136,7 +136,11 @@ public class AboutDialog
             if (versionCode != last_ver)
             {
                 AppSettings.setIntOption(ctx, "last_opened_version", versionCode);
-                return true;
+
+                if(last_ver == -1) // If first run DO NOT show the dialog, in case the scoped storage dialog needs to show
+                    return false;
+                else
+                    return true;
             }
             else
                 return false;
