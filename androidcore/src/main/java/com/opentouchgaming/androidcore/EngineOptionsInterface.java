@@ -29,6 +29,11 @@ public interface EngineOptionsInterface
         return 0;
     }
 
+    default int audioOverrideBackend()
+    {
+        return -1;
+    }
+
     interface MultiplayerCallback
     {
         void launch(String mpArgs);
