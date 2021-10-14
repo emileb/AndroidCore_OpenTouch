@@ -237,7 +237,28 @@ public class Utils
 
         for (String file : files)
         {
-            if (new FileSAF(path1 + "/" + file).exists() == false)
+            File f =  new File(path1 + "/" + file);
+            String filePath = f.getParent();
+            String fileName = f.getName();
+            boolean foundInList = false;
+            if(filePath != null && fileName != null)
+            {
+                FileSAF[] filesFound = new FileSAF(filePath).listFiles();
+                if(filesFound != null)
+                {
+                    for (FileSAF ff : filesFound)
+                    {
+                        if(ff.getName().compareToIgnoreCase(fileName) == 0)
+                        {
+                            foundInList = true;
+                            break;
+                        }
+                    }
+
+                }
+            }
+
+            if(!foundInList)
             {
                 filesPresent = false;
                 break;
