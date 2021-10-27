@@ -209,9 +209,56 @@ public class Utils
     static public boolean checkFilesInPath(String path1, String[] files)
     {
         boolean filesPresent = true;
+
+        /*
+        String[] filesInDir = new FileSAF(path1).list();
+        if(filesInDir != null)
+        {
+            for (String filecheck : files)
+            {
+                boolean foundFile = false;
+                for (String fileDir : filesInDir)
+                {
+                    if (fileDir.toLowerCase().endsWith(filecheck.toLowerCase()))
+                    {
+                        foundFile = true;
+                        break;
+                    }
+                }
+                if (!foundFile)
+                {
+                    filesPresent = false;
+                    break;
+                }
+            }
+        }
+        */
+
+
         for (String file : files)
         {
-            if (new FileSAF(path1 + "/" + file).exists() == false)
+            File f =  new File(path1 + "/" + file);
+            String filePath = f.getParent();
+            String fileName = f.getName();
+            boolean foundInList = false;
+            if(filePath != null && fileName != null)
+            {
+                FileSAF[] filesFound = new FileSAF(filePath).listFiles();
+                if(filesFound != null)
+                {
+                    for (FileSAF ff : filesFound)
+                    {
+                        if(ff.getName().compareToIgnoreCase(fileName) == 0)
+                        {
+                            foundInList = true;
+                            break;
+                        }
+                    }
+
+                }
+            }
+
+            if(!foundInList)
             {
                 filesPresent = false;
                 break;
@@ -224,7 +271,7 @@ public class Utils
     {
         if ((path1 != null) && (checkFilesInPath(path1, files) == true))
             return path1;
-        else if ((path1 != null) && (checkFilesInPath(path2, files) == true))
+        else if ((path2 != null) && (checkFilesInPath(path2, files) == true))
             return path2;
         else
             return null;

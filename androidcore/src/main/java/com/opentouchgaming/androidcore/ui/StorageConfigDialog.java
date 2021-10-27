@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,7 @@ public class StorageConfigDialog
     TextView appSecDirTextView;
     ImageView appSecDirIcon;
     ImageView appSecDirButton;
+    ImageView appDirButton;
     RecyclerView examplesRecyclerView;
     PathExampleViewAdapter examplesViewAdapter;
     List<StorageExamples> examples;
@@ -83,7 +85,7 @@ public class StorageConfigDialog
         appDirIcon = dialog.findViewById(R.id.app_dir_image);
         appSecDirTextView = dialog.findViewById(R.id.appSec_dir_textview);
         appSecDirIcon = dialog.findViewById(R.id.appSec_dir_image);
-        ImageView appDirButton = dialog.findViewById(R.id.app_dir_options_button);
+        appDirButton = dialog.findViewById(R.id.app_dir_options_button);
         appSecDirButton = dialog.findViewById(R.id.appSec_dir_options_button);
 
         examplesRecyclerView = dialog.findViewById(R.id.examples_RecyclerView);
@@ -91,7 +93,7 @@ public class StorageConfigDialog
         examplesViewAdapter = new PathExampleViewAdapter();
         examplesRecyclerView.setAdapter(examplesViewAdapter);
 
-        Switch scopedStorage = dialog.findViewById(R.id.scoped_stroage_switch);
+        Switch scopedStorage = dialog.findViewById(R.id.scoped_storage_switch);
 
 
         scopedStorage.setEnabled(AppInfo.isScopedAllowed());
@@ -110,7 +112,7 @@ public class StorageConfigDialog
                                                              AppInfo.setScoped(true);
                                                              String newPath = AppInfo.getAppDirectory();
 
-                                                             new CopyFilesTask().execute(new String[]{oldPath,newPath});
+                                                             new CopyFilesTask().execute(new String[]{oldPath, newPath});
                                                              updateUI();
                                                          }).setNegativeButton("No", (dialog1, which) ->
                                                          {
@@ -251,6 +253,7 @@ public class StorageConfigDialog
         appSecDirTextView.setText(pathAppSec.first);
         appSecDirIcon.setImageResource(pathAppSec.second);
 
+        appDirButton.setVisibility(AppInfo.isScopedEnabled() ? View.GONE : View.VISIBLE);
 
         if (AppInfo.isScopedEnabled() && AppInfo.getAppSecDirectory() == null)
         {
@@ -260,10 +263,22 @@ public class StorageConfigDialog
             mAnimation.setRepeatCount(Animation.INFINITE);
             mAnimation.setRepeatMode(Animation.REVERSE);
             appSecDirButton.startAnimation(mAnimation);
+            appSecDirTextView.startAnimation(mAnimation);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+            {
+                appSecDirTextView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                appSecDirTextView.setGravity(Gravity.RIGHT);
+            }
         }
         else
         {
             appSecDirButton.clearAnimation();
+            appSecDirTextView.clearAnimation();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+            {
+                appSecDirTextView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                appSecDirTextView.setGravity(Gravity.LEFT);
+            }
         }
 
         examplesViewAdapter.notifyDataSetChanged();
@@ -454,7 +469,6 @@ public class StorageConfigDialog
             }
         }
     }
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

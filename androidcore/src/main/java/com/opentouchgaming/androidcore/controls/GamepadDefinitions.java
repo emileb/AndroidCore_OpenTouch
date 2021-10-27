@@ -152,10 +152,10 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("custom_4", "Custom 4 (K)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_3, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("custom_5", "Custom 5 (L)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_4, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("custom_6", "Custom 6 (M)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_5, ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_7", "Custom 7 (O)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_6, ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_8", "Custom 8 (P)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_7, ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_9", "Custom 9 (Q)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_8, ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_10", "Custom 10 (R)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_9, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_7", "Custom 7 (N)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_6, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_8", "Custom 8 (O)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_7, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_9", "Custom 9 (P)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_8, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_10", "Custom 10 (Q)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_9, ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Inventory keys( Quake 2, Hexen 2)");
 

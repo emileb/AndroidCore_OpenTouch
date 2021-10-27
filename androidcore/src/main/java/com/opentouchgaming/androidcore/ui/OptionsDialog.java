@@ -4,16 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Build;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
+import android.widget.Spinner;
 
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
@@ -55,26 +54,20 @@ public class OptionsDialog
         CheckBox useMouse = dialog.findViewById(R.id.capture_mouse_checkBox);
         CheckBox groupSimilar = dialog.findViewById(R.id.group_similar_engines_checkBox);
         CheckBox enableVibrate = dialog.findViewById(R.id.enable_vibrate_checkBox);
-        CheckBox oldSDLAudio = dialog.findViewById(R.id.sdl_old_audio_checkBox);
 
         Button storagebutton = dialog.findViewById(R.id.storage_button);
         Button resetButton = dialog.findViewById(R.id.reset_button);
         screenDivSeek = dialog.findViewById(R.id.screenDiv_bubbleSeek);
 
-        screenDivSeek.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray()
-        {
-            @NonNull
-            @Override
-            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array)
-            {
-                array.clear();
-                array.put(0, "100%");
-                array.put(1, "50%");
-                array.put(2, "33%");
-                array.put(3, "25%");
-                return array;
-            }
-        });
+        screenDivSeek.setCustomSectionTextArray((sectionCount, array) ->
+                                                {
+                                                    array.clear();
+                                                    array.put(0, "100%");
+                                                    array.put(1, "50%");
+                                                    array.put(2, "33%");
+                                                    array.put(3, "25%");
+                                                    return array;
+                                                });
 
         storagebutton.setOnClickListener(v ->
                                          {
@@ -94,14 +87,7 @@ public class OptionsDialog
         // ----
 
         cutoutCheckbox.setChecked(AppSettings.getBoolOption(activity, "expand_cutout", false));
-        cutoutCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                AppSettings.setBoolOption(activity, "expand_cutout", isChecked);
-            }
-        });
+        cutoutCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(activity, "expand_cutout", isChecked));
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
         {
@@ -144,14 +130,7 @@ public class OptionsDialog
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
             useMouse.setChecked(AppSettings.getBoolOption(act, "use_mouse", true));
-            useMouse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-            {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                {
-                    AppSettings.setBoolOption(act, "use_mouse", isChecked);
-                }
-            });
+            useMouse.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(act, "use_mouse", isChecked));
         }
         else
         {
@@ -174,8 +153,37 @@ public class OptionsDialog
         enableVibrate.setChecked(AppSettings.getBoolOption(act, "enable_vibrate", true));
         enableVibrate.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(act, "enable_vibrate", isChecked));
 
-        oldSDLAudio.setChecked(AppSettings.getBoolOption(act, "old_sdl_audio", false));
-        oldSDLAudio.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(act, "old_sdl_audio", isChecked));
+        Spinner spinner = dialog.findViewById(R.id.audio_spinner);
+
+        String[] paths;
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            paths = new String[]{"OpenSL (Default)", "Audio Tack (Old)", "AAudio (low latency)"};
+        }
+        else
+        {
+            paths = new String[]{"OpenSL (Default)", "Audio Tack (Old)"};
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, paths);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(AppSettings.getIntOption(act,"sdl_audio_backend",0));
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                AppSettings.setIntOption(act,"sdl_audio_backend", position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
 
         resetButton.setOnClickListener(v ->
                                        {
