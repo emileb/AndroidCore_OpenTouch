@@ -115,7 +115,7 @@ public class EnginesPanel
         int totalWidth;
         if (useGroups)
         {
-            buttonCfgSize = buttonSize / 3;
+            buttonCfgSize = buttonSize / 2;
             totalWidth = buttonSize * largestGroup;
         }
         else
