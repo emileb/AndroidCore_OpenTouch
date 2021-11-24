@@ -76,10 +76,13 @@ public class AppInfo
         AppInfo.flashRoot = Environment.getExternalStorageDirectory().toString();
 
         // NOW DEFAULT TO SCOPED STORAGE ON NEW INSTALL!
-        String appDir = AppSettings.getStringOption(context, "app_dir", null);
-        if(appDir == null && isScopedAllowed())
+        if(app != Apps.RAZE_TOUCH)
         {
-            setScoped(true);
+            String appDir = AppSettings.getStringOption(context, "app_dir", null);
+            if (appDir == null && isScopedAllowed())
+            {
+                setScoped(true);
+            }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
