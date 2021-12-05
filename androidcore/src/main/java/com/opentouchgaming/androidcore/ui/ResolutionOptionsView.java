@@ -1,15 +1,16 @@
 package com.opentouchgaming.androidcore.ui;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
+import com.opentouchgaming.androidcore.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,21 +37,22 @@ public class ResolutionOptionsView
     EditText widthEdit;
     EditText heightEdit;
     Spinner resSpinner;
+    LinearLayout topLayout;
 
-    public ResolutionOptionsView(Context context, Dialog view, String prefix)
+    public ResolutionOptionsView(Context context, View view, String prefix)
     {
         this.prefix = prefix;
 
         resSpinner = view.findViewById(com.opentouchgaming.androidcore.R.id.resolution_spinner);
         widthEdit = view.findViewById(com.opentouchgaming.androidcore.R.id.resolution_width_editText);
         heightEdit = view.findViewById(com.opentouchgaming.androidcore.R.id.resolution_height_editText);
+        topLayout = view.findViewById(R.id.resolution_layout);
 
         ArrayAdapter<ResolutionOptions> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, resolutionList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         resSpinner.setAdapter(dataAdapter);
         resSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
-
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
