@@ -3,6 +3,7 @@ package com.opentouchgaming.androidcore.ui;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,7 +38,7 @@ public class EnginesPanel
     boolean useGroups;
     ArrayList<EngineGroup> engineGroups = new ArrayList<>();
 
-    public EnginesPanel(Context context, View topView, GameEngine[] engines, boolean useGroups, final Listener listener)
+    public EnginesPanel(Context context, View topView, GameEngine[] engines, int sideImage, boolean useGroups, final Listener listener)
     {
         this.listener = listener;
         this.useGroups = useGroups;
@@ -47,7 +48,7 @@ public class EnginesPanel
         View leftPanelTopView = topView.findViewById(R.id.relative_top_left_panel);
         LinearLayout leftPanelLayout = topView.findViewById(R.id.linear_left_hidden_panel);
         ImageButton leftPanelButton = topView.findViewById(R.id.imagebutton_entry_open_left);
-
+        ImageView sideImageView = topView.findViewById(R.id.imageview_side_image);
 
         // Collect the engines into the UI groups
         EngineGroup group = null;
@@ -84,26 +85,38 @@ public class EnginesPanel
 
         // Button to open panel
         leftPanelButton.setFocusable(false);
-        leftPanelButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if (isOpen())
-                    close();
-                else
-                    open();
-                updateFocus();
-            }
-        });
+        leftPanelButton.setOnClickListener(view ->
+                                           {
+                                               if (isOpen())
+                                                   close();
+                                               else
+                                                   open();
+                                               updateFocus();
+                                           });
 
 
-        int leftPanelSlideAmmount;
+        // Total width of the panel excluding the open button
+        int leftPanelSlideAmmount = 0;
 
         // Get screen height in pixels
         Configuration configuration = context.getResources().getConfiguration();
         int screenHeightPx = Utils.dpToPx(context.getResources(), configuration.screenHeightDp);
-        //screenHeightPx = leftPanelTopView.getLayoutParams().height;
+
+        // Check if we have a side image
+        if(sideImage != 0)
+        {
+            sideImageView.setImageResource(sideImage);
+
+            ViewGroup.LayoutParams sideLayout = sideImageView.getLayoutParams();
+            sideLayout.width = screenHeightPx / 7; //Image should be 1024 * 150 which is a ratio of approx 7
+            sideImageView.setLayoutParams(sideLayout);
+
+            leftPanelSlideAmmount += sideLayout.width;
+        }
+        else
+        {
+            sideImageView.setVisibility(View.GONE);
+        }
 
 
         float cfgButtonSize = 0.8f;
@@ -123,13 +136,15 @@ public class EnginesPanel
             buttonCfgSize = (int) (buttonSize * cfgButtonSize);
             totalWidth = buttonSize + buttonCfgSize;
         }
+
         // Set the layout width, equal to the button size x largest group
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) leftPanelLayout.getLayoutParams();
         lp.width = totalWidth;
         leftPanelLayout.setLayoutParams(lp);
-        leftPanelSlideAmmount = lp.width;
+        leftPanelSlideAmmount += lp.width;
 
 
+        // Create sliding panel
         leftSlidePanel = new SlidePanel(leftPanelTopView, SlidePanel.SlideSide.LEFT, leftPanelSlideAmmount, 300);
 
 

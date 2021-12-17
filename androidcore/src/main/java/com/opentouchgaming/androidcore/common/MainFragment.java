@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore.common;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -52,8 +54,6 @@ import com.opentouchgaming.androidcore.ui.ToolsPanel;
 import com.opentouchgaming.androidcore.ui.tutorial.TutorialDialog;
 
 import java.util.ArrayList;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 
 public class MainFragment extends Fragment implements ToolsPanel.Listener, EnginesPanel.Listener
@@ -159,7 +159,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         View view = inflater.inflate(R.layout.fragment_alpha, container, false);
 
         boolean uiGroup = AppSettings.getBoolOption(getContext(), "group_similar_engines", false);
-        enginesLeftPanel = new EnginesPanel(getContext(), view, AppInfo.gameEngines, uiGroup, this);
+        enginesLeftPanel = new EnginesPanel(getContext(), view, AppInfo.gameEngines, AppInfo.sidePanelImage, uiGroup, this);
 
         toolsPanel = new ToolsPanel(getContext(), view, toolsButtons, this);
 

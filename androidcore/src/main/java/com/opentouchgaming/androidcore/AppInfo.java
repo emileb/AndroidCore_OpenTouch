@@ -33,6 +33,7 @@ public class AppInfo
     public static String packageId;
     public static String emailAddress;
     public static String key;
+    public static int sidePanelImage;
     public static boolean isAndroidTv;
     public static GameEngine gameEngines[];
     public static GameEngine currentEngine;
