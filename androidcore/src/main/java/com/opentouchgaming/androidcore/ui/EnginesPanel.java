@@ -172,8 +172,12 @@ public class EnginesPanel
                 button.setTag(engine); // Used for the click listener callback
                 button.setImageResource(engine.iconRes);
                 button.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                button.setBackgroundResource(R.drawable.focusable);
                 button.setFocusableInTouchMode(true);
+
+                if(engine.backgroundDrawable != 0)
+                    button.setBackgroundResource(engine.backgroundDrawable);
+                else
+                    button.setBackgroundResource(R.drawable.focusable);
 
                 button.setOnClickListener(new View.OnClickListener()
                 {

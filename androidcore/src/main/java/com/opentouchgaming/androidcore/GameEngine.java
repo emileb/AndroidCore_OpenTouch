@@ -13,6 +13,7 @@ public class GameEngine
 {
     final public int iconRes;
     final public int color;
+    final public int backgroundDrawable;
     final public Engine engine;
     final public String title;
     final public String name;
@@ -27,7 +28,7 @@ public class GameEngine
     public ImageView imageButtonCfg;
     public EngineOptionsInterface engineOptions;
     public GameEngine(Engine engine, int uiGroup, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes,
-                      int color, Class opCls)
+                      int color, int background, Class opCls)
     {
         this.title = title;
         this.name = name;
@@ -36,6 +37,7 @@ public class GameEngine
         this.uiGroup = uiGroup;
         this.iconRes = iconRes;
         this.color = color;
+        this.backgroundDrawable = background;
         this.loadLibs = loadLibs;
         this.args = args;
         this.versions = versions;
