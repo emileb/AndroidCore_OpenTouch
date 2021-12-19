@@ -549,7 +549,7 @@ public class Utils
 
     }
 
-    static public void copyAsset(Context ctx, String file, String destdir)
+    static public void copyAsset(Context ctx, String file, String destdir, String destFilename)
     {
         AssetManager assetManager = ctx.getAssets();
 
@@ -561,7 +561,7 @@ public class Utils
         try
         {
             in = assetManager.open(file);
-            out = new FileOutputStream(destdir + "/" + file);
+            out = new FileOutputStream(destdir + "/" + destFilename);
             copyFile(in, out);
             in.close();
             in = null;
@@ -572,6 +572,11 @@ public class Utils
         {
             Log.e("tag", "Failed to copy asset file: " + file + " error = " + e.toString());
         }
+    }
+
+    static public void copyAsset(Context ctx, String file, String destdir)
+    {
+        copyAsset(ctx, file, destdir, file);
     }
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
