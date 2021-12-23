@@ -19,6 +19,11 @@ public interface GameLauncherInterface
 
     String getRunDirectory();
 
+    default String getRunDirectory(SubGame subGame) // For total conversions where the run folder might change
+    {
+        return getRunDirectory();
+    }
+
     String getSecondaryDirectory();
 
     Pair<String, String> getQuickCommandsDirectory(SubGame subGame);
