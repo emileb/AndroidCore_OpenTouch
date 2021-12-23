@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_margin="10dp"
-              android:minWidth="500dp"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:minWidth="500dp"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,13 +14,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title:"/>
+            android:text="Title:" />
 
         <EditText
             android:id="@+id/subgame_title_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name"/>
+            android:text="Name" />
     </LinearLayout>
 
     <LinearLayout
@@ -31,14 +31,33 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Args:"/>
+            android:text="Args:" />
 
         <EditText
             android:id="@+id/subgame_args_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:text="" />
     </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/run_from_here_checkBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Run from this directory (For total conversions)" />
+
+    <TextView
+        android:id="@+id/run_dir_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="/run/folder/"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="10dp"
+        android:background="@android:color/darker_gray" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,6 +75,13 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="10dp"
+        android:background="@android:color/darker_gray" />
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -65,26 +91,29 @@
             android:id="@+id/image_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Image:   "/>
+            android:text="Image:   " />
 
         <TextView
             android:id="@+id/subgame_image_path"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/image_textview"
             android:layout_toLeftOf="@id/subgame_image_choose_button"
-            android:text=""/>
+            android:layout_toRightOf="@+id/image_textview"
+            android:text="" />
 
         <TextView
-          android:layout_below="@id/image_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tip: Place a file called 'icon.png' in the mod folder."/>
+            android:layout_below="@id/image_textview"
+            android:text="Tip: Place a file called 'icon.png' in the mod folder." />
+
         <Button
             android:id="@+id/subgame_image_choose_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="Choose"/>
+            android:text="Choose" />
     </RelativeLayout>
+
+
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,6 +39,8 @@ public class SubGame
     String downloadFilename;
     String extraArgs;
     int wheelNbr;
+
+    boolean runFromHere;
 
     public SubGame(String tag, String title, String name, String rootPath, int gameType, int image, String detail1, String detail2, int wheelNbr)
     {
@@ -123,6 +126,9 @@ public class SubGame
             int weaponWheelNbr = AppSettings.getIntOption(ctx, tag + "wheel_nbr", -1);
             if (weaponWheelNbr != -1)
                 setWheelNbr(weaponWheelNbr);
+
+            boolean runFromHere = AppSettings.getBoolOption(ctx, tag + "run_from_here", false);
+            setRunFromHere(runFromHere);
         }
     }
 
@@ -132,6 +138,7 @@ public class SubGame
         {
             AppSettings.setStringOption(ctx, tag + "title", title);
             AppSettings.setStringOption(ctx, tag + "extraArgs", extraArgs);
+            AppSettings.setBoolOption(ctx, tag + "run_from_here", runFromHere);
         }
     }
 
@@ -254,6 +261,21 @@ public class SubGame
         this.wheelNbr = wheelNbr;
     }
 
+    public boolean isRunFromHere()
+    {
+        return runFromHere;
+    }
+
+    public void setRunFromHere(boolean runFromHere)
+    {
+        this.runFromHere = runFromHere;
+    }
+
+    public String getFullPath()
+    {
+        return rootPath + "/" + name;
+    }
+
     public String getTag()
     {
         return tag;
@@ -277,6 +299,8 @@ public class SubGame
 
             final Button imageChoose = dialog.findViewById(R.id.subgame_image_choose_button);
             final TextView imagePath = dialog.findViewById(R.id.subgame_image_path);
+            final CheckBox runFromHere = dialog.findViewById(R.id.run_from_here_checkBox);
+            final TextView dirTextView =  dialog.findViewById(R.id.run_dir_textView);
 
             String imageOverride = AppSettings.getStringOption(act, tag + "imageOverride", null);
 
@@ -356,10 +380,27 @@ public class SubGame
 
             wheelSpinner.setSelection(pos);
 
+
+            runFromHere.setOnCheckedChangeListener((buttonView, isChecked) ->
+                                                   {
+                                                       if(isChecked)
+                                                       {
+                                                           dirTextView.setText("Run directory: " + AppInfo.replaceRootPaths(getFullPath()));
+                                                           dirTextView.setVisibility(View.VISIBLE);
+                                                       }
+                                                       else
+                                                       {
+                                                           dirTextView.setVisibility(View.GONE);
+                                                       }
+                                                   });
+
+            runFromHere.setChecked(isRunFromHere());
+
             dialog.setOnDismissListener(dialog1 ->
                                         {
                                             setTitle(title.getText().toString());
                                             setExtraArgs(args.getText().toString());
+                                            setRunFromHere(runFromHere.isChecked());
 
                                             save(act);
 
