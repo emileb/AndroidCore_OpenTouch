@@ -119,7 +119,8 @@ public class PortActDefs
     public static final int PORT_ACT_WEAP13 = 113;
 
     public static final int PORT_ACT_WEAP_ALT = 114;
-
+    public static final int PORT_ACT_MEDKIT = 115;
+    public static final int PORT_ACT_RADAR = 116;
     //Custom
     public static final int PORT_ACT_CUSTOM_0 = 150;
     public static final int PORT_ACT_CUSTOM_1 = 151;
