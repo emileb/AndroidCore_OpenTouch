@@ -128,7 +128,7 @@ public class AppInfo
 
     static public boolean isScopedAllowed()
     {
-        return (Build.VERSION.SDK_INT >= SCOPED_VERSION);
+        return (Build.VERSION.SDK_INT >= SCOPED_VERSION) && (AppInfo.app != Apps.RAZE_TOUCH);
     }
 
     static public boolean isScopedEnabled()
