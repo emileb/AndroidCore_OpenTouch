@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -579,6 +581,50 @@ public class Utils
         copyAsset(ctx, file, destdir, file);
     }
 
+    static public boolean extractAsset(Context ctx, String zipFile, String destdir)
+    {
+        AssetManager assetManager = ctx.getAssets();
+        InputStream in = null;
+
+        new File(destdir).mkdirs();
+
+        try
+        {
+            in = assetManager.open(zipFile);
+
+            ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in));
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null)
+            {
+                if (entry.isDirectory())
+                {
+                    // Assume directories are stored parents first then children.
+                    log.log(D, "Extracting directory: " + entry.getName());
+                    // This is not robust, just for demonstration purposes.
+                    (new File(destdir, entry.getName())).mkdirs();
+                    continue;
+                }
+                log.log(D, "Extracting file: " + entry.getName());
+                (new File(destdir, entry.getName())).getParentFile().mkdirs();
+                BufferedInputStream zin = new BufferedInputStream(zis);
+                OutputStream out = new FileOutputStream(new File(destdir, entry.getName()));
+                Utils.copyFile(zin, out);
+                out.flush();
+                out.close();
+            }
+
+            in.close();
+
+            return true;
+
+        } catch (IOException e)
+        {
+            Log.e("tag", "Failed to copy asset file: " + zipFile + " error = " + e.toString());
+        }
+
+        return false;
+    }
+
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
     {
         // Raw height and width of image
@@ -588,7 +634,6 @@ public class Utils
 
         if (height > reqHeight || width > reqWidth)
         {
-
             // Calculate ratios of height and width to requested height and width
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
