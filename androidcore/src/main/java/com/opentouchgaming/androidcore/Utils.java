@@ -8,6 +8,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -1039,6 +1041,19 @@ public class Utils
 
             return false;
         }
+    }
+
+    static int getTargetAPI()
+    {
+        int targetSdkVersion = 0;
+        try {
+            PackageInfo packageInfo = AppInfo.getContext().getPackageManager().getPackageInfo(AppInfo.getContext().getPackageName(), 0);
+             targetSdkVersion = packageInfo.applicationInfo.targetSdkVersion;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+
+        }
+        return targetSdkVersion;
     }
 
 }
