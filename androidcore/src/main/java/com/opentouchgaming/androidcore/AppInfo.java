@@ -45,6 +45,7 @@ public class AppInfo
     public static int defaultAppImage;
 
     public static boolean showRateButton = true;
+    public static boolean canDisabledScopedStorage = true;
 
     static DebugLog log;
     private static Context context;
@@ -76,13 +77,15 @@ public class AppInfo
 
         AppInfo.flashRoot = Environment.getExternalStorageDirectory().toString();
 
-        // NOW DEFAULT TO SCOPED STORAGE ON NEW INSTALL!
-        if(app != Apps.RAZE_TOUCH)
+        // NOW DEFAULT TO SCOPED STORAGE ON NEW INSTALL!!
+        if (app != Apps.RAZE_TOUCH)
         {
             String appDir = AppSettings.getStringOption(context, "app_dir", null);
             if (appDir == null && isScopedAllowed())
             {
                 setScoped(true);
+                if(Utils.getTargetAPI() > 29) // On new installs built with API 30+ there is no way to disabled scoped storage on Android 11+.
+                    AppSettings.setBoolOption(AppInfo.getContext(), "scoped_storage_permanent", true);
             }
         }
 
@@ -124,6 +127,11 @@ public class AppInfo
         AppSettings.setBoolOption(AppInfo.getContext(), "scoped_storage_enabled", enabled);
         setAppDirectory(getDefaultAppDirectory());
         setAppSecDirectory(getDefaultAppSecDirectory());
+    }
+
+    static public boolean isScopedPermanent() // Handles the strange case where Android 11 can upgrade the app but due to preserveLegacyExternalStorage Scoped storage is optional until new install
+    {
+        return AppSettings.getBoolOption(AppInfo.getContext(), "scoped_storage_permanent", false);
     }
 
     static public boolean isScopedAllowed()
@@ -298,7 +306,7 @@ public class AppInfo
         }
         else
         {
-            if(AppInfo.isScopedEnabled())
+            if (AppInfo.isScopedEnabled())
             {
                 newPath = "Set Data path ----------->";
             }
@@ -350,6 +358,6 @@ public class AppInfo
 
     public enum Apps
     {
-        MOD_ENGINE, DELTA_TOUCH, ALPHA_TOUCH, QUAD_TOUCH,RAZE_TOUCH
+        MOD_ENGINE, DELTA_TOUCH, ALPHA_TOUCH, QUAD_TOUCH, RAZE_TOUCH
     }
 }

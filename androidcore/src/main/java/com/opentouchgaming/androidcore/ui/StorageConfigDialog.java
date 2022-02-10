@@ -96,7 +96,7 @@ public class StorageConfigDialog
         Switch scopedStorage = dialog.findViewById(R.id.scoped_storage_switch);
 
 
-        scopedStorage.setEnabled(AppInfo.isScopedAllowed());
+        scopedStorage.setEnabled(AppInfo.isScopedAllowed() && !AppInfo.isScopedPermanent());
 
         scopedStorage.setChecked(AppInfo.isScopedEnabled());
         scopedStorage.setOnCheckedChangeListener((buttonView, isChecked) ->
@@ -105,7 +105,7 @@ public class StorageConfigDialog
                                                      {
                                                          AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                                                          builder.setMessage(
-                                                                 "Enabled experimental Scoped Storage?\nNovember 2021 this mode will be mandatory for Android 11+ devices due to Google's rules, please test it out if you can.")
+                                                                 "Enabled Scoped Storage?")
                                                                  .setCancelable(false).setPositiveButton("Yes", (dialog13, id) ->
                                                          {
                                                              String oldPath = AppInfo.getAppDirectory();
