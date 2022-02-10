@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.os.Build;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,6 +50,13 @@ public class ScopedStorageFirstTimeDialog
         Pair<String, Integer> pathApp = AppInfo.getDisplayPathAndImage(AppInfo.getAppDirectory());
         appDirTextView.setText(pathApp.first);
         appDirIcon.setImageResource(pathApp.second);
+
+
+        Button setNow = dialog.findViewById(R.id.set_now_button);
+        setNow.setOnClickListener(v -> new ScopedStorageDialog(activity, AppInfo.scopedTutorial, () ->
+        {
+            dialog.dismiss();
+        }));
 
         dialog.show();
 
