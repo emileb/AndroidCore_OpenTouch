@@ -39,7 +39,7 @@ public class SDLOpenTouch
 
     static final String TAG = "SDLOpenTouch";
 
-    static int resDiv = 1;
+    static float resDiv = 1.0f;
     static boolean divDone = false;
     public static boolean enableVibrate;
 
@@ -120,7 +120,7 @@ public class SDLOpenTouch
         controlInterp = new ControlInterpreter(activity, engine, GamepadDefinitions.getDefinition(AppInfo.app), TouchSettings.gamePadEnabled, TouchSettings.altTouchCode);
 
         enableVibrate = AppSettings.getBoolOption(activity, "enable_vibrate", true);
-        resDiv = intent.getIntExtra("res_div", 1);
+        resDiv = intent.getFloatExtra("res_div_float", 1.0f);
     }
 
     static String ReplaceDisplaySize(String test, float width, float height)
@@ -250,16 +250,16 @@ public class SDLOpenTouch
     {
         Log.v(TAG, "surfaceChanged: " + width + " x " + height);
 
-        if (resDiv != 1 && !divDone)
+        if (resDiv != 1.0 && !divDone)
         {
-            holder.setFixedSize(width / resDiv, height / resDiv);
+            holder.setFixedSize((int)(width * resDiv), (int)(height * resDiv));
             divDone = true;
             return true;
         }
 
         NativeLib.setScreenSize(width, height);
 
-        controlInterp.setScreenSize(width * resDiv, height * resDiv);
+        controlInterp.setScreenSize((int)(width / resDiv), (int)(height / resDiv));
 
         gyro.reload(context);
 

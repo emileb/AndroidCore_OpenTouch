@@ -41,10 +41,10 @@
                 app:bsb_auto_adjust_section_mark="true"
                 app:bsb_hide_bubble="true"
                 app:bsb_is_float_type="false"
-                app:bsb_max="4"
-                app:bsb_min="1"
+                app:bsb_max="5"
+                app:bsb_min="0"
                 app:bsb_progress="0"
-                app:bsb_section_count="3"
+                app:bsb_section_count="5"
                 app:bsb_section_text_position="below_section_mark"
                 app:bsb_show_section_mark="true"
                 app:bsb_show_section_text="true"
@@ -112,8 +112,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textSize="15dp"
-                android:text="SDL Audio backend: " />
+                android:text="SDL Audio backend: "
+                android:textSize="15dp" />
 
             <Spinner
                 android:id="@+id/audio_spinner"

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Build;
+import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -19,16 +21,19 @@ import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.R;
 import com.xw.repo.BubbleSeekBar;
 
+import java.util.ArrayList;
+
 /**
  * Created by Emile on 31/10/2017.
  */
 
 public class OptionsDialog
 {
-
     Activity activity;
     Runnable update;
     BubbleSeekBar screenDivSeek;
+
+    ArrayList<Pair<String, Float>> resolutions = new ArrayList<>();
 
     public OptionsDialog(final Activity act, View extraOptions, Runnable update)
     {
@@ -59,13 +64,22 @@ public class OptionsDialog
         Button resetButton = dialog.findViewById(R.id.reset_button);
         screenDivSeek = dialog.findViewById(R.id.screenDiv_bubbleSeek);
 
+        resolutions.add(new Pair<>("100%", 1.0f));
+        resolutions.add(new Pair<>("75%", 0.75f));
+        resolutions.add(new Pair<>("60%", 0.6f));
+        resolutions.add(new Pair<>("50%", 0.5f));
+        resolutions.add(new Pair<>("30%", 0.30f));
+        resolutions.add(new Pair<>("25%", 0.25f));
+
         screenDivSeek.setCustomSectionTextArray((sectionCount, array) ->
                                                 {
                                                     array.clear();
-                                                    array.put(0, "100%");
-                                                    array.put(1, "50%");
-                                                    array.put(2, "33%");
-                                                    array.put(3, "25%");
+
+                                                    int n = 0;
+                                                    for (Pair<String, Float> res : resolutions)
+                                                    {
+                                                        array.put(n++, res.first);
+                                                    }
                                                     return array;
                                                 });
 
@@ -101,15 +115,27 @@ public class OptionsDialog
 
         // ----
 
-        int selected = AppSettings.getIntOption(act, "res_div", 1);
-        screenDivSeek.setProgress(selected);
+        // Search for the value to find the seekbar position
+        float multiplier = AppSettings.getFloatOption(act, "res_div_float", 1);
+        int seekPos = 0;
+        for (Pair<String, Float> res : resolutions)
+        {
+            if(res.second == multiplier)
+                break;
+            else
+                seekPos++;
+        }
+
+        if(seekPos >= resolutions.size())
+            seekPos = 0;
+
+        screenDivSeek.setProgress(seekPos);
 
         screenDivSeek.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener()
         {
             @Override
             public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser)
             {
-                AppSettings.setIntOption(act, "res_div", progress);
             }
 
             @Override
@@ -121,7 +147,10 @@ public class OptionsDialog
             @Override
             public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser)
             {
+                float multiplier = resolutions.get(progress).second;
 
+                Log.d("test", "multipiler = " + multiplier);
+                AppSettings.setFloatOption(act, "res_div_float", multiplier);
             }
         });
 
@@ -156,7 +185,7 @@ public class OptionsDialog
         Spinner spinner = dialog.findViewById(R.id.audio_spinner);
 
         String[] paths;
-        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
             paths = new String[]{"OpenSL (Default)", "Audio Tack (Old)", "AAudio (low latency)"};
         }
@@ -168,14 +197,14 @@ public class OptionsDialog
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, paths);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(AppSettings.getIntOption(act,"sdl_audio_backend",0));
+        spinner.setSelection(AppSettings.getIntOption(act, "sdl_audio_backend", 0));
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                AppSettings.setIntOption(act,"sdl_audio_backend", position);
+                AppSettings.setIntOption(act, "sdl_audio_backend", position);
             }
 
             @Override
