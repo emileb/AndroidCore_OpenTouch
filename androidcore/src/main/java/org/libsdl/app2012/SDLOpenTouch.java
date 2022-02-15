@@ -252,7 +252,7 @@ public class SDLOpenTouch
 
         if (resDiv != 1.0 && !divDone)
         {
-            holder.setFixedSize((int)(width * resDiv), (int)(height * resDiv));
+            holder.setFixedSize((int)((width * resDiv) + 0.5), (int)((height * resDiv) + 0.5));
             divDone = true;
             return true;
         }
