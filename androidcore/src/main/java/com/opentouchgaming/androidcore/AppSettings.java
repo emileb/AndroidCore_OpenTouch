@@ -6,6 +6,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 
+import java.util.Set;
+
 public class AppSettings
 {
     public static void reloadSettings(Context ctx)
@@ -105,6 +107,20 @@ public class AppSettings
         SharedPreferences settings = ctx.getSharedPreferences("OPTIONS", Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(name, value);
+        editor.commit();
+    }
+
+    public static Set<String> getStringSetOption(Context ctx, String name, String def)
+    {
+        SharedPreferences settings = ctx.getSharedPreferences("OPTIONS", Context.MODE_MULTI_PROCESS);
+        return settings.getStringSet(name,null);
+    }
+
+    public static void setStringSetOption(Context ctx, String name, Set<String> value)
+    {
+        SharedPreferences settings = ctx.getSharedPreferences("OPTIONS", Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putStringSet(name, value);
         editor.commit();
     }
 
