@@ -111,18 +111,6 @@ public class TutorialDialog
                 showTutorial(tutorials.get(position));
             }
         });
-/*
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-
-        try
-        {
-            String json = ow.writeValueAsString(tutorials);
-            log.log(D, "json = " + json);
-        } catch (JsonProcessingException e)
-        {
-            e.printStackTrace();
-        }
-*/
 
         showTutorial(null);
 

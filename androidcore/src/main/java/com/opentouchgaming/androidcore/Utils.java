@@ -29,21 +29,30 @@ import android.view.animation.Transformation;
 
 import androidx.core.content.FileProvider;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.opentouchgaming.androidcore.license.LicenseCheck;
 import com.opentouchgaming.saffal.FileSAF;
 import com.opentouchgaming.saffal.UtilsSAF;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -241,18 +250,18 @@ public class Utils
 
         for (String file : files)
         {
-            File f =  new File(path1 + "/" + file);
+            File f = new File(path1 + "/" + file);
             String filePath = f.getParent();
             String fileName = f.getName();
             boolean foundInList = false;
-            if(filePath != null && fileName != null)
+            if (filePath != null && fileName != null)
             {
                 FileSAF[] filesFound = new FileSAF(filePath).listFiles();
-                if(filesFound != null)
+                if (filesFound != null)
                 {
                     for (FileSAF ff : filesFound)
                     {
-                        if(ff.getName().compareToIgnoreCase(fileName) == 0)
+                        if (ff.getName().compareToIgnoreCase(fileName) == 0)
                         {
                             foundInList = true;
                             break;
@@ -262,7 +271,7 @@ public class Utils
                 }
             }
 
-            if(!foundInList)
+            if (!foundInList)
             {
                 filesPresent = false;
                 break;
@@ -674,8 +683,8 @@ public class Utils
             {
                 act.getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                                | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
                 View decorView = act.getWindow().getDecorView();
                 decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
@@ -686,9 +695,10 @@ public class Utils
                         Log.d(LOG, "onSystemUiVisibilityChange");
 
                         act.getWindow().getDecorView().setSystemUiVisibility(
-                                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                                        | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                // hide nav bar
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
                     }
                 });
@@ -721,7 +731,8 @@ public class Utils
                 if (hasFocus)
                 {
                     act.getWindow().getDecorView().setSystemUiVisibility(
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                 }
             }
         }
@@ -1046,14 +1057,88 @@ public class Utils
     static int getTargetAPI()
     {
         int targetSdkVersion = 0;
-        try {
+        try
+        {
             PackageInfo packageInfo = AppInfo.getContext().getPackageManager().getPackageInfo(AppInfo.getContext().getPackageName(), 0);
-             targetSdkVersion = packageInfo.applicationInfo.targetSdkVersion;
-        }
-        catch (PackageManager.NameNotFoundException e) {
+            targetSdkVersion = packageInfo.applicationInfo.targetSdkVersion;
+        } catch (PackageManager.NameNotFoundException e)
+        {
 
         }
         return targetSdkVersion;
     }
 
+    static String NAME_PREFIX = "class ";
+
+    private static String getClassName(Type type)
+    {
+        String fullName = type.toString();
+        if (fullName.startsWith(NAME_PREFIX))
+            return fullName.substring(NAME_PREFIX.length());
+        return fullName;
+    }
+
+    public static boolean toJson(String outputFile, Object object)
+    {
+        boolean error = false;
+        try
+        {
+            String jsonInString = new Gson().toJson(object);
+            JSONArray jsonObject = new JSONArray(jsonInString);
+            BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
+            output.write(jsonObject.toString(4));
+            output.close();
+        } catch (JSONException | IOException e)
+        {
+            e.printStackTrace();
+            error = true;
+        }
+        return error;
+    }
+
+    public static <T> T fromJson(String outputFile, Type type, boolean creatNew)
+    {
+        T t = null;
+        try
+        {
+            Gson gson = new Gson();
+            BufferedReader br = new BufferedReader(new FileReader(outputFile));
+           // Type type = new TypeToken<clazz>() {  }.getType();
+            t = gson.fromJson(br, type);
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        // If it did not load, create a new empty class
+        if (creatNew && t == null)
+        {
+            /*
+            try
+            {
+               // t = clazz.newInstance();
+            } catch (IllegalAccessException e)
+            {
+                e.printStackTrace();
+            } catch (InstantiationException e)
+            {
+                e.printStackTrace();
+            }
+
+             */
+
+            Class<?> genericsType = null;
+            try
+            {
+                genericsType = Class.forName(getClassName(type));
+                // now, i have a instance of generics type
+                t = (T) genericsType.newInstance();
+            } catch (Exception ignored)
+            {
+            }
+
+        }
+
+        return t;
+    }
 }

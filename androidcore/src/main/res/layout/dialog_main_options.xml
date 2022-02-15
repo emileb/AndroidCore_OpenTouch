@@ -121,12 +121,7 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="10dp"
-            android:background="@android:color/darker_gray" />
+        <include layout="@layout/view_horizontal_line" />
 
         <LinearLayout
             android:id="@+id/extras_linearlayout"

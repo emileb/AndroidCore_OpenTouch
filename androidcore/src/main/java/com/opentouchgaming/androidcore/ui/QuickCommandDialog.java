@@ -305,7 +305,6 @@ public class QuickCommandDialog
 
     public class PathExampleViewAdapter extends RecyclerView.Adapter<PathExampleViewAdapter.ViewHolder>
     {
-
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {

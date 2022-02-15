@@ -12,10 +12,8 @@ import com.opentouchgaming.androidcore.R
 
 class AudioOverride internal constructor(internal var settingPrefix: String) {
 
-    internal val freqList = arrayOf(48000, 44100, 22050, 11025)
-
-    internal val samplesList = arrayOf(512, 1024, 1536, 2048, 2560, 3072, 3584, 4096, 5120, 6144, 7168, 8192)
-
+    private val freqList = arrayOf(48000, 44100, 22050, 11025)
+    private val samplesList = arrayOf(512, 1024, 1536, 2048, 2560, 3072, 3584, 4096, 5120, 6144, 7168, 8192)
 
     internal var override: Boolean = false
     internal var backend: Int = -1

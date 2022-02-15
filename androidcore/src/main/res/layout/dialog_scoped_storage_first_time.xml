@@ -31,11 +31,7 @@
             android:textStyle="bold"
             android:text="You can set the 'Secondary' location to your existing 'OpenTouch' folder." />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="10dp"
-            android:background="@android:color/darker_gray" />
+        <include layout="@layout/view_horizontal_line" />
 
         <TextView
             android:layout_width="match_parent"
@@ -69,11 +65,7 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="10dp"
-            android:background="@android:color/darker_gray" />
+        <include layout="@layout/view_horizontal_line" />
 
         <TextView
             android:layout_width="match_parent"
