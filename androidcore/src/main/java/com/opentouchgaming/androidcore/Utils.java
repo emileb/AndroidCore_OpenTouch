@@ -1110,35 +1110,6 @@ public class Utils
             e.printStackTrace();
         }
 
-        // If it did not load, create a new empty class
-        if (creatNew && t == null)
-        {
-            /*
-            try
-            {
-               // t = clazz.newInstance();
-            } catch (IllegalAccessException e)
-            {
-                e.printStackTrace();
-            } catch (InstantiationException e)
-            {
-                e.printStackTrace();
-            }
-
-             */
-
-            Class<?> genericsType = null;
-            try
-            {
-                genericsType = Class.forName(getClassName(type));
-                // now, i have a instance of generics type
-                t = (T) genericsType.newInstance();
-            } catch (Exception ignored)
-            {
-            }
-
-        }
-
         return t;
     }
 }
