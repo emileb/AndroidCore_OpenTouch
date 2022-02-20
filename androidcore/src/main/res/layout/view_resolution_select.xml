@@ -1,36 +1,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/resolution_layout"
+    android:id="@+id/resolution_layout_top"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:orientation="horizontal">
 
-    <Spinner
-        android:id="@+id/resolution_spinner"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content" />
-
-    <TextView
+    <LinearLayout
+        android:id="@+id/resolution_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:text="W:" />
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/resolution_width_editText"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number" />
+        <Spinner
+            android:id="@+id/resolution_spinner"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="H:" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="W:" />
 
-    <EditText
-        android:id="@+id/resolution_height_editText"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number" />
+        <EditText
+            android:id="@+id/resolution_width_editText"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="H:" />
+
+        <EditText
+            android:id="@+id/resolution_height_editText"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number" />
+
+    </LinearLayout>
+
 </LinearLayout>
