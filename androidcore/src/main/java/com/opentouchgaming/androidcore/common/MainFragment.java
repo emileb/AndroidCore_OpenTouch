@@ -292,7 +292,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                         // Called when a super mod is selected
                         GameEngine engine = AppInfo.getGameEngine(superModItem.engine);
                         // Set version first
-                        selectedVersion = superModItem.version;
+                        changeEngineVersion(engine, superModItem.version);
                         // Change engine, this reloads the iwads
                         enginesLeftPanel.selectEngine(engine);
 
@@ -391,10 +391,12 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
     public void cycleVersion()
     {
-        selectedVersion++;
-        if (selectedVersion > AppInfo.currentEngine.versions.length - 1)
-            selectedVersion = 0;
+        int newVersion = selectedVersion + 1;
+        if (newVersion > AppInfo.currentEngine.versions.length - 1)
+            newVersion = 0;
 
+        // Update engine version
+        changeEngineVersion(AppInfo.currentEngine, newVersion);
         // Update display
         selectEngine(AppInfo.currentEngine);
     }
@@ -469,11 +471,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             {
                 if (lastEngine.equals(engine.engine.toString()))
                 {
-                    int lastVersion = AppSettings.getIntOption(getContext(), "last_version", 0);
-                    if (lastVersion < engine.versions.length)
-                    {
-                        selectedVersion = lastVersion;
-                    }
+
 
                     enginesLeftPanel.selectEngine(engine);
                 }
@@ -591,9 +589,16 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         return false;
     }
 
+    public void changeEngineVersion(GameEngine engine, int version)
+    {
+        AppSettings.setIntOption(getContext(), "last_version_" + engine.engine.toString(), version);
+    }
+
     public void selectEngine(GameEngine engine)
     {
         backgroundImageView.setImageResource(engine.iconRes);
+
+        selectedVersion = AppSettings.getIntOption(getContext(), "last_version_" + engine.engine.toString(), 0);
 
         if (selectedVersion > engine.versions.length - 1)
             selectedVersion = 0;
@@ -630,12 +635,11 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         AppInfo.currentEngine = engine;
 
+        AppSettings.setStringOption(getContext(), "last_engine", AppInfo.currentEngine.engine.toString());
+
         engineData = appData.getEngineData(AppInfo.currentEngine.engine);
 
         setLauncher();
-
-        AppSettings.setStringOption(getContext(), "last_engine", AppInfo.currentEngine.engine.toString());
-        AppSettings.setIntOption(getContext(), "last_version", selectedVersion);
 
         refreshSubGames();
         selectSubGame(engineData.selectedSubGamePos);
@@ -714,7 +718,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                 recyclerView.setAdapter(subGameAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-                selectedVersion = version;
+                changeEngineVersion(AppInfo.currentEngine, version);
                 selectEngine(AppInfo.currentEngine);
                 return null;
             });
