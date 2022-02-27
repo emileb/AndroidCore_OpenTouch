@@ -33,7 +33,7 @@ public class ScopedStorage
     static public boolean checkStorageOK(Activity activity)
     {
         // Always set context, this also loads the saffal library, needed if even not used
-        UtilsSAF.setContext(activity);
+        UtilsSAF.setContext(activity, false);
 
         if (AppInfo.isScopedEnabled() == false)
         {

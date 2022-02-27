@@ -79,7 +79,10 @@ public class SDLOpenTouch
         AppInfo.setContext(activity);
         AppInfo.setApp(app);
 
-        UtilsSAF.setContext(activity.getApplicationContext());
+        // Use native cache on android 11 and above
+        boolean cacheNativeFs = Build.VERSION.SDK_INT > 29;
+        //Do something
+        UtilsSAF.setContext(activity.getApplicationContext(),cacheNativeFs);
         UtilsSAF.loadTreeRoot(activity.getApplicationContext());
 
         org.fmod.FMOD.init(activity);
