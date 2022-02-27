@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -26,8 +28,6 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 public class ServerAPI
 {
@@ -178,15 +178,6 @@ public class ServerAPI
                 int count;
                 while ((downloadedBytes < downloadSize) && ((count = inputStream.read(data, 0, data.length)) != -1))
                 {
-                    /*
-                    try
-                    {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    */
                     fout.write(data, 0, count);
                     fout.flush();
 
@@ -312,9 +303,6 @@ public class ServerAPI
                         {
                             if (entry.isDirectory())
                             {
-                                // Assume directories are stored parents first then children.
-                                log.log(D, "Extracting directory: " + entry.getName());
-                                // This is not robust, just for demonstration purposes.
                                 (new File(basePath, entry.getName())).mkdirs();
                                 continue;
                             }

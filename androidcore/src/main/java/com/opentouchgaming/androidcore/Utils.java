@@ -1,7 +1,5 @@
 package com.opentouchgaming.androidcore;
 
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -15,7 +13,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
@@ -30,7 +27,6 @@ import android.view.animation.Transformation;
 import androidx.core.content.FileProvider;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.opentouchgaming.androidcore.license.LicenseCheck;
 import com.opentouchgaming.saffal.FileSAF;
 import com.opentouchgaming.saffal.UtilsSAF;
@@ -38,7 +34,6 @@ import com.opentouchgaming.saffal.UtilsSAF;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -56,11 +51,7 @@ import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 ;
 
@@ -83,7 +74,6 @@ public class Utils
 
     static public void mkdirs(Context context, String path, String infoFile)
     {
-
         File file = new FileSAF(path);
 
         if (!file.exists())
@@ -123,23 +113,18 @@ public class Utils
 
     static public void copyFile(InputStream in, OutputStream out) throws IOException
     {
-        byte[] buffer = new byte[1024];
-        int read;
-        while ((read = in.read(buffer)) != -1)
-        {
-            out.write(buffer, 0, read);
-        }
-        out.close();
+        copyFile(in, out, null);
     }
 
     static public void copyFile(InputStream in, OutputStream out, ProgressDialog pb) throws IOException
     {
-        byte[] buffer = new byte[1024 * 10];
+        byte[] buffer = new byte[1024 * 4];
         int read;
         while ((read = in.read(buffer)) != -1)
         {
             out.write(buffer, 0, read);
-            pb.setProgress(pb.getProgress() + read);
+            if (pb != null)
+                pb.setProgress(pb.getProgress() + read);
         }
         out.close();
     }
@@ -154,22 +139,8 @@ public class Utils
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(act);
-        builder.setMessage(title).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int id)
-            {
-                ServerAPI.downloadFile(act, file, directory, size, cb);
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-        {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.cancel();
-            }
-        });
+        builder.setMessage(title).setCancelable(true).setPositiveButton("OK", (dialog, id) -> ServerAPI.downloadFile(act, file, directory, size, cb));
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         AlertDialog alert = builder.create();
         alert.show();
@@ -223,31 +194,6 @@ public class Utils
     {
         boolean filesPresent = true;
 
-        /*
-        String[] filesInDir = new FileSAF(path1).list();
-        if(filesInDir != null)
-        {
-            for (String filecheck : files)
-            {
-                boolean foundFile = false;
-                for (String fileDir : filesInDir)
-                {
-                    if (fileDir.toLowerCase().endsWith(filecheck.toLowerCase()))
-                    {
-                        foundFile = true;
-                        break;
-                    }
-                }
-                if (!foundFile)
-                {
-                    filesPresent = false;
-                    break;
-                }
-            }
-        }
-        */
-
-
         for (String file : files)
         {
             File f = new File(path1 + "/" + file);
@@ -267,7 +213,6 @@ public class Utils
                             break;
                         }
                     }
-
                 }
             }
 
@@ -318,19 +263,14 @@ public class Utils
         {
             if ((filename.endsWith("png") || filename.endsWith("txt")) && filename.startsWith(prefix))
             {
-                InputStream in = null;
-                OutputStream out = null;
-                //Log.d("test","file = " + filename);
                 try
                 {
-                    in = assetManager.open(filename);
-                    out = new FileOutputStream(dir + "/" + filename.substring(prefix.length()));
+                    InputStream in = assetManager.open(filename);
+                    OutputStream out = new FileOutputStream(dir + "/" + filename.substring(prefix.length()));
                     copyFile(in, out);
                     in.close();
-                    in = null;
                     out.flush();
                     out.close();
-                    out = null;
                 } catch (IOException e)
                 {
                     Log.e("tag", "Failed to copy asset file: " + filename, e);
@@ -339,18 +279,10 @@ public class Utils
         }
     }
 
-    public static void ExtractAsset(Context ctx, String file, String dest, long size)
-    {
-        ExtractAsset.ctx = ctx;
-        ExtractAsset.totalSize = size;
-        new ExtractAsset().execute(file, dest);
-    }
 
     static public ArrayList<File> listFiles(String[] paths)
     {
-
         ArrayList<File> files = new ArrayList<>();
-
         for (String path : paths)
         {
             if (path != null)
@@ -565,22 +497,15 @@ public class Utils
     static public void copyAsset(Context ctx, String file, String destdir, String destFilename)
     {
         AssetManager assetManager = ctx.getAssets();
-
-        InputStream in = null;
-        OutputStream out = null;
-
         new File(destdir).mkdirs();
-
         try
         {
-            in = assetManager.open(file);
-            out = new FileOutputStream(destdir + "/" + destFilename);
+            InputStream in = assetManager.open(file);
+            OutputStream out = new FileOutputStream(destdir + "/" + destFilename);
             copyFile(in, out);
             in.close();
-            in = null;
             out.flush();
             out.close();
-            out = null;
         } catch (IOException e)
         {
             Log.e("tag", "Failed to copy asset file: " + file + " error = " + e.toString());
@@ -592,50 +517,27 @@ public class Utils
         copyAsset(ctx, file, destdir, file);
     }
 
-    static public boolean extractAsset(Context ctx, String zipFile, String destdir)
-    {
-        AssetManager assetManager = ctx.getAssets();
-        InputStream in = null;
-
-        new File(destdir).mkdirs();
-
-        try
+    /*
+        static public boolean extractAsset(Context ctx, String zipFile, String destdir)
         {
-            in = assetManager.open(zipFile);
+            AssetManager assetManager = ctx.getAssets();
 
-            ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in));
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null)
+            new File(destdir).mkdirs();
+
+            try
             {
-                if (entry.isDirectory())
-                {
-                    // Assume directories are stored parents first then children.
-                    log.log(D, "Extracting directory: " + entry.getName());
-                    // This is not robust, just for demonstration purposes.
-                    (new File(destdir, entry.getName())).mkdirs();
-                    continue;
-                }
-                log.log(D, "Extracting file: " + entry.getName());
-                (new File(destdir, entry.getName())).getParentFile().mkdirs();
-                BufferedInputStream zin = new BufferedInputStream(zis);
-                OutputStream out = new FileOutputStream(new File(destdir, entry.getName()));
-                Utils.copyFile(zin, out);
-                out.flush();
-                out.close();
+                InputStream in = assetManager.open(zipFile);
+                ZipUtils.extractInputStream(in, destdir);
+                in.close();
+                return true;
+            } catch (IOException e)
+            {
+                Log.e("tag", "Failed to copy asset file: " + zipFile + " error = " + e.toString());
             }
 
-            in.close();
-
-            return true;
-
-        } catch (IOException e)
-        {
-            Log.e("tag", "Failed to copy asset file: " + zipFile + " error = " + e.toString());
+            return false;
         }
-
-        return false;
-    }
-
+    */
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
     {
         // Raw height and width of image
@@ -767,7 +669,6 @@ public class Utils
 
     filesInfoString(String path, String ext, int maxFiles)
     {
-
         String pakFiles = "[ ";
         int nbrFiles = 0;
         int nbrDirs = 0;
@@ -823,178 +724,6 @@ public class Utils
         return files;
     }
 
-    static private class ExtractAsset extends AsyncTask<String, Integer, Long>
-    {
-
-        static Context ctx;
-        static long totalSize;
-        String errorstring = null;
-        private ProgressDialog progressBar;
-
-        @Override
-        protected void onPreExecute()
-        {
-            progressBar = new ProgressDialog(ctx);
-            progressBar.setMessage("Extracting files..");
-            progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressBar.setCancelable(false);
-            progressBar.show();
-        }
-
-        int getTotalZipSize(String file)
-        {
-            int ret = 0;
-            try
-            {
-                ZipFile zf = new ZipFile(file);
-                Enumeration e = zf.entries();
-                while (e.hasMoreElements())
-                {
-                    ZipEntry ze = (ZipEntry) e.nextElement();
-                    String name = ze.getName();
-
-                    ret += ze.getSize();
-                    long compressedSize = ze.getCompressedSize();
-                }
-            } catch (IOException ex)
-            {
-                System.err.println(ex);
-            }
-            return ret;
-        }
-
-        int getTotalZipSize(InputStream ins)
-        {
-            int ret = 0;
-            ZipInputStream zis = new ZipInputStream(new BufferedInputStream(ins));
-            ZipEntry entry;
-            try
-            {
-                while ((entry = zis.getNextEntry()) != null)
-                {
-                    if (entry.isDirectory())
-                    {
-
-                    }
-                    else
-                    {
-                        ret += entry.getSize();
-                    }
-                }
-                ins.reset();
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-            if (GD.DEBUG)
-                Log.d(LOG, "File size is " + ret);
-
-            return ret;
-        }
-
-        protected Long doInBackground(String... info)
-        {
-
-            String file = info[0];
-            String basePath = info[1];
-
-            boolean isLocal = false;
-
-            progressBar.setProgress(0);
-
-            try
-            {
-                BufferedInputStream in = null;
-                FileOutputStream fout = null;
-
-                AssetManager assetManager = ctx.getAssets();
-                InputStream ins = assetManager.open(file);
-
-                in = new BufferedInputStream(ins);
-
-                if (file.endsWith(".zip"))
-                {
-                    if (totalSize != 0)
-                        progressBar.setMax((int) totalSize);
-                    else
-                        progressBar.setMax(getTotalZipSize(ins));
-
-                    ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in));
-                    ZipEntry entry;
-                    while ((entry = zis.getNextEntry()) != null)
-                    {
-                        if (entry.isDirectory())
-                        {
-                            // Assume directories are stored parents first then children.
-                            System.err.println("Extracting directory: " + entry.getName());
-                            // This is not robust, just for demonstration purposes.
-                            (new File(basePath, entry.getName())).mkdirs();
-                            continue;
-                        }
-                        if (GD.DEBUG)
-                            Log.d(LOG, "Extracting file: " + entry.getName());
-
-                        (new File(basePath, entry.getName())).getParentFile().mkdirs();
-                        BufferedInputStream zin = new BufferedInputStream(zis);
-                        OutputStream out = new FileOutputStream(new File(basePath, entry.getName()));
-                        Utils.copyFile(zin, out, progressBar);
-                    }
-                }
-                else
-                {
-
-                    File outZipFile = new File(basePath, "temp.zip");
-
-                    //progressBar.setMax(ins.get); //TODO FIX ME
-
-                    fout = new FileOutputStream(outZipFile);
-                    byte data[] = new byte[1024];
-                    int count;
-                    while ((count = in.read(data, 0, 1024)) != -1)
-                    {
-                        fout.write(data, 0, count);
-                        progressBar.setProgress(progressBar.getProgress() + count);
-                    }
-                    in.close();
-                    fout.close();
-                    //AppSettings.setBoolOption(ctx,"DLF" + ServerAPI.file, true);
-
-                    outZipFile.renameTo(new File(basePath, file));
-                    return 0l;
-                }
-
-            } catch (IOException e)
-            {
-                errorstring = e.toString();
-                return 1l;
-            }
-
-            return 0l;
-        }
-
-        protected void onProgressUpdate(Integer... progress)
-        {
-
-        }
-
-        protected void onPostExecute(Long result)
-        {
-            progressBar.dismiss();
-            if (errorstring != null)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                builder.setMessage("Error extracting: " + errorstring).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-
-                    }
-                });
-
-                builder.show();
-            }
-        }
-    }
 
     public static class SpinnerValues
     {
@@ -1103,7 +832,7 @@ public class Utils
         {
             Gson gson = new Gson();
             BufferedReader br = new BufferedReader(new FileReader(outputFile));
-           // Type type = new TypeToken<clazz>() {  }.getType();
+            // Type type = new TypeToken<clazz>() {  }.getType();
             t = gson.fromJson(br, type);
         } catch (FileNotFoundException e)
         {
