@@ -278,7 +278,6 @@ public class SDLOpenTouch
 
     static public boolean onKey(int keyCode, KeyEvent event)
     {
-
         int source = event.getSource();
         // Stop right mouse button being backbutton
         if ((source == InputDevice.SOURCE_MOUSE) || (source == InputDevice.SOURCE_MOUSE_RELATIVE))

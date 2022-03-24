@@ -148,7 +148,7 @@ public class ServerAPI
                 connection.setRequestMethod("GET");
                 //connection.setDoOutput(true);
                 connection.setRequestProperty("Connection", "keep-alive");
-                
+                connection.setRequestProperty("Accept-Encoding", "identity");
                 connection.connect();
 
                 int code = connection.getResponseCode();
