@@ -310,32 +310,10 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                             }
                         }
                     });
-
                 }
             }
         });
-/*
-        String path = getActivity().getExternalFilesDir(null).toString();
-        String myfile = path  + "/myfile.txt";
-        log.log(D," path = " + path + " ExTERN = " + Environment.getExternalStorageDirectory());
 
-        Utils.mkdirs(getContext(),path);
-
-
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter( myfile, "UTF-8");
-            writer.println("The first line");
-            writer.println("The second line");
-            writer.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + myfile)));
-*/
         return view;
     }
 
@@ -471,8 +449,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             {
                 if (lastEngine.equals(engine.engine.toString()))
                 {
-
-
                     enginesLeftPanel.selectEngine(engine);
                 }
             }
