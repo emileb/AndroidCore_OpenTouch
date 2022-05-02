@@ -85,12 +85,15 @@ public class SDLOpenTouch
         UtilsSAF.setContext(activity.getApplicationContext(),cacheNativeFs);
         UtilsSAF.loadTreeRoot(activity.getApplicationContext());
 
-        org.fmod.FMOD.init(activity);
+
         NativeConsoleBox.init(activity);
 
         // Load libraries
         try
         {
+            // Always load this to avoid crash with new version of FMOD, need to be loaded
+            System.loadLibrary("fmod");
+
             // Load game libs
             String[] loadLibs = intent.getStringArrayExtra("load_libs");
             for (String lib : loadLibs)
@@ -106,6 +109,8 @@ public class SDLOpenTouch
         {
             System.err.println(e.getMessage());
         }
+
+        org.fmod.FMOD.init(activity);
 
         // fullscreen
         activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
