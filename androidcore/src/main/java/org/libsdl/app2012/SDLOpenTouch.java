@@ -88,11 +88,24 @@ public class SDLOpenTouch
 
         NativeConsoleBox.init(activity);
 
+        // Always load this to avoid crash with new version of FMOD, need to be loaded
+        try
+        {
+
+            System.loadLibrary("fmod");
+        } catch (UnsatisfiedLinkError e)
+        {
+            System.err.println(e.getMessage());
+        } catch (Exception e)
+        {
+            System.err.println(e.getMessage());
+        }
+
         // Load libraries
         try
         {
             // Always load this to avoid crash with new version of FMOD, need to be loaded
-            System.loadLibrary("fmod");
+            //System.loadLibrary("fmod");
 
             // Load game libs
             String[] loadLibs = intent.getStringArrayExtra("load_libs");
