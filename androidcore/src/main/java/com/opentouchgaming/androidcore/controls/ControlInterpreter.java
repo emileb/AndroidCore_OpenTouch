@@ -122,22 +122,12 @@ public class ControlInterpreter
                 }
                 break;
                 case MotionEvent.ACTION_DOWN:
-                {
-                    controlInterface.touchEvent_if(1, pointerId, x, y);
-                }
-                break;
-                case MotionEvent.ACTION_POINTER_DOWN:
-                {
+                case MotionEvent.ACTION_POINTER_DOWN: {
                     controlInterface.touchEvent_if(1, pointerId, x, y);
                 }
                 break;
                 case MotionEvent.ACTION_POINTER_UP:
-                {
-                    controlInterface.touchEvent_if(2, pointerId, x, y);
-                }
-                break;
-                case MotionEvent.ACTION_UP:
-                {
+                case MotionEvent.ACTION_UP: {
                     controlInterface.touchEvent_if(2, pointerId, x, y);
                 }
                 break;
@@ -145,7 +135,6 @@ public class ControlInterpreter
         }
         else
         {
-
             int action = event.getAction();
             int actionCode = action & MotionEvent.ACTION_MASK;
 

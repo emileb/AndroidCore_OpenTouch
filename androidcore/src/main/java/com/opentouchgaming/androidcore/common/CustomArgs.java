@@ -2,6 +2,7 @@ package com.opentouchgaming.androidcore.common;
 
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.GameEngine;
+import com.opentouchgaming.androidcore.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,16 +48,6 @@ public class CustomArgs implements Serializable
         this.args = args;
     }
 
-    private String quote(String s)
-    {
-        if (s.contains(" "))
-        {
-            return "\"" + s + "\"";
-        }
-        else
-            return s;
-    }
-
     private String buildFileType(String[] extensions, String option, boolean combine)
     {
         String result = "";
@@ -79,11 +70,11 @@ public class CustomArgs implements Serializable
                         result += option + " ";
                         foundFile = true;
                     }
-                    result += quote(getFiles().get(n)) + " ";
+                    result += Utils.quoteString(getFiles().get(n)) + " ";
                 }
                 else // Option switch for each file
                 {
-                    result += option + " " + quote(getFiles().get(n)) + " ";
+                    result += option + " " + Utils.quoteString(getFiles().get(n)) + " ";
                 }
             }
         }

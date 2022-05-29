@@ -323,6 +323,10 @@ public class Utils
             }
         }
 
+        for (int index =0; index < a.size(); index++){
+            a.set(index, a.get(index).replace("''", "\""));
+        }
+
         return a.toArray(new String[a.size()]);
     }
 
@@ -840,5 +844,15 @@ public class Utils
         }
 
         return t;
+    }
+
+    public static String quoteString(String s)
+    {
+        if (s.contains(" "))
+        {
+            return "\"" + s + "\"";
+        }
+        else
+            return s;
     }
 }
