@@ -24,7 +24,6 @@ dependencies{
     //compile 'com.android.support:support-v4:23.3.0'
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-
 }
 
 // Used to push in maven

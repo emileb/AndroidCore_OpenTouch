@@ -1,21 +1,18 @@
-package com.opentouchgaming.androidcore.ui;
+package com.opentouchgaming.androidcore.ui.widgets;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
-import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.androidcore.databinding.ViewResolutionSelectBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResolutionOptionsView
+public class ResolutionOptionsWidget
 {
     static List<ResolutionOptions> resolutionListDefault = new ArrayList<>();
 
@@ -34,18 +31,16 @@ public class ResolutionOptionsView
 
     List<ResolutionOptions> resolutionList;
 
-    String prefix;
-    EditText widthEdit;
-    EditText heightEdit;
-    Spinner resSpinner;
-    LinearLayout topLayout;
+    ViewResolutionSelectBinding binding;
 
-    public ResolutionOptionsView(Context context, View view, String prefix, List<ResolutionOptions> resolutions)
+    String prefix;
+
+    public ResolutionOptionsWidget(Context context, View view, String prefix, List<ResolutionOptions> resolutions)
     {
         Init(context, view, prefix, resolutions);
     }
 
-    public ResolutionOptionsView(Context context, View view, String prefix)
+    public ResolutionOptionsWidget(Context context, View view, String prefix)
     {
         Init(context, view, prefix, resolutionListDefault);
     }
@@ -55,32 +50,29 @@ public class ResolutionOptionsView
         this.prefix = prefix;
         this.resolutionList = resolutions;
 
-        resSpinner = view.findViewById(R.id.resolution_spinner);
-        widthEdit = view.findViewById(R.id.resolution_width_editText);
-        heightEdit = view.findViewById(R.id.resolution_height_editText);
-        topLayout = view.findViewById(R.id.resolution_layout);
+        binding = ViewResolutionSelectBinding.bind(view);
 
         ArrayAdapter<ResolutionOptions> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, resolutionList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        resSpinner.setAdapter(dataAdapter);
-        resSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        binding.resolutionSpinner.setAdapter(dataAdapter);
+        binding.resolutionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
                 AppSettings.setIntOption(context, prefix + "_resolution_spinner", position);
                 ResolutionOptions option = getResOption(prefix, resolutionList);
-                widthEdit.setText("" + option.w);
-                heightEdit.setText("" + option.h);
+                binding.resolutionWidthEditText.setText("" + option.w);
+                binding.resolutionHeightEditText.setText("" + option.h);
                 if (option.type == ResolutionType.CUSTOM)
                 {
-                    widthEdit.setEnabled(true);
-                    heightEdit.setEnabled(true);
+                    binding.resolutionWidthEditText.setEnabled(true);
+                    binding.resolutionHeightEditText.setEnabled(true);
                 }
                 else
                 {
-                    widthEdit.setEnabled(false);
-                    heightEdit.setEnabled(false);
+                    binding.resolutionWidthEditText.setEnabled(false);
+                    binding.resolutionHeightEditText.setEnabled(false);
                 }
             }
 
@@ -92,34 +84,34 @@ public class ResolutionOptionsView
 
         int selected = AppSettings.getIntOption(context, prefix + "_resolution_spinner", 0);
         if(selected < resolutionList.size())
-            resSpinner.setSelection(selected);
+            binding.resolutionSpinner.setSelection(selected);
         else
-            resSpinner.setSelection(0);
+            binding.resolutionSpinner.setSelection(0);
     }
 
     public void setEnabled(boolean enabled)
     {
         if (enabled)
         {
-            resSpinner.setEnabled(true);
+            binding.resolutionSpinner.setEnabled(true);
 
             ResolutionOptions option = getResOption(prefix, resolutionList);
             if (option.type == ResolutionType.CUSTOM)
             {
-                widthEdit.setEnabled(true);
-                heightEdit.setEnabled(true);
+                binding.resolutionWidthEditText.setEnabled(true);
+                binding.resolutionHeightEditText.setEnabled(true);
             }
             else
             {
-                widthEdit.setEnabled(false);
-                heightEdit.setEnabled(false);
+                binding.resolutionWidthEditText.setEnabled(false);
+                binding.resolutionHeightEditText.setEnabled(false);
             }
         }
         else
         {
-            resSpinner.setEnabled(false);
-            widthEdit.setEnabled(false);
-            heightEdit.setEnabled(false);
+            binding.resolutionSpinner.setEnabled(false);
+            binding.resolutionWidthEditText.setEnabled(false);
+            binding.resolutionHeightEditText.setEnabled(false);
         }
     }
 
@@ -127,11 +119,11 @@ public class ResolutionOptionsView
     {
         if (hidden)
         {
-            topLayout.setVisibility(View.GONE);
+            binding.resolutionLayoutTop.setVisibility(View.GONE);
         }
         else
         {
-            topLayout.setVisibility(View.VISIBLE);
+            binding.resolutionLayoutTop.setVisibility(View.VISIBLE);
         }
     }
 
@@ -156,8 +148,8 @@ public class ResolutionOptionsView
     {
         if (getResOption(prefix).type == ResolutionType.CUSTOM)
         {
-            AppSettings.setStringOption(AppInfo.getContext(), prefix + "_resolution_cust_w", widthEdit.getText().toString());
-            AppSettings.setStringOption(AppInfo.getContext(), prefix + "_resolution_cust_h", heightEdit.getText().toString());
+            AppSettings.setStringOption(AppInfo.getContext(), prefix + "_resolution_cust_w", binding.resolutionWidthEditText.getText().toString());
+            AppSettings.setStringOption(AppInfo.getContext(), prefix + "_resolution_cust_h", binding.resolutionHeightEditText.getText().toString());
         }
     }
 

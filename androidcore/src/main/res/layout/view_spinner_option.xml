@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/resolution_layout_top"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
@@ -16,59 +16,36 @@
             android:id="@+id/imageView"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/setting_resolution" />
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/setting_gear" />
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/imageView"
-            android:text="Resolution"
+            android:text="title"
             android:textSize="20sp" />
 
         <LinearLayout
+            android:id="@+id/layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_gravity="center_vertical"
             android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/spinner_background">
+
                 <Spinner
-                    android:id="@+id/resolution_spinner"
-                    android:layout_width="200dp"
-                    android:layout_height="40dp" />
+                    android:id="@+id/spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp" />
             </RelativeLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="W:" />
-
-            <EditText
-                android:id="@+id/resolution_width_editText"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="number" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="H:" />
-
-            <EditText
-                android:id="@+id/resolution_height_editText"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="number" />
 
         </LinearLayout>
     </RelativeLayout>

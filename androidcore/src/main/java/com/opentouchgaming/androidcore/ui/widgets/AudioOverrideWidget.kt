@@ -1,4 +1,4 @@
-package com.opentouchgaming.androidcore.ui
+package com.opentouchgaming.androidcore.ui.widgets
 
 import android.app.Activity
 import android.app.Dialog
@@ -10,7 +10,7 @@ import com.opentouchgaming.androidcore.AppInfo
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.R
 
-class AudioOverride internal constructor(internal var settingPrefix: String) {
+class AudioOverrideWidget internal constructor(internal var settingPrefix: String) {
 
     private val freqList = arrayOf(48000, 44100, 22050, 11025)
     private val samplesList = arrayOf(512, 1024, 1536, 2048, 2560, 3072, 3584, 4096, 5120, 6144, 7168, 8192)
@@ -29,19 +29,20 @@ class AudioOverride internal constructor(internal var settingPrefix: String) {
 
         if(override)  overrideLayout.visibility = View.VISIBLE else overrideLayout.visibility = View.GONE
 
-        val paths: Array<String>
-        paths = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        // Android O allows AAudio
+        val paths: Array<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             arrayOf("Default","OpenSL", "Audio Tack (Old)", "AAudio (low latency)")
         } else {
             arrayOf("Default","OpenSL", "Audio Tack (Old)")
         }
-        val spinner = dialog.findViewById<Spinner>(com.opentouchgaming.androidcore.R.id.audio_spinner)
+
+        val spinner = dialog.findViewById<Spinner>(R.id.audio_spinner)
         val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, paths)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.setAdapter(adapter)
+        spinner.adapter = adapter
         spinner.setSelection(backend)
 
-        spinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View,
@@ -53,7 +54,7 @@ class AudioOverride internal constructor(internal var settingPrefix: String) {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        })
+        }
 
         val freqSpinner = dialog.findViewById<Spinner>(R.id.freq_spinner)
         val adapterFreq = ArrayAdapter(activity, android.R.layout.simple_spinner_item, freqList)
@@ -87,7 +88,7 @@ class AudioOverride internal constructor(internal var settingPrefix: String) {
 
         overrideCheckbox.isChecked = override
 
-        overrideCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
+        overrideCheckbox.setOnCheckedChangeListener { _, isChecked ->
             override = isChecked
             if(override) overrideLayout.visibility = View.VISIBLE else overrideLayout.visibility = View.GONE
             saveSettings()
