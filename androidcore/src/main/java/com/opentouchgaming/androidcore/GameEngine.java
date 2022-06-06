@@ -5,6 +5,8 @@ import android.widget.ImageView;
 
 import com.opentouchgaming.androidcore.controls.ActionInputDefinition;
 
+import java.io.File;
+
 /**
  * Created by Emile on 09/07/2017.
  */
@@ -64,7 +66,8 @@ public class GameEngine
 
     public String getLogFilename()
     {
-        return AppInfo.internalFiles + "/" + name + ".txt";
+        new File(AppInfo.getUserFiles() + "/logs/").mkdirs();
+        return AppInfo.getUserFiles() + "/logs/" + name + ".txt";
     }
 
     public enum Engine

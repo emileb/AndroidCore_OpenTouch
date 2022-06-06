@@ -446,7 +446,7 @@ public class Utils
                         PrintWriter printWriter = null;
                         try
                         {
-                            String filename = AppInfo.getFilesDir() + "/" + AppInfo.app.toString() + "_logcat.txt";
+                            String filename = AppInfo.getUserFiles() + "/logs/" + AppInfo.app.toString() + "_logcat.txt";
                             printWriter = new PrintWriter(new FileWriter(filename), true);
 
                             StringBuilder log = Utils.getLogCat();
