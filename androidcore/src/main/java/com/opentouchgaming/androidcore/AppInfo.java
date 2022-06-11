@@ -41,6 +41,7 @@ public class AppInfo
     public static List<StorageConfigDialog.StorageExamples> storageExamples;
     public static ScopedStorageDialog.Tutorial scopedTutorial;
     public static String website = null;
+    public  static boolean hideModWads = false;
 
     public static int defaultAppImage;
 
@@ -60,7 +61,7 @@ public class AppInfo
         AppInfo.app = app;
     }
 
-    static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email, boolean isAndroidTv, int defaultAppImage)
+    static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email, boolean isAndroidTv, int defaultAppImage, boolean hideModWads)
     {
         AppInfo.context = ctx;
         AppInfo.app = app;
@@ -74,6 +75,7 @@ public class AppInfo
 
         AppInfo.isAndroidTv = isAndroidTv;
         AppInfo.defaultAppImage = defaultAppImage;
+        AppInfo.hideModWads = hideModWads;
 
         AppInfo.flashRoot = Environment.getExternalStorageDirectory().toString();
 

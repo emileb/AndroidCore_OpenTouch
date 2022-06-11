@@ -244,7 +244,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         showArgsButton.setBackgroundResource(R.drawable.focusable);
         showArgsButton.setOnClickListener(
-                v -> new CustomArgsDialog(getActivity(), launcher.getRunDirectory(), launcher.getSecondaryDirectory(), engineData, false).dialog.setOnDismissListener(dialog -> updateArgs()));
+                v -> new CustomArgsDialog(getActivity(), launcher.getRunDirectory(), launcher.getSecondaryDirectory(), engineData, AppInfo.hideModWads).dialog.setOnDismissListener(dialog -> updateArgs()));
 
         // START game
         startButton.setBackgroundResource(R.drawable.focusable);

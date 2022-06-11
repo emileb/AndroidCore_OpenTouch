@@ -11,8 +11,7 @@ import java.io.File;
  * Created by Emile on 09/07/2017.
  */
 
-public class GameEngine
-{
+public class GameEngine {
     final public int iconRes;
     final public int color;
     final public int backgroundDrawable;
@@ -29,9 +28,9 @@ public class GameEngine
     public ImageView imageButton;
     public ImageView imageButtonCfg;
     public EngineOptionsInterface engineOptions;
+
     public GameEngine(Engine engine, int uiGroup, String title, String name, String directory, String[] versions, String[][] loadLibs, String args, ActionInputDefinition gamepadDefiniton, int iconRes,
-                      int color, int background, Class opCls)
-    {
+                      int color, int background, Class opCls) {
         this.title = title;
         this.name = name;
         this.directory = directory;
@@ -47,32 +46,26 @@ public class GameEngine
         this.engineOptionsClass = opCls;
     }
 
-    public void init(Activity act)
-    {
-        if (engineOptionsClass != null && engineOptions == null)
-        {
+    public void init(Activity act) {
+        if (engineOptionsClass != null && engineOptions == null) {
             try // Create class from class type
             {
                 engineOptions = (EngineOptionsInterface) engineOptionsClass.newInstance();
-            } catch (IllegalAccessException e)
-            {
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
-            } catch (InstantiationException e)
-            {
+            } catch (InstantiationException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public String getLogFilename()
-    {
+    public String getLogFilename() {
         new File(AppInfo.getUserFiles() + "/logs/").mkdirs();
         return AppInfo.getUserFiles() + "/logs/" + name + ".txt";
     }
 
-    public enum Engine
-    {
+    public enum Engine {
         GZDOOM, PRBOOM, CHOC, RETRO, BLAKE, ROTT, WOLF, QUAKESDL, QUAKEDP, QUAKEFTEQW, QUAKE2, YQUAKE2, IOQUAKE3, HEXEN2, ZANDRONUM, LZDOOM, D3ES,
         RAZE_DUKE, RAZE_SW, RAZE_BLOOD, RAZE_REDNECK, RAZE_NAM, RAZE_POWERSLAVE, EDUKE32, WRATH, EDUKE32_IONFURY,
-        }
+    }
 }
