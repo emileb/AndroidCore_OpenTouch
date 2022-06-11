@@ -1,6 +1,8 @@
 package com.opentouchgaming.androidcore.ui;
 
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -20,13 +22,12 @@ import android.widget.TextView;
 
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.saffal.FileSAF;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 public class FileSelectDialog
 {
@@ -217,7 +218,7 @@ public class FileSelectDialog
 
         log.log(D, " basePath = " + basePath);
 
-        File files[] = new File(basePath).listFiles();
+        FileSAF files[] = new FileSAF(basePath).listFiles();
 
         filesArray.clear();
 
