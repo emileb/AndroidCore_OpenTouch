@@ -92,7 +92,7 @@
         android:layout_toLeftOf="@+id/imageview_game_start"
         android:background="@null"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/ic_keyboard_black_24dp" />
+        app:srcCompat="@drawable/mod" />
 
     <LinearLayout
         android:id="@+id/background_layout2"
