@@ -13,9 +13,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.opentouchgaming.androidcore.ui.FileSelectDialog;
+import com.opentouchgaming.saffal.FileSAF;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,6 +100,36 @@ public class SubGame
             return subGame;
         }
     }
+    public String imageCacheFilename()
+    {
+        return AppInfo.getFilesDir() + "/imagecache/" + tag + ".png";
+    }
+
+    private void replaceImageIfPresent(String imageFilename)
+    {
+        FileSAF iconFile = new FileSAF(imageFilename);
+        File cacheFile = new File(imageCacheFilename());
+
+        // Check if icon.ong exists
+        if (iconFile.exists())
+        {
+            boolean validImage = true;
+            // Check if not already copied over
+            if(iconFile.length() != cacheFile.length())
+            {
+                new File(imageCacheFilename()).getParentFile().mkdirs();
+                try {
+                    Utils.copyFile(iconFile.getInputStream(), new FileOutputStream(cacheFile));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    validImage = false;
+                }
+            }
+
+            if(validImage)
+                setImagePng(imageCacheFilename());
+        }
+    }
 
     public void load(Context ctx)
     {
@@ -109,19 +143,22 @@ public class SubGame
             if (args != null)
                 setExtraArgs(args);
 
-            // Check for icon.png file
-            if (rootPath != null && name != null)
-            {
-                String icon = rootPath + "/" + name + "/icon.png";
-                if (new File(icon).exists())
-                {
-                    setImagePng(icon);
-                }
-            }
 
             String imageOverride = AppSettings.getStringOption(ctx, tag + "imageOverride", null);
+
             if (imageOverride != null)
-                setImagePng(imageOverride);
+            {
+                replaceImageIfPresent(imageOverride);
+            }
+            else // Else check for icon.png in the folder
+            {
+                // Check for icon.png file
+                if (rootPath != null && name != null)
+                {
+                    String icon = rootPath + "/" + name + "/icon.png";
+                    replaceImageIfPresent(icon);
+                }
+            }
 
             int weaponWheelNbr = AppSettings.getIntOption(ctx, tag + "wheel_nbr", -1);
             if (weaponWheelNbr != -1)
@@ -309,38 +346,29 @@ public class SubGame
             else
                 imagePath.setText("[default]");
 
-            imageChoose.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    FileSelectDialog.FileSelectCallback callback = new FileSelectDialog.FileSelectCallback()
+            imageChoose.setOnClickListener(v -> {
+
+                FileSelectDialog.FileSelectCallback callback1 = filesArray -> {
+                    String imageOverride1;
+
+                    if (filesArray == null || filesArray.size() == 0)
                     {
-                        @Override
-                        public void dismiss(ArrayList<String> filesArray)
-                        {
-                            String imageOverride;
+                        imageOverride1 = null;
+                    }
+                    else
+                    {
+                        imageOverride1 = filesArray.get(0);
+                    }
 
-                            if (filesArray == null || filesArray.size() == 0)
-                            {
-                                imageOverride = null;
-                            }
-                            else
-                            {
-                                imageOverride = filesArray.get(0);
-                            }
+                    if (imageOverride1 != null)
+                        imagePath.setText(imageOverride1);
+                    else
+                        imagePath.setText("[default]");
 
-                            if (imageOverride != null)
-                                imagePath.setText(imageOverride);
-                            else
-                                imagePath.setText("[default]");
+                    AppSettings.setStringOption(act, tag + "imageOverride", imageOverride1);
+                };
 
-                            AppSettings.setStringOption(act, tag + "imageOverride", imageOverride);
-                        }
-                    };
-
-                    new FileSelectDialog(act, callback, rootPath + "/" + name, new String[]{".png", ".jpg"}, false);
-                }
+                new FileSelectDialog(act, callback1, rootPath + "/" + name, new String[]{".png", ".jpg"}, false);
             });
 
             Spinner wheelSpinner = dialog.findViewById(R.id.weapon_wheel_spinner);
@@ -409,6 +437,11 @@ public class SubGame
                                                 callback.dismiss();
                                             }
                                         });
+
+
+            // Delete the image cache
+            new File(imageCacheFilename()).delete();
+            Glide.get(act).clearMemory();
 
             dialog.show();
         }
