@@ -14,6 +14,7 @@ class SwitchWidget internal constructor(
     val context: Context,
     view: View,
     private val title: String,
+    private val description: String,
     private val settingPrefix: String,
     val default: Boolean
 ) {
@@ -21,6 +22,7 @@ class SwitchWidget internal constructor(
 
     init {
         binding.title.text = title
+        binding.description.text = description
 
         binding.switch1.isChecked = fetchValue(context, settingPrefix, default);
 

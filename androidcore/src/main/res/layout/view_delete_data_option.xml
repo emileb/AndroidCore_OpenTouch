@@ -35,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/delete_config_button"
             android:text="Delete save games"
+            android:visibility="gone"
             android:layout_marginRight="20dp"
             android:layout_centerVertical="true" />
 
@@ -43,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="Delete engine settings"
+            android:text="Delete config"
             android:layout_centerVertical="true" />
     </RelativeLayout>
 </LinearLayout>

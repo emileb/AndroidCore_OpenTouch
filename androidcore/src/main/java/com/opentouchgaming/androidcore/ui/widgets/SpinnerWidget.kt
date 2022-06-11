@@ -15,9 +15,10 @@ class SpinnerWidget internal constructor(
 ) {
     private var binding = ViewSpinnerOptionBinding.bind(view)
 
-    fun setup(title: String, items: Array<String>, default: Int) {
+    fun setup(title: String, description: String, items: Array<String>, default: Int) {
 
         binding.title.text = title
+        binding.description.text = description
 
         val adapter = ArrayAdapter(context, R.layout.simple_spinner_item, items)
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)

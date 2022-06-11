@@ -23,11 +23,21 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/imageView"
             android:text="title"
-            android:textSize="20sp" />
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/imageView"
+            android:text="Description"
+            android:textColor="#808080"
+            android:textSize="10sp" />
 
         <Switch
             android:id="@+id/switch1"
