@@ -24,7 +24,7 @@ class AudioOverrideWidget internal constructor(internal var settingPrefix: Strin
 
         loadSettings()
 
-        val overrideCheckbox = dialog.findViewById<CheckBox>(R.id.override_checkBox)
+        val overrideCheckbox = dialog.findViewById<Switch >(R.id.override_checkBox)
         val overrideLayout =  dialog.findViewById<LinearLayout>(R.id.override_layout)
 
         if(override)  overrideLayout.visibility = View.VISIBLE else overrideLayout.visibility = View.GONE
