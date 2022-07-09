@@ -7,8 +7,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import com.opentouchgaming.androidcore.AppSettings
-import com.opentouchgaming.androidcore.databinding.ViewSpinnerOptionBinding
-import com.opentouchgaming.androidcore.databinding.ViewSwitchOptionBinding
+import com.opentouchgaming.androidcore.databinding.WidgetViewSwitchBinding
 
 class SwitchWidget internal constructor(
     val context: Context,
@@ -18,7 +17,7 @@ class SwitchWidget internal constructor(
     private val settingPrefix: String,
     val default: Boolean
 ) {
-    private var binding = ViewSwitchOptionBinding.bind(view)
+    private var binding = WidgetViewSwitchBinding.bind(view)
 
     init {
         binding.title.text = title

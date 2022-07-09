@@ -6,14 +6,14 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.opentouchgaming.androidcore.AppSettings
-import com.opentouchgaming.androidcore.databinding.ViewSpinnerOptionBinding
+import com.opentouchgaming.androidcore.databinding.WidgetViewSpinnerBinding
 
 class SpinnerWidget internal constructor(
     val context: Context,
     view: View,
     val settingPrefix: String
 ) {
-    private var binding = ViewSpinnerOptionBinding.bind(view)
+    private var binding = WidgetViewSpinnerBinding.bind(view)
 
     fun setup(title: String, description: String, items: Array<String>, default: Int) {
 

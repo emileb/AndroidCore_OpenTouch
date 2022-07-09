@@ -6,7 +6,7 @@ import android.view.View
 import android.view.Window
 import com.opentouchgaming.androidcore.AppInfo
 import com.opentouchgaming.androidcore.Utils
-import com.opentouchgaming.androidcore.databinding.ViewDeleteDataOptionBinding
+import com.opentouchgaming.androidcore.databinding.WidgetViewDeleteDataBinding
 import java.io.File
 
 class DeleteDataWidget internal constructor(
@@ -19,7 +19,7 @@ class DeleteDataWidget internal constructor(
     pathsSaves: Array<String>,
     fileTypesSaves: Array<String>
 ) {
-    private var binding = ViewDeleteDataOptionBinding.bind(view)
+    private var binding = WidgetViewDeleteDataBinding.bind(view)
 
     init {
 

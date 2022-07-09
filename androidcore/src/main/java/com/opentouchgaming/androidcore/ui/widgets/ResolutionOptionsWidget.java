@@ -7,7 +7,7 @@ import android.widget.ArrayAdapter;
 
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
-import com.opentouchgaming.androidcore.databinding.ViewResolutionSelectBinding;
+import com.opentouchgaming.androidcore.databinding.WidgetViewResolutionSelectBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class ResolutionOptionsWidget
 
     List<ResolutionOptions> resolutionList;
 
-    ViewResolutionSelectBinding binding;
+    WidgetViewResolutionSelectBinding binding;
 
     String prefix;
 
@@ -50,7 +50,7 @@ public class ResolutionOptionsWidget
         this.prefix = prefix;
         this.resolutionList = resolutions;
 
-        binding = ViewResolutionSelectBinding.bind(view);
+        binding = WidgetViewResolutionSelectBinding.bind(view);
 
         ArrayAdapter<ResolutionOptions> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, resolutionList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
