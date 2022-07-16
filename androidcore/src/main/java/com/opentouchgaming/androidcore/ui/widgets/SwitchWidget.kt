@@ -3,19 +3,18 @@ package com.opentouchgaming.androidcore.ui.widgets
 import android.R
 import android.content.Context
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.CompoundButton
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.databinding.WidgetViewSwitchBinding
+import org.jetbrains.anko.sdk27.coroutines.onClick
 
-class SwitchWidget internal constructor(
+class SwitchWidget(
     val context: Context,
     view: View,
-    private val title: String,
-    private val description: String,
+    title: String,
+    description: String,
     private val settingPrefix: String,
-    val default: Boolean
+    val default: Boolean,
+    image: Int = 0
 ) {
     private var binding = WidgetViewSwitchBinding.bind(view)
 
@@ -23,10 +22,24 @@ class SwitchWidget internal constructor(
         binding.title.text = title
         binding.description.text = description
 
+        // Update image if set
+        if(image!=0)
+            binding.imageView.setImageResource(image)
+
+        // Clear any change listeners which may be present
+        binding.switch1.setOnCheckedChangeListener(null)
+
+        // Set current value
         binding.switch1.isChecked = fetchValue(context, settingPrefix, default);
 
-        binding.switch1.setOnCheckedChangeListener { _, isChecked ->
+        // Add new change listener
+        binding.switch1.setOnCheckedChangeListener { _, isChecked: Boolean ->
             AppSettings.setBoolOption(context, settingPrefix, isChecked)
+        }
+
+        // Allow whole control to be clickable
+        binding.topLayout.onClick {
+            binding.switch1.isChecked = !binding.switch1.isChecked
         }
     }
 

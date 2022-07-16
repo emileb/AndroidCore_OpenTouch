@@ -9,6 +9,7 @@
     <include layout="@layout/view_horizontal_line" />
 
     <RelativeLayout
+        android:id="@+id/top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -26,7 +27,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/imageView"
             android:text="title"
-            android:textSize="17sp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/description"
@@ -36,8 +37,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/imageView"
             android:text="Description"
-            android:textColor="#808080"
-            android:textSize="10sp" />
+            style="@style/SettingSubText" />
 
         <Switch
             android:id="@+id/switch1"

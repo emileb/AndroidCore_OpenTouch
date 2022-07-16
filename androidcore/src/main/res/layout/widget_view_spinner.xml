@@ -36,8 +36,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/imageView"
             android:text="Description"
-            android:textColor="#808080"
-            android:textSize="10sp" />
+            style="@style/SettingSubText" />
 
         <LinearLayout
             android:id="@+id/layout"

@@ -8,19 +8,36 @@ import android.widget.ArrayAdapter
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.databinding.WidgetViewSpinnerBinding
 
-class SpinnerWidget internal constructor(
+class SpinnerWidget(
     val context: Context,
     view: View,
-    val settingPrefix: String
+    title: String,
+    description: String,
+    items: Array<Pair<String,View?>>,
+    settingPrefix: String,
+    default: Int,
+    image: Int = 0
 ) {
     private var binding = WidgetViewSpinnerBinding.bind(view)
 
-    fun setup(title: String, description: String, items: Array<String>, default: Int) {
+    // Callback
+    var callback: ((Int) -> Unit)? = null
 
+    init {
         binding.title.text = title
         binding.description.text = description
 
-        val adapter = ArrayAdapter(context, R.layout.simple_spinner_item, items)
+        if (image != 0)
+            binding.imageView.setImageResource(image)
+
+
+        val labels = ArrayList<String>()
+        for(i in items)
+        {
+            labels.add(i.first)
+        }
+
+        val adapter = ArrayAdapter(context, R.layout.simple_spinner_item, labels)
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.spinner.adapter = adapter
 
@@ -33,6 +50,18 @@ class SpinnerWidget internal constructor(
                 parent: AdapterView<*>?, view: View?, position: Int, id: Long
             ) {
                 AppSettings.setIntOption(context, settingPrefix + "_spinner", position)
+
+                callback?.invoke(position)
+
+                // Hide/show views if set
+                for(i in items)
+                {
+                    if(i.second != items[position].second)
+                        i.second?.visibility = View.GONE
+                }
+
+                // Show view
+                items[position].second?.visibility = View.VISIBLE
             }
         }
 
