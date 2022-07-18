@@ -27,7 +27,7 @@ public class CustomArgsFileRearrange
 
     CustomArgs customArgs;
 
-    CustomArgsFileRearrange(final Activity act, final CustomArgs customArgs, Runnable update)
+    public CustomArgsFileRearrange(final Activity act, final CustomArgs customArgs, Runnable update)
     {
         this.customArgs = customArgs;
 

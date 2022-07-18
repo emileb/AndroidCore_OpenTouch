@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.ItemClickSupport;
 import com.opentouchgaming.androidcore.R;
 
@@ -27,7 +28,7 @@ public class CustomArgsHistoryDialog
 
     ArrayList<CustomArgs> argsHistory;
 
-    CustomArgsHistoryDialog(final Activity act, final ArrayList<CustomArgs> argsHistory)
+    protected CustomArgsHistoryDialog(final Activity act, final ArrayList<CustomArgs> argsHistory)
     {
 
         this.argsHistory = argsHistory;
@@ -112,13 +113,12 @@ public class CustomArgsHistoryDialog
         {
             holder.item = argsHistory.get(position);
 
-            holder.textView.setText(holder.item.getFinalArgs());
+            holder.textView.setText(AppInfo.hideAppPaths(holder.item.getFinalArgs()));
         }
 
         @Override
         public int getItemCount()
         {
-            //return 10;
             return argsHistory.size();
         }
 

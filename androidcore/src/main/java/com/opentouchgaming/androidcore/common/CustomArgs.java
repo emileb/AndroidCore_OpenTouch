@@ -19,7 +19,7 @@ public class CustomArgs implements Serializable
     private ArrayList<String> files = new ArrayList<>();
     private String args = "";
 
-    CustomArgs()
+    public CustomArgs()
     {
 
     }
