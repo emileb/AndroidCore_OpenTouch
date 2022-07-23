@@ -310,6 +310,9 @@ public class Utils
         return files;
     }
 
+    // Used to represent a quotation mark
+    static public String QOT = "^''";
+
     static public String[] creatArgs(String appArgs)
     {
         //ArrayList<String> a = new ArrayList<String>(Arrays.asList(appArgs.split(" ")));
@@ -323,8 +326,9 @@ public class Utils
             }
         }
 
+        // Replace QOT with a quotation mark
         for (int index =0; index < a.size(); index++){
-            a.set(index, a.get(index).replace("''", "\""));
+            a.set(index, a.get(index).replace(QOT, "\""));
         }
 
         return a.toArray(new String[a.size()]);
