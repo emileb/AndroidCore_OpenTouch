@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore.license;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -18,8 +20,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 /**
  * Created by Emile on 29/10/2017.

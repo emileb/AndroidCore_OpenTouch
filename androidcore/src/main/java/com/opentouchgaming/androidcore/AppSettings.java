@@ -2,7 +2,6 @@ package com.opentouchgaming.androidcore;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
 
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 
@@ -13,31 +12,6 @@ public class AppSettings
     public static void reloadSettings(Context ctx)
     {
         TouchSettings.reloadSettings(ctx);
-    }
-
-    public static boolean showAbout(Context ctx)
-    {
-        try
-        {
-            int versionCode = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
-
-            SharedPreferences settings = ctx.getSharedPreferences("OPTIONS", 0);
-            int last_ver = settings.getInt("last_opened_version", -1);
-            //Log.d("test"," ver = " +  versionCode + " las=" + last_ver);
-            if (versionCode != last_ver)
-            {
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putInt("last_opened_version", versionCode);
-                editor.commit();
-                return true;
-            }
-            else
-                return false;
-
-        } catch (NameNotFoundException e)
-        {
-            return false;
-        }
     }
 
     public static float getFloatOption(Context ctx, String name, float def)
