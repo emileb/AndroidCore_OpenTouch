@@ -232,7 +232,6 @@ public class GamepadDefinitions
 
                 gamepadDefinition.addAction("use", "Open/Use", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_USE, ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_A);
 
-
                 gamepadDefinition.addAction("jump", "Jump", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_JUMP, ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_X);
 
                 gamepadDefinition.addAction("crouch", "Crouch", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_DOWN, ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_B);
@@ -244,8 +243,9 @@ public class GamepadDefinitions
 
                 gamepadDefinition.addAction("weapon_alt", "Weapon alternative", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_WEAP_ALT, ActionInput.SourceType.BUTTON, -1);
 
-                gamepadDefinition.addAction("show_utils", "Show Utils(Save,Load,Map,Keybrd etc)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SHOW_GP_UTILS, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("quick_kick", "Quick Kick", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_KICK, ActionInput.SourceType.BUTTON, -1);
 
+                gamepadDefinition.addAction("show_utils", "Show Utils(Save,Load,Map,Keybrd etc)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SHOW_GP_UTILS, ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addAction("weapon_wheel", "Activate Weapon wheel", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_USE_WEAPON_WHEEL, ActionInput.SourceType.BUTTON, -1,
                                             new WeaponWheelDialog());
@@ -262,12 +262,13 @@ public class GamepadDefinitions
 
                 gamepadDefinition.addAction("show_inv_dpad", "Show inventory UI (DPAD)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SHOW_DPAD_INV, ActionInput.SourceType.BUTTON, -1);
 
+                gamepadDefinition.addAction("gyro_toggle", "Gyro Smart Toggle", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_GYRO_TOGGLE, ActionInput.SourceType.BUTTON, -1);
+
                 gamepadDefinition.addHeader("Ion Fury keys");
                 gamepadDefinition.addAction("alt_attack", "Alt Attack", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_ALT_ATTACK, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("reload", "Reload", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_RELOAD, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("medkit", "Use Medkit", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_MEDKIT, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("radar", "Use Radar", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_RADAR, ActionInput.SourceType.BUTTON, -1);
-
 
                 gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
 
@@ -284,7 +285,6 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("custom_9", "Custom 10", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_9, ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Common menu navigation keys");
-
 
                 gamepadDefinition.addAction("menu_select", "Menu select", ActionInput.ActionType.MENU, PortActDefs.PORT_ACT_MENU_SELECT, ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_A);
 

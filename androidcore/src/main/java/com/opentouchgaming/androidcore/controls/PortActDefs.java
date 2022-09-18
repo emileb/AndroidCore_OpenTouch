@@ -102,6 +102,8 @@ public class PortActDefs
     public static final int PORT_ACT_SHOW_KEYS = 92;
     public static final int PORT_ACT_FLY_UP = 93;
     public static final int PORT_ACT_FLY_DOWN = 94;
+    public static final int PORT_ACT_FLY_CENTER = 95;
+    public static final int PORT_ACT_GYRO_TOGGLE = 96;
 
     public static final int PORT_ACT_WEAP0 = 100;
     public static final int PORT_ACT_WEAP1 = 101;

@@ -43,8 +43,7 @@ public class SubGame
     String downloadFilename;
     String extraArgs;
     int wheelNbr;
-
-    boolean runFromHere;
+    boolean runFromHere = false;
 
     public SubGame(String tag, String title, String name, String rootPath, int gameType, int image, String detail1, String detail2, int wheelNbr)
     {
@@ -164,8 +163,8 @@ public class SubGame
             if (weaponWheelNbr != -1)
                 setWheelNbr(weaponWheelNbr);
 
-            boolean runFromHere = AppSettings.getBoolOption(ctx, tag + "run_from_here", false);
-            setRunFromHere(runFromHere);
+            boolean runFromHereSaved = AppSettings.getBoolOption(ctx, tag + "run_from_here", runFromHere);
+            setRunFromHere(runFromHereSaved);
         }
     }
 
