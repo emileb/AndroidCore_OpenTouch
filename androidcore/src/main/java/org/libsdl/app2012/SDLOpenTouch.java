@@ -233,6 +233,7 @@ public class SDLOpenTouch
         String sourceDir = activity.getApplicationContext().getApplicationInfo().sourceDir;
         String nativeSoPath = activity.getApplicationInfo().nativeLibraryDir;
         String pngFiles = activity.getFilesDir().getAbsolutePath();
+        String resDir = intent.getStringExtra("res_files");
 
         Utils.copyPNGAssets(activity, pngFiles);
 
@@ -254,7 +255,7 @@ public class SDLOpenTouch
         Log.v(TAG, "gamePath = " + gamePath);
         Log.v(TAG, "logFilename = " + logFilename);
 
-        int ret = NativeLib.init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir);
+        int ret = NativeLib.init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir, resDir);
 
         Log.v(TAG, "SDL thread terminated");
         //context.finish();

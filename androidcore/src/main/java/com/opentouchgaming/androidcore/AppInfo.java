@@ -242,6 +242,15 @@ public class AppInfo
         return userFiles;
     }
 
+    static public String getResFiles()
+    {
+        String files = getAppDirectory() + "/res/";
+
+        new File(files).mkdirs();
+
+        return files;
+    }
+
     static public String getUserFiles_FROMSEC()
     {
         String userFiles = getAppSecDirectory() + "/user_files";
