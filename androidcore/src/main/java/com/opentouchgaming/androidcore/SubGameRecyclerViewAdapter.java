@@ -55,6 +55,7 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         holder.mDetail2.setText(AppInfo.replaceRootPaths(holder.mItem.detail2));
         if (holder.mItem.getImagePng() != null)
         {
+            holder.mImage.setScaleType(ImageView.ScaleType.FIT_XY);
             RequestOptions requestOptions = new RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
                     .skipMemoryCache(false);
@@ -62,7 +63,10 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
             Glide.with(AppInfo.getContext()).load(holder.mItem.getImagePng()).apply(requestOptions).into(holder.mImage);
         }
         else
+        {
+            holder.mImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
             holder.mImage.setImageResource(holder.mItem.image);
+        }
 
         if (holder.mItem.selected)
         {
