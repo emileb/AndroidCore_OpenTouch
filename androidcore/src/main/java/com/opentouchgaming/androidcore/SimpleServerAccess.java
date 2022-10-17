@@ -24,6 +24,12 @@ public class SimpleServerAccess
     String LOG = "SimpleServerAccess";
     Context ctx;
 
+    public SimpleServerAccess(Context context, AccessInfo accessInfo)
+    {
+        ctx = context;
+        new ServerAccessThread(accessInfo).execute();
+    }
+
     public static class AccessInfo
     {
         public String url;
@@ -31,30 +37,23 @@ public class SimpleServerAccess
         public Consumer<ByteArrayOutputStream> callback;
     }
 
-    public SimpleServerAccess(Context context, AccessInfo accessInfo)
-    {
-        ctx = context;
-        new ServerAccessThread(accessInfo).execute();
-    }
-
     private class ServerAccessThread extends AsyncTask<Void, Integer, Long>
     {
+
+        final AccessInfo accessInfo;
+        String errorstring = null;
+        ByteArrayOutputStream data_out = new ByteArrayOutputStream();
+        private ProgressDialog progressBar;
 
         ServerAccessThread(AccessInfo accessInfo)
         {
             this.accessInfo = accessInfo;
         }
 
-        final AccessInfo accessInfo;
-
-        String errorstring = null;
-        ByteArrayOutputStream data_out = new ByteArrayOutputStream();
-        private ProgressDialog progressBar;
-
         @Override
         protected void onPreExecute()
         {
-            if(accessInfo.showUI)
+            if (accessInfo.showUI)
             {
                 progressBar = new ProgressDialog(ctx);
                 progressBar.setMessage("Accessing Server..");
@@ -101,7 +100,7 @@ public class SimpleServerAccess
 
                 InputStream ins = httpResponse.getEntity().getContent();
 
-                if(accessInfo.showUI)
+                if (accessInfo.showUI)
                     progressBar.setMax(dlSize);
 
                 if (GD.DEBUG)
@@ -109,7 +108,7 @@ public class SimpleServerAccess
 
                 in = new BufferedInputStream(ins);
 
-                byte data[] = new byte[1024];
+                byte[] data = new byte[1024];
                 int count;
                 while ((count = in.read(data, 0, 1024)) != -1)
                 {
@@ -118,7 +117,8 @@ public class SimpleServerAccess
                 in.close();
 
 
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 errorstring = e.toString();
                 return 1l;
@@ -134,19 +134,20 @@ public class SimpleServerAccess
 
         protected void onPostExecute(Long result)
         {
-            if(accessInfo.showUI)
+            if (accessInfo.showUI)
             {
                 progressBar.dismiss();
                 if (errorstring != null)
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                    builder.setMessage("Error accessing server: " + errorstring).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int id)
-                        {
+                    builder.setMessage("Error accessing server: " + errorstring).setCancelable(true)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                            {
+                                public void onClick(DialogInterface dialog, int id)
+                                {
 
-                        }
-                    });
+                                }
+                            });
 
                     builder.show();
                 }

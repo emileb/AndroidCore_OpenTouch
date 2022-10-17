@@ -218,7 +218,7 @@ public class FileSelectDialog
 
         log.log(D, " basePath = " + basePath);
 
-        FileSAF files[] = new FileSAF(basePath).listFiles();
+        FileSAF[] files = new FileSAF(basePath).listFiles();
 
         filesArray.clear();
 

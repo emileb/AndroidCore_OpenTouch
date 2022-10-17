@@ -56,8 +56,7 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         if (holder.mItem.getImagePng() != null)
         {
             holder.mImage.setScaleType(ImageView.ScaleType.FIT_XY);
-            RequestOptions requestOptions = new RequestOptions()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
+            RequestOptions requestOptions = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE) // because file name is always same
                     .skipMemoryCache(false);
 
             Glide.with(AppInfo.getContext()).load(holder.mItem.getImagePng()).apply(requestOptions).into(holder.mImage);
@@ -87,9 +86,9 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         }
 
         holder.mGameTypeImage.setOnClickListener(v ->
-                                                 {
-                                                     subgameAdditional.apply(holder.mItem);
-                                                 });
+        {
+            subgameAdditional.apply(holder.mItem);
+        });
     }
 
     @Override

@@ -45,47 +45,11 @@ import java.util.ArrayList;
 public class QuickCommandDialog
 {
     static DebugLog log;
+    static String QC_FILENAME = "QuickCommands.json";
 
     static
     {
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "QuickCommandDialog");
-    }
-
-    static String QC_FILENAME = "QuickCommands.json";
-
-    public class QuickCommand implements Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        String title;
-        String command;
-
-        QuickCommand(String title, String command)
-        {
-            this.title = title;
-            this.command = command;
-        }
-
-        public String getTitle()
-        {
-            return title;
-        }
-
-        public void setTitle(String title)
-        {
-            this.title = title;
-        }
-
-        public String getCommand()
-        {
-            return command;
-        }
-
-        public void setCommand(String command)
-        {
-            this.command = command;
-        }
-
     }
 
     final Activity activity;
@@ -93,10 +57,8 @@ public class QuickCommandDialog
     final RecyclerView recyclerView;
     final PathExampleViewAdapter rvAdapter;
     final LinearLayout editLayout;
-
     final EditText titleEditText;
     final EditText commandEditText;
-
     String dataPath;
     ArrayList<QuickCommand> commandList;
 
@@ -147,7 +109,7 @@ public class QuickCommandDialog
             @Override
             public void onTabSelected(TabLayout.Tab tab)
             {
-                if(tab.getPosition() == 0)
+                if (tab.getPosition() == 0)
                     setDataPath(mainPath);
                 else
                     setDataPath(modPath);
@@ -167,26 +129,26 @@ public class QuickCommandDialog
         });
 
         add.setOnClickListener(v ->
-                               {
-                                   if (editLayout.getVisibility() == View.GONE)
-                                       editLayout.setVisibility(View.VISIBLE);
-                                   else
-                                       editLayout.setVisibility(View.GONE);
-                               });
+        {
+            if (editLayout.getVisibility() == View.GONE)
+                editLayout.setVisibility(View.VISIBLE);
+            else
+                editLayout.setVisibility(View.GONE);
+        });
 
         save.setOnClickListener(v ->
-                                {
-                                    String title = titleEditText.getText().toString();
-                                    String command = commandEditText.getText().toString();
-                                    if (title != null && title.length() > 0 && command != null & command.length() > 0)
-                                    {
-                                        QuickCommand newCmd = new QuickCommand(title, command);
-                                        commandList.add(0, newCmd);
-                                        editLayout.setVisibility(View.GONE);
-                                        saveCommands();
-                                    }
-                                    rvAdapter.notifyDataSetChanged();
-                                });
+        {
+            String title = titleEditText.getText().toString();
+            String command = commandEditText.getText().toString();
+            if (title != null && title.length() > 0 && command != null & command.length() > 0)
+            {
+                QuickCommand newCmd = new QuickCommand(title, command);
+                commandList.add(0, newCmd);
+                editLayout.setVisibility(View.GONE);
+                saveCommands();
+            }
+            rvAdapter.notifyDataSetChanged();
+        });
 
         // Swipe to dismiss
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
@@ -217,37 +179,37 @@ public class QuickCommandDialog
         dragSortRecycler.setViewHandleId(R.id.imageView); //View you wish to use as the handle
 
         dragSortRecycler.setOnItemMovedListener((from, to) ->
-                                                {
-                                                    Log.d("TEST", "onItemMoved " + from + " to " + to);
+        {
+            Log.d("TEST", "onItemMoved " + from + " to " + to);
 
-                                                    QuickCommand command = commandList.get(from);
+            QuickCommand command = commandList.get(from);
 
-                                                    commandList.add(from > to ? to : to + 1, command);
-                                                    commandList.remove(from > to ? from + 1 : from);
-                                                    saveCommands();
-                                                    rvAdapter.notifyDataSetChanged();
-                                                });
+            commandList.add(from > to ? to : to + 1, command);
+            commandList.remove(from > to ? from + 1 : from);
+            saveCommands();
+            rvAdapter.notifyDataSetChanged();
+        });
 
         recyclerView.addItemDecoration(dragSortRecycler);
         recyclerView.addOnItemTouchListener(dragSortRecycler);
         recyclerView.setOnScrollListener(dragSortRecycler.getScrollListener());
 
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) ->
-                                                                    {
-                                                                        //selected( position );
-                                                                        callback.apply(commandList.get(position).getCommand());
-                                                                        dialog.hide();
-                                                                    });
+        {
+            //selected( position );
+            callback.apply(commandList.get(position).getCommand());
+            dialog.hide();
+        });
 
         ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener((recyclerView1, position, v) ->
-                                                                        {
-                                                                            QuickCommand command = commandList.get(position);
+        {
+            QuickCommand command = commandList.get(position);
 
-                                                                            titleEditText.setText(command.getTitle());
-                                                                            commandEditText.setText(command.getCommand());
-                                                                            editLayout.setVisibility(View.VISIBLE);
-                                                                            return true;
-                                                                        });
+            titleEditText.setText(command.getTitle());
+            commandEditText.setText(command.getCommand());
+            editLayout.setVisibility(View.VISIBLE);
+            return true;
+        });
 
         setDataPath(mainPath);
     }
@@ -274,7 +236,8 @@ public class QuickCommandDialog
             output.write(jsonObject.toString(4));
             output.close();
 
-        } catch (JSONException | IOException e)
+        }
+        catch (JSONException | IOException e)
         {
             e.printStackTrace();
         }
@@ -294,13 +257,49 @@ public class QuickCommandDialog
             }.getType();
 
             commandList = gson.fromJson(br, type);
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
             commandList = new ArrayList<>();
             e.printStackTrace();
         }
 
         rvAdapter.notifyDataSetChanged();
+    }
+
+    public class QuickCommand implements Serializable
+    {
+        private static final long serialVersionUID = 1L;
+
+        String title;
+        String command;
+
+        QuickCommand(String title, String command)
+        {
+            this.title = title;
+            this.command = command;
+        }
+
+        public String getTitle()
+        {
+            return title;
+        }
+
+        public void setTitle(String title)
+        {
+            this.title = title;
+        }
+
+        public String getCommand()
+        {
+            return command;
+        }
+
+        public void setCommand(String command)
+        {
+            this.command = command;
+        }
+
     }
 
     public class PathExampleViewAdapter extends RecyclerView.Adapter<PathExampleViewAdapter.ViewHolder>

@@ -9,19 +9,13 @@ import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.WidgetViewDeleteDataBinding
 import java.io.File
 
-class DeleteDataWidget internal constructor(
-    val context: Context,
-    view: View,
-    messageSettings: String,
-    pathsSettings: Array<String>,
-    fileTypesSettings: Array<String>,
-    messageSaves: String,
-    pathsSaves: Array<String>,
-    fileTypesSaves: Array<String>
-) {
+class DeleteDataWidget internal constructor(val context: Context, view: View, messageSettings: String, pathsSettings: Array<String>,
+                                            fileTypesSettings: Array<String>, messageSaves: String, pathsSaves: Array<String>, fileTypesSaves: Array<String>)
+{
     private var binding = WidgetViewDeleteDataBinding.bind(view)
 
-    init {
+    init
+    {
 
         binding.deleteConfigButton.setOnClickListener {
 
@@ -47,15 +41,19 @@ class DeleteDataWidget internal constructor(
         }
     }
 
-    fun deleteFiles(paths: Array<String>, fileTypes: Array<String>) {
+    fun deleteFiles(paths: Array<String>, fileTypes: Array<String>)
+    {
         val files = ArrayList<String>()
-        for (p in paths) {
-            for (type in fileTypes) {
+        for (p in paths)
+        {
+            for (type in fileTypes)
+            {
                 Utils.findFiles(File(AppInfo.getUserFiles() + p), type, files)
             }
         }
 
-        for (f in files) {
+        for (f in files)
+        {
             File(f).delete()
         }
     }

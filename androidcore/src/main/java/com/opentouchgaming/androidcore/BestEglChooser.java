@@ -26,13 +26,17 @@ public class BestEglChooser implements EGLConfigChooser
         Log.i(LOG, "chooseConfig");
 
 
-        int[][] mConfigSpec = {{EGL10.EGL_RED_SIZE, 8, EGL10.EGL_GREEN_SIZE, 8, EGL10.EGL_BLUE_SIZE, 8, EGL10.EGL_ALPHA_SIZE, 8, EGL10.EGL_DEPTH_SIZE, 24, EGL10.EGL_STENCIL_SIZE, 8,
+        int[][] mConfigSpec = {{EGL10.EGL_RED_SIZE, 8, EGL10.EGL_GREEN_SIZE, 8, EGL10.EGL_BLUE_SIZE, 8, EGL10.EGL_ALPHA_SIZE, 8, EGL10.EGL_DEPTH_SIZE, 24,
+                EGL10.EGL_STENCIL_SIZE, 8,
                 //EGL10.EGL_SAMPLES, 4,
-                EGL10.EGL_NONE}, {EGL10.EGL_RED_SIZE, 8, EGL10.EGL_GREEN_SIZE, 8, EGL10.EGL_BLUE_SIZE, 8, EGL10.EGL_ALPHA_SIZE, 8, EGL10.EGL_DEPTH_SIZE, 24, EGL10.EGL_STENCIL_SIZE, 0,
+                EGL10.EGL_NONE}, {EGL10.EGL_RED_SIZE, 8, EGL10.EGL_GREEN_SIZE, 8, EGL10.EGL_BLUE_SIZE, 8, EGL10.EGL_ALPHA_SIZE, 8, EGL10.EGL_DEPTH_SIZE, 24,
+                EGL10.EGL_STENCIL_SIZE, 0,
                 //EGL10.EGL_SAMPLES, 4,
-                EGL10.EGL_NONE}, {EGL10.EGL_RED_SIZE, 8, EGL10.EGL_GREEN_SIZE, 8, EGL10.EGL_BLUE_SIZE, 8, EGL10.EGL_ALPHA_SIZE, 8, EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_STENCIL_SIZE, 8,
+                EGL10.EGL_NONE}, {EGL10.EGL_RED_SIZE, 8, EGL10.EGL_GREEN_SIZE, 8, EGL10.EGL_BLUE_SIZE, 8, EGL10.EGL_ALPHA_SIZE, 8, EGL10.EGL_DEPTH_SIZE, 16,
+                EGL10.EGL_STENCIL_SIZE, 8,
                 //EGL10.EGL_SAMPLES, 4,
-                EGL10.EGL_NONE}, {EGL10.EGL_RED_SIZE, 8, EGL10.EGL_GREEN_SIZE, 8, EGL10.EGL_BLUE_SIZE, 8, EGL10.EGL_ALPHA_SIZE, 8, EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_STENCIL_SIZE, 0,
+                EGL10.EGL_NONE}, {EGL10.EGL_RED_SIZE, 8, EGL10.EGL_GREEN_SIZE, 8, EGL10.EGL_BLUE_SIZE, 8, EGL10.EGL_ALPHA_SIZE, 8, EGL10.EGL_DEPTH_SIZE, 16,
+                EGL10.EGL_STENCIL_SIZE, 0,
                 //EGL10.EGL_SAMPLES, 4,
                 EGL10.EGL_NONE},};
 
@@ -103,11 +107,12 @@ public class BestEglChooser implements EGLConfigChooser
      #define EGL_NON_CONFORMANT_CONFIG      0x3051	
 		 */
 
-        return String.format("rgba=%d%d%d%d z=%d sten=%d", r, g, b, a, d, s) + " n=" + findConfigAttrib(egl, display, config, EGL10.EGL_NATIVE_RENDERABLE, 0) + " b=" + findConfigAttrib(egl, display,
-                                                                                                                                                                                         config,
-                                                                                                                                                                                         EGL10.EGL_BUFFER_SIZE,
-                                                                                                                                                                                         0) + String
-                .format(" c=0x%04x", findConfigAttrib(egl, display, config, EGL10.EGL_CONFIG_CAVEAT, 0));
+        return String.format("rgba=%d%d%d%d z=%d sten=%d", r, g, b, a, d, s) +
+               " n=" +
+               findConfigAttrib(egl, display, config, EGL10.EGL_NATIVE_RENDERABLE, 0) +
+               " b=" +
+               findConfigAttrib(egl, display, config, EGL10.EGL_BUFFER_SIZE, 0) +
+               String.format(" c=0x%04x", findConfigAttrib(egl, display, config, EGL10.EGL_CONFIG_CAVEAT, 0));
 
     }
 

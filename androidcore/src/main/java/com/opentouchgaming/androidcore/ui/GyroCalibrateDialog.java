@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore.ui;
 
+import static android.content.Context.SENSOR_SERVICE;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.hardware.Sensor;
@@ -13,8 +15,6 @@ import android.widget.TextView;
 import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
-
-import static android.content.Context.SENSOR_SERVICE;
 
 /**
  * Created by Emile on 31/10/2017.
@@ -60,16 +60,16 @@ public class GyroCalibrateDialog implements SensorEventListener
         Button go = dialog.findViewById(R.id.gyro_calibrate_button);
 
         go.setOnClickListener(v ->
-                              {
-                                  registerSensor(true);
-                                  startTime = System.currentTimeMillis();
+        {
+            registerSensor(true);
+            startTime = System.currentTimeMillis();
 
-                                  // Reset averaging
-                                  count = 0;
-                                  values[0] = 0;
-                                  values[1] = 0;
-                                  values[2] = 0;
-                              });
+            // Reset averaging
+            count = 0;
+            values[0] = 0;
+            values[1] = 0;
+            values[2] = 0;
+        });
 
         dialog.show();
     }

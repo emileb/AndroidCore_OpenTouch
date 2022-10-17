@@ -307,7 +307,8 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration implements Rec
                 int xRel = handlePos[0] - parentItemPos[0];
                 int yRel = handlePos[1] - parentItemPos[1];
 
-                Rect touchBounds = new Rect(itemView.getLeft() + xRel, itemView.getTop() + yRel, itemView.getLeft() + xRel + handleView.getWidth(), itemView.getTop() + yRel + handleView.getHeight());
+                Rect touchBounds = new Rect(itemView.getLeft() + xRel, itemView.getTop() + yRel, itemView.getLeft() + xRel + handleView.getWidth(),
+                        itemView.getTop() + yRel + handleView.getHeight());
 
                 if (touchBounds.contains((int) e.getX(), (int) e.getY()))
                     dragging = true;
@@ -460,14 +461,14 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration implements Rec
 
     public interface OnItemMovedListener
     {
-        public void onItemMoved(int from, int to);
+        void onItemMoved(int from, int to);
     }
 
 
     public interface OnDragStateChangedListener
     {
-        public void onDragStart();
+        void onDragStart();
 
-        public void onDragStop();
+        void onDragStop();
     }
 }

@@ -33,13 +33,16 @@ public class PackageVerif
             fis.close();
             ret.sig = digest.digest();
             return ret;
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
             return null;
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             return null;
-        } catch (NoSuchAlgorithmException e)
+        }
+        catch (NoSuchAlgorithmException e)
         {
             return null;
         }

@@ -80,7 +80,8 @@ public class LicenseCheck
                                 {
                                     log.log(D, "Id failed " + lId + " != " + pInfo.versionCode);
                                 }
-                            } catch (PackageManager.NameNotFoundException e)
+                            }
+                            catch (PackageManager.NameNotFoundException e)
                             {
                                 e.printStackTrace();
                             }
@@ -102,13 +103,15 @@ public class LicenseCheck
                 }
             }
 
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
             log.log(D, "l.dat file not found");
 
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
-            log.log(D, "l.dat file not opened: " + e.toString());
+            log.log(D, "l.dat file not opened: " + e);
         }
 
         // Delete the file if failed
@@ -128,22 +131,23 @@ public class LicenseCheck
             activity = activity_;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage("License not yet found. Press OK to fetch license from Google").setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    NdkLicense.check(activity, key, new LCallback());
+            builder.setMessage("License not yet found. Press OK to fetch license from Google").setCancelable(true)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            NdkLicense.check(activity, key, new LCallback());
 
 
-                    progressDialog = new ProgressDialog(activity);
-                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    progressDialog.setMessage("Please wait...");
-                    progressDialog.setIndeterminate(true);
-                    progressDialog.setCanceledOnTouchOutside(false);
-                    progressDialog.show();
+                            progressDialog = new ProgressDialog(activity);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.setMessage("Please wait...");
+                            progressDialog.setIndeterminate(true);
+                            progressDialog.setCanceledOnTouchOutside(false);
+                            progressDialog.show();
 
-                }
-            });
+                        }
+                    });
 
             AlertDialog alert = builder.create();
             alert.show();
@@ -174,13 +178,14 @@ public class LicenseCheck
                             Toast.makeText(activity, "Unlicensed, reason: " + ret.desc, Toast.LENGTH_LONG).show();
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                            builder.setMessage("Unlicensed, reason: " + ret.desc).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int id)
-                                {
-                                    dialog.cancel();
-                                }
-                            });
+                            builder.setMessage("Unlicensed, reason: " + ret.desc).setCancelable(true)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface dialog, int id)
+                                        {
+                                            dialog.cancel();
+                                        }
+                                    });
 
                             AlertDialog alert = builder.create();
                             alert.show();

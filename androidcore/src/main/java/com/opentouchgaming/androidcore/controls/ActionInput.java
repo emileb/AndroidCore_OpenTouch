@@ -19,6 +19,7 @@ public class ActionInput implements Serializable, Cloneable
     public int source = -1;
     public boolean sourcePositive = true; //Used when using analog as a button
     transient ActionInputExtra extraDialog;
+
     public ActionInput(String tag, String description, ActionType actionType, int actionCode, SourceType sourceType, int source, ActionInputExtra extraDialog)
     {
         this.tag = tag;
@@ -45,7 +46,8 @@ public class ActionInput implements Serializable, Cloneable
         {
             clone = (ActionInput) super.clone();
 
-        } catch (CloneNotSupportedException e)
+        }
+        catch (CloneNotSupportedException e)
         {
             throw new RuntimeException(e); // won't happen
         }

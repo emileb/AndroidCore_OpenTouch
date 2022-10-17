@@ -1,5 +1,9 @@
 package com.opentouchgaming.androidcore.ui;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+import static com.opentouchgaming.androidcore.DebugLog.Level.E;
+import static com.opentouchgaming.androidcore.DebugLog.Level.I;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,10 +39,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
-import static com.opentouchgaming.androidcore.DebugLog.Level.E;
-import static com.opentouchgaming.androidcore.DebugLog.Level.I;
 
 public class TouchSettingsSaveLoad
 {
@@ -98,21 +98,21 @@ public class TouchSettingsSaveLoad
         // Toggle save
         ImageView addButton = dialog.findViewById(R.id.add_imageview);
         addButton.setOnClickListener(v ->
-                                     {
-                                         saving = !saving;
-                                         saveLayout.setVisibility(saving ? View.VISIBLE : View.GONE);
-                                     });
+        {
+            saving = !saving;
+            saveLayout.setVisibility(saving ? View.VISIBLE : View.GONE);
+        });
 
         // Save button
         Button saveButton = dialog.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v ->
-                                      {
-                                          String name = nameEditText.getText().toString().trim();
-                                          if (name.length() > 0)
-                                          {
-                                              saveLayout(name);
-                                          }
-                                      });
+        {
+            String name = nameEditText.getText().toString().trim();
+            if (name.length() > 0)
+            {
+                saveLayout(name);
+            }
+        });
 
         // Swipe to dismiss
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
@@ -153,39 +153,39 @@ public class TouchSettingsSaveLoad
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) ->
-                                                                    {
-                                                                        if (saving)
-                                                                        {
-                                                                            nameEditText.setText(layouts.get(position).name);
-                                                                        }
-                                                                        else
-                                                                        {
+        {
+            if (saving)
+            {
+                nameEditText.setText(layouts.get(position).name);
+            }
+            else
+            {
 
-                                                                            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
-                                                                            //dialogBuilder.setTitle("Load settings");
-                                                                            dialogBuilder.setMessage("Load touch settings? (" + layouts.get(position).name + ")");
-                                                                            dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener()
-                                                                            {
-                                                                                @Override
-                                                                                public void onClick(DialogInterface alertdialog, int which)
-                                                                                {
-                                                                                    String layoutDir = getLayoutsFolder() + "/" + layouts.get(position).folder;
-                                                                                    // Call native to code to load
-                                                                                    int error = nativeIf.loadSettings_if(layoutDir);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+                //dialogBuilder.setTitle("Load settings");
+                dialogBuilder.setMessage("Load touch settings? (" + layouts.get(position).name + ")");
+                dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface alertdialog, int which)
+                    {
+                        String layoutDir = getLayoutsFolder() + "/" + layouts.get(position).folder;
+                        // Call native to code to load
+                        int error = nativeIf.loadSettings_if(layoutDir);
 
-                                                                                    if (error == 0)
-                                                                                    {
-                                                                                        Toast.makeText(act, "Loaded layout", Toast.LENGTH_LONG).show();
-                                                                                        dialog.dismiss();
-                                                                                    }
-                                                                                    else
-                                                                                        Toast.makeText(act, "ERROR loading layout: " + error, Toast.LENGTH_LONG).show();
-                                                                                }
-                                                                            });
-                                                                            AlertDialog alertdialog = dialogBuilder.create();
-                                                                            alertdialog.show();
-                                                                        }
-                                                                    });
+                        if (error == 0)
+                        {
+                            Toast.makeText(act, "Loaded layout", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        }
+                        else
+                            Toast.makeText(act, "ERROR loading layout: " + error, Toast.LENGTH_LONG).show();
+                    }
+                });
+                AlertDialog alertdialog = dialogBuilder.create();
+                alertdialog.show();
+            }
+        });
 
         findLayouts();
 
@@ -226,13 +226,15 @@ public class TouchSettingsSaveLoad
                 log.log(D, "Saved: " + infoFile.getAbsolutePath());
 
                 dialog.dismiss();
-            } catch (FileNotFoundException e)
+            }
+            catch (FileNotFoundException e)
             {
-                log.log(E, "Could not open file " + infoFile.getAbsolutePath() + " :" + e.toString());
+                log.log(E, "Could not open file " + infoFile.getAbsolutePath() + " :" + e);
                 e.printStackTrace();
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
-                log.log(E, "Error writing file " + infoFile.getAbsolutePath() + " :" + e.toString());
+                log.log(E, "Error writing file " + infoFile.getAbsolutePath() + " :" + e);
                 e.printStackTrace();
             }
         }
@@ -284,7 +286,7 @@ public class TouchSettingsSaveLoad
 
         long lastLayoutNumber = 0;
 
-        File layoutsDirs[] = new File(getLayoutsFolder()).listFiles();
+        File[] layoutsDirs = new File(getLayoutsFolder()).listFiles();
         if (layoutsDirs != null)
         {
             for (File dir : layoutsDirs)
@@ -312,16 +314,19 @@ public class TouchSettingsSaveLoad
                         info = (TouchSettingSaveInfo) in.readObject();
                         in.close();
                         log.log(I, "File " + infoFile + " loaded");
-                    } catch (FileNotFoundException e)
+                    }
+                    catch (FileNotFoundException e)
                     {
                         log.log(I, "File " + infoFile + " not found");
-                    } catch (IOException e)
+                    }
+                    catch (IOException e)
                     {
-                        log.log(E, "Could not open file " + infoFile + " :" + e.toString());
+                        log.log(E, "Could not open file " + infoFile + " :" + e);
 
-                    } catch (ClassNotFoundException e)
+                    }
+                    catch (ClassNotFoundException e)
                     {
-                        log.log(E, "Error reading file " + infoFile + " :" + e.toString());
+                        log.log(E, "Error reading file " + infoFile + " :" + e);
                     }
 
                     if (info != null)
@@ -338,7 +343,8 @@ public class TouchSettingsSaveLoad
                         log.log(E, "Failed to load info file");
                     }
 
-                } catch (NumberFormatException nfe)
+                }
+                catch (NumberFormatException nfe)
                 {
                     // Not a number, ignore
                 }
@@ -394,7 +400,7 @@ public class TouchSettingsSaveLoad
                 super(view);
 
                 this.view = view;
-                this.textView = (TextView) view.findViewById(R.id.textView);
+                this.textView = view.findViewById(R.id.textView);
             }
         }
     }

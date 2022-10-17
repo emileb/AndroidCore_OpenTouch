@@ -61,8 +61,6 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     // Set by the entry activity
     static DebugLog log;
 
-    public boolean noLicCheck = false;
-
     static
     {
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "MainFragment");
@@ -76,30 +74,27 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     final int TOOL_BUTTON_EMAIL = 5;
     final int TOOL_BUTTON_STORAGE = 6;
     final int TOOL_BUTTON_WEBSITE = 7;
-
-    public final ToolsPanel.ToolsPanelButton[] toolsButtons =
-            new ToolsPanel.ToolsPanelButton[]{new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_GAMEPAD, "Gamepad", R.drawable.ic_videogame_asset_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_SETTINGS, "Settings", R.drawable.ic_settings_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_STORAGE, "Files", R.drawable.ic_baseline_sd_card_black),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_LOG, "View last log", R.drawable.ic_computer_black_24dp),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_INFO, "Changes", R.drawable.ic_info_outline_black_24dp),
-                    AppInfo.website == null ? new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log", R.drawable.ic_email_black_24dp) :
-                            new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_WEBSITE, "Online", R.drawable.ic_baseline_world),
-                    new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_HELP, "Tutorials", R.drawable.ic_help_green),};
+    public final ToolsPanel.ToolsPanelButton[] toolsButtons = new ToolsPanel.ToolsPanelButton[]{
+            new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_GAMEPAD, "Gamepad", R.drawable.ic_videogame_asset_black_24dp),
+            new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_SETTINGS, "Settings", R.drawable.ic_settings_black_24dp),
+            new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_STORAGE, "Files", R.drawable.ic_baseline_sd_card_black),
+            new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_LOG, "View last log", R.drawable.ic_computer_black_24dp),
+            new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_INFO, "Changes", R.drawable.ic_info_outline_black_24dp),
+            AppInfo.website == null ? new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log",
+                    R.drawable.ic_email_black_24dp) : new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_WEBSITE, "Online", R.drawable.ic_baseline_world),
+            new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_HELP, "Tutorials", R.drawable.ic_help_green),};
+    private final ArrayList<SubGame> multiselectGames = new ArrayList<>();
+    public boolean noLicCheck = false;
     // App data to be saved/loaded
     public AppData appData;
     // Data to be saved for the current engine, currently the argument history
     public EngineData engineData;
-
     // Handel dpad arrows
     public Dpad dpadControl = new Dpad();
-
     // Left/right panels
     public EnginesPanel enginesLeftPanel;
     public ToolsPanel toolsPanel;
-
     public SubGameRecyclerViewAdapter subGameAdapter;
-
     // UI elements
     public RecyclerView recyclerView;
     public ImageView backgroundImageView;
@@ -110,24 +105,16 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public ImageButton showArgsButton;
     public ImageButton superModButton;
     public ImageButton downloadNewVersion;
-
     public Drawable subgameSeparatorLine; // So we cna change the color of the line
-
     public int selectedVersion = 0;
-
     public ArrayList<SubGame> availableSubGames = new ArrayList<>();
     public SubGame selectedSubGame;
-
-    public String argsFinal = "";
     //CustomArgs customArgs = new CustomArgs();
-
+    public String argsFinal = "";
     // Current gamepad focus mode
     public FocusMode focusMode;
-
     public GameLauncherInterface launcher;
-
     private boolean multiselectEnable = false;
-    private ArrayList<SubGame> multiselectGames = new ArrayList<>();
 
 
     /**
@@ -243,8 +230,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         showArgsButton = view.findViewById(R.id.imageview_doom_show_args);
 
         showArgsButton.setBackgroundResource(R.drawable.focusable);
-        showArgsButton.setOnClickListener(
-                v -> new CustomArgsDialog(getActivity(), launcher.getRunDirectory(), launcher.getSecondaryDirectory(), engineData, AppInfo.hideModWads).dialog.setOnDismissListener(dialog -> updateArgs()));
+        showArgsButton.setOnClickListener(v -> new CustomArgsDialog(getActivity(), launcher.getRunDirectory(), launcher.getSecondaryDirectory(), engineData,
+                AppInfo.hideModWads).dialog.setOnDismissListener(dialog -> updateArgs()));
 
         // START game
         startButton.setBackgroundResource(R.drawable.focusable);
@@ -284,7 +271,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                     // Ones with blank filenames are downloads or other non games
                     //if (!selectedSubGame.getFilename().contentEquals(""))
                     {
-                        superMod = new SuperModItem(AppInfo.currentEngine.engine, selectedVersion, selectedSubGame.getTag(), selectedSubGame.getImagePng(), engineData.getCurrentCustomArgs());
+                        superMod = new SuperModItem(AppInfo.currentEngine.engine, selectedVersion, selectedSubGame.getTag(), selectedSubGame.getImagePng(),
+                                engineData.getCurrentCustomArgs());
                     }
 
                     new SuperModDialog(getActivity(), superMod, superModItem ->
@@ -580,10 +568,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             selectedVersion = 0;
 
         // Only DP can multiselect
-        if (engine.engine == GameEngine.Engine.QUAKEDP)
-            multiselectEnable = true;
-        else
-            multiselectEnable = false;
+        multiselectEnable = engine.engine == GameEngine.Engine.QUAKEDP;
 
         subGameAdapter.setMultiSelect(multiselectEnable);
 

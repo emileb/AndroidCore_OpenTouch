@@ -46,9 +46,10 @@ public class NdkLicense
                     d.writeString(context.getPackageName());
                     d.writeStrongBinder(new NdkLicenseListener(callback, key));
                     binder.transact(1, d, null, IBinder.FLAG_ONEWAY);
-                } catch (RemoteException e)
+                }
+                catch (RemoteException e)
                 {
-                    log.log(DebugLog.Level.E, "Error connecting to l server:" + e.toString());
+                    log.log(DebugLog.Level.E, "Error connecting to l server:" + e);
                 }
                 d.recycle();
             }

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -79,7 +78,8 @@ public class ZipUtils
                     }
                 }
                 inputStream.close();
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 e.printStackTrace();
             }
@@ -100,7 +100,8 @@ public class ZipUtils
                         fileFound = true;
                     }
                 }
-            } catch (ZipException e)
+            }
+            catch (ZipException e)
             {
                 e.printStackTrace();
                 fileFound = false;
@@ -131,7 +132,8 @@ public class ZipUtils
                     }
                 }
                 inputStream.close();
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 e.printStackTrace();
             }
@@ -147,7 +149,7 @@ public class ZipUtils
                 if (file != null)
                 {
                     ZipFile zipFile = new ZipFile(file);
-                    for (FileHeader header : (List<FileHeader>) zipFile.getFileHeaders())
+                    for (FileHeader header : zipFile.getFileHeaders())
                     {
                         if (!header.isDirectory())
                         {
@@ -162,7 +164,8 @@ public class ZipUtils
                         }
                     }
                 }
-            } catch (ZipException e)
+            }
+            catch (ZipException e)
             {
                 e.printStackTrace();
             }
@@ -175,7 +178,7 @@ public class ZipUtils
         File file = new File(zipFilename);
 
         ZipFile zipFile = new ZipFile(file);
-        for (FileHeader header : (List<FileHeader>) zipFile.getFileHeaders())
+        for (FileHeader header : zipFile.getFileHeaders())
         {
             if (!header.isDirectory())
             {
@@ -197,7 +200,8 @@ public class ZipUtils
         try
         {
             is = zip.getInputStream(zip.getFileHeader(filename));
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }
@@ -211,7 +215,8 @@ public class ZipUtils
             AssetManager assetManager = ctx.getAssets();
             InputStream in = assetManager.open(file);
             in.close();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             return false;
         }
@@ -259,7 +264,8 @@ public class ZipUtils
                     }
                 }
                 ins.reset();
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 e.printStackTrace();
             }
@@ -297,7 +303,8 @@ public class ZipUtils
                     return 0l;
                 }
 
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 errorstring = e.toString();
                 return 1l;

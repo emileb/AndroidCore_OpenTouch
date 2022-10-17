@@ -27,7 +27,8 @@ public class FPSLimit
                 try
                 {
                     Thread.sleep(wait);
-                } catch (InterruptedException e)
+                }
+                catch (InterruptedException e)
                 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

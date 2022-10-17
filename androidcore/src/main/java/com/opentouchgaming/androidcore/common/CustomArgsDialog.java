@@ -18,17 +18,15 @@ import com.opentouchgaming.androidcore.R;
 
 public class CustomArgsDialog
 {
+    static CustomArgs copyPasteArgs = null;
     public final Dialog dialog;
     final EngineData engineData;
     String appDir;
     String appSecDir;
-
     String extraPath = "";
     Activity activity;
     TextView customModsTextView;
     EditText customArgsEditText;
-
-    static CustomArgs copyPasteArgs = null;
     ImageButton pasteButton;
 
     public CustomArgsDialog(final Activity act, final String appDir, String appSecDir, EngineData ed, boolean hideModsWads)
@@ -56,10 +54,10 @@ public class CustomArgsDialog
 
         ImageButton clearMods = dialog.findViewById(R.id.imagebutton_clear_mods);
         clearMods.setOnClickListener(v ->
-                                     {
-                                         engineData.getCurrentCustomArgs().getFiles().clear();
-                                         update();
-                                     });
+        {
+            engineData.getCurrentCustomArgs().getFiles().clear();
+            update();
+        });
 
         ImageButton selectMods = dialog.findViewById(R.id.imagebutton_select_mods);
         selectMods.setOnClickListener(v -> new ModSelectDialog(act, appDir, appSecDir, engineData.getCurrentCustomArgs(), input ->
@@ -70,10 +68,10 @@ public class CustomArgsDialog
 
         ImageButton clearArgs = dialog.findViewById(R.id.imagebutton_clear_custom);
         clearArgs.setOnClickListener(v ->
-                                     {
-                                         engineData.getCurrentCustomArgs().setArgs("");
-                                         update();
-                                     });
+        {
+            engineData.getCurrentCustomArgs().setArgs("");
+            update();
+        });
 
         ImageButton history = dialog.findViewById(R.id.imagebutton_args_history);
         history.setOnClickListener(v -> new CustomArgsHistoryDialog(act, engineData.getArgsHistory())
@@ -108,27 +106,27 @@ public class CustomArgsDialog
         });
 
         customModsTextView.setOnClickListener(v ->
-                                              {
-                                                  if (engineData.getCurrentCustomArgs().getFiles().size() > 0)
-                                                      new CustomArgsFileRearrange(activity, engineData.getCurrentCustomArgs(), () -> update());
-                                              });
+        {
+            if (engineData.getCurrentCustomArgs().getFiles().size() > 0)
+                new CustomArgsFileRearrange(activity, engineData.getCurrentCustomArgs(), () -> update());
+        });
 
         ImageButton copy = dialog.findViewById(R.id.imagebutton_copy);
         copy.setOnClickListener(v ->
-                                {
-                                    copyPasteArgs = new CustomArgs();
-                                    copyPasteArgs.copy(engineData.getCurrentCustomArgs());
-                                    Toast.makeText(act, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-                                    update();
-                                });
+        {
+            copyPasteArgs = new CustomArgs();
+            copyPasteArgs.copy(engineData.getCurrentCustomArgs());
+            Toast.makeText(act, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+            update();
+        });
 
         pasteButton = dialog.findViewById(R.id.imagebutton_paste);
         pasteButton.setOnClickListener(v ->
-                                       {
-                                           if (copyPasteArgs != null)
-                                               engineData.getCurrentCustomArgs().copy(copyPasteArgs);
-                                           update();
-                                       });
+        {
+            if (copyPasteArgs != null)
+                engineData.getCurrentCustomArgs().copy(copyPasteArgs);
+            update();
+        });
 
         update();
         dialog.show();

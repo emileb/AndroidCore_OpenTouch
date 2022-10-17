@@ -46,15 +46,14 @@ public class TutorialDialog
     }
 
     final Dialog dialog;
+    private final RelativeLayout tutorialLayout;
+    private final ListView mainList;
     Activity activity;
-
     ViewPager pager;
     ViewPagerAdapter pagerAdapter;
     int tutorialActive = -1;
     ArrayList<Tutorial> tutorials;
     Tutorial activeTutorial;
-    private RelativeLayout tutorialLayout;
-    private ListView mainList;
 
     public TutorialDialog(final Activity act, ArrayList<Tutorial> tut)
     {
@@ -165,7 +164,7 @@ public class TutorialDialog
 
     public class ViewPagerAdapter extends PagerAdapter
     {
-        private Context mContext;
+        private final Context mContext;
         private Tutorial tutorial;
 
         public ViewPagerAdapter(Context context)
@@ -218,11 +217,10 @@ public class TutorialDialog
 
             pageTextView.setText((position + 1) + "/" + getCount());
 
-            Glide.with(activity).load(tutorial.getScreens().get(position).image).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)).apply(new RequestOptions()
-                                                                                                                                                                 //.placeholder(R.drawable.ic_tut_cloud_download)
-                                                                                                                                                                 .placeholder(
-                                                                                                                                                                         android.R.drawable.stat_sys_download)
-                                                                                                                                                                 .fitCenter()).into(imageView);
+            Glide.with(activity).load(tutorial.getScreens().get(position).image).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
+                    .apply(new RequestOptions()
+                            //.placeholder(R.drawable.ic_tut_cloud_download)
+                            .placeholder(android.R.drawable.stat_sys_download).fitCenter()).into(imageView);
 
             container.addView(view);
             return view;
@@ -232,8 +230,8 @@ public class TutorialDialog
 
     public class ListAdapter extends ArrayAdapter<Tutorial>
     {
-        private int resourceLayout;
-        private Context mContext;
+        private final int resourceLayout;
+        private final Context mContext;
 
         public ListAdapter(Context context, int resource, List<Tutorial> items)
         {
@@ -247,7 +245,8 @@ public class TutorialDialog
             try
             {
                 return activity.getResources().getIdentifier(pVariableName, pResourcename, activity.getPackageName());
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
                 return -1;
@@ -270,7 +269,7 @@ public class TutorialDialog
 
             if (tut.title != null)
             {
-                TextView text = (TextView) v.findViewById(R.id.textView);
+                TextView text = v.findViewById(R.id.textView);
                 text.setText(tut.title);
             }
 

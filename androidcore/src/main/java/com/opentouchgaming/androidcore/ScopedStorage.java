@@ -20,14 +20,13 @@ public class ScopedStorage
     // The string will be null on OK, or contain an error message
     public static Function<String, Void> openDocumentCallback;
     static DebugLog log;
+    // This is so we can ignore the SAF test in onResume if we JUST set it, the permission is not ready to use yet
+    static boolean justGotNewSaf = false;
 
     static
     {
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "ScopedStorage");
     }
-
-    // This is so we can ignore the SAF test in onResume if we JUST set it, the permission is not ready to use yet
-    static boolean justGotNewSaf = false;
 
     // Check if storage is setup, true if OK
     static public boolean checkStorageOK(Activity activity)
@@ -53,7 +52,7 @@ public class ScopedStorage
                 AppSettings.setBoolOption(activity, "storage_checked", true);
             }
 
-            if(justGotNewSaf == false)
+            if (justGotNewSaf == false)
             {
                 // Check we can still access the SAF folder OK, to avoid security exceptions later on
                 if (AppInfo.getAppSecDirectory() != null)

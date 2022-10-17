@@ -35,7 +35,8 @@ public class AssetFileAccess
             openFiles.add(fd);
 
             return openFiles.indexOf(fd);
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             Log.e(LOG, "fopen: No file found with name: " + filename);
             e.printStackTrace();

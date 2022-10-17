@@ -45,25 +45,25 @@ public class AboutDialog
         //set up button
         Button button = dialog.findViewById(R.id.about_changes_button);
         button.setOnClickListener(v ->
-                                  {
-                                      dialog.setTitle("Changes");
-                                      text.setVisibility(View.INVISIBLE);
-                                      changeLogView.setVisibility(View.VISIBLE);
-                                  });
+        {
+            dialog.setTitle("Changes");
+            text.setVisibility(View.INVISIBLE);
+            changeLogView.setVisibility(View.VISIBLE);
+        });
 
 
         button = dialog.findViewById(R.id.about_license_button);
         button.setOnClickListener(v ->
-                                  {
-                                      dialog.setTitle("About");
-                                      text.setText(readTxt(ctx, aboutRes));
-                                      text.setVisibility(View.VISIBLE);
-                                      changeLogView.setVisibility(View.INVISIBLE);
-                                  });
+        {
+            dialog.setTitle("About");
+            text.setText(readTxt(ctx, aboutRes));
+            text.setVisibility(View.VISIBLE);
+            changeLogView.setVisibility(View.INVISIBLE);
+        });
 
 
         button = dialog.findViewById(R.id.about_rate_button);
-        if(includeRateButton)
+        if (includeRateButton)
         {
             Animation mAnimation = new AlphaAnimation(1, 0);
             mAnimation.setDuration(500);
@@ -73,10 +73,10 @@ public class AboutDialog
             button.startAnimation(mAnimation);
 
             button.setOnClickListener(v ->
-                                      {
-                                          Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + ctx.getPackageName()));
-                                          ctx.startActivity(marketIntent);
-                                      });
+            {
+                Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + ctx.getPackageName()));
+                ctx.startActivity(marketIntent);
+            });
         }
         else
         {
@@ -94,7 +94,7 @@ public class AboutDialog
         int screenHeight = metrics.heightPixels;
         int scrreenWidth = metrics.widthPixels;
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-        params.height = (int) (screenHeight);
+        params.height = screenHeight;
         params.width = (int) (scrreenWidth * 90.0 / 100);
         dialog.getWindow().setAttributes(params);
 
@@ -118,7 +118,8 @@ public class AboutDialog
                 i = inputStream.read();
             }
             inputStream.close();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }
@@ -137,15 +138,14 @@ public class AboutDialog
             {
                 AppSettings.setIntOption(ctx, "last_opened_version", versionCode);
 
-                if(last_ver == -1) // If first run DO NOT show the dialog, in case the scoped storage dialog needs to show
-                    return false;
-                else
-                    return true;
+                // If first run DO NOT show the dialog, in case the scoped storage dialog needs to show
+                return last_ver != -1;
             }
             else
                 return false;
 
-        } catch (NameNotFoundException e)
+        }
+        catch (NameNotFoundException e)
         {
             return false;
         }

@@ -35,7 +35,7 @@ public class LogViewDialog
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
 
-        textView = (TextView) dialog.findViewById(R.id.textView);
+        textView = dialog.findViewById(R.id.textView);
         textView.setText(readFile(file));
 
         dialog.show();
@@ -57,13 +57,16 @@ public class LogViewDialog
                 line = br.readLine();
             }
             return sb.toString();
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
             e.printStackTrace();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
-        } finally
+        }
+        finally
         {
 
         }

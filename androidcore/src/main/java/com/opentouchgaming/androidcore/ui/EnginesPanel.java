@@ -86,13 +86,13 @@ public class EnginesPanel
         // Button to open panel
         leftPanelButton.setFocusable(false);
         leftPanelButton.setOnClickListener(view ->
-                                           {
-                                               if (isOpen())
-                                                   close();
-                                               else
-                                                   open();
-                                               updateFocus();
-                                           });
+        {
+            if (isOpen())
+                close();
+            else
+                open();
+            updateFocus();
+        });
 
 
         // Total width of the panel excluding the open button
@@ -103,7 +103,7 @@ public class EnginesPanel
         int screenHeightPx = Utils.dpToPx(context.getResources(), configuration.screenHeightDp);
 
         // Check if we have a side image
-        if(sideImage != 0)
+        if (sideImage != 0)
         {
             sideImageView.setImageResource(sideImage);
 
@@ -174,7 +174,7 @@ public class EnginesPanel
                 button.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 button.setFocusableInTouchMode(true);
 
-                if(engine.backgroundDrawable != 0)
+                if (engine.backgroundDrawable != 0)
                     button.setBackgroundResource(engine.backgroundDrawable);
                 else
                     button.setBackgroundResource(R.drawable.focusable);

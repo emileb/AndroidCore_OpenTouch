@@ -48,7 +48,8 @@ public class CustomArgsFileRearrange
         recyclerView.setAdapter(rvAdapter);
 
         // Swipe to dismiss
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        {
 
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
@@ -57,12 +58,13 @@ public class CustomArgsFileRearrange
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir)
+            {
                 //Remove swiped item from list and notify the RecyclerView
-                ArgsRecyclerViewAdapter.ViewHolder h = (ArgsRecyclerViewAdapter.ViewHolder)viewHolder;
+                ArgsRecyclerViewAdapter.ViewHolder h = (ArgsRecyclerViewAdapter.ViewHolder) viewHolder;
                 customArgs.getFiles().remove(h.getAdapterPosition());
                 rvAdapter.notifyDataSetChanged();
-                if(customArgs.getFiles().size() == 0)
+                if (customArgs.getFiles().size() == 0)
                     dialog.dismiss();
             }
         };
@@ -74,12 +76,14 @@ public class CustomArgsFileRearrange
         DragSortRecycler dragSortRecycler = new DragSortRecycler();
         dragSortRecycler.setViewHandleId(R.id.imageView); //View you wish to use as the handle
 
-        dragSortRecycler.setOnItemMovedListener(new DragSortRecycler.OnItemMovedListener() {
+        dragSortRecycler.setOnItemMovedListener(new DragSortRecycler.OnItemMovedListener()
+        {
             @Override
-            public void onItemMoved(int from, int to) {
+            public void onItemMoved(int from, int to)
+            {
                 Log.d("TEST", "onItemMoved " + from + " to " + to);
                 String f = customArgs.getFiles().get(from);
-                customArgs.getFiles().add(from > to ? to :  to + 1,f);
+                customArgs.getFiles().add(from > to ? to : to + 1, f);
                 customArgs.getFiles().remove(from > to ? from + 1 : from);
                 rvAdapter.notifyDataSetChanged();
             }
@@ -104,8 +108,7 @@ public class CustomArgsFileRearrange
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_item_args_rearrange, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_args_rearrange, parent, false);
             view.setFocusable(true);
             view.setBackgroundResource(R.drawable.focusable);
             return new ViewHolder(view);
@@ -126,10 +129,9 @@ public class CustomArgsFileRearrange
 
         public class ViewHolder extends RecyclerView.ViewHolder
         {
-            public String item;
-
             public final TextView textView;
             public final View view;
+            public String item;
 
             public ViewHolder(View view)
             {

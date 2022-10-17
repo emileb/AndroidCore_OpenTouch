@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @see <a href="http://www.mogaanywhere.com/developers/">MOGA developer site</a>
  * @see <a href="http://commonsware.com/blog/2014/06/29/dealing-deprecations-bindservice.html">
- *      Discussion on explicit intents</a>
+ * Discussion on explicit intents</a>
  */
 public class MogaHack
 {
@@ -66,13 +66,16 @@ public class MogaHack
                 fServiceConnection = cMogaController.getDeclaredField("mServiceConnection");
                 fServiceConnection.setAccessible(true);
                 mServiceConnection = (android.content.ServiceConnection) fServiceConnection.get(controller);
-            } catch (NoSuchFieldException e)
+            }
+            catch (NoSuchFieldException e)
             {
                 Log.e("MogaHack", "MOGA Lollipop Hack NoSuchFieldException (get)", e);
-            } catch (IllegalAccessException e)
+            }
+            catch (IllegalAccessException e)
             {
                 Log.e("MogaHack", "MOGA Lollipop Hack IllegalAccessException (get)", e);
-            } catch (IllegalArgumentException e)
+            }
+            catch (IllegalArgumentException e)
             {
                 Log.e("MogaHack", "MOGA Lollipop Hack IllegalArgumentException (get)", e);
             }
@@ -97,10 +100,12 @@ public class MogaHack
                 try
                 {
                     fIsBound.setBoolean(controller, true);
-                } catch (IllegalAccessException e)
+                }
+                catch (IllegalAccessException e)
                 {
                     Log.e("MogaHack", "MOGA Lollipop Hack IllegalAccessException (set)", e);
-                } catch (IllegalArgumentException e)
+                }
+                catch (IllegalArgumentException e)
                 {
                     Log.e("MogaHack", "MOGA Lollipop Hack IllegalArgumentException (set)", e);
                 }

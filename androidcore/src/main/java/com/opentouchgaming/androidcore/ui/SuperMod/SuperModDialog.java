@@ -1,6 +1,10 @@
 package com.opentouchgaming.androidcore.ui.SuperMod;
 
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+import static com.opentouchgaming.androidcore.DebugLog.Level.E;
+import static com.opentouchgaming.androidcore.DebugLog.Level.I;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -43,10 +47,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
-import static com.opentouchgaming.androidcore.DebugLog.Level.E;
-import static com.opentouchgaming.androidcore.DebugLog.Level.I;
-
 
 public class SuperModDialog
 {
@@ -58,15 +58,11 @@ public class SuperModDialog
     }
 
     final Dialog dialog;
+    private final ListView mainList;
+    private final ListAdapter listAdapter;
     Activity activity;
-
-    private ListView mainList;
-    private ListAdapter listAdapter;
-
     ArrayList<SuperModItem> items;
     ArrayList<SuperModItem> itemsSorted;
-
-
     int sortType = 1; // 0 = added, 1 = title, 2 = wad
 
     public SuperModDialog(final Activity act, final SuperModItem newSuperMod, Consumer<SuperModItem> selectCallback)
@@ -99,30 +95,30 @@ public class SuperModDialog
         mainList.setAdapter(listAdapter);
 
         mainList.setOnItemLongClickListener((parent, view, position, id) ->
-                                            {
-                                                editItem(position);
-                                                return true;
-                                            });
+        {
+            editItem(position);
+            return true;
+        });
 
         mainList.setOnItemClickListener((parent, view, position, id) ->
-                                        {
-                                            SuperModItem item = itemsSorted.get(position);
-                                            log.log(D, "Selected " + id + " Title = " + item.title);
-                                            selectCallback.accept(itemsSorted.get(position));
-                                            dialog.dismiss();
-                                        });
+        {
+            SuperModItem item = itemsSorted.get(position);
+            log.log(D, "Selected " + id + " Title = " + item.title);
+            selectCallback.accept(itemsSorted.get(position));
+            dialog.dismiss();
+        });
 
         ImageButton addButton = dialog.findViewById(R.id.add_imageButton);
         addButton.setOnClickListener(v ->
-                                     {
-                                         if (newSuperMod != null)
-                                         {
-                                             SuperModItem copy = new SuperModItem(newSuperMod);
-                                             items.add(0, copy);
-                                             saveList();
-                                             editItem(0);
-                                         }
-                                     });
+        {
+            if (newSuperMod != null)
+            {
+                SuperModItem copy = new SuperModItem(newSuperMod);
+                items.add(0, copy);
+                saveList();
+                editItem(0);
+            }
+        });
 
         ImageButton sortButton = dialog.findViewById(R.id.sort_imageButton);
         sortButton.setOnClickListener(new View.OnClickListener()
@@ -156,8 +152,8 @@ public class SuperModDialog
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setMessage(
-                    "This screen allows you to save your wad + mod + args configurations. Configure your game how to wish to play then come to this screen and press the '+' button to save.")
-                    .setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
+                    "This screen allows you to save your wad + mod + args configurations. Configure your game how to wish to play then come to this " +
+                    "screen and press the '+' button to save.").setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
@@ -237,16 +233,19 @@ public class SuperModDialog
             ArrayList<SuperModItem> d = (ArrayList<SuperModItem>) in.readObject();
             data = d;
             log.log(I, "File " + fileName + " loaded");
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
             log.log(I, "File " + fileName + " not found");
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
-            log.log(E, "Could not open file " + fileName + " :" + e.toString());
+            log.log(E, "Could not open file " + fileName + " :" + e);
 
-        } catch (ClassNotFoundException e)
+        }
+        catch (ClassNotFoundException e)
         {
-            log.log(E, "Error reading file " + fileName + " :" + e.toString());
+            log.log(E, "Error reading file " + fileName + " :" + e);
         }
 
         //Failed to open
@@ -271,142 +270,19 @@ public class SuperModDialog
             out = new ObjectOutputStream(fos);
             out.writeObject(items);
             out.close();
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
-            log.log(E, "Could not open file " + fileName + " :" + e.toString());
+            log.log(E, "Could not open file " + fileName + " :" + e);
             e.printStackTrace();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
-            log.log(E, "Error writing file " + fileName + " :" + e.toString());
+            log.log(E, "Error writing file " + fileName + " :" + e);
             e.printStackTrace();
         }
 
         sortList();
-    }
-
-    class ListAdapter extends BaseAdapter
-    {
-
-        //Picasso picassoInstance;
-
-        public ListAdapter()
-        {
-            //Picasso.Builder picassoBuilder = new Picasso.Builder(activity);
-            //picassoBuilder.addRequestHandler(new CachedModPicDownloader());
-            //picassoInstance = picassoBuilder.build();
-        }
-
-
-        public int getCount()
-        {
-            return itemsSorted.size();
-        }
-
-        @Override
-        public Object getItem(int position)
-        {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position)
-        {
-            return 0;
-        }
-
-
-        public View getView(int position, View convertView, ViewGroup list)
-        {
-            View view;
-
-            if (convertView == null)
-                view = activity.getLayoutInflater().inflate(R.layout.super_mod_item, null);
-            else
-                view = convertView;
-
-            SuperModItem item = itemsSorted.get(position);
-
-            TextView title_textView = view.findViewById(R.id.title_textView);
-            ImageView iwad_imageView = view.findViewById(R.id.iwad_imageView);
-            ImageView engine_imageView = view.findViewById(R.id.engine_imageView);
-            ImageView mod_imageView = view.findViewById(R.id.mod_imageView);
-            TextView version_textView = view.findViewById(R.id.version_textView);
-            TextView files_textView = view.findViewById(R.id.files_textView);
-
-            GameEngine engine = AppInfo.getGameEngine(item.engine);
-
-            Typeface face = Typeface.createFromAsset(activity.getAssets(), "recharge_font.ttf");
-            title_textView.setTypeface(face);
-
-            if (engine != null)
-            {
-
-                // Set title
-                if (item.title != null && !item.title.contentEquals(""))
-                    title_textView.setText(item.title);
-                else
-                    title_textView.setText("NO TITLE");
-
-                if(item.gameTypeImage != null)
-                    iwad_imageView.setImageURI(Uri.fromFile(new File(item.gameTypeImage)));
-                else
-                    iwad_imageView.setImageResource(AppInfo.defaultAppImage);
-
-/*
-                // Find the iwad image
-                String iwadImage = TitlePicFinder.getTitlePicPath(item.iwad);
-                File iwadImageFile = new File(iwadImage);
-                if (iwadImageFile.exists())
-                {
-                    iwad_imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    iwad_imageView.setImageURI(Uri.fromFile(iwadImageFile));
-                } else
-                {
-                    iwad_imageView.setImageResource(DoomIWad.getGameImage(item.iwad));
-                }
-*/
-                // Find mod image, look in cache first, else try to extract
-                if (item.modImage != null)
-                {
-                    mod_imageView.setVisibility(View.VISIBLE);
-                    Glide.with(activity).load("zip_pic:" + item.modImage)
-                            //.placeholder(R.drawable.questionmark)
-                            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)).into(mod_imageView);
-                }
-                else
-                {
-                    mod_imageView.setVisibility(View.GONE);
-                }
-
-
-                // Engine icon
-                engine_imageView.setImageResource(engine.iconRes);
-
-                // Engine version
-                if (item.version < engine.versions.length)
-                {
-                    version_textView.setText(engine.versions[item.version]);
-                }
-                else
-                {
-                    version_textView.setText("ERROR");
-                }
-
-                // Files
-                StringBuilder str = new StringBuilder();
-                int files = 0;
-                for (String file : item.customArgs.getFiles())
-                {
-                    str.append("File: " + AppInfo.hideAppPaths(file) + "\n");
-                    files++;
-                    if (files == 3)
-                        break; // Max files to show
-                }
-                str.append("Args: " + item.customArgs.getArgsString());
-                files_textView.setText(str.toString());
-            }
-            return view;
-        }
     }
 
     /*
@@ -483,43 +359,169 @@ public class SuperModDialog
         args_editText.setText(item.customArgs.getArgsString());
 
         dialog.setOnDismissListener(dialog1 ->
-                                    {
-                                        item.title = title_editText.getText().toString();
-                                        item.customArgs.setArgs(args_editText.getText().toString());
-                                        saveList();
-                                    });
+        {
+            item.title = title_editText.getText().toString();
+            item.customArgs.setArgs(args_editText.getText().toString());
+            saveList();
+        });
 
         Button removeButton = dialog.findViewById(R.id.delete_button);
         removeButton.setOnClickListener(v ->
-                                        {
-                                            //itemsSorted.remove(pos);
-                                            items.remove(item);
-                                            saveList();
-                                            dialog.dismiss();
-                                        });
+        {
+            //itemsSorted.remove(pos);
+            items.remove(item);
+            saveList();
+            dialog.dismiss();
+        });
 
         Button selectImageButton = dialog.findViewById(R.id.select_image_button);
         selectImageButton.setOnClickListener(v ->
-                                             {
+        {
 
-                                                 FileSelectDialog.FileSelectCallback callback = filesArray ->
-                                                 {
-                                                     String imageOverride;
+            FileSelectDialog.FileSelectCallback callback = filesArray ->
+            {
+                String imageOverride;
 
-                                                     if (filesArray == null || filesArray.size() == 0)
-                                                     {
-                                                         imageOverride = null;
-                                                     }
-                                                     else
-                                                     {
-                                                         imageOverride = filesArray.get(0);
-                                                     }
-                                                     item.gameTypeImage = imageOverride;
+                if (filesArray == null || filesArray.size() == 0)
+                {
+                    imageOverride = null;
+                }
+                else
+                {
+                    imageOverride = filesArray.get(0);
+                }
+                item.gameTypeImage = imageOverride;
 
-                                                 };
+            };
 
-                                                 new FileSelectDialog(activity, callback, AppInfo.getAppDirectory(), new String[]{".png", ".jpg"}, false);
+            new FileSelectDialog(activity, callback, AppInfo.getAppDirectory(), new String[]{".png", ".jpg"}, false);
 
-                                             }); dialog.show();
+        });
+        dialog.show();
+    }
+
+    class ListAdapter extends BaseAdapter
+    {
+
+        //Picasso picassoInstance;
+
+        public ListAdapter()
+        {
+            //Picasso.Builder picassoBuilder = new Picasso.Builder(activity);
+            //picassoBuilder.addRequestHandler(new CachedModPicDownloader());
+            //picassoInstance = picassoBuilder.build();
+        }
+
+
+        public int getCount()
+        {
+            return itemsSorted.size();
+        }
+
+        @Override
+        public Object getItem(int position)
+        {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position)
+        {
+            return 0;
+        }
+
+
+        public View getView(int position, View convertView, ViewGroup list)
+        {
+            View view;
+
+            if (convertView == null)
+                view = activity.getLayoutInflater().inflate(R.layout.super_mod_item, null);
+            else
+                view = convertView;
+
+            SuperModItem item = itemsSorted.get(position);
+
+            TextView title_textView = view.findViewById(R.id.title_textView);
+            ImageView iwad_imageView = view.findViewById(R.id.iwad_imageView);
+            ImageView engine_imageView = view.findViewById(R.id.engine_imageView);
+            ImageView mod_imageView = view.findViewById(R.id.mod_imageView);
+            TextView version_textView = view.findViewById(R.id.version_textView);
+            TextView files_textView = view.findViewById(R.id.files_textView);
+
+            GameEngine engine = AppInfo.getGameEngine(item.engine);
+
+            Typeface face = Typeface.createFromAsset(activity.getAssets(), "recharge_font.ttf");
+            title_textView.setTypeface(face);
+
+            if (engine != null)
+            {
+
+                // Set title
+                if (item.title != null && !item.title.contentEquals(""))
+                    title_textView.setText(item.title);
+                else
+                    title_textView.setText("NO TITLE");
+
+                if (item.gameTypeImage != null)
+                    iwad_imageView.setImageURI(Uri.fromFile(new File(item.gameTypeImage)));
+                else
+                    iwad_imageView.setImageResource(AppInfo.defaultAppImage);
+
+/*
+                // Find the iwad image
+                String iwadImage = TitlePicFinder.getTitlePicPath(item.iwad);
+                File iwadImageFile = new File(iwadImage);
+                if (iwadImageFile.exists())
+                {
+                    iwad_imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    iwad_imageView.setImageURI(Uri.fromFile(iwadImageFile));
+                } else
+                {
+                    iwad_imageView.setImageResource(DoomIWad.getGameImage(item.iwad));
+                }
+*/
+                // Find mod image, look in cache first, else try to extract
+                if (item.modImage != null)
+                {
+                    mod_imageView.setVisibility(View.VISIBLE);
+                    Glide.with(activity).load("zip_pic:" + item.modImage)
+                            //.placeholder(R.drawable.questionmark)
+                            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)).into(mod_imageView);
+                }
+                else
+                {
+                    mod_imageView.setVisibility(View.GONE);
+                }
+
+
+                // Engine icon
+                engine_imageView.setImageResource(engine.iconRes);
+
+                // Engine version
+                if (item.version < engine.versions.length)
+                {
+                    version_textView.setText(engine.versions[item.version]);
+                }
+                else
+                {
+                    version_textView.setText("ERROR");
+                }
+
+                // Files
+                StringBuilder str = new StringBuilder();
+                int files = 0;
+                for (String file : item.customArgs.getFiles())
+                {
+                    str.append("File: " + AppInfo.hideAppPaths(file) + "\n");
+                    files++;
+                    if (files == 3)
+                        break; // Max files to show
+                }
+                str.append("Args: " + item.customArgs.getArgsString());
+                files_textView.setText(str.toString());
+            }
+            return view;
+        }
     }
 }

@@ -140,7 +140,8 @@ public class TouchSettings
         try
         {
             files = assetManager.list("");
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             Log.e("tag", "Failed to get asset file list.", e);
         }
@@ -161,7 +162,8 @@ public class TouchSettings
                     out.flush();
                     out.close();
                     out = null;
-                } catch (IOException e)
+                }
+                catch (IOException e)
                 {
                     Log.e("tag", "Failed to copy asset file: " + filename, e);
                 }

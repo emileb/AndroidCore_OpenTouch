@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore.controls;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.E;
+
 import android.content.Context;
 import android.view.InputEvent;
 import android.view.KeyEvent;
@@ -10,8 +12,6 @@ import com.opentouchgaming.androidcore.DebugLog;
 
 import java.io.IOException;
 import java.util.HashMap;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.E;
 
 public class ControlInterpreter
 {
@@ -59,13 +59,15 @@ public class ControlInterpreter
         {
             String gamepadConfigFile = AppSettings.getStringOption(context, "gamepad_config_filename", GamePadFragment.DEFAULT_CONFIG);
             config.loadControls(gamepadConfigFile);
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             // TODO Auto-generated catch block
             //e.printStackTrace();
-        } catch (ClassNotFoundException e)
+        }
+        catch (ClassNotFoundException e)
         {
-            log.log(E, "Error loading gamepad file: " + e.toString());
+            log.log(E, "Error loading gamepad file: " + e);
         }
     }
 
@@ -122,12 +124,14 @@ public class ControlInterpreter
                 }
                 break;
                 case MotionEvent.ACTION_DOWN:
-                case MotionEvent.ACTION_POINTER_DOWN: {
+                case MotionEvent.ACTION_POINTER_DOWN:
+                {
                     controlInterface.touchEvent_if(1, pointerId, x, y);
                 }
                 break;
                 case MotionEvent.ACTION_POINTER_UP:
-                case MotionEvent.ACTION_UP: {
+                case MotionEvent.ACTION_UP:
+                {
                     controlInterface.touchEvent_if(2, pointerId, x, y);
                 }
                 break;
@@ -234,7 +238,8 @@ public class ControlInterpreter
                 return true;
 
             // If this returns 1 it means the volume key was used
-            int ret = controlInterface.doAction_if(1, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
+            int ret = controlInterface.doAction_if(1,
+                    (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
             if (ret == 1)
                 return true;
         }
@@ -256,10 +261,7 @@ public class ControlInterpreter
 
         handleDpad(event);
 
-        if (used)
-            return true;
-        else
-            return false;
+        return used;
         /*
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
                 (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
@@ -287,7 +289,8 @@ public class ControlInterpreter
                 return true;
 
             // If this returns 1 it means the volume key was used
-            int ret = controlInterface.doAction_if(0, (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
+            int ret = controlInterface.doAction_if(0,
+                    (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
             if (ret == 1)
                 return true;
         }
@@ -306,10 +309,7 @@ public class ControlInterpreter
 
         handleDpad(event);
 
-        if (used)
-            return true;
-        else
-            return false;
+        return used;
         /*
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
                 (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))

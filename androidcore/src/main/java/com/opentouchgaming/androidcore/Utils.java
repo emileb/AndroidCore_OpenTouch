@@ -53,13 +53,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-;
-
 public class Utils
 {
     static final int BUFFER_SIZE = 1024;
+    // Used to represent a quotation mark
+    static public String QOT = "^''";
     static String LOG = "Utils";
     static DebugLog log;
+    static String NAME_PREFIX = "class ";
 
     static
     {
@@ -96,7 +97,8 @@ public class Utils
                 // 2 ways to try to make the folder visible over USB
                 AppInfo.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + info.getAbsolutePath())));
                 new SingleMediaScanner(context, false, info.getAbsolutePath());
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -129,7 +131,8 @@ public class Utils
         out.close();
     }
 
-    static public void showDownloadDialog(final Activity act, String title, final String directory, final String file, final int size, final ServerAPI.Callback cb)
+    static public void showDownloadDialog(final Activity act, String title, final String directory, final String file, final int size,
+                                          final ServerAPI.Callback cb)
     {
         boolean ok = LicenseCheck.checkLicenseFile(act, AppInfo.key);
         if (!ok)
@@ -255,7 +258,8 @@ public class Utils
         try
         {
             files = assetManager.list("");
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             Log.e("tag", "Failed to get asset file list.", e);
         }
@@ -271,14 +275,14 @@ public class Utils
                     in.close();
                     out.flush();
                     out.close();
-                } catch (IOException e)
+                }
+                catch (IOException e)
                 {
                     Log.e("tag", "Failed to copy asset file: " + filename, e);
                 }
             }
         }
     }
-
 
     static public ArrayList<File> listFiles(String[] paths)
     {
@@ -310,9 +314,6 @@ public class Utils
         return files;
     }
 
-    // Used to represent a quotation mark
-    static public String QOT = "^''";
-
     static public String[] creatArgs(String appArgs)
     {
         //ArrayList<String> a = new ArrayList<String>(Arrays.asList(appArgs.split(" ")));
@@ -327,13 +328,13 @@ public class Utils
         }
 
         // Replace QOT with a quotation mark
-        for (int index =0; index < a.size(); index++){
+        for (int index = 0; index < a.size(); index++)
+        {
             a.set(index, a.get(index).replace(QOT, "\""));
         }
 
         return a.toArray(new String[a.size()]);
     }
-
 
     public static void expand(final View v)
     {
@@ -403,7 +404,8 @@ public class Utils
         try
         {
             logcatProc = Runtime.getRuntime().exec(logcatArgs);
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             return null;
         }
@@ -420,16 +422,19 @@ public class Utils
                 sb.append(line);
                 sb.append(separator);
             }
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
-        } finally
+        }
+        finally
         {
             if (reader != null)
             {
                 try
                 {
                     reader.close();
-                } catch (IOException e)
+                }
+                catch (IOException e)
                 {
                 }
             }
@@ -480,7 +485,8 @@ public class Utils
 
                             activity.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
 
-                        } catch (IOException e)
+                        }
+                        catch (IOException e)
                         {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -514,9 +520,10 @@ public class Utils
             in.close();
             out.flush();
             out.close();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
-            Log.e("tag", "Failed to copy asset file: " + file + " error = " + e.toString());
+            Log.e("tag", "Failed to copy asset file: " + file + " error = " + e);
         }
     }
 
@@ -591,10 +598,17 @@ public class Utils
 
             if (AppSettings.getBoolOption(act, "immersive_mode", false))
             {
-                act.getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                                                                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                                                                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                                                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                                                     // hide nav bar
+                                                                     |
+                                                                     View.SYSTEM_UI_FLAG_FULLSCREEN
+                                                                     // hide status bar
+                                                                     |
+                                                                     View.SYSTEM_UI_FLAG_IMMERSIVE |
+                                                                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
                 View decorView = act.getWindow().getDecorView();
                 decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
@@ -604,11 +618,17 @@ public class Utils
                     {
                         Log.d(LOG, "onSystemUiVisibilityChange");
 
-                        act.getWindow().getDecorView().setSystemUiVisibility(
-                                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                // hide nav bar
-                                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                                | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                        act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                                                                             View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                                                                             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                                                             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                                                             // hide nav bar
+                                                                             |
+                                                                             View.SYSTEM_UI_FLAG_FULLSCREEN
+                                                                             // hide status bar
+                                                                             |
+                                                                             View.SYSTEM_UI_FLAG_IMMERSIVE |
+                                                                             View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
                     }
                 });
@@ -640,9 +660,13 @@ public class Utils
             {
                 if (hasFocus)
                 {
-                    act.getWindow().getDecorView().setSystemUiVisibility(
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                            View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                    act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                                                                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                                                                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                                                         View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                                                                         View.SYSTEM_UI_FLAG_FULLSCREEN |
+                                                                         View.SYSTEM_UI_FLAG_IMMERSIVE |
+                                                                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                 }
             }
         }
@@ -654,7 +678,7 @@ public class Utils
         if (bytes < unit)
             return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "KMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "");
+        String pre = ("KMGTPE").charAt(exp - 1) + ("");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
@@ -682,7 +706,7 @@ public class Utils
         int nbrDirs = 0;
         int totalSize = 0;
 
-        File files[] = new FileSAF(path).listFiles();
+        File[] files = new FileSAF(path).listFiles();
 
         if (files != null)
         {
@@ -732,6 +756,75 @@ public class Utils
         return files;
     }
 
+    static int getTargetAPI()
+    {
+        int targetSdkVersion = 0;
+        try
+        {
+            PackageInfo packageInfo = AppInfo.getContext().getPackageManager().getPackageInfo(AppInfo.getContext().getPackageName(), 0);
+            targetSdkVersion = packageInfo.applicationInfo.targetSdkVersion;
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+
+        }
+        return targetSdkVersion;
+    }
+
+    private static String getClassName(Type type)
+    {
+        String fullName = type.toString();
+        if (fullName.startsWith(NAME_PREFIX))
+            return fullName.substring(NAME_PREFIX.length());
+        return fullName;
+    }
+
+    public static boolean toJson(String outputFile, Object object)
+    {
+        boolean error = false;
+        try
+        {
+            String jsonInString = new Gson().toJson(object);
+            JSONArray jsonObject = new JSONArray(jsonInString);
+            BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
+            output.write(jsonObject.toString(4));
+            output.close();
+        }
+        catch (JSONException | IOException e)
+        {
+            e.printStackTrace();
+            error = true;
+        }
+        return error;
+    }
+
+    public static <T> T fromJson(String outputFile, Type type, boolean creatNew)
+    {
+        T t = null;
+        try
+        {
+            Gson gson = new Gson();
+            BufferedReader br = new BufferedReader(new FileReader(outputFile));
+            // Type type = new TypeToken<clazz>() {  }.getType();
+            t = gson.fromJson(br, type);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        return t;
+    }
+
+    public static String quoteString(String s)
+    {
+        if (s.contains(" "))
+        {
+            return "\"" + s + "\"";
+        }
+        else
+            return s;
+    }
 
     public static class SpinnerValues
     {
@@ -783,80 +876,10 @@ public class Utils
             if (obj instanceof SpinnerValues)
             {
                 SpinnerValues c = (SpinnerValues) obj;
-                if (c.getName().equals(name) && c.getValue() == value)
-                    return true;
+                return c.getName().equals(name) && c.getValue() == value;
             }
 
             return false;
         }
-    }
-
-    static int getTargetAPI()
-    {
-        int targetSdkVersion = 0;
-        try
-        {
-            PackageInfo packageInfo = AppInfo.getContext().getPackageManager().getPackageInfo(AppInfo.getContext().getPackageName(), 0);
-            targetSdkVersion = packageInfo.applicationInfo.targetSdkVersion;
-        } catch (PackageManager.NameNotFoundException e)
-        {
-
-        }
-        return targetSdkVersion;
-    }
-
-    static String NAME_PREFIX = "class ";
-
-    private static String getClassName(Type type)
-    {
-        String fullName = type.toString();
-        if (fullName.startsWith(NAME_PREFIX))
-            return fullName.substring(NAME_PREFIX.length());
-        return fullName;
-    }
-
-    public static boolean toJson(String outputFile, Object object)
-    {
-        boolean error = false;
-        try
-        {
-            String jsonInString = new Gson().toJson(object);
-            JSONArray jsonObject = new JSONArray(jsonInString);
-            BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
-            output.write(jsonObject.toString(4));
-            output.close();
-        } catch (JSONException | IOException e)
-        {
-            e.printStackTrace();
-            error = true;
-        }
-        return error;
-    }
-
-    public static <T> T fromJson(String outputFile, Type type, boolean creatNew)
-    {
-        T t = null;
-        try
-        {
-            Gson gson = new Gson();
-            BufferedReader br = new BufferedReader(new FileReader(outputFile));
-            // Type type = new TypeToken<clazz>() {  }.getType();
-            t = gson.fromJson(br, type);
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-
-        return t;
-    }
-
-    public static String quoteString(String s)
-    {
-        if (s.contains(" "))
-        {
-            return "\"" + s + "\"";
-        }
-        else
-            return s;
     }
 }

@@ -52,7 +52,7 @@ public class ServerAPI
 
     public interface Callback
     {
-        public void callback(boolean complete);
+        void callback(boolean complete);
     }
 
     static private class DLFileThread extends AsyncTask<String, Integer, Long>
@@ -125,12 +125,23 @@ public class ServerAPI
 
                 String apk_hash = PackageVerif.bytesToString(PackageVerif.packageSig(ctx).sig);
 
-                urlString = "http://opentouchgaming.com/api/download_v5.php?" + "" + "ldata=" + URLEncoder.encode(lic_data, "UTF-8") + "&lsig=" + URLEncoder
-                        .encode(lic_sig, "UTF-8") + "&apkhash=" + URLEncoder.encode(apk_hash, "UTF-8") + "&file=" + URLEncoder.encode(downloadFilename, "UTF-8") + "&pos=" + downloadedBytes;
+                urlString = "http://opentouchgaming.com/api/download_v5.php?" +
+                            "" +
+                            "ldata=" +
+                            URLEncoder.encode(lic_data, "UTF-8") +
+                            "&lsig=" +
+                            URLEncoder.encode(lic_sig, "UTF-8") +
+                            "&apkhash=" +
+                            URLEncoder.encode(apk_hash, "UTF-8") +
+                            "&file=" +
+                            URLEncoder.encode(downloadFilename, "UTF-8") +
+                            "&pos=" +
+                            downloadedBytes;
 
                 log.log(D, "urlString = " + urlString);
 
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 // Can not recover from file errors
                 return new Status(STATUS_FILE_ERROR, e.toString());
@@ -144,7 +155,8 @@ public class ServerAPI
             {
                 URL url = new URL(urlString);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36");
+                connection.setRequestProperty("User-Agent",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36");
                 connection.setRequestMethod("GET");
                 //connection.setDoOutput(true);
                 connection.setRequestProperty("Connection", "keep-alive");
@@ -174,7 +186,7 @@ public class ServerAPI
 
                 log.log(D, "Download size is " + downloadSize);
 
-                byte data[] = new byte[1024 * 10];
+                byte[] data = new byte[1024 * 10];
                 int count;
                 while ((downloadedBytes < downloadSize) && ((count = inputStream.read(data, 0, data.length)) != -1))
                 {
@@ -193,7 +205,8 @@ public class ServerAPI
                 inputStream.close();
                 fout.close();
 
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 e.printStackTrace();
                 if (didDownload)
@@ -256,7 +269,8 @@ public class ServerAPI
                         try
                         {
                             Thread.sleep(1000);
-                        } catch (InterruptedException e)
+                        }
+                        catch (InterruptedException e)
                         {
                             e.printStackTrace();
                         }
@@ -273,7 +287,8 @@ public class ServerAPI
                     try
                     {
                         Thread.sleep(1000);
-                    } catch (InterruptedException e)
+                    }
+                    catch (InterruptedException e)
                     {
                         e.printStackTrace();
                     }
@@ -317,11 +332,13 @@ public class ServerAPI
                         }
 
 
-                    } catch (FileNotFoundException e)
+                    }
+                    catch (FileNotFoundException e)
                     {
                         errorstring = e.toString();
                         e.printStackTrace();
-                    } catch (IOException e)
+                    }
+                    catch (IOException e)
                     {
                         errorstring = e.toString();
                         e.printStackTrace();
@@ -344,11 +361,13 @@ public class ServerAPI
                         InputStream in = new FileInputStream(cachedDownload);
                         OutputStream out = new FileOutputStream(new File(basePath, downloadFilename));
                         Utils.copyFile(in, out, progressBar);
-                    } catch (FileNotFoundException e)
+                    }
+                    catch (FileNotFoundException e)
                     {
                         errorstring = e.toString();
                         e.printStackTrace();
-                    } catch (IOException e)
+                    }
+                    catch (IOException e)
                     {
                         errorstring = e.toString();
                         e.printStackTrace();
@@ -370,13 +389,16 @@ public class ServerAPI
             try
             {
                 dialog.dismiss();
-            } catch (final IllegalArgumentException e)
+            }
+            catch (final IllegalArgumentException e)
             {
                 // Do nothing.
-            } catch (final Exception e)
+            }
+            catch (final Exception e)
             {
                 // Do nothing.
-            } finally
+            }
+            finally
             {
                 dialog = null;
             }

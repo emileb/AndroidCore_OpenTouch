@@ -12,8 +12,8 @@ import java.io.File;
 public class SingleMediaScanner implements MediaScannerConnectionClient
 {
 
-    private MediaScannerConnection mMs;
-    private String mFile;
+    private final MediaScannerConnection mMs;
+    private final String mFile;
     private boolean path;
 
     public SingleMediaScanner(Context context, boolean path, String f)

@@ -17,9 +17,9 @@ public class Dpad
 
     int directionPressedLast = -1; // initialized to -1
 
-    boolean axisState[] = new boolean[4];
-    boolean keyState[] = new boolean[4];
-    boolean finalState[] = new boolean[4];
+    boolean[] axisState = new boolean[4];
+    boolean[] keyState = new boolean[4];
+    boolean[] finalState = new boolean[4];
 
     public static boolean isDpadDevice(InputEvent event)
     {
@@ -30,14 +30,9 @@ public class Dpad
         int sourceNoButton = event.getSource() & ~InputDevice.SOURCE_CLASS_BUTTON;
 
         // Trying to determine if a gamepad and NOT and keyboard
-        if (((sourceNoButton & InputDevice.SOURCE_KEYBOARD) == 0) || ((sourceNoButton & InputDevice.SOURCE_GAMEPAD) != 0) || ((sourceNoButton & InputDevice.SOURCE_JOYSTICK) != 0))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return ((sourceNoButton & InputDevice.SOURCE_KEYBOARD) == 0) ||
+               ((sourceNoButton & InputDevice.SOURCE_GAMEPAD) != 0) ||
+               ((sourceNoButton & InputDevice.SOURCE_JOYSTICK) != 0);
 
         /*
         if ((event.getSource() & InputDevice.SOURCE_DPAD) != InputDevice.SOURCE_DPAD)

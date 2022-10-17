@@ -1,5 +1,9 @@
 package com.opentouchgaming.androidcore.common;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+import static com.opentouchgaming.androidcore.DebugLog.Level.E;
+import static com.opentouchgaming.androidcore.DebugLog.Level.I;
+
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.GameEngine;
 
@@ -12,10 +16,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.EnumMap;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
-import static com.opentouchgaming.androidcore.DebugLog.Level.E;
-import static com.opentouchgaming.androidcore.DebugLog.Level.I;
 
 /**
  * Created by Emile on 24/08/2017.
@@ -33,7 +33,7 @@ public class AppData implements Serializable
     }
 
 
-    private EnumMap<GameEngine.Engine, EngineData> engineData = new EnumMap<>(GameEngine.Engine.class);
+    private final EnumMap<GameEngine.Engine, EngineData> engineData = new EnumMap<>(GameEngine.Engine.class);
 
     public static void saveToFile(String file, AppData appData)
     {
@@ -47,13 +47,15 @@ public class AppData implements Serializable
             out = new ObjectOutputStream(fos);
             out.writeObject(appData);
             out.close();
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
-            log.log(E, "Could not open file " + file + " :" + e.toString());
+            log.log(E, "Could not open file " + file + " :" + e);
             e.printStackTrace();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
-            log.log(E, "Error writing file " + file + " :" + e.toString());
+            log.log(E, "Error writing file " + file + " :" + e);
             e.printStackTrace();
         }
     }
@@ -75,16 +77,19 @@ public class AppData implements Serializable
             AppData d = (AppData) in.readObject();
             data = d;
             log.log(I, "File " + file + " loaded");
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
             log.log(I, "File " + file + " not found");
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
-            log.log(E, "Could not open file " + file + " :" + e.toString());
+            log.log(E, "Could not open file " + file + " :" + e);
 
-        } catch (ClassNotFoundException e)
+        }
+        catch (ClassNotFoundException e)
         {
-            log.log(E, "Error reading file " + file + " :" + e.toString());
+            log.log(E, "Error reading file " + file + " :" + e);
         }
 
         //Failed to open

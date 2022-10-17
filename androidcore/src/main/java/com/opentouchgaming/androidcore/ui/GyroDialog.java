@@ -64,8 +64,8 @@ public class GyroDialog
                 {
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
                     dialogBuilder.setTitle("Gyroscope not found");
-                    dialogBuilder.setMessage(
-                            "Your device does not appear to have a gyroscope sensor. Download the app called 'Sensors test' to confirm." + " Email support@opentouchgaming.com if you believe this is an error. Thank you.");
+                    dialogBuilder.setMessage("Your device does not appear to have a gyroscope sensor. Download the app called 'Sensors test' to confirm." +
+                                             " Email support@opentouchgaming.com if you believe this is an error. Thank you.");
                     dialogBuilder.setPositiveButton("OK", new android.content.DialogInterface.OnClickListener()
                     {
                         @Override

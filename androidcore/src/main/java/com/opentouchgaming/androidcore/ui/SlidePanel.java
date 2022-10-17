@@ -124,6 +124,7 @@ public class SlidePanel
     {
         return isOpen;
     }
+
     enum SlideSide
     {
         LEFT, RIGHT, TOP, BOTTOM

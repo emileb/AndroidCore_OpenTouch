@@ -3,27 +3,27 @@ package com.opentouchgaming.androidcore.controls;
 public interface ControlInterface
 {
 
-    public void initTouchControls_if(String pngPath, int width, int height);
+    void initTouchControls_if(String pngPath, int width, int height);
 
-    public boolean touchEvent_if(int action, int pid, float x, float y);
+    boolean touchEvent_if(int action, int pid, float x, float y);
 
-    public void keyPress_if(int down, int qkey, int unicode);
+    void keyPress_if(int down, int qkey, int unicode);
 
-    public int doAction_if(int state, int action);
+    int doAction_if(int state, int action);
 
-    public void backButton_if();
+    void backButton_if();
 
-    public void analogFwd_if(float v, float raw);
+    void analogFwd_if(float v, float raw);
 
-    public void analogSide_if(float v, float raw);
+    void analogSide_if(float v, float raw);
 
-    public void analogPitch_if(int mode, float v, float raw);
+    void analogPitch_if(int mode, float v, float raw);
 
-    public void analogYaw_if(int mode, float v, float raw);
+    void analogYaw_if(int mode, float v, float raw);
 
-    public int loadSettings_if(String filename);
+    int loadSettings_if(String filename);
 
-    public int saveSettings_if(String filename);
+    int saveSettings_if(String filename);
 
 }
  

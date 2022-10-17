@@ -180,7 +180,7 @@ public class GamepadSaveLoad
                 super(view);
 
                 this.view = view;
-                this.textView = (TextView) view.findViewById(R.id.textView);
+                this.textView = view.findViewById(R.id.textView);
             }
         }
     }

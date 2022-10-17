@@ -13,9 +13,10 @@ public class NdkLvlInterface
         try
         {
             System.loadLibrary("ndk_lvl");
-        } catch (UnsatisfiedLinkError ule)
+        }
+        catch (UnsatisfiedLinkError ule)
         {
-            Log.e("JNI", "WARNING: Could not load shared library: " + ule.toString());
+            Log.e("JNI", "WARNING: Could not load shared library: " + ule);
         }
 
         return checkRSASig(key, message, sig);

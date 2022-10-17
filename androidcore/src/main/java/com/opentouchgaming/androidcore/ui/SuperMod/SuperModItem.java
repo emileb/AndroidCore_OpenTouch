@@ -5,7 +5,8 @@ import com.opentouchgaming.androidcore.common.CustomArgs;
 
 import java.io.Serializable;
 
-public class SuperModItem implements Serializable {
+public class SuperModItem implements Serializable
+{
 
     static final long serialVersionUID = 1;
 
@@ -20,7 +21,8 @@ public class SuperModItem implements Serializable {
 
     String modImage; // null = none, "zipfile:filename" = image in zip/wad file
 
-    public SuperModItem(GameEngine.Engine engine, int version, String subgameTag, String image, CustomArgs customArgs) {
+    public SuperModItem(GameEngine.Engine engine, int version, String subgameTag, String image, CustomArgs customArgs)
+    {
         this.engine = engine;
         this.version = version;
         this.subgameTag = subgameTag;
@@ -31,7 +33,8 @@ public class SuperModItem implements Serializable {
         title = "";
     }
 
-    SuperModItem(SuperModItem item) {
+    SuperModItem(SuperModItem item)
+    {
         engine = item.engine;
         title = item.title;
         version = item.version;

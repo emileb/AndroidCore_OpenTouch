@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore.ui;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -42,8 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 
 public class StorageConfigDialog
@@ -100,140 +100,138 @@ public class StorageConfigDialog
 
         scopedStorage.setChecked(AppInfo.isScopedEnabled());
         scopedStorage.setOnCheckedChangeListener((buttonView, isChecked) ->
-                                                 {
-                                                     if (isChecked)
-                                                     {
-                                                         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                                                         builder.setMessage(
-                                                                 "Enabled Scoped Storage?")
-                                                                 .setCancelable(false).setPositiveButton("Yes", (dialog13, id) ->
-                                                         {
-                                                             String oldPath = AppInfo.getAppDirectory();
-                                                             AppInfo.setScoped(true);
-                                                             String newPath = AppInfo.getAppDirectory();
+        {
+            if (isChecked)
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setMessage("Enabled Scoped Storage?").setCancelable(false).setPositiveButton("Yes", (dialog13, id) ->
+                {
+                    String oldPath = AppInfo.getAppDirectory();
+                    AppInfo.setScoped(true);
+                    String newPath = AppInfo.getAppDirectory();
 
-                                                             new CopyFilesTask().execute(new String[]{oldPath, newPath});
-                                                             updateUI();
-                                                         }).setNegativeButton("No", (dialog1, which) ->
-                                                         {
-                                                             scopedStorage.setChecked(false);
-                                                             updateUI();
-                                                         });
+                    new CopyFilesTask().execute(oldPath, newPath);
+                    updateUI();
+                }).setNegativeButton("No", (dialog1, which) ->
+                {
+                    scopedStorage.setChecked(false);
+                    updateUI();
+                });
 
-                                                         AlertDialog alert = builder.create();
-                                                         alert.show();
+                AlertDialog alert = builder.create();
+                alert.show();
 
-                                                     }
-                                                     else
-                                                     {
-                                                         AppInfo.setScoped(false);
-                                                     }
+            }
+            else
+            {
+                AppInfo.setScoped(false);
+            }
 
-                                                     updateUI();
-                                                 });
+            updateUI();
+        });
 
         // PRIMARY folder options
         appDirButton.setOnClickListener(v ->
-                                        {
-                                            PopupMenu popup = new PopupMenu(activity, appDirButton);
-                                            popup.getMenuInflater().inflate(R.menu.app_dir_popup, popup.getMenu());
-                                            popup.setOnMenuItemClickListener(item ->
-                                                                             {
-                                                                                 if (item.getItemId() == R.id.reset)
-                                                                                 {
-                                                                                     AppInfo.setAppDirectory(null); //This resets it
-                                                                                 }
-                                                                                 else if (item.getItemId() == R.id.sdcard)
-                                                                                 {
+        {
+            PopupMenu popup = new PopupMenu(activity, appDirButton);
+            popup.getMenuInflater().inflate(R.menu.app_dir_popup, popup.getMenu());
+            popup.setOnMenuItemClickListener(item ->
+            {
+                if (item.getItemId() == R.id.reset)
+                {
+                    AppInfo.setAppDirectory(null); //This resets it
+                }
+                else if (item.getItemId() == R.id.sdcard)
+                {
 
-                                                                                     // Primary always need to be on the writable SD card area
-                                                                                     if (AppInfo.sdcardWritable != null)
-                                                                                     {
-                                                                                         AppInfo.setAppDirectory(AppInfo.sdcardWritable);
-                                                                                     }
-                                                                                     else
-                                                                                         Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG).show();
+                    // Primary always need to be on the writable SD card area
+                    if (AppInfo.sdcardWritable != null)
+                    {
+                        AppInfo.setAppDirectory(AppInfo.sdcardWritable);
+                    }
+                    else
+                        Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG).show();
 
-                                                                                 }
-                                                                                 else if (item.getItemId() == R.id.choose)
-                                                                                 {
-                                                                                     DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(activity, chosenDir ->
-                                                                                     {
-                                                                                         updateAppDir(chosenDir);
-                                                                                         updateUI();
-                                                                                     });
-                                                                                     directoryChooserDialog.chooseDirectory(AppInfo.getAppDirectory());
-                                                                                 }
+                }
+                else if (item.getItemId() == R.id.choose)
+                {
+                    DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(activity, chosenDir ->
+                    {
+                        updateAppDir(chosenDir);
+                        updateUI();
+                    });
+                    directoryChooserDialog.chooseDirectory(AppInfo.getAppDirectory());
+                }
 
-                                                                                 updateUI();
+                updateUI();
 
-                                                                                 return true;
-                                                                             });
+                return true;
+            });
 
-                                            popup.show();
-                                        });
+            popup.show();
+        });
 
         // SECONDARY folder options
         appSecDirButton.setOnClickListener(v ->
-                                           {
-                                               PopupMenu popup = new PopupMenu(activity, appSecDirButton);
+        {
+            PopupMenu popup = new PopupMenu(activity, appSecDirButton);
 
-                                               if (AppInfo.isScopedEnabled())
-                                               {
-                                                   new ScopedStorageDialog(activity, AppInfo.scopedTutorial, () ->
-                                                   {
-                                                       updateUI();
-                                                   });
-                                                   updateUI();
-                                               }
-                                               else
-                                               {
-                                                   popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup, popup.getMenu());
-                                                   popup.setOnMenuItemClickListener(item ->
-                                                                                    {
-                                                                                        if (item.getItemId() == R.id.reset)
-                                                                                        {
-                                                                                            AppInfo.setAppSecDirectory(null); //This resets it
-                                                                                        }
-                                                                                        else if (item.getItemId() == R.id.sdcard)
-                                                                                        {
+            if (AppInfo.isScopedEnabled())
+            {
+                new ScopedStorageDialog(activity, AppInfo.scopedTutorial, () ->
+                {
+                    updateUI();
+                });
+                updateUI();
+            }
+            else
+            {
+                popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup, popup.getMenu());
+                popup.setOnMenuItemClickListener(item ->
+                {
+                    if (item.getItemId() == R.id.reset)
+                    {
+                        AppInfo.setAppSecDirectory(null); //This resets it
+                    }
+                    else if (item.getItemId() == R.id.sdcard)
+                    {
 
-                                                                                            if (AppInfo.sdcardRoot != null)
-                                                                                            {
-                                                                                                if (AppInfo.isScopedEnabled())
-                                                                                                { // Scoped storage can only read here now..
-                                                                                                    AppInfo.setAppSecDirectory(AppInfo.sdcardWritable);
-                                                                                                }
-                                                                                                else
-                                                                                                {
-                                                                                                    AppInfo.setAppSecDirectory(AppInfo.sdcardRoot);
-                                                                                                }
-                                                                                            }
-                                                                                            else
-                                                                                                Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG).show();
+                        if (AppInfo.sdcardRoot != null)
+                        {
+                            if (AppInfo.isScopedEnabled())
+                            { // Scoped storage can only read here now..
+                                AppInfo.setAppSecDirectory(AppInfo.sdcardWritable);
+                            }
+                            else
+                            {
+                                AppInfo.setAppSecDirectory(AppInfo.sdcardRoot);
+                            }
+                        }
+                        else
+                            Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG).show();
 
-                                                                                        }
-                                                                                        else if (item.getItemId() == R.id.internal)
-                                                                                        {
-                                                                                            AppInfo.setAppSecDirectory(AppInfo.flashRoot);
-                                                                                        }
-                                                                                        else if (item.getItemId() == R.id.choose)
-                                                                                        {
-                                                                                            DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(activity, chosenDir ->
-                                                                                            {
-                                                                                                updateAppSecDir(chosenDir);
-                                                                                                updateUI();
-                                                                                            });
-                                                                                            directoryChooserDialog.chooseDirectory(AppInfo.getAppSecDirectory());
-                                                                                        }
+                    }
+                    else if (item.getItemId() == R.id.internal)
+                    {
+                        AppInfo.setAppSecDirectory(AppInfo.flashRoot);
+                    }
+                    else if (item.getItemId() == R.id.choose)
+                    {
+                        DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(activity, chosenDir ->
+                        {
+                            updateAppSecDir(chosenDir);
+                            updateUI();
+                        });
+                        directoryChooserDialog.chooseDirectory(AppInfo.getAppSecDirectory());
+                    }
 
-                                                                                        updateUI();
+                    updateUI();
 
-                                                                                        return true;
-                                                                                    });
-                                               }
-                                               popup.show();
-                                           });
+                    return true;
+                });
+            }
+            popup.show();
+        });
 
 
         updateUI();
@@ -310,7 +308,8 @@ public class StorageConfigDialog
                 showError(dir + " is not a writable");
                 return;
             }
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             showError(dir + " is not a writable");
             return;
@@ -362,7 +361,91 @@ public class StorageConfigDialog
         errdialog.show();
     }
 
-    public static enum PathLocation
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void copyFolder(FileSAF src, FileSAF dest) throws IOException
+    {
+        if (src.isDirectory())
+        {
+            if (!dest.exists())
+            {
+                dest.mkdir();
+                log.log(D, "MKDIR: " + dest);
+            }
+
+            String[] files = src.list();
+
+            for (String file : files)
+            {
+                FileSAF srcFile = new FileSAF(src, file);
+                FileSAF destFile = new FileSAF(dest, file);
+
+                copyFolder(srcFile, destFile);
+            }
+        }
+        else if (!dest.exists()) // Copy only if it does not exist
+        {
+            log.log(D, "COPYING: from (" + src + ")  to  (" + dest + ")");
+            InputStream in;
+            OutputStream out;
+
+            if (src.isRealFile())
+                in = new FileInputStream(src);
+            else
+                in = src.getInputStream();
+
+            // Always writing to real file for now..
+            out = new FileOutputStream(dest);
+
+            Utils.copyFile(in, out);
+
+            in.close();
+            out.close();
+        }
+        else
+        {
+            log.log(D, "File" + dest + " already exists, not copying");
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void copyFiles(FileSAF src, FileSAF dest)
+    {
+        FileSAF[] oldFiles = src.listFiles();
+
+        if (oldFiles != null && oldFiles.length != 0)
+        {
+            log.log(D, "Old files = " + oldFiles.length + " copying to: " + dest.toString());
+            try
+            {
+                copyFolder(src, dest);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @SuppressLint("NewApi")
+    private void copyUserFiles(String oldPath, String newPath)
+    {
+        if (AppInfo.isScopedEnabled() || AppInfo.getAppSecDirectory() != null)
+        {
+
+            FileSAF oldUserFilesDir = new FileSAF(oldPath + "/user_files");
+            FileSAF newUserFilesDir = new FileSAF(newPath + "/user_files");
+
+            copyFiles(oldUserFilesDir, newUserFilesDir);
+
+            FileSAF oldAudio = new FileSAF(oldPath + "/audiopack");
+            FileSAF newAudio = new FileSAF(newPath + "/audiopack");
+
+            copyFiles(oldAudio, newAudio);
+        }
+    }
+
+
+    public enum PathLocation
     {
         PRIM, SEC, BOTH
     }
@@ -467,89 +550,6 @@ public class StorageConfigDialog
                 this.appSecDirTextView = view.findViewById(R.id.appSec_dir_textview);
                 this.appSecDirIcon = view.findViewById(R.id.appSec_dir_image);
             }
-        }
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void copyFolder(FileSAF src, FileSAF dest) throws IOException
-    {
-        if (src.isDirectory())
-        {
-            if (!dest.exists())
-            {
-                dest.mkdir();
-                log.log(D, "MKDIR: " + dest.toString());
-            }
-
-            String files[] = src.list();
-
-            for (String file : files)
-            {
-                FileSAF srcFile = new FileSAF(src, file);
-                FileSAF destFile = new FileSAF(dest, file);
-
-                copyFolder(srcFile, destFile);
-            }
-        }
-        else if (!dest.exists()) // Copy only if it does not exist
-        {
-            log.log(D, "COPYING: from (" + src.toString() + ")  to  (" + dest.toString() + ")");
-            InputStream in;
-            OutputStream out;
-
-            if (src.isRealFile())
-                in = new FileInputStream(src);
-            else
-                in = src.getInputStream();
-
-            // Always writing to real file for now..
-            out = new FileOutputStream(dest);
-
-            Utils.copyFile(in, out);
-
-            in.close();
-            out.close();
-        }
-        else
-        {
-            log.log(D, "File" + dest.toString() + " already exists, not copying");
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void copyFiles(FileSAF src, FileSAF dest)
-    {
-        FileSAF[] oldFiles = src.listFiles();
-
-        if (oldFiles != null && oldFiles.length != 0)
-        {
-            log.log(D, "Old files = " + oldFiles.length + " copying to: " + dest.toString());
-            try
-            {
-                copyFolder(src, dest);
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @SuppressLint("NewApi")
-    private void copyUserFiles(String oldPath, String newPath)
-    {
-        if (AppInfo.isScopedEnabled() || AppInfo.getAppSecDirectory() != null)
-        {
-
-            FileSAF oldUserFilesDir = new FileSAF(oldPath + "/user_files");
-            FileSAF newUserFilesDir = new FileSAF(newPath + "/user_files");
-
-            copyFiles(oldUserFilesDir, newUserFilesDir);
-
-            FileSAF oldAudio = new FileSAF(oldPath + "/audiopack");
-            FileSAF newAudio = new FileSAF(newPath + "/audiopack");
-
-            copyFiles(oldAudio, newAudio);
         }
     }
 

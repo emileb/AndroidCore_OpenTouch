@@ -13,15 +13,16 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class FileMover {
+class FileMover
+{
 
-    fun doMove(activity: Activity, destination: String, files: ArrayList<Pair<String, String>>): Boolean {
+    fun doMove(activity: Activity, destination: String, files: ArrayList<Pair<String, String>>): Boolean
+    {
 
-        var filesFiltered = fileFiles(files);
+        var filesFiltered = fileFiles(files)
 
         // No files to move
-        if (filesFiltered.size == 0)
-            return false;
+        if (filesFiltered.size == 0) return false
 
 
         var dialog = Dialog(activity)
@@ -34,24 +35,29 @@ class FileMover {
         dialog.setCancelable(true)
         dialog.setCanceledOnTouchOutside(false)
 
-        progressBar.max = filesFiltered.size;
+        progressBar.max = filesFiltered.size
         dialog.show()
 
         doAsync {
 
-            for (file in filesFiltered) {
+            for (file in filesFiltered)
+            {
                 // Move (rename file)
                 var fileReal = File(file.first)
                 var fileName = fileReal.name
-                if (file.second != null)
-                    fileName = file.second
+                if (file.second != null) fileName = file.second
 
-                if (!fileReal.renameTo(File(destination + "/" + fileName))) {
+                if (!fileReal.renameTo(File(destination + "/" + fileName)))
+                {
                     Log.e("FileMover", "Failed to move: " + fileReal.absolutePath)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    {
+                        try
+                        {
                             Files.copy(Paths.get(file.first), Paths.get(destination + "/" + fileName))
-                        } catch (ex: Exception) {
+                        }
+                        catch (ex: Exception)
+                        {
 
                         }
                     }
@@ -71,15 +77,18 @@ class FileMover {
     }
 
 
-    fun fileFiles(files: ArrayList<Pair<String, String>>): ArrayList<Pair<String, String>> {
+    fun fileFiles(files: ArrayList<Pair<String, String>>): ArrayList<Pair<String, String>>
+    {
         var filesFiltered = ArrayList<Pair<String, String>>()
 
-        for (file in files) {
-            if (File(file.first).exists()) {
-                filesFiltered.add(file);
+        for (file in files)
+        {
+            if (File(file.first).exists())
+            {
+                filesFiltered.add(file)
             }
         }
 
-        return filesFiltered;
+        return filesFiltered
     }
 }

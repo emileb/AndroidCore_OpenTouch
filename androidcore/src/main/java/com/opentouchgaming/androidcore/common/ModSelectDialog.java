@@ -37,41 +37,22 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 
-public class ModSelectDialog {
+public class ModSelectDialog
+{
 
     static DebugLog log;
 
-    static {
+    static
+    {
         log = new DebugLog(DebugLog.Module.APP, "ModSelectDialog");
     }
 
-
-    String appDir;
-    String appSecDir;
-
-    String extraPath = "";
-
     final int SORT_TYPE_NAME = 0;
     final int SORT_TYPE_DATE = 1;
-
-    class ModFile {
-        String file;
-        String fileName;
-        long date;
-
-        ModFile(String file, String fileName, long date) {
-            this.file = file;
-            this.fileName = fileName;
-            this.date = date;
-        }
-/*
-        @Override
-        public String toString() {
-            return name;
-        }
-        */
-    }
-
+    final Dialog dialog;
+    String appDir;
+    String appSecDir;
+    String extraPath = "";
     ArrayList<ModFile> filesArray = new ArrayList<ModFile>();
 
     ArrayList<ModFile> filteredFiles = new ArrayList<ModFile>();
@@ -80,22 +61,17 @@ public class ModSelectDialog {
 
     // ArrayList<String> selectedArray = new ArrayList<String>();
     CustomArgs customArgs;
-
-    final Dialog dialog;
     Activity activity;
     ListView listView;
     TextView resultTextView;
     TextView infoTextView;
-
     EditText searchEditText;
-
     RelativeLayout searchLayout;
-
     ModsListAdapter listAdapter;
-
     Function<ArrayList<String>, Void> result;
 
-    ModSelectDialog(Activity act, String appDir, String appSecDir, CustomArgs args, Function<ArrayList<String>, Void> result) {
+    ModSelectDialog(Activity act, String appDir, String appSecDir, CustomArgs args, Function<ArrayList<String>, Void> result)
+    {
 
         this.appDir = appDir;
         this.appSecDir = appSecDir;
@@ -111,12 +87,15 @@ public class ModSelectDialog {
         dialog.setContentView(R.layout.dialog_select_mods_wads);
         dialog.setCancelable(true);
 
-        dialog.setOnKeyListener(new Dialog.OnKeyListener() {
+        dialog.setOnKeyListener(new Dialog.OnKeyListener()
+        {
 
             @Override
-            public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event) {
+            public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event)
+            {
                 // TODO Auto-generated method stub
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                if (keyCode == KeyEvent.KEYCODE_BACK)
+                {
                     return goUp();
                 }
                 return false;
@@ -135,16 +114,22 @@ public class ModSelectDialog {
         listView.setOnItemClickListener((parent, view, position, id) ->
         {
 
-            if (filteredFiles.get(position).fileName.contentEquals("..")) {
+            if (filteredFiles.get(position).fileName.contentEquals(".."))
+            {
                 goUp();
-            } else if (filteredFiles.get(position).fileName.startsWith("/")) {
+            }
+            else if (filteredFiles.get(position).fileName.startsWith("/"))
+            {
                 populateList(extraPath + filteredFiles.get(position).fileName);
-            } else //select/deselect
+            }
+            else //select/deselect
             {
                 boolean removed = false;
-                for (Iterator<String> iter = customArgs.getFiles().listIterator(); iter.hasNext(); ) {
+                for (Iterator<String> iter = customArgs.getFiles().listIterator(); iter.hasNext(); )
+                {
                     String s = iter.next();
-                    if (s.contentEquals(filteredFiles.get(position).file)) {
+                    if (s.contentEquals(filteredFiles.get(position).file))
+                    {
                         iter.remove();
                         removed = true;
                     }
@@ -215,7 +200,8 @@ public class ModSelectDialog {
         final ImageButton searchButton = dialog.findViewById(R.id.search_imageButton);
         searchButton.setOnClickListener(v ->
         {
-            if (searchLayout.getVisibility() == View.GONE) {
+            if (searchLayout.getVisibility() == View.GONE)
+            {
                 searchText = AppSettings.getStringOption(activity, "mod_search_filter", null);
 
                 if (searchText != null)
@@ -223,25 +209,31 @@ public class ModSelectDialog {
 
                 searchLayout.setVisibility(View.VISIBLE);
                 applySearch();
-            } else {
+            }
+            else
+            {
                 searchText = null;
                 searchLayout.setVisibility(View.GONE);
                 applySearch();
             }
         });
 
-        searchEditText.addTextChangedListener(new TextWatcher() {
+        searchEditText.addTextChangedListener(new TextWatcher()
+        {
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s)
+            {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
                 searchText = s.toString();
                 AppSettings.setStringOption(activity, "mod_search_filter", searchText);
                 applySearch();
@@ -249,9 +241,11 @@ public class ModSelectDialog {
         });
 
         ImageButton clearSearch = dialog.findViewById(R.id.clear_search_imageButton);
-        clearSearch.setOnClickListener(new View.OnClickListener() {
+        clearSearch.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 searchText = null;
                 searchEditText.setText("");
                 applySearch();
@@ -269,17 +263,20 @@ public class ModSelectDialog {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
-    private boolean goUp() {
+    private boolean goUp()
+    {
         if (extraPath.isEmpty() || !extraPath.contains("/"))
             return false;
-        else {
+        else
+        {
             extraPath = extraPath.substring(0, extraPath.lastIndexOf("/"));
             populateList(extraPath);
             return true;
         }
     }
 
-    private void populateList(String path) {
+    private void populateList(String path)
+    {
         extraPath = path;
 
         ArrayList<File> files = Utils.listFiles(new String[]{appDir + "/" + path, appSecDir + "/" + path});
@@ -287,20 +284,35 @@ public class ModSelectDialog {
         filesArray.clear();
 
         // Check if in a directory
-        if (extraPath.contains("/")) {
+        if (extraPath.contains("/"))
+        {
             filesArray.add(new ModFile(null, "..", Long.MAX_VALUE));
         }
 
         if (files != null)
-            for (File f : files) {
-                if (!f.isDirectory()) {
+            for (File f : files)
+            {
+                if (!f.isDirectory())
+                {
                     String file = f.getName().toLowerCase();
-                    if ((file.endsWith(".wad") || file.endsWith(".pk3") || file.endsWith(".zip") || file.endsWith(".pk7") || file.endsWith(".deh") || file.endsWith(".bex") || file.endsWith(".lmp") ||
-                            file.endsWith(".sf2") || file.endsWith(".txt") || file.endsWith(".grp") || file.endsWith(".con")) && !file.endsWith("Put your mods (.pk3 etc) files here.txt".toLowerCase()) &&
-                            !file.endsWith("Put your mods files here.txt".toLowerCase())) {
+                    if ((file.endsWith(".wad") ||
+                         file.endsWith(".pk3") ||
+                         file.endsWith(".zip") ||
+                         file.endsWith(".pk7") ||
+                         file.endsWith(".deh") ||
+                         file.endsWith(".bex") ||
+                         file.endsWith(".lmp") ||
+                         file.endsWith(".sf2") ||
+                         file.endsWith(".txt") ||
+                         file.endsWith(".grp") ||
+                         file.endsWith(".con")) &&
+                        !file.endsWith("Put your mods (.pk3 etc) files here.txt".toLowerCase()) &&
+                        !file.endsWith("Put your mods files here.txt".toLowerCase()))
+                    {
                         filesArray.add(new ModFile(f.getAbsolutePath(), f.getName(), f.lastModified()));
                     }
-                } else //Now also do directories
+                }
+                else //Now also do directories
                 {
                     filesArray.add(new ModFile(null, "/" + f.getName(), f.lastModified()));
                 }
@@ -310,18 +322,25 @@ public class ModSelectDialog {
         int sortType = AppSettings.getIntOption(activity, "mod_filenames_sort", SORT_TYPE_NAME);
 
         log.log(D, "sortTpe = " + sortType);
-        if (sortType == SORT_TYPE_NAME) {
-            comparator = new Comparator<ModFile>() {
+        if (sortType == SORT_TYPE_NAME)
+        {
+            comparator = new Comparator<ModFile>()
+            {
                 @Override
-                public int compare(ModFile lhs, ModFile rhs) {
+                public int compare(ModFile lhs, ModFile rhs)
+                {
                     int res = String.CASE_INSENSITIVE_ORDER.compare(lhs.fileName, rhs.fileName);
                     return res;
                 }
             };
-        } else if (sortType == SORT_TYPE_DATE) {
-            comparator = new Comparator<ModFile>() {
+        }
+        else if (sortType == SORT_TYPE_DATE)
+        {
+            comparator = new Comparator<ModFile>()
+            {
                 @Override
-                public int compare(ModFile lhs, ModFile rhs) {
+                public int compare(ModFile lhs, ModFile rhs)
+                {
                     // This puts the largest date at the top
                     int res = (rhs.date < lhs.date) ? -1 : (rhs.date == lhs.date) ? 0 : 1;
                     return res;
@@ -332,12 +351,14 @@ public class ModSelectDialog {
         if (comparator != null)
             Collections.sort(filesArray, comparator);
 
-        if (filesArray.size() == 0) {
+        if (filesArray.size() == 0)
+        {
             String hintTest = "Copy wad/mods here:\n" + AppInfo.replaceRootPaths(appDir) + "/" + path;
             if (appSecDir != null)
                 hintTest += "\n   OR:\n" + AppInfo.replaceRootPaths(appSecDir) + "/" + path;
             infoTextView.setText(hintTest);
-        } else
+        }
+        else
             infoTextView.setText("");
 
         applySearch();
@@ -345,14 +366,18 @@ public class ModSelectDialog {
         updateUi();
     }
 
-    private void applySearch() {
+    private void applySearch()
+    {
         filteredFiles.clear();
 
         if (searchText == null || searchText.length() == 0)
             filteredFiles.addAll(filesArray);
-        else {
-            for (ModFile file : filesArray) {
-                if (file.fileName.contentEquals("..") || file.fileName.toLowerCase().contains(searchText.toLowerCase())) {
+        else
+        {
+            for (ModFile file : filesArray)
+            {
+                if (file.fileName.contentEquals("..") || file.fileName.toLowerCase().contains(searchText.toLowerCase()))
+                {
                     filteredFiles.add(file);
                 }
             }
@@ -361,35 +386,63 @@ public class ModSelectDialog {
         listAdapter.notifyDataSetChanged();
     }
 
-    private void updateUi() {
+    private void updateUi()
+    {
         resultTextView.setText(AppInfo.hideAppPaths(customArgs.getModsString()));
         listAdapter.notifyDataSetChanged();
     }
 
-    class ModsListAdapter extends BaseAdapter {
-        public ModsListAdapter(Activity context) {
+    class ModFile
+    {
+        String file;
+        String fileName;
+        long date;
+
+        ModFile(String file, String fileName, long date)
+        {
+            this.file = file;
+            this.fileName = fileName;
+            this.date = date;
+        }
+/*
+        @Override
+        public String toString() {
+            return name;
+        }
+        */
+    }
+
+    class ModsListAdapter extends BaseAdapter
+    {
+        public ModsListAdapter(Activity context)
+        {
 
         }
 
-        public void add(String string) {
+        public void add(String string)
+        {
 
         }
 
-        public int getCount() {
+        public int getCount()
+        {
             return filteredFiles.size();
         }
 
-        public Object getItem(int arg0) {
+        public Object getItem(int arg0)
+        {
             // TODO Auto-generated method stub
             return null;
         }
 
-        public long getItemId(int arg0) {
+        public long getItemId(int arg0)
+        {
             // TODO Auto-generated method stub
             return 0;
         }
 
-        public View getView(int position, View convertView, ViewGroup list) {
+        public View getView(int position, View convertView, ViewGroup list)
+        {
 
             View view;
 
@@ -401,8 +454,10 @@ public class ModSelectDialog {
                 view = convertView;
 
             boolean selected = false;
-            for (String s : customArgs.getFiles()) {
-                if (file.file != null && s.contentEquals(file.file)) {
+            for (String s : customArgs.getFiles())
+            {
+                if (file.file != null && s.contentEquals(file.file))
+                {
                     selected = true;
                 }
             }
@@ -413,7 +468,7 @@ public class ModSelectDialog {
             else
                 view.setBackgroundResource(0);
 
-            ImageView iv = (ImageView) view.findViewById(R.id.imageview);
+            ImageView iv = view.findViewById(R.id.imageview);
 
             //iv.setImageResource(game.getImage());
 

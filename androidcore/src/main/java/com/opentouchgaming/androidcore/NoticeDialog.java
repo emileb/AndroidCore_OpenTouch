@@ -22,11 +22,11 @@ public class NoticeDialog
         dialog.setCancelable(true);
         //there are a lot of settings, for dialog, check them all out!
 
-        final TextView textView = (TextView) dialog.findViewById(R.id.textView1);
+        final TextView textView = dialog.findViewById(R.id.textView1);
         textView.setText(text);
 
         //set up button
-        Button button = (Button) dialog.findViewById(R.id.button1);
+        Button button = dialog.findViewById(R.id.button1);
         button.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -64,7 +64,8 @@ public class NoticeDialog
                 i = inputStream.read();
             }
             inputStream.close();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }

@@ -41,6 +41,7 @@ public class DebugLog
     {
         CONTROLS, GAMEFRAGMENT, APP, LICENSE, CORE,
     }
+
     public enum Level
     {
         D, I, W, E

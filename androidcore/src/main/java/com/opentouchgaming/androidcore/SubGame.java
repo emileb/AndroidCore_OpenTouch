@@ -19,7 +19,6 @@ import com.opentouchgaming.saffal.FileSAF;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,8 +58,8 @@ public class SubGame
         this.wheelNbr = wheelNbr;
     }
 
-    static public SubGame addGame(ArrayList<SubGame> availableSubGames, String rootPath1, String rootPath2, String tag, String subDir, int gameType, int weaponWheel, String[] files, int defaultIconRes,
-                               String title, String installDetails, String mkdirFilename)
+    static public SubGame addGame(ArrayList<SubGame> availableSubGames, String rootPath1, String rootPath2, String tag, String subDir, int gameType,
+                                  int weaponWheel, String[] files, int defaultIconRes, String title, String installDetails, String mkdirFilename)
     {
         String fullPath1 = rootPath1 + "/" + subDir;
         String fullPath2 = rootPath2 != null ? rootPath2 + "/" + subDir : null;
@@ -68,7 +67,7 @@ public class SubGame
         // Always create the directories
         Utils.mkdirs(AppInfo.getContext(), fullPath1, mkdirFilename);
 
-        if(fullPath2 != null)
+        if (fullPath2 != null)
             Utils.mkdirs(AppInfo.getContext(), fullPath2, mkdirFilename);
 
         String inPath = Utils.checkFilesInPaths(rootPath1, rootPath2, files);
@@ -90,7 +89,8 @@ public class SubGame
                 pathText += "\nOR\n" + fullPath2;
             }
 
-            SubGame subGame = new SubGame(null, title + " not yet installed", null, fullPath1, gameType, R.drawable.questionmark, installDetails, pathText, weaponWheel);
+            SubGame subGame = new SubGame(null, title + " not yet installed", null, fullPath1, gameType, R.drawable.questionmark, installDetails, pathText,
+                    weaponWheel);
 
             if (AppSettings.getBoolOption(AppInfo.getContext(), "hide_install_hints", false) == false)
             {
@@ -99,6 +99,7 @@ public class SubGame
             return subGame;
         }
     }
+
     public String imageCacheFilename()
     {
         return AppInfo.getFilesDir() + "/imagecache/" + tag + ".png";
@@ -114,18 +115,21 @@ public class SubGame
         {
             boolean validImage = true;
             // Check if not already copied over
-            if(iconFile.length() != cacheFile.length())
+            if (iconFile.length() != cacheFile.length())
             {
                 new File(imageCacheFilename()).getParentFile().mkdirs();
-                try {
+                try
+                {
                     Utils.copyFile(iconFile.getInputStream(), new FileOutputStream(cacheFile));
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     e.printStackTrace();
                     validImage = false;
                 }
             }
 
-            if(validImage)
+            if (validImage)
                 setImagePng(imageCacheFilename());
         }
     }
@@ -336,7 +340,7 @@ public class SubGame
             final Button imageChoose = dialog.findViewById(R.id.subgame_image_choose_button);
             final TextView imagePath = dialog.findViewById(R.id.subgame_image_path);
             final CheckBox runFromHere = dialog.findViewById(R.id.run_from_here_checkBox);
-            final TextView dirTextView =  dialog.findViewById(R.id.run_dir_textView);
+            final TextView dirTextView = dialog.findViewById(R.id.run_dir_textView);
 
             String imageOverride = AppSettings.getStringOption(act, tag + "imageOverride", null);
 
@@ -345,9 +349,11 @@ public class SubGame
             else
                 imagePath.setText("[default]");
 
-            imageChoose.setOnClickListener(v -> {
+            imageChoose.setOnClickListener(v ->
+            {
 
-                FileSelectDialog.FileSelectCallback callback1 = filesArray -> {
+                FileSelectDialog.FileSelectCallback callback1 = filesArray ->
+                {
                     String imageOverride1;
 
                     if (filesArray == null || filesArray.size() == 0)
@@ -409,33 +415,33 @@ public class SubGame
 
 
             runFromHere.setOnCheckedChangeListener((buttonView, isChecked) ->
-                                                   {
-                                                       if(isChecked)
-                                                       {
-                                                           dirTextView.setText("Run directory: " + AppInfo.replaceRootPaths(getFullPath()));
-                                                           dirTextView.setVisibility(View.VISIBLE);
-                                                       }
-                                                       else
-                                                       {
-                                                           dirTextView.setVisibility(View.GONE);
-                                                       }
-                                                   });
+            {
+                if (isChecked)
+                {
+                    dirTextView.setText("Run directory: " + AppInfo.replaceRootPaths(getFullPath()));
+                    dirTextView.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    dirTextView.setVisibility(View.GONE);
+                }
+            });
 
             runFromHere.setChecked(isRunFromHere());
 
             dialog.setOnDismissListener(dialog1 ->
-                                        {
-                                            setTitle(title.getText().toString());
-                                            setExtraArgs(args.getText().toString());
-                                            setRunFromHere(runFromHere.isChecked());
+            {
+                setTitle(title.getText().toString());
+                setExtraArgs(args.getText().toString());
+                setRunFromHere(runFromHere.isChecked());
 
-                                            save(act);
+                save(act);
 
-                                            if (callback != null)
-                                            {
-                                                callback.dismiss();
-                                            }
-                                        });
+                if (callback != null)
+                {
+                    callback.dismiss();
+                }
+            });
 
 
             // Delete the image cache

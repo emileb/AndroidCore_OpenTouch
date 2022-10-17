@@ -86,7 +86,8 @@ public class CustomArgs implements Serializable
     {
         String result = "";
         if ((AppInfo.currentEngine.engine == GameEngine.Engine.GZDOOM) ||
-            (AppInfo.currentEngine.engine == GameEngine.Engine.ZANDRONUM || (AppInfo.currentEngine.engine == GameEngine.Engine.LZDOOM)))//This is a bit shit referring to this...
+            (AppInfo.currentEngine.engine == GameEngine.Engine.ZANDRONUM ||
+             (AppInfo.currentEngine.engine == GameEngine.Engine.LZDOOM)))//This is a bit shit referring to this...
         {
             result += buildFileType(new String[]{".wad", ".pk3", ".pk7", ".zip"}, "-file ", false);
             result += buildFileType(new String[]{".deh", ".bex"}, "-deh ", false);
@@ -112,9 +113,12 @@ public class CustomArgs implements Serializable
             result += buildFileType(new String[]{".deh", ".bex"}, "-deh ", false);
             result += buildFileType(new String[]{".lmp"}, "-playdemo ", true);
         }
-        else if ((AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_DUKE) || (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_BLOOD) ||
-                 (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_NAM) || (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_POWERSLAVE) ||
-                 (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_SW) || (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_REDNECK))
+        else if ((AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_DUKE) ||
+                 (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_BLOOD) ||
+                 (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_NAM) ||
+                 (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_POWERSLAVE) ||
+                 (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_SW) ||
+                 (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_REDNECK))
         {
             result += buildFileType(new String[]{".grp", ".zip"}, "-file ", false);
         }
@@ -137,15 +141,15 @@ public class CustomArgs implements Serializable
         return getArgsString() + " " + getModsString();
     }
 
-    public void setFiles(ArrayList<String> files)
-    {
-        this.files = files;
-    }
-
     public ArrayList<String> getFiles()
     {
         if (files == null)
             files = new ArrayList<>();
         return files;
+    }
+
+    public void setFiles(ArrayList<String> files)
+    {
+        this.files = files;
     }
 }

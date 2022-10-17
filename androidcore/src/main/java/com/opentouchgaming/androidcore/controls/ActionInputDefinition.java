@@ -21,7 +21,8 @@ public class ActionInputDefinition
         actions.add(a);
     }
 
-    public void addAction(String tag, String description, ActionInput.ActionType actionType, int actionCode, ActionInput.SourceType sourceType, int source, ActionInput.ActionInputExtra extra)
+    public void addAction(String tag, String description, ActionInput.ActionType actionType, int actionCode, ActionInput.SourceType sourceType, int source,
+                          ActionInput.ActionInputExtra extra)
     {
         ActionInput a = new ActionInput(tag, description, actionType, actionCode, sourceType, source, extra);
         actions.add(a);

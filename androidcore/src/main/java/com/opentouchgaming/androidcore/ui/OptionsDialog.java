@@ -27,7 +27,8 @@ import java.util.ArrayList;
  * Created by Emile on 31/10/2017.
  */
 
-public class OptionsDialog {
+public class OptionsDialog
+{
     Activity activity;
     Runnable update;
     BubbleSeekBar screenDivSeek;
@@ -36,7 +37,8 @@ public class OptionsDialog {
 
     boolean dontUpdate = false;
 
-    public OptionsDialog(final Activity act, View extraOptions, Runnable update) {
+    public OptionsDialog(final Activity act, View extraOptions, Runnable update)
+    {
         activity = act;
         this.update = update;
 
@@ -48,10 +50,11 @@ public class OptionsDialog {
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
 
-        dialog.setOnDismissListener(dialog12 -> {
-                    if (!dontUpdate) update.run();
-                }
-        );
+        dialog.setOnDismissListener(dialog12 ->
+        {
+            if (!dontUpdate)
+                update.run();
+        });
 
         CheckBox immersiveCheck = dialog.findViewById(R.id.immersive_mode_checkbox);
         CheckBox cutoutCheckbox = dialog.findViewById(R.id.expand_cutout_checkbox);
@@ -79,7 +82,8 @@ public class OptionsDialog {
             array.clear();
 
             int n = 0;
-            for (Pair<String, Float> res : resolutions) {
+            for (Pair<String, Float> res : resolutions)
+            {
                 array.put(n++, res.first);
             }
             return array;
@@ -95,7 +99,8 @@ public class OptionsDialog {
         immersiveCheck.setChecked(AppSettings.getBoolOption(activity, "immersive_mode", false));
         immersiveCheck.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(activity, "immersive_mode", isChecked));
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+        {
             immersiveCheck.setVisibility(View.GONE);
         }
 
@@ -104,7 +109,8 @@ public class OptionsDialog {
         cutoutCheckbox.setChecked(AppSettings.getBoolOption(activity, "expand_cutout", false));
         cutoutCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(activity, "expand_cutout", isChecked));
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
+        {
             cutoutCheckbox.setVisibility(View.GONE);
         }
 
@@ -118,7 +124,8 @@ public class OptionsDialog {
         // Search for the value to find the seekbar position
         float multiplier = AppSettings.getFloatOption(act, "res_div_float", 1);
         int seekPos = 0;
-        for (Pair<String, Float> res : resolutions) {
+        for (Pair<String, Float> res : resolutions)
+        {
             if (res.second == multiplier)
                 break;
             else
@@ -130,18 +137,22 @@ public class OptionsDialog {
 
         screenDivSeek.setProgress(seekPos);
 
-        screenDivSeek.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
+        screenDivSeek.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener()
+        {
             @Override
-            public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
+            public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser)
+            {
             }
 
             @Override
-            public void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
+            public void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat)
+            {
 
             }
 
             @Override
-            public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
+            public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser)
+            {
                 float multiplier = resolutions.get(progress).second;
 
                 Log.d("test", "multipiler = " + multiplier);
@@ -151,10 +162,13 @@ public class OptionsDialog {
 
         // ----
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
             useMouse.setChecked(AppSettings.getBoolOption(act, "use_mouse", true));
             useMouse.setOnCheckedChangeListener((buttonView, isChecked) -> AppSettings.setBoolOption(act, "use_mouse", isChecked));
-        } else {
+        }
+        else
+        {
             useMouse.setVisibility(View.GONE);
         }
 
@@ -177,9 +191,12 @@ public class OptionsDialog {
         Spinner spinner = dialog.findViewById(R.id.audio_spinner);
 
         String[] paths;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
             paths = new String[]{"OpenSL (Default)", "Audio Tack (Old)", "AAudio (low latency)"};
-        } else {
+        }
+        else
+        {
             paths = new String[]{"OpenSL (Default)", "Audio Tack (Old)"};
         }
 
@@ -188,14 +205,17 @@ public class OptionsDialog {
         spinner.setAdapter(adapter);
         spinner.setSelection(AppSettings.getIntOption(act, "sdl_audio_backend", 0));
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
                 AppSettings.setIntOption(act, "sdl_audio_backend", position);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent)
+            {
 
             }
         });
@@ -216,7 +236,8 @@ public class OptionsDialog {
         });
 
 
-        if (extraOptions != null) {
+        if (extraOptions != null)
+        {
             LinearLayout layout = dialog.findViewById(R.id.extras_linearlayout);
             layout.addView(extraOptions);
         }
@@ -226,7 +247,8 @@ public class OptionsDialog {
         dialog.show();
     }
 
-    private void updateUI() {
+    private void updateUI()
+    {
 
     }
 }

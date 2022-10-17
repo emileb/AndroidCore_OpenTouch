@@ -31,9 +31,9 @@ import java.util.List;
 
 public class DirectoryChooserDialog
 {
+    private final Context m_context;
     private boolean m_isNewFolderEnabled = true;
     private String m_sdcardDirectory = "";
-    private Context m_context;
     private TextView m_titleView;
 
     private String m_dir = "";
@@ -50,7 +50,8 @@ public class DirectoryChooserDialog
         try
         {
             m_sdcardDirectory = new File(m_sdcardDirectory).getCanonicalPath();
-        } catch (IOException ioe)
+        }
+        catch (IOException ioe)
         {
         }
     }
@@ -99,7 +100,8 @@ public class DirectoryChooserDialog
         try
         {
             dir = new File(dir).getCanonicalPath();
-        } catch (IOException ioe)
+        }
+        catch (IOException ioe)
         {
             return;
         }
@@ -118,7 +120,8 @@ public class DirectoryChooserDialog
                 try
                 {
                     m_dir = new File(m_dir).getCanonicalPath();
-                } catch (IOException e)
+                }
+                catch (IOException e)
                 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -216,7 +219,8 @@ public class DirectoryChooserDialog
                     dirs.add(file.getName());
                 }
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
         }
 
@@ -259,9 +263,7 @@ public class DirectoryChooserDialog
                 final EditText input = new EditText(m_context);
 
                 // Show new folder name input dialog
-                new AlertDialog.Builder(m_context).
-                        setTitle("New folder name").
-                        setView(input).setPositiveButton("OK", new DialogInterface.OnClickListener()
+                new AlertDialog.Builder(m_context).setTitle("New folder name").setView(input).setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int whichButton)
                     {
@@ -336,6 +338,6 @@ public class DirectoryChooserDialog
     //////////////////////////////////////////////////////
     public interface ChosenDirectoryListener
     {
-        public void onChosenDir(String chosenDir);
+        void onChosenDir(String chosenDir);
     }
 }

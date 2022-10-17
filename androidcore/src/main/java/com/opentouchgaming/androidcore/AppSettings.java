@@ -87,7 +87,7 @@ public class AppSettings
     public static Set<String> getStringSetOption(Context ctx, String name, String def)
     {
         SharedPreferences settings = ctx.getSharedPreferences("OPTIONS", Context.MODE_MULTI_PROCESS);
-        return settings.getStringSet(name,null);
+        return settings.getStringSet(name, null);
     }
 
     public static void setStringSetOption(Context ctx, String name, Set<String> value)

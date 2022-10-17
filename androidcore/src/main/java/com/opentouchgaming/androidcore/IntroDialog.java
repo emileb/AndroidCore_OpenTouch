@@ -23,14 +23,14 @@ public class IntroDialog
         //there are a lot of settings, for dialog, check them all out!
 
         //set up text
-        final TextView text = (TextView) dialog.findViewById(R.id.textView1);
+        final TextView text = dialog.findViewById(R.id.textView1);
         text.setText(readTxt(ctx, textid));
 
         //set up image view
 
 
         //set up button
-        Button button = (Button) dialog.findViewById(R.id.button1);
+        Button button = dialog.findViewById(R.id.button1);
         button.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -64,7 +64,8 @@ public class IntroDialog
                 i = inputStream.read();
             }
             inputStream.close();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }

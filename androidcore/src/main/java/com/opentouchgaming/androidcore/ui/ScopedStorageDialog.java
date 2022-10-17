@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore.ui;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Build;
@@ -29,8 +31,6 @@ import com.opentouchgaming.saffal.UtilsSAF;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
-
 
 public class ScopedStorageDialog
 {
@@ -40,25 +40,6 @@ public class ScopedStorageDialog
     static
     {
         log = new DebugLog(DebugLog.Module.GAMEFRAGMENT, "ScopedStorageDialog");
-    }
-
-    public static class Tutorial
-    {
-        public static class Item
-        {
-            String desc;
-            int imageA;
-            int imageB;
-            public Item(String desc, int imageA, int imageB)
-            {
-                this.desc = desc;
-                this.imageA = imageA;
-                this.imageB = imageB;
-            }
-        };
-
-        public String folder;
-        public List<Item> items;
     }
 
     Activity activity;
@@ -95,9 +76,9 @@ public class ScopedStorageDialog
         Button goButton = dialog.findViewById(R.id.go_button);
 
         goButton.setOnClickListener(v ->
-                                    {
-                                        UtilsSAF.openDocumentTree(activity, ScopedStorage.OPENDOCUMENT_TREE_RESULT);
-                                    });
+        {
+            UtilsSAF.openDocumentTree(activity, ScopedStorage.OPENDOCUMENT_TREE_RESULT);
+        });
 
         dialog.setOnDismissListener(dialog1 -> update.run());
 
@@ -130,7 +111,26 @@ public class ScopedStorageDialog
         viewAdapter.notifyDataSetChanged();
     }
 
+    public static class Tutorial
+    {
+        public String folder;
 
+        public List<Item> items;
+
+        public static class Item
+        {
+            String desc;
+            int imageA;
+            int imageB;
+
+            public Item(String desc, int imageA, int imageB)
+            {
+                this.desc = desc;
+                this.imageA = imageA;
+                this.imageB = imageB;
+            }
+        }
+    }
 
     public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder>
     {
@@ -147,7 +147,7 @@ public class ScopedStorageDialog
         public void onBindViewHolder(@NonNull ViewHolder holder, int position)
         {
             holder.image.setImageResource(tutorial.items.get(position).imageA);
-            if(tutorial.items.get(position).imageB != 0)
+            if (tutorial.items.get(position).imageB != 0)
             {
                 holder.image2.setImageResource(tutorial.items.get(position).imageB);
 

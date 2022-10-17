@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore.controls;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
 import android.app.Activity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -22,8 +24,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 public class ControlConfig implements Serializable
 {
@@ -67,8 +67,9 @@ public class ControlConfig implements Serializable
 			MotionEvent.AXIS_GENERIC_15,
 			MotionEvent.AXIS_GENERIC_16,
 			 */
-            MotionEvent.AXIS_HAT_X, MotionEvent.AXIS_HAT_Y, MotionEvent.AXIS_LTRIGGER, MotionEvent.AXIS_RTRIGGER, MotionEvent.AXIS_RUDDER, MotionEvent.AXIS_RX, MotionEvent.AXIS_RY,
-            MotionEvent.AXIS_RZ, MotionEvent.AXIS_THROTTLE, MotionEvent.AXIS_X, MotionEvent.AXIS_Y, MotionEvent.AXIS_Z, MotionEvent.AXIS_BRAKE, MotionEvent.AXIS_GAS,};
+            MotionEvent.AXIS_HAT_X, MotionEvent.AXIS_HAT_Y, MotionEvent.AXIS_LTRIGGER, MotionEvent.AXIS_RTRIGGER, MotionEvent.AXIS_RUDDER, MotionEvent.AXIS_RX,
+            MotionEvent.AXIS_RY, MotionEvent.AXIS_RZ, MotionEvent.AXIS_THROTTLE, MotionEvent.AXIS_X, MotionEvent.AXIS_Y, MotionEvent.AXIS_Z,
+            MotionEvent.AXIS_BRAKE, MotionEvent.AXIS_GAS,};
 
     public ControlConfig(ActionInputDefinition gamepadDefinition, Listener listener)
     {
@@ -97,7 +98,7 @@ public class ControlConfig implements Serializable
 
     void saveControls(String filename) throws IOException
     {
-        log.log(D, "saveControls, file = " + filename.toString());
+        log.log(D, "saveControls, file = " + filename);
 
         configFilename = filename;
 
@@ -191,7 +192,8 @@ public class ControlConfig implements Serializable
         try
         {
             saveControls(configFilename);
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -247,10 +249,7 @@ public class ControlConfig implements Serializable
                         actionMonitor.source = a;
                         actionMonitor.sourceType = ActionInput.SourceType.AXIS;
                         //Used for button actions
-                        if (event.getAxisValue(a) > 0)
-                            actionMonitor.sourcePositive = true;
-                        else
-                            actionMonitor.sourcePositive = false;
+                        actionMonitor.sourcePositive = event.getAxisValue(a) > 0;
 
                         //monitoring = false;
                         gotInput = true;
@@ -340,10 +339,10 @@ public class ControlConfig implements Serializable
         if (ai.tag != null) // If tag is null it's a header, otherwise normal item
         {
             View view = ctx.getLayoutInflater().inflate(R.layout.controls_listview_item, null);
-            ImageView image = (ImageView) view.findViewById(R.id.imageView);
-            TextView name = (TextView) view.findViewById(R.id.name_textview);
-            TextView binding = (TextView) view.findViewById(R.id.binding_textview);
-            ImageView setting_image = (ImageView) view.findViewById(R.id.settings_imageview);
+            ImageView image = view.findViewById(R.id.imageView);
+            TextView name = view.findViewById(R.id.name_textview);
+            TextView binding = view.findViewById(R.id.binding_textview);
+            ImageView setting_image = view.findViewById(R.id.settings_imageview);
 
 
             if ((ai.actionType == ActionInput.ActionType.BUTTON) || (ai.actionType == ActionInput.ActionType.MENU))
@@ -410,7 +409,7 @@ public class ControlConfig implements Serializable
         else
         {
             View view = ctx.getLayoutInflater().inflate(R.layout.controls_listview_header_item, null);
-            TextView title = (TextView) view.findViewById(R.id.title_textview);
+            TextView title = view.findViewById(R.id.title_textview);
             title.setText(ai.description);
             return view;
         }

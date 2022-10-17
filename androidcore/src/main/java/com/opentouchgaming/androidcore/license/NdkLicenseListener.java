@@ -1,6 +1,8 @@
 package com.opentouchgaming.androidcore.license;
 
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+
 import android.os.Parcel;
 
 import com.opentouchgaming.androidcore.AppInfo;
@@ -9,8 +11,6 @@ import com.opentouchgaming.androidcore.DebugLog;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 public class NdkLicenseListener extends android.os.Binder
 {
@@ -78,10 +78,12 @@ public class NdkLicenseListener extends android.os.Binder
                         writer.println(signature);
                         writer.flush();
                         writer.close();
-                    } catch (FileNotFoundException e)
+                    }
+                    catch (FileNotFoundException e)
                     {
                         e.printStackTrace();
-                    } catch (UnsupportedEncodingException e)
+                    }
+                    catch (UnsupportedEncodingException e)
                     {
                         e.printStackTrace();
                     }

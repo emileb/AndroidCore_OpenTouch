@@ -1,5 +1,8 @@
 package com.opentouchgaming.androidcore.controls;
 
+import static com.opentouchgaming.androidcore.DebugLog.Level.D;
+import static com.opentouchgaming.androidcore.DebugLog.Level.I;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -29,9 +32,6 @@ import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.ui.GamepadSaveLoad;
 
 import java.io.IOException;
-
-import static com.opentouchgaming.androidcore.DebugLog.Level.D;
-import static com.opentouchgaming.androidcore.DebugLog.Level.I;
 
 
 public class GamePadFragment extends Fragment implements ControlConfig.Listener
@@ -75,15 +75,17 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
         {
             log.log(I, "Trying to load config from file...");
             config.loadControls(configFilename);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
-            log.log(I, "Failed to load file: " + e.toString());
+            log.log(I, "Failed to load file: " + e);
             log.log(I, "..file not found");
             configFilename = DEFAULT_CONFIG;
             try
             {
                 config.saveControls(configFilename);
-            } catch (IOException e1)
+            }
+            catch (IOException e1)
             {
                 e1.printStackTrace();
             }
@@ -106,10 +108,11 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
         try
         {
             config.saveControls(configFilename);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
-            log.log(I, "Failed to save: " + e.toString());
+            log.log(I, "Failed to save: " + e);
             configFilename = DEFAULT_CONFIG;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -162,22 +165,22 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
         enableCb.setChecked(TouchSettings.gamePadEnabled);
 
         enableCb.setOnCheckedChangeListener((buttonView, isChecked) ->
-                                            {
-                                                TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
-                                                TouchSettings.gamePadEnabled = isChecked;
-                                                setListViewEnabled(TouchSettings.gamePadEnabled);
-                                            });
+        {
+            TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
+            TouchSettings.gamePadEnabled = isChecked;
+            setListViewEnabled(TouchSettings.gamePadEnabled);
+        });
 
         CheckBox showTouchcd = mainView.findViewById(R.id.gamepad_hide_touch_checkbox);
         showTouchcd.setChecked(TouchSettings.gamepadHidetouch);
 
         showTouchcd.setOnCheckedChangeListener((buttonView, isChecked) ->
-                                               {
-                                                   TouchSettings.setBoolOption(getActivity(), "gamepad_hide_touch", isChecked);
-                                                   TouchSettings.gamepadHidetouch = isChecked;
-                                               });
+        {
+            TouchSettings.setBoolOption(getActivity(), "gamepad_hide_touch", isChecked);
+            TouchSettings.gamepadHidetouch = isChecked;
+        });
 
-        listView = (ListView) mainView.findViewById(R.id.gamepad_listview);
+        listView = mainView.findViewById(R.id.gamepad_listview);
         adapter = new ControlListAdapter(getActivity());
         listView.setAdapter(adapter);
 
@@ -185,10 +188,10 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
 
         //listView.setSelector(R.drawable.layout_sel_background);
         listView.setOnItemClickListener((arg0, v, pos, id) ->
-                                        {
-                                            config.startMonitor(getActivity(), pos);
-                                            adapter.notifyDataSetChanged();
-                                        });
+        {
+            config.startMonitor(getActivity(), pos);
+            adapter.notifyDataSetChanged();
+        });
 
         listView.setOnItemLongClickListener((arg0, v, pos, id) -> config.showExtraOptions(getActivity(), pos));
 
@@ -213,15 +216,16 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
                         if (menuItem.getItemId() == R.id.reset)
                         {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                            builder.setMessage("Reset controls to default settings?").setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    config.reset();
-                                    saveConfigFile(configFilename);
-                                }
-                            });
+                            builder.setMessage("Reset controls to default settings?").setCancelable(true)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            config.reset();
+                                            saveConfigFile(configFilename);
+                                        }
+                                    });
 
                             AlertDialog alert = builder.create();
                             alert.show();
@@ -342,7 +346,7 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
 
     class ControlListAdapter extends BaseAdapter
     {
-        private Activity context;
+        private final Activity context;
 
         public ControlListAdapter(Activity context)
         {

@@ -24,7 +24,6 @@ public class ToolsPanel
     final ToolsPanelButton[] buttons;
     SlidePanel slidePanel;
 
-    ;
     Listener listener;
 
     public ToolsPanel(Context context, View topView, final ToolsPanelButton[] buttons, final Listener listener)
@@ -41,7 +40,7 @@ public class ToolsPanel
             Configuration configuration = context.getResources().getConfiguration();
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) leftPanel.getLayoutParams();
 
-            buttonSize = (int) (Utils.dpToPx(context.getResources(), configuration.screenHeightDp / buttons.length));
+            buttonSize = Utils.dpToPx(context.getResources(), configuration.screenHeightDp / buttons.length);
             lp.width = (int) (Utils.dpToPx(context.getResources(), configuration.screenHeightDp / buttons.length) * 1.5);
             lp.width += Utils.dpToPx(context.getResources(), 100);
 
@@ -55,7 +54,7 @@ public class ToolsPanel
 
 
         // Button to open panel
-        AppCompatImageButton slideButton = (AppCompatImageButton) relativeView.findViewById(R.id.imagebutton_entry_open_right);
+        AppCompatImageButton slideButton = relativeView.findViewById(R.id.imagebutton_entry_open_right);
         slideButton.setFocusable(false);
         slideButton.setOnClickListener(new View.OnClickListener()
         {
@@ -131,14 +130,7 @@ public class ToolsPanel
     {
         for (int n = 0; n < buttons.length; n++)
         {
-            if (slidePanel.isOpen())
-            {
-                buttons[n].imageButton.setFocusable(true);
-            }
-            else
-            {
-                buttons[n].imageButton.setFocusable(false);
-            }
+            buttons[n].imageButton.setFocusable(slidePanel.isOpen());
         }
 
         buttons[0].imageButton.requestFocus(); // Try to set focus on the top item
@@ -183,6 +175,7 @@ public class ToolsPanel
         public AppCompatImageButton imageButton;
         public String label;
         int code;
+
         public ToolsPanelButton(int code, String label, int image)
         {
             this.label = label;

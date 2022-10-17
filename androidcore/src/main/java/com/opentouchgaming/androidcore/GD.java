@@ -10,7 +10,6 @@ public class GD
     public static boolean DEBUG = true;
     public static String qc_fn = "quick_cmd.dat";
 
-    ;
     public static int version;
 
     public static void init(Context ctx)
@@ -20,7 +19,8 @@ public class GD
         {
             pInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
             version = pInfo.versionCode;
-        } catch (NameNotFoundException e)
+        }
+        catch (NameNotFoundException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -28,5 +28,8 @@ public class GD
     }
 
     public enum IDGame
-    {Quake, Quake2, Doom, Duke3d, Quake3, Hexen2, RTCW, Wolf3d, JK2, JK3, Heretic, Hexen, Strife, AVP, Shadow, Gish, Descent1, Descent2, Homeworld, BlakeStone, Noah, Doom3, TestPlatform, Abuse}
+    {
+        Quake, Quake2, Doom, Duke3d, Quake3, Hexen2, RTCW, Wolf3d, JK2, JK3, Heretic, Hexen, Strife, AVP, Shadow, Gish, Descent1, Descent2, Homeworld,
+        BlakeStone, Noah, Doom3, TestPlatform, Abuse
+    }
 }

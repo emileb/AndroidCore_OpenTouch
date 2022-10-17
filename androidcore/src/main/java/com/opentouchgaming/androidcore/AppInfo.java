@@ -35,13 +35,13 @@ public class AppInfo
     public static String key;
     public static int sidePanelImage;
     public static boolean isAndroidTv;
-    public static GameEngine gameEngines[];
+    public static GameEngine[] gameEngines;
     public static GameEngine currentEngine;
     public static ArrayList<Tutorial> tutorials = new ArrayList<>();
     public static List<StorageConfigDialog.StorageExamples> storageExamples;
     public static ScopedStorageDialog.Tutorial scopedTutorial;
     public static String website = null;
-    public  static boolean hideModWads = false;
+    public static boolean hideModWads = false;
 
     public static int defaultAppImage;
 
@@ -61,7 +61,8 @@ public class AppInfo
         AppInfo.app = app;
     }
 
-    static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email, boolean isAndroidTv, int defaultAppImage, boolean hideModWads)
+    static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email, boolean isAndroidTv, int defaultAppImage,
+                                  boolean hideModWads)
     {
         AppInfo.context = ctx;
         AppInfo.app = app;
@@ -86,14 +87,14 @@ public class AppInfo
             if (appDir == null && isScopedAllowed())
             {
                 setScoped(true);
-                if(Utils.getTargetAPI() > 29) // On new installs built with API 30+ there is no way to disabled scoped storage on Android 11+.
+                if (Utils.getTargetAPI() > 29) // On new installs built with API 30+ there is no way to disabled scoped storage on Android 11+.
                     AppSettings.setBoolOption(AppInfo.getContext(), "scoped_storage_permanent", true);
             }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
-            File files[] = context.getExternalFilesDirs(null);
+            File[] files = context.getExternalFilesDirs(null);
             if (files != null && files.length > 1 && files[1] != null)
             {
                 if (!files[1].exists())
@@ -131,7 +132,8 @@ public class AppInfo
         setAppSecDirectory(getDefaultAppSecDirectory());
     }
 
-    static public boolean isScopedPermanent() // Handles the strange case where Android 11 can upgrade the app but due to preserveLegacyExternalStorage Scoped storage is optional until new install
+    static public boolean isScopedPermanent() // Handles the strange case where Android 11 can upgrade the app but due to preserveLegacyExternalStorage
+    // Scoped storage is optional until new install
     {
         return AppSettings.getBoolOption(AppInfo.getContext(), "scoped_storage_permanent", false);
     }
@@ -161,7 +163,7 @@ public class AppInfo
         }
         else // Android R!!!! FUCKK
         {
-            File files[] = context.getExternalFilesDirs(null);
+            File[] files = context.getExternalFilesDirs(null);
 
             if (!files[0].exists())
                 files[0].mkdirs();

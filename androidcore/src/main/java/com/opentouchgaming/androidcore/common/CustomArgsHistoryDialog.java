@@ -43,7 +43,7 @@ public class CustomArgsHistoryDialog
         dialog.setCancelable(true);
 
 
-        recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
+        recyclerView = dialog.findViewById(R.id.recyclerView);
         //recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(act));
         recyclerView.setFocusable(true);

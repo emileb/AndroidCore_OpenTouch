@@ -14,10 +14,12 @@ import com.opentouchgaming.androidcore.databinding.WidgetViewResolutionSelectBin
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResolutionOptionsWidget {
+public class ResolutionOptionsWidget
+{
     static List<ResolutionOptions> resolutionListDefault = new ArrayList<>();
 
-    static {
+    static
+    {
         resolutionListDefault.add(new ResolutionOptions("Screen (100%)", ResolutionType.FULL, "$W", "$H"));
         resolutionListDefault.add(new ResolutionOptions("Screen / 2 (50%)", ResolutionType.FULL_0_5, "$W2", "$H2"));
         resolutionListDefault.add(new ResolutionOptions("Screen / 3 (33%)", ResolutionType.FULL_0_3, "$W3", "$H3"));
@@ -36,23 +38,55 @@ public class ResolutionOptionsWidget {
     String prefix;
     int def;
 
-    public ResolutionOptionsWidget(Context context, View view, String prefix, List<ResolutionOptions> resolutions) {
+    public ResolutionOptionsWidget(Context context, View view, String prefix, List<ResolutionOptions> resolutions)
+    {
         Init(context, view, prefix, resolutions, 0);
     }
 
-    public ResolutionOptionsWidget(Context context, View view, String prefix) {
+    public ResolutionOptionsWidget(Context context, View view, String prefix)
+    {
         Init(context, view, prefix, resolutionListDefault, 0);
     }
 
-    public ResolutionOptionsWidget(Context context, View view, String prefix, List<ResolutionOptions> resolutions, int def) {
+    public ResolutionOptionsWidget(Context context, View view, String prefix, List<ResolutionOptions> resolutions, int def)
+    {
         Init(context, view, prefix, resolutions, def);
     }
 
-    public ResolutionOptionsWidget(Context context, View view, String prefix, int def) {
+    public ResolutionOptionsWidget(Context context, View view, String prefix, int def)
+    {
         Init(context, view, prefix, resolutionListDefault, def);
     }
 
-    public void Init(Context context, View view, String prefix, List<ResolutionOptions> resolutions, int def) {
+    public static ResolutionOptions getResOption(String prefix, List<ResolutionOptions> resolutionList)
+    {
+        return getResOption(prefix, resolutionList, 0);
+    }
+
+    public static ResolutionOptions getResOption(String prefix, List<ResolutionOptions> resolutionList, int def)
+    {
+        int selected = AppSettings.getIntOption(AppInfo.getContext(), prefix + "_resolution_spinner", def);
+        ResolutionOptions option = resolutionList.get(selected);
+        if (option.type == ResolutionType.CUSTOM)
+        {
+            option.w = AppSettings.getStringOption(AppInfo.getContext(), prefix + "_resolution_cust_w", "640");
+            option.h = AppSettings.getStringOption(AppInfo.getContext(), prefix + "_resolution_cust_h", "480");
+        }
+        return option;
+    }
+
+    public static ResolutionOptions getResOption(String prefix)
+    {
+        return getResOption(prefix, resolutionListDefault, 0);
+    }
+
+    public static ResolutionOptions getResOption(String prefix, int def)
+    {
+        return getResOption(prefix, resolutionListDefault, def);
+    }
+
+    public void Init(Context context, View view, String prefix, List<ResolutionOptions> resolutions, int def)
+    {
         this.prefix = prefix;
         this.def = def;
         this.resolutionList = resolutions;
@@ -62,40 +96,48 @@ public class ResolutionOptionsWidget {
         ArrayAdapter<ResolutionOptions> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, resolutionList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.resolutionSpinner.setAdapter(dataAdapter);
-        binding.resolutionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.resolutionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
                 updateSelected(context, position);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent)
+            {
             }
         });
 
         // Stupid hack to remove the old TextWatcher if already added
         Object oldTw = binding.resolutionWidthEditText.getTag();
-        if (oldTw != null) {
+        if (oldTw != null)
+        {
             binding.resolutionWidthEditText.removeTextChangedListener((TextWatcher) oldTw);
             binding.resolutionHeightEditText.removeTextChangedListener((TextWatcher) oldTw);
         }
 
-        TextWatcher tw = new TextWatcher() {
+        TextWatcher tw = new TextWatcher()
+        {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (binding.resolutionWidthEditText.isEnabled()) {
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if (binding.resolutionWidthEditText.isEnabled())
+                {
                     AppSettings.setStringOption(AppInfo.getContext(), prefix + "_resolution_cust_w", binding.resolutionWidthEditText.getText().toString());
                     AppSettings.setStringOption(AppInfo.getContext(), prefix + "_resolution_cust_h", binding.resolutionHeightEditText.getText().toString());
                 }
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s)
+            {
 
             }
         };
@@ -107,23 +149,30 @@ public class ResolutionOptionsWidget {
         binding.resolutionWidthEditText.setTag(tw);
 
         int selected = AppSettings.getIntOption(context, prefix + "_resolution_spinner", def);
-        if (selected < resolutionList.size()) {
+        if (selected < resolutionList.size())
+        {
             binding.resolutionSpinner.setSelection(selected);
             updateSelected(context, selected);
-        } else {
+        }
+        else
+        {
             binding.resolutionSpinner.setSelection(def);
             updateSelected(context, def);
         }
     }
 
-    private void updateSelected(Context context, int selected) {
+    private void updateSelected(Context context, int selected)
+    {
         AppSettings.setIntOption(context, prefix + "_resolution_spinner", selected);
         ResolutionOptions option = getResOption(prefix, resolutionList, def);
 
-        if (option.type == ResolutionType.CUSTOM) {
+        if (option.type == ResolutionType.CUSTOM)
+        {
             binding.resolutionWidthEditText.setEnabled(true);
             binding.resolutionHeightEditText.setEnabled(true);
-        } else {
+        }
+        else
+        {
             binding.resolutionWidthEditText.setEnabled(false);
             binding.resolutionHeightEditText.setEnabled(false);
         }
@@ -132,73 +181,67 @@ public class ResolutionOptionsWidget {
         binding.resolutionHeightEditText.setText("" + option.h);
     }
 
-    public void setEnabled(boolean enabled) {
-        if (enabled) {
+    public void setEnabled(boolean enabled)
+    {
+        if (enabled)
+        {
             binding.resolutionSpinner.setEnabled(true);
 
             ResolutionOptions option = getResOption(prefix, resolutionList, def);
-            if (option.type == ResolutionType.CUSTOM) {
+            if (option.type == ResolutionType.CUSTOM)
+            {
                 binding.resolutionWidthEditText.setEnabled(true);
                 binding.resolutionHeightEditText.setEnabled(true);
-            } else {
+            }
+            else
+            {
                 binding.resolutionWidthEditText.setEnabled(false);
                 binding.resolutionHeightEditText.setEnabled(false);
             }
-        } else {
+        }
+        else
+        {
             binding.resolutionSpinner.setEnabled(false);
             binding.resolutionWidthEditText.setEnabled(false);
             binding.resolutionHeightEditText.setEnabled(false);
         }
     }
 
-    public void setHidden(boolean hidden) {
-        if (hidden) {
+    public void setHidden(boolean hidden)
+    {
+        if (hidden)
+        {
             binding.resolutionLayoutTop.setVisibility(View.GONE);
-        } else {
+        }
+        else
+        {
             binding.resolutionLayoutTop.setVisibility(View.VISIBLE);
         }
     }
 
-    public static ResolutionOptions getResOption(String prefix, List<ResolutionOptions> resolutionList) {
-        return getResOption(prefix, resolutionList, 0);
-    }
-
-    public static ResolutionOptions getResOption(String prefix, List<ResolutionOptions> resolutionList, int def) {
-        int selected = AppSettings.getIntOption(AppInfo.getContext(), prefix + "_resolution_spinner", def);
-        ResolutionOptions option = resolutionList.get(selected);
-        if (option.type == ResolutionType.CUSTOM) {
-            option.w = AppSettings.getStringOption(AppInfo.getContext(), prefix + "_resolution_cust_w", "640");
-            option.h = AppSettings.getStringOption(AppInfo.getContext(), prefix + "_resolution_cust_h", "480");
-        }
-        return option;
-    }
-
-    public static ResolutionOptions getResOption(String prefix) {
-        return getResOption(prefix, resolutionListDefault, 0);
-    }
-
-    public static ResolutionOptions getResOption(String prefix, int def) {
-        return getResOption(prefix, resolutionListDefault, def);
-    }
-
-    public void save() {
-        if (getResOption(prefix, def).type == ResolutionType.CUSTOM) {
+    public void save()
+    {
+        if (getResOption(prefix, def).type == ResolutionType.CUSTOM)
+        {
             AppSettings.setStringOption(AppInfo.getContext(), prefix + "_resolution_cust_w", binding.resolutionWidthEditText.getText().toString());
             AppSettings.setStringOption(AppInfo.getContext(), prefix + "_resolution_cust_h", binding.resolutionHeightEditText.getText().toString());
         }
     }
 
-    public enum ResolutionType {
+    public enum ResolutionType
+    {
         FULL, FULL_0_5, FULL_0_3, FULL_0_25, SET, CUSTOM
     }
 
-    public static class ResolutionOptions {
+    public static class ResolutionOptions
+    {
         public String w;
         public String h;
         String title;
         ResolutionType type;
 
-        public ResolutionOptions(String title, ResolutionType t, String w, String h) {
+        public ResolutionOptions(String title, ResolutionType t, String w, String h)
+        {
             this.title = title;
             this.type = t;
             this.w = w;
@@ -206,7 +249,8 @@ public class ResolutionOptionsWidget {
         }
 
         //Override
-        public String toString() {
+        public String toString()
+        {
             return title;
         }
     }

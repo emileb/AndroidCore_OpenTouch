@@ -8,31 +8,24 @@ import android.widget.ArrayAdapter
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.databinding.WidgetViewSpinnerBinding
 
-class SpinnerWidget(
-    val context: Context,
-    view: View,
-    title: String,
-    description: String,
-    items: Array<Pair<String,View?>>,
-    settingPrefix: String,
-    default: Int,
-    image: Int = 0
-) {
+class SpinnerWidget(val context: Context, view: View, title: String, description: String, items: Array<Pair<String, View?>>, settingPrefix: String,
+                    default: Int, image: Int = 0)
+{
     private var binding = WidgetViewSpinnerBinding.bind(view)
 
     // Callback
     var callback: ((Int) -> Unit)? = null
 
-    init {
+    init
+    {
         binding.title.text = title
         binding.description.text = description
 
-        if (image != 0)
-            binding.imageView.setImageResource(image)
+        if (image != 0) binding.imageView.setImageResource(image)
 
 
         val labels = ArrayList<String>()
-        for(i in items)
+        for (i in items)
         {
             labels.add(i.first)
         }
@@ -42,22 +35,22 @@ class SpinnerWidget(
         binding.spinner.adapter = adapter
 
         // Save setting on change
-        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener
+        {
+            override fun onNothingSelected(parent: AdapterView<*>?)
+            {
             }
 
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long
-            ) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
+            {
                 AppSettings.setIntOption(context, settingPrefix + "_spinner", position)
 
                 callback?.invoke(position)
 
                 // Hide/show views if set
-                for(i in items)
+                for (i in items)
                 {
-                    if(i.second != items[position].second)
-                        i.second?.visibility = View.GONE
+                    if (i.second != items[position].second) i.second?.visibility = View.GONE
                 }
 
                 // Show view
@@ -66,15 +59,15 @@ class SpinnerWidget(
         }
 
         // Set to existing value if set
-        binding.spinner.setSelection(
-            fetchValue(context, settingPrefix, default)
-        )
+        binding.spinner.setSelection(fetchValue(context, settingPrefix, default))
     }
 
-    companion object {
+    companion object
+    {
         //This annotation tells Java classes to treat this method as if it was a static to [KotlinClass]
         @JvmStatic
-        fun fetchValue(context: Context, settingPrefix: String, default: Int): Int {
+        fun fetchValue(context: Context, settingPrefix: String, default: Int): Int
+        {
             return AppSettings.getIntOption(context, settingPrefix + "_spinner", default)
         }
     }

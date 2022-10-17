@@ -30,6 +30,7 @@ public class Tutorial
         public String title;
         public String description;
         public String image;
+
         public Screen(String title, String description, String image)
         {
             this.title = title;
