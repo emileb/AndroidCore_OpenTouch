@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -63,8 +64,10 @@ public class StorageConfigDialog
     ImageView appSecDirIcon;
     ImageView appSecDirButton;
     ImageView appDirButton;
-    RecyclerView examplesRecyclerView;
-    PathExampleViewAdapter examplesViewAdapter;
+    TextView userDirTextView;
+    ImageView userDirIcon;
+    RecyclerView recyclerView;
+    PathExampleViewAdapter viewAdapter;
     List<StorageExamples> examples;
 
     public StorageConfigDialog(final Activity act, List<StorageExamples> examples, Runnable update)
@@ -73,7 +76,7 @@ public class StorageConfigDialog
         this.examples = examples;
         this.update = update;
 
-        final Dialog dialog = new Dialog(act, R.style.DialogThemeFullscreen);
+        final Dialog dialog = new Dialog(act, R.style.DialogThemeFullscreen_dark);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_storage_config);
@@ -87,11 +90,13 @@ public class StorageConfigDialog
         appSecDirIcon = dialog.findViewById(R.id.appSec_dir_image);
         appDirButton = dialog.findViewById(R.id.app_dir_options_button);
         appSecDirButton = dialog.findViewById(R.id.appSec_dir_options_button);
+        userDirTextView = dialog.findViewById(R.id.user_dir_textview);
+        userDirIcon = dialog.findViewById(R.id.user_dir_image);
 
-        examplesRecyclerView = dialog.findViewById(R.id.examples_RecyclerView);
-        examplesRecyclerView.setLayoutManager(new LinearLayoutManager(act));
-        examplesViewAdapter = new PathExampleViewAdapter();
-        examplesRecyclerView.setAdapter(examplesViewAdapter);
+        recyclerView = dialog.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(act));
+        viewAdapter = new PathExampleViewAdapter();
+        recyclerView.setAdapter(viewAdapter);
 
         Switch scopedStorage = dialog.findViewById(R.id.scoped_storage_switch);
 
@@ -251,6 +256,10 @@ public class StorageConfigDialog
         appSecDirTextView.setText(pathAppSec.first);
         appSecDirIcon.setImageResource(pathAppSec.second);
 
+        Pair<String, Integer> userPath = AppInfo.getDisplayPathAndImage(AppInfo.getUserFiles());
+        userDirTextView.setText(userPath.first);
+        userDirIcon.setImageResource(userPath.second);
+
         appDirButton.setVisibility(AppInfo.isScopedEnabled() ? View.GONE : View.VISIBLE);
 
         if (AppInfo.isScopedEnabled() && AppInfo.getAppSecDirectory() == null)
@@ -279,7 +288,8 @@ public class StorageConfigDialog
             }
         }
 
-        examplesViewAdapter.notifyDataSetChanged();
+
+        viewAdapter.notifyDataSetChanged();
     }
 
     private void updateAppDir(String dir)

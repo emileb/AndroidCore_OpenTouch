@@ -6,7 +6,12 @@ import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.databinding.WidgetViewSwitchBinding
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
-class SwitchWidget(val context: Context, view: View, title: String, description: String, private val settingPrefix: String, val default: Boolean,
+class SwitchWidget(val context: Context,
+                   view: View,
+                   title: String,
+                   description: String,
+                   private val settingPrefix: String,
+                   val default: Boolean,
                    image: Int = 0)
 {
     private var binding = WidgetViewSwitchBinding.bind(view)

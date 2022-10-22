@@ -10,7 +10,11 @@ import com.opentouchgaming.androidcore.databinding.WidgetViewRadioLayoutBinding
 import org.jetbrains.anko.layoutInflater
 
 
-class RadioLayoutWidget(val context: Context, view: View, private val title: String, private val description: String, private val settingPrefix: String,
+class RadioLayoutWidget(val context: Context,
+                        view: View,
+                        private val title: String,
+                        private val description: String,
+                        private val settingPrefix: String,
                         val default: Int)
 {
     private var binding = WidgetViewRadioLayoutBinding.bind(view)
