@@ -560,7 +560,10 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
     public void selectEngine(GameEngine engine)
     {
-        backgroundImageView.setImageResource(engine.iconRes);
+        if (engine.wideBackground != 0)
+            backgroundImageView.setImageResource(engine.wideBackground);
+        else
+            backgroundImageView.setImageResource(engine.iconRes);
 
         selectedVersion = AppSettings.getIntOption(getContext(), "last_version_" + engine.engine.toString(), 0);
 

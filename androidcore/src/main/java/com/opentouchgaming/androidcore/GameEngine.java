@@ -14,6 +14,7 @@ import java.io.File;
 public class GameEngine
 {
     final public int iconRes;
+    final public int wideBackground;
     final public int color;
     final public int backgroundDrawable;
     final public Engine engine;
@@ -31,7 +32,7 @@ public class GameEngine
     public EngineOptionsInterface engineOptions;
 
     public GameEngine(Engine engine, int uiGroup, String title, String name, String directory, String[] versions, String[][] loadLibs, String args,
-                      ActionInputDefinition gamepadDefiniton, int iconRes, int color, int background, Class opCls)
+                      ActionInputDefinition gamepadDefiniton, int iconRes, int wideBackground, int color, int background, Class opCls)
     {
         this.title = title;
         this.name = name;
@@ -39,6 +40,7 @@ public class GameEngine
         this.engine = engine;
         this.uiGroup = uiGroup;
         this.iconRes = iconRes;
+        this.wideBackground = wideBackground;
         this.color = color;
         this.backgroundDrawable = background;
         this.loadLibs = loadLibs;
