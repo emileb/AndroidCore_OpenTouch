@@ -79,6 +79,9 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("crouch_toggle", "Crouch (toggle) (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_TOGGLE_CROUCH,
                         ActionInput.SourceType.BUTTON, -1);
 
+                gamepadDefinition.addAction("gyro_toggle", "Gyro Smart Toggle", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_GYRO_TOGGLE,
+                        ActionInput.SourceType.BUTTON, -1);
+
                 gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
 
                 gamepadDefinition.addAction("custom_0", "Custom 1 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_0,
@@ -229,6 +232,9 @@ public class GamepadDefinitions
                         ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addAction("inven_drop", "Inventory drop", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVDROP,
+                        ActionInput.SourceType.BUTTON, -1);
+
+                gamepadDefinition.addAction("gyro_toggle", "Gyro Smart Toggle", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_GYRO_TOGGLE,
                         ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Quake 2 specific keys");
