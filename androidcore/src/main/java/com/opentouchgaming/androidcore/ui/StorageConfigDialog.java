@@ -66,6 +66,7 @@ public class StorageConfigDialog
     ImageView appDirButton;
     TextView userDirTextView;
     ImageView userDirIcon;
+    ImageView userDirButton;
     RecyclerView recyclerView;
     PathExampleViewAdapter viewAdapter;
     List<StorageExamples> examples;
@@ -92,6 +93,7 @@ public class StorageConfigDialog
         appSecDirButton = dialog.findViewById(R.id.appSec_dir_options_button);
         userDirTextView = dialog.findViewById(R.id.user_dir_textview);
         userDirIcon = dialog.findViewById(R.id.user_dir_image);
+        userDirButton = dialog.findViewById(R.id.manage_user_dir_button);
 
         recyclerView = dialog.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(act));
@@ -99,7 +101,6 @@ public class StorageConfigDialog
         recyclerView.setAdapter(viewAdapter);
 
         Switch scopedStorage = dialog.findViewById(R.id.scoped_storage_switch);
-
 
         scopedStorage.setEnabled(AppInfo.isScopedAllowed() && !AppInfo.isScopedPermanent());
 
@@ -238,6 +239,14 @@ public class StorageConfigDialog
             popup.show();
         });
 
+        userDirButton.setOnClickListener(v ->
+        {
+            UserFilesDialog userFilesDialog = new UserFilesDialog();
+            userFilesDialog.showDialog(activity);
+        });
+
+        // HIDE FOR NOW
+        userDirButton.setVisibility(View.GONE);
 
         updateUI();
 

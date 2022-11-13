@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="User files"
+            android:textSize="25dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#444444">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/user_dir_image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:tint="@color/path"
+                app:srcCompat="@drawable/ic_baseline_phone_android_black" />
+
+            <TextView
+                android:id="@+id/user_dir_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/manage_user_dir_button"
+                android:layout_toRightOf="@id/user_dir_image"
+                android:gravity="center_vertical"
+                android:text="  primary/path"
+                android:textColor="@color/path"
+                android:textSize="15dp" />
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>
