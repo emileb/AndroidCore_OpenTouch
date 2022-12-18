@@ -78,7 +78,7 @@ public class EnginesPanel
         int largestGroup = 1;
         for (EngineGroup g : engineGroups)
         {
-            log.log(DebugLog.Level.D, "Group has " + g.engines.size());
+            //log.log(DebugLog.Level.D, "Group has " + g.engines.size());
             if (g.engines.size() > largestGroup)
                 largestGroup = g.engines.size();
         }

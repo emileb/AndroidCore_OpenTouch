@@ -9,7 +9,7 @@ import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.WidgetViewDeleteDataBinding
 import java.io.File
 
-class DeleteDataWidget internal constructor(val context: Context,
+class DeleteDataWidget constructor(val context: Context,
                                             view: View,
                                             messageSettings: String,
                                             pathsSettings: Array<String>,
@@ -22,7 +22,6 @@ class DeleteDataWidget internal constructor(val context: Context,
 
     init
     {
-
         binding.deleteConfigButton.setOnClickListener {
 
             val dialogBuilder = AlertDialog.Builder(context)
