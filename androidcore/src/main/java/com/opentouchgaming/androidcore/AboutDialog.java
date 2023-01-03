@@ -22,9 +22,7 @@ import it.gmariotti.changelibs.library.view.ChangeLogRecyclerView;
 
 public class AboutDialog
 {
-
     public static int aboutRes;
-
 
     public static void show(final Context ctx, boolean includeRateButton)
     {
@@ -83,7 +81,6 @@ public class AboutDialog
             button.setVisibility(View.GONE);
         }
 
-
         button = dialog.findViewById(R.id.about_ok_button);
         button.setOnClickListener(v -> dialog.dismiss());
 
@@ -103,9 +100,7 @@ public class AboutDialog
 
     private static String readTxt(Context ctx, int id)
     {
-
         InputStream inputStream = ctx.getResources().openRawResource(id);
-
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         int i;

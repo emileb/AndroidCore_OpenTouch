@@ -13,26 +13,36 @@
         android:scaleType="fitCenter" />
 
     <TextView
-        android:id="@+id/textview_doom_title"
+        android:id="@+id/engine_title_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#1b1b1b"
         android:ellipsize="marquee"
         android:focusable="false"
         android:gravity="center_horizontal"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:scrollHorizontally="true"
         android:singleLine="true"
-        android:textSize="20sp" />
+        android:text="RTCW"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/app_title_textive"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/engine_title_textView"
+        android:layout_marginLeft="10dp"
+        android:focusable="false"
+        android:gravity="left|center_vertical"
+        android:singleLine="true"
+        android:text="Alpha touch"
+        android:textSize="15sp" />
 
     <androidx.recyclerview.widget.RecyclerView
-
         android:id="@+id/list"
         android:name="com.opentouchgaming.deltatouch.WadsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/textview_doom_args"
-        android:layout_below="@+id/textview_doom_title"
+        android:layout_below="@+id/engine_title_textView"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:choiceMode="singleChoice"

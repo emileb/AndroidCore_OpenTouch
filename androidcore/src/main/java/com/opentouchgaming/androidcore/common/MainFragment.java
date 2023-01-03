@@ -98,7 +98,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     // UI elements
     public RecyclerView recyclerView;
     public ImageView backgroundImageView;
-    public TextView titleTextView;
+    public TextView appTitleTextView;
+    public TextView engineTitleTextView;
     public TextView argsTextView;
     public ImageButton swapVerImageButton;
     public ImageButton startButton;
@@ -161,9 +162,11 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         downloadNewVersion = view.findViewById(R.id.imagebutton_new_version);
 
         // Title text and set font
-        titleTextView = view.findViewById(R.id.textview_doom_title);
+        appTitleTextView = view.findViewById(R.id.app_title_textive);
         Typeface face = Typeface.createFromAsset(getContext().getAssets(), "recharge_font.ttf");
-        titleTextView.setTypeface(face);
+        appTitleTextView.setTypeface(face);
+        engineTitleTextView= view.findViewById(R.id.engine_title_textView);
+        engineTitleTextView.setTypeface(face);
 
         Context context = view.getContext();
 
@@ -590,8 +593,11 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             swapVerImageButton.setVisibility(View.GONE);
         }
 
-        titleTextView.setText(AppInfo.title + " | " + engine.title + " " + engine.versions[selectedVersion]);
-        titleTextView.setTextColor(0xFF000000 | engine.color);
+        appTitleTextView.setText(AppInfo.title);
+        //appTitleTextView.setTextColor(0xFF000000 | engine.color);
+        appTitleTextView.setTextColor(0xFF808080);
+        engineTitleTextView.setText( engine.title + " - " + engine.versions[selectedVersion]);
+        engineTitleTextView.setTextColor(0xFF000000 | engine.color);
 
         // Change the color of the separating lines
         GradientDrawable shapeDrawable = (GradientDrawable) subgameSeparatorLine;
