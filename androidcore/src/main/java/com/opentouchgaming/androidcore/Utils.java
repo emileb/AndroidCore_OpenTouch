@@ -704,7 +704,7 @@ public class Utils
         String pakFiles = "[ ";
         int nbrFiles = 0;
         int nbrDirs = 0;
-        int totalSize = 0;
+        long totalSize = 0;
 
         File[] files = new FileSAF(path).listFiles();
 
