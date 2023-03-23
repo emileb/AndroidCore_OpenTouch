@@ -31,4 +31,9 @@ public interface GameLauncherInterface
     String getArgs(GameEngine engine, SubGame subGame);
 
     boolean checkForDownloads(Activity activity, GameEngine engine, SubGame subGame);
+
+    default boolean forceShowModsWads()
+    {
+        return false;
+    }
 }
