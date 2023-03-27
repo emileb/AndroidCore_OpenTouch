@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="File storage setup"
-                android:textSize="25dp" />
+                style="@style/DialogTitleText" />
 
             <Switch
                 android:id="@+id/scoped_storage_switch"
@@ -237,7 +237,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="Game data locations"
-            android:textSize="25dp" />
+            style="@style/DialogTitleText"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

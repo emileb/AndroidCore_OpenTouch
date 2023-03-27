@@ -18,7 +18,6 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -242,11 +241,11 @@ public class StorageConfigDialog
         userDirButton.setOnClickListener(v ->
         {
             UserFilesDialog userFilesDialog = new UserFilesDialog();
-            userFilesDialog.showDialog(activity);
+            userFilesDialog.showDialog(activity, AppInfo.userFilesEntries);
         });
 
         // HIDE FOR NOW
-        userDirButton.setVisibility(View.GONE);
+        //userDirButton.setVisibility(View.GONE);
 
         updateUI();
 
@@ -487,7 +486,6 @@ public class StorageConfigDialog
 
     public class PathExampleViewAdapter extends RecyclerView.Adapter<PathExampleViewAdapter.ViewHolder>
     {
-
         @Override
         public PathExampleViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {

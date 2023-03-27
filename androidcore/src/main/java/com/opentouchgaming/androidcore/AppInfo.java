@@ -9,6 +9,7 @@ import androidx.core.util.Pair;
 
 import com.opentouchgaming.androidcore.ui.ScopedStorageDialog;
 import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
+import com.opentouchgaming.androidcore.ui.UserFilesDialog;
 import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
 
 import java.io.File;
@@ -42,6 +43,7 @@ public class AppInfo
     public static ScopedStorageDialog.Tutorial scopedTutorial;
     public static String website = null;
     public static boolean hideModWads = false;
+    public static UserFilesDialog.UserFileEntryDescription[] userFilesEntries = null;
 
     public static int defaultAppImage;
 
