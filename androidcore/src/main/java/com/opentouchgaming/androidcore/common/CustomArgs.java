@@ -128,6 +128,10 @@ public class CustomArgs implements Serializable
             result += buildFileType(new String[]{".map"}, "-map ", false);
             result += buildFileType(new String[]{".con"}, "-mx ", false);
         }
+        else if ((AppInfo.currentEngine.engine == GameEngine.Engine.ECWOLF))
+        {
+            result += buildFileType(new String[]{".pk3", ".zip"}, "-file ", false);
+        }
         return result;
     }
 

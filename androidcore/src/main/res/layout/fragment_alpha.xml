@@ -65,7 +65,7 @@
         android:id="@+id/imagebutton_new_version"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_below="@+id/textview_doom_title"
+        android:layout_below="@+id/engine_title_textView"
         android:layout_alignParentLeft="true"
         android:background="@null"
         android:scaleType="fitXY"
