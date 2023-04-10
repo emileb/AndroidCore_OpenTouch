@@ -33,4 +33,8 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ButtonMaterial" parent="@style/Theme.MaterialComponents.Light">
+
+    </style>
+
 </resources>

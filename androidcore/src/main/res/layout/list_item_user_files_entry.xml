@@ -87,8 +87,16 @@
             android:layout_height="wrap_content"
             android:text="Details" />
     </androidx.appcompat.widget.LinearLayoutCompat>
-
+    <TextView
+        android:id="@+id/engine_size_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/delete_button"
+        android:layout_centerVertical="true"
+        android:textSize="20dp"
+        android:text="100KB" />
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/delete_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"

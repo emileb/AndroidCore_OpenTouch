@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:descendantFocusability="blocksDescendants"
@@ -30,6 +30,8 @@
                 android:id="@+id/user_dir_image"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:tint="@color/path"
@@ -52,32 +54,49 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <TextView
+                android:id="@+id/status_textView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/total_size_textView"
+                android:layout_toLeftOf="@+id/total_size_textView"
+                android:gravity="center_horizontal"
+                android:text="STATUS"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/total_size_textView"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@id/import_button"
+                android:text="100"
+                android:textSize="25dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/import_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/export_button"
+                android:text="Import"
+                app:icon="@drawable/ic_baseline_file_download_24"
+                android:theme="@style/ButtonMaterial" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/export_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="Export" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/import_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/export_button"
-                android:layout_marginRight="10dp"
-                android:text="Import" />
-
+                android:text="Export"
+                app:icon="@drawable/ic_baseline_file_upload_24"
+                android:theme="@style/ButtonMaterial" />
         </RelativeLayout>
-
 
         <include layout="@layout/view_horizontal_line" />
 
-        <TextView
-            style="@style/DialogTitleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="User files - Manage" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

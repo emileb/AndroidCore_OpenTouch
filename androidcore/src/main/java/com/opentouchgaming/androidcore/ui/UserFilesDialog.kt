@@ -2,7 +2,10 @@ package com.opentouchgaming.androidcore.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.DialogInterface
+import android.graphics.Color
 import android.view.*
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,14 +17,12 @@ import com.opentouchgaming.androidcore.databinding.DialogUserFilesManagerBinding
 import com.opentouchgaming.androidcore.databinding.ListItemUserFilesEntryBinding
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.imageResource
+import org.jetbrains.anko.sdk27.coroutines.onClick
+import org.jetbrains.anko.textColor
 import org.jetbrains.anko.uiThread
 import org.ocpsoft.prettytime.PrettyTime
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.attribute.BasicFileAttributes
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class UserFilesDialog
 {
@@ -34,22 +35,32 @@ class UserFilesDialog
         val files: ArrayList<String> = ArrayList()
         var totalSize = 0L
         var lastModified = 0L
+        var selected = true
     }
+
+    enum class RunningState {
+        READY, SCANNING, DELETING, EXPORTING, IMPORTING
+    }
+
+    var runningState = RunningState.READY
 
     var totalSize = 0L
 
     val userFileEntries: ArrayList<UserFileEntry> = ArrayList()
-    var scanComplete = false
 
     val userFilesPath: String = AppInfo.getUserFiles()
 
-    lateinit var adaptor: CustomAdapter
+    lateinit var adaptor: UserFileEntryAdapter
+
+    lateinit var act: Activity
 
     fun showDialog(activity: Activity, entries: Array<UserFileEntryDescription>)
     {
+        act = activity
+
         binding = DialogUserFilesManagerBinding.inflate(activity.layoutInflater)
 
-        val dialog = Dialog(activity, R.style.DialogThemeFullscreen_dark)
+        val dialog = Dialog(activity, R.style.Theme_Material3_Dark)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window!!.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         dialog.setContentView(binding.root)
@@ -58,7 +69,7 @@ class UserFilesDialog
         binding.userDirTextview.text = userPath.first
         binding.userDirImage.setImageResource(userPath.second!!)
 
-        adaptor = CustomAdapter(userFileEntries, userFilesPath)
+        adaptor = UserFileEntryAdapter(userFileEntries, userFilesPath)
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
         binding.recyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
         binding.recyclerView.adapter = adaptor
@@ -68,18 +79,22 @@ class UserFilesDialog
             userFileEntries.add(UserFileEntry(description))
         }
 
-        dialog.show()
+        binding.importButton.onClick {
+            val d = ImportExportDialog()
+            d.showDialog(activity, true, userFileEntries, userFilesPath)
+        }
 
+        dialog.show()
         scanFolders()
     }
 
     fun scanFolders()
     {
-        scanComplete = false
+        runningState = RunningState.SCANNING
+
         totalSize = 0;
 
         doAsync {
-
             for (entry in userFileEntries)
             {
                 entry.totalSize = 0;
@@ -91,11 +106,15 @@ class UserFilesDialog
                     if (it.isFile)
                     {
                         println(it)
-                        //val attr: BasicFileAttributes = Files.readAttributes(it, BasicFileAttributes::class.java)
-                        val attr: BasicFileAttributes = Files.readAttributes<BasicFileAttributes>(it.toPath(), BasicFileAttributes::class.java)
-                        entry.lastModified = attr.lastModifiedTime().toMillis()
+                        entry.lastModified = it.lastModified();
                         entry.files.add(it.absolutePath)
                         entry.totalSize += it.length()
+                    }
+
+                    Thread.sleep(5)
+
+                    uiThread {
+                        updateUI()
                     }
                 }
 
@@ -103,20 +122,64 @@ class UserFilesDialog
             }
 
             uiThread {
-                scanComplete = true
+                runningState = RunningState.READY
                 updateUI()
             }
         }
     }
 
+    fun deleteEntry(entry: UserFileEntry)
+    {
+        runningState = RunningState.DELETING
+        updateUI()
+
+        doAsync {
+                val path = userFilesPath + "/" + entry.description.path
+                val success =  File(path).deleteRecursively();
+            uiThread {
+                runningState = RunningState.READY
+                // Rescan
+                scanFolders()
+            }
+        }
+    }
+
+    fun showAlert(activity: Activity, title: String, message: String, function: () -> (Unit))
+    {
+        val dialogBuilder = AlertDialog.Builder(activity)
+        dialogBuilder.setTitle(title)
+        dialogBuilder.setMessage(message)
+        dialogBuilder.setPositiveButton("OK") { _: DialogInterface, _: Int ->
+            function.invoke()
+        }
+        val dialog = dialogBuilder.create()
+        dialog.show()
+    }
+
     fun updateUI()
     {
         adaptor.notifyDataSetChanged()
+        binding.totalSizeTextView.text = Utils.humanReadableByteCount(totalSize, false)
+
+        if (runningState != RunningState.READY)
+        {
+            binding.statusTextView.textColor = Color.parseColor("#FF9f0f0f")
+            binding.statusTextView.text = "Processing..."
+            binding.importButton.isEnabled = false
+            binding.exportButton.isEnabled = false
+        }
+        else
+        {
+            binding.statusTextView.textColor = Color.parseColor("#1c7a07")
+            binding.statusTextView.text = "Ready"
+            binding.importButton.isEnabled = true
+            binding.exportButton.isEnabled = true
+        }
     }
 
-    class CustomAdapter(val entries: ArrayList<UserFileEntry>, val userFilesPath: String) : RecyclerView.Adapter<CustomAdapter.ViewHolder>()
+    inner class UserFileEntryAdapter(val entries: ArrayList<UserFileEntry>, val userFilesPath: String) : RecyclerView.Adapter<UserFileEntryAdapter.ViewHolder>()
     {
-        class ViewHolder(view: View, val binding: ListItemUserFilesEntryBinding) : RecyclerView.ViewHolder(view)
+        inner class ViewHolder(view: View, val binding: ListItemUserFilesEntryBinding) : RecyclerView.ViewHolder(view)
 
         // Create new views (invoked by the layout manager)
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder
@@ -133,25 +196,42 @@ class UserFilesDialog
             viewHolder.binding.engineNameTextView.text = entries[position].description.name
             viewHolder.binding.engineVersionTextView.text = entries[position].description.version
 
-            viewHolder.binding.engineDetailsTextView.text = "Size = " + Utils.humanReadableByteCount(entries[position].totalSize, false)
-
-            if(entries[position].lastModified != 0L)
+            if (entries[position].lastModified != 0L)
             {
                 val p = PrettyTime()
                 viewHolder.binding.engineDetailsTextView.text = "Last modified - ${p.format(Date(entries[position].lastModified))}"
+                viewHolder.binding.engineSizeTextView.text = Utils.humanReadableByteCount(entries[position].totalSize, false)
             }
             else
             {
                 viewHolder.binding.engineDetailsTextView.text = "No files"
+                viewHolder.binding.engineSizeTextView.text = ""
             }
 
             val userPath = AppInfo.getDisplayPathAndImage(userFilesPath + "/" + entries[position].description.path)
             viewHolder.binding.enginePathTextView.text = userPath.first
             viewHolder.binding.enginePathImageView.imageResource = userPath.second
+
+            if (runningState == RunningState.READY && (entries[position].lastModified != 0L))
+            {
+                viewHolder.binding.deleteButton.visibility = View.VISIBLE
+
+                viewHolder.binding.deleteButton.setOnClickListener {
+                    showAlert(
+                            act, "DELETE FILES",
+                            "Delete all user files for: " + entries[position].description.name + " (" + entries[position].description.version + ")",
+                    ) {
+                        deleteEntry(entries[position])
+                    }
+                }
+            }
+            else
+            {
+                viewHolder.binding.deleteButton.visibility = View.INVISIBLE
+            }
         }
 
         // Return the size of your dataset (invoked by the layout manager)
         override fun getItemCount() = entries.size
-
     }
 }
