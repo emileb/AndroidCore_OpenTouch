@@ -81,9 +81,6 @@ public class AboutDialog
             button.setVisibility(View.GONE);
         }
 
-        button = dialog.findViewById(R.id.about_ok_button);
-        button.setOnClickListener(v -> dialog.dismiss());
-
         //now that the dialog is set up, it's time to show it
 
         DisplayMetrics metrics = new DisplayMetrics();
