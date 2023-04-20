@@ -15,9 +15,12 @@ import com.opentouchgaming.androidcore.AppInfo
 import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.DialogImportExportBinding
 import com.opentouchgaming.androidcore.databinding.ListItemUserFilesExportBinding
+import org.jetbrains.anko.doIfSdk
 import org.jetbrains.anko.imageResource
+import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ImportExportDialog
 {
@@ -28,8 +31,10 @@ class ImportExportDialog
     var export = false
 
     val backupPaths = ArrayList<String>()
+    val exportList = ArrayList<String>()
 
-    fun showDialog(activity: Activity, export: Boolean, entries: ArrayList<UserFilesDialog.UserFileEntry>, userFilesPath: String)
+    fun showDialog(activity: Activity, export: Boolean, entries: ArrayList<UserFilesDialog.UserFileEntry>, userFilesPath: String,
+                   callback: ((filename: String, folders: ArrayList<String>) -> Unit))
     {
         this.activity = activity
         this.export = export
@@ -62,12 +67,27 @@ class ImportExportDialog
         //adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.savePathSpinner.adapter = customAdapter
 
+        if(export)
+            binding.okButton.text = "Export"
+        else
+            binding.okButton.text = "Import"
+
+        binding.okButton.setOnClickListener(View.OnClickListener {
+            exportList.clear()
+            for(entry in entries)
+            {
+                if(entry.selected)
+                    exportList.add(entry.description.path)
+            }
+            callback.invoke(backupPaths[0] + "test.zip", exportList)
+            dialog.dismiss()
+        })
         dialog.show()
     }
 
+
     class CustomSpinnerAdapter(context: Context, private val itemList: List<String>) : ArrayAdapter<String>(context, 0, itemList)
     {
-
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
         {
             val view: View = convertView ?: LayoutInflater.from(context).inflate(com.opentouchgaming.androidcore.R.layout.spinner_item_end, parent, false)
@@ -109,7 +129,12 @@ class ImportExportDialog
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
         {
             viewHolder.binding.engineIconImageView.imageResource = (entries[position].description.icon)
-            viewHolder.binding.engineNameTextView.text = entries[position].description.name + " (" + entries[position].description.version + ")"
+
+            if(entries[position].description.version.isNotEmpty())
+                viewHolder.binding.engineNameTextView.text = entries[position].description.name + " (" + entries[position].description.version + ")"
+            else
+                viewHolder.binding.engineNameTextView.text = entries[position].description.name
+
             //viewHolder.binding.engineVersionTextView.text = entries[position].description.version
 
             if (entries[position].lastModified != 0L)
@@ -124,6 +149,16 @@ class ImportExportDialog
                 //   viewHolder.binding.engineDetailsTextView.text = "No files"
                 viewHolder.binding.engineSizeTextView.text = ""
                 viewHolder.binding.enableCheckBox.isEnabled = false
+            }
+
+            // Clear to stop it triggering when recycling views
+            viewHolder.binding.enableCheckBox.setOnCheckedChangeListener (null);
+
+            viewHolder.binding.enableCheckBox.isChecked = entries[position].selected
+
+            viewHolder.binding.enableCheckBox.onCheckedChange { _, isChecked ->
+                entries[position].selected = isChecked
+                adaptor.notifyDataSetChanged()
             }
 
             viewHolder.binding.enginePathTextView.text = entries[position].description.path

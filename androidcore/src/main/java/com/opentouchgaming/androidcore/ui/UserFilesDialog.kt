@@ -22,7 +22,12 @@ import org.jetbrains.anko.textColor
 import org.jetbrains.anko.uiThread
 import org.ocpsoft.prettytime.PrettyTime
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.util.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
 
 class UserFilesDialog
 {
@@ -38,7 +43,8 @@ class UserFilesDialog
         var selected = true
     }
 
-    enum class RunningState {
+    enum class RunningState
+    {
         READY, SCANNING, DELETING, EXPORTING, IMPORTING
     }
 
@@ -81,7 +87,18 @@ class UserFilesDialog
 
         binding.importButton.onClick {
             val d = ImportExportDialog()
-            d.showDialog(activity, true, userFileEntries, userFilesPath)
+            d.showDialog(activity, false, userFileEntries, userFilesPath) { filename, folders ->
+                val unzipper = ZipExtractor(filename, "$userFilesPath", folders)
+                import(unzipper)
+            }
+        }
+
+        binding.exportButton.onClick {
+            val d = ImportExportDialog()
+            d.showDialog(activity, true, userFileEntries, userFilesPath) { filename, folders ->
+                val zipper = FolderZipper(userFilesPath, folders, filename)
+                export(zipper)
+            }
         }
 
         dialog.show()
@@ -134,13 +151,143 @@ class UserFilesDialog
         updateUI()
 
         doAsync {
-                val path = userFilesPath + "/" + entry.description.path
-                val success =  File(path).deleteRecursively();
+            val path = userFilesPath + "/" + entry.description.path
+            val success = File(path).deleteRecursively();
             uiThread {
                 runningState = RunningState.READY
                 // Rescan
                 scanFolders()
             }
+        }
+    }
+
+    fun export(zipper: FolderZipper)
+    {
+        runningState = RunningState.EXPORTING
+        updateUI()
+
+        doAsync {
+            zipper.zip()
+            uiThread {
+                runningState = RunningState.READY
+                // Rescan
+                scanFolders()
+            }
+        }
+    }
+
+    fun import(zipper: ZipExtractor)
+    {
+        runningState = RunningState.IMPORTING
+        updateUI()
+
+        doAsync {
+            zipper.extract()
+            uiThread {
+                runningState = RunningState.READY
+                // Rescan
+                scanFolders()
+            }
+        }
+    }
+
+    class FolderZipper(private val topLevelFolderPath: String, private val foldersToZip: ArrayList<String>, private val zipFilePath: String)
+    {
+        fun zip()
+        {
+            val zipFile = File(zipFilePath)
+
+            zipFile.parentFile.mkdirs()
+
+            if (!zipFile.exists())
+            {
+                zipFile.createNewFile()
+            }
+
+            val zipOut = ZipOutputStream(FileOutputStream(zipFile))
+
+            foldersToZip.forEach { folderName ->
+                var folder: File
+                folder = if (folderName.startsWith("/")) File(folderName)
+                else File("$topLevelFolderPath/$folderName")
+
+
+                if (folder.exists())
+                {
+                    if (folder.isDirectory)
+                    {
+                        addFolderToZip(zipOut, folder, folderName)
+                    }
+                    else
+                    {
+                        println("$folderName is not a directory. Skipping.")
+                    }
+                }
+                else
+                {
+                    println("$folderName does not exist. Skipping.")
+                }
+            }
+
+            zipOut.close()
+            println("Folder(s) zipped successfully to $zipFilePath")
+        }
+
+        private fun addFolderToZip(zipOut: ZipOutputStream, folder: File, parentFolder: String)
+        {
+            val fileList = folder.listFiles()
+            for (file in fileList)
+            {
+                if (file.isDirectory)
+                {
+                    addFolderToZip(zipOut, file, "$parentFolder/${file.name}")
+                }
+                else
+                {
+                    val entryPath = "$parentFolder/${file.name}"
+                    zipOut.putNextEntry(ZipEntry(entryPath))
+                    val input = FileInputStream(file)
+                    input.copyTo(zipOut)
+                    input.close()
+                    zipOut.closeEntry()
+                }
+            }
+        }
+    }
+
+    class ZipExtractor(private val zipFilePath: String, private val extractToFolder: String, private val topLevelFolders: List<String>)
+    {
+        fun extract()
+        {
+            val zipFile = ZipFile(zipFilePath)
+
+            // Loop through each entry in the ZIP file
+            zipFile.entries().asSequence().forEach { entry ->
+                // Check if the entry's name starts with any of the top-level folder names
+                val matchingFolder = topLevelFolders.find { entry.name.startsWith("$it/") }
+                if (matchingFolder != null)
+                {
+                    // Determine the relative path of the entry within the matching folder
+                    val relativePath = entry.name.removePrefix("$matchingFolder/")
+
+                    // Create any missing directories in the target folder hierarchy
+                    val targetFile = File("$extractToFolder/$matchingFolder/$relativePath")
+                    targetFile.parentFile.mkdirs()
+
+                    // Extract the entry to the target folder with the relative path
+                    if (!entry.isDirectory)
+                    {
+                        zipFile.getInputStream(entry).use { input ->
+                            targetFile.outputStream().use { output ->
+                                input.copyTo(output)
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Close the ZIP file
+            zipFile.close()
         }
     }
 
@@ -164,7 +311,14 @@ class UserFilesDialog
         if (runningState != RunningState.READY)
         {
             binding.statusTextView.textColor = Color.parseColor("#FF9f0f0f")
-            binding.statusTextView.text = "Processing..."
+            if (runningState == RunningState.EXPORTING)
+            {
+                binding.statusTextView.text = "Processing..."
+            }
+            else if (runningState == RunningState.IMPORTING)
+            {
+                binding.statusTextView.text = "Importing..."
+            }
             binding.importButton.isEnabled = false
             binding.exportButton.isEnabled = false
         }
