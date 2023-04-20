@@ -57,7 +57,6 @@ class TabLayoutWidget(val context: Context, view: View)
 
     private fun tabChanged(n: Int)
     {
-
         callback?.invoke(n)
 
         // Hide all views first

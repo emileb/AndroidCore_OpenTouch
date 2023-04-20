@@ -219,7 +219,8 @@ public class SuperModDialog
 
     private ArrayList<SuperModItem> loadList()
     {
-        String fileName = AppInfo.getUserFiles() + "/mymods.dat";
+        String fileName = AppInfo.getSuperModFile();
+
         ArrayList<SuperModItem> data = null;
 
         try
@@ -259,7 +260,7 @@ public class SuperModDialog
 
     private void saveList()
     {
-        String fileName = AppInfo.getUserFiles() + "/mymods.dat";
+        String fileName = AppInfo.getSuperModFile();
 
         FileOutputStream fos = null;
         ObjectOutputStream out = null;

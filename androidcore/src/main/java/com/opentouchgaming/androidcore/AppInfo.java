@@ -13,6 +13,7 @@ import com.opentouchgaming.androidcore.ui.UserFilesDialog;
 import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,6 +112,55 @@ public class AppInfo
         log.log(DebugLog.Level.D, "flashRoot = " + flashRoot);
         log.log(DebugLog.Level.D, "sdcardRoot = " + sdcardRoot);
         log.log(DebugLog.Level.D, "sdcardWritable = " + sdcardWritable);
+
+
+        // MIGRATION CODE 20/04/23
+
+        // Move mymods to its own folder
+        File oldMods = new File(AppInfo.getUserFiles() + "/mymods.dat");
+        File newMods = new File(AppInfo.getSuperModFile());
+
+        if (oldMods.exists() && !newMods.exists())
+        {
+            newMods.getParentFile().mkdirs();
+
+            try
+            {
+                log.log(DebugLog.Level.D, "Moving mymods.dat");
+
+                Utils.copyFile(oldMods, newMods);
+                oldMods.delete();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+
+        // Move touch screen XML files to user_files
+        String oldTouchXMLFilesPath = ctx.getFilesDir().getAbsolutePath();
+        File[] files = new File(oldTouchXMLFilesPath).listFiles();
+        if (files != null && files.length > 0)
+        {
+            for (File file : files)
+            {
+                if(file.getName().contains(".xml"))
+                {
+                    log.log(DebugLog.Level.D, "Found XML and moving:" + file.getName());
+                    try
+                    {
+                        File newFile = new File(getUserFiles() + "/touch_layouts/" + file.getName());
+                        Utils.copyFile(file, newFile);
+                        file.delete();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     static public GameEngine getGameEngine(GameEngine.Engine type)
@@ -243,6 +293,9 @@ public class AppInfo
 
         new File(userFiles).mkdirs();
 
+        // Also create touch_layouts folder
+        new File(userFiles + "/touch_layouts").mkdirs();
+
         return userFiles;
     }
 
@@ -352,6 +405,11 @@ public class AppInfo
     static public String getGamepadDirectory()
     {
         return AppInfo.getUserFiles() + "/gamepad";
+    }
+
+    static public String getSuperModFile()
+    {
+        return AppInfo.getUserFiles() + "/loadouts/loadout.dat";
     }
 
     // JNI
