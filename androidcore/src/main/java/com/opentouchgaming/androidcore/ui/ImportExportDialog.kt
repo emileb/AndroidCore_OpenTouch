@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.ImageView
@@ -12,9 +13,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.opentouchgaming.androidcore.AppInfo
+import com.opentouchgaming.androidcore.R
 import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.DialogImportExportBinding
 import com.opentouchgaming.androidcore.databinding.ListItemUserFilesExportBinding
+import kotlinx.android.synthetic.main.spinner_item_end.view.*
 import org.jetbrains.anko.doIfSdk
 import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
@@ -68,9 +71,15 @@ class ImportExportDialog
         binding.savePathSpinner.adapter = customAdapter
 
         if(export)
+        {
             binding.okButton.text = "Export"
+            binding.okButton.setIconResource(R.drawable.ic_baseline_file_upload_24)
+        }
         else
+        {
             binding.okButton.text = "Import"
+            binding.okButton.setIconResource(R.drawable.ic_baseline_file_download_24)
+        }
 
         binding.okButton.setOnClickListener(View.OnClickListener {
             exportList.clear()
