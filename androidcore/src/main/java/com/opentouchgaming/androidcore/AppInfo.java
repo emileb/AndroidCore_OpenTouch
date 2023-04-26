@@ -308,6 +308,22 @@ public class AppInfo
         return files;
     }
 
+    static public String[] getBackupPaths()
+    {
+        String b1 = getAppDirectory() + "/backup";
+
+        String b2 = null;
+        if(isScopedEnabled() && getAppSecDirectory() != null)
+        {
+            b2 = getAppSecDirectory() + "/backup";
+            return new String[] {b2, b1};
+        }
+        else
+        {
+            return new String[] {b1};
+        }
+    }
+
     static public String getUserFiles_FROMSEC()
     {
         String userFiles = getAppSecDirectory() + "/user_files";
@@ -345,7 +361,6 @@ public class AppInfo
 
     public static Pair<String, Integer> getDisplayPathAndImage(String path)
     {
-
         String newPath = path;
         Integer image = R.drawable.ic_baseline_phone_android_black;
 

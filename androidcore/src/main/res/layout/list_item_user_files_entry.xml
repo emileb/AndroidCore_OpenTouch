@@ -31,11 +31,12 @@
 
         <TextView
             android:id="@+id/engine_name_textView"
-            android:layout_width="70dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="GZDoom"
             android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -87,6 +88,7 @@
             android:layout_height="wrap_content"
             android:text="Details" />
     </androidx.appcompat.widget.LinearLayoutCompat>
+
     <TextView
         android:id="@+id/engine_size_textView"
         android:layout_width="wrap_content"
@@ -95,6 +97,7 @@
         android:layout_centerVertical="true"
         android:textSize="20dp"
         android:text="100KB" />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/delete_button"
         android:layout_width="40dp"
@@ -102,7 +105,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_gravity="right"
-        android:tint="@color/red"
+        android:tint="#8d0e0e"
         app:srcCompat="@drawable/ic_baseline_delete_forever_24" />
 
 </RelativeLayout>

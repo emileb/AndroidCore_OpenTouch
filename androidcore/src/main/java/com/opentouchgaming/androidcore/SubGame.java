@@ -413,7 +413,6 @@ public class SubGame
 
             wheelSpinner.setSelection(pos);
 
-
             runFromHere.setOnCheckedChangeListener((buttonView, isChecked) ->
             {
                 if (isChecked)

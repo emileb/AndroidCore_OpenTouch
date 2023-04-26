@@ -33,8 +33,8 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ButtonMaterial" parent="@style/Theme.MaterialComponents.Light">
+    <style name="ButtonMaterial" parent="@style/Theme.MaterialComponents.Light"/>
+    <style name="TextMaterial" parent="@style/Theme.MaterialComponents"/>
 
-    </style>
 
 </resources>

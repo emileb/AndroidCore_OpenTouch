@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.spinner_item_end.view.*
 import org.jetbrains.anko.doIfSdk
 import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
+import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
 import kotlin.collections.ArrayList
@@ -49,8 +50,14 @@ class ImportExportDialog
         dialog.setContentView(binding.root)
 
         val width: Int = ((activity.getResources().getDisplayMetrics().widthPixels * 0.98).toInt())
-        val height: Int = ((activity.getResources().getDisplayMetrics().heightPixels * 0.90).toInt())
-        dialog.getWindow()?.setLayout(width, height)
+        //val height: Int = ((activity.getResources().getDisplayMetrics().heightPixels * 0.90).toInt())
+        dialog.getWindow()?.setLayout(width,  ViewGroup.LayoutParams.WRAP_CONTENT)
+
+
+        binding.advancedButton.onClick {
+            binding.recyclerView.visibility = View.VISIBLE
+            binding.advancedButton.visibility = View.GONE
+        }
 
         adaptor = ImportExportEntryAdapter(entries, userFilesPath)
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -62,7 +69,7 @@ class ImportExportDialog
             e.selected = true
         }
 
-        backupPaths.add(AppInfo.getAppDirectory() + "/backup/")
+        backupPaths.addAll(AppInfo.getBackupPaths())
 
         val customAdapter = CustomSpinnerAdapter(activity, backupPaths)
 
@@ -88,7 +95,7 @@ class ImportExportDialog
                 if(entry.selected)
                     exportList.add(entry.description.path)
             }
-            callback.invoke(backupPaths[0] + "test.zip", exportList)
+            callback.invoke(backupPaths[binding.savePathSpinner.selectedItemPosition] + "/test.zip", exportList)
             dialog.dismiss()
         })
         dialog.show()
@@ -97,24 +104,26 @@ class ImportExportDialog
 
     class CustomSpinnerAdapter(context: Context, private val itemList: List<String>) : ArrayAdapter<String>(context, 0, itemList)
     {
+        @SuppressLint("SetTextI18n")
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
         {
             val view: View = convertView ?: LayoutInflater.from(context).inflate(com.opentouchgaming.androidcore.R.layout.spinner_item_end, parent, false)
             val textView = view.findViewById<TextView>(com.opentouchgaming.androidcore.R.id.path)
             val image = view.findViewById<ImageView>(com.opentouchgaming.androidcore.R.id.image)
             val userPath = AppInfo.getDisplayPathAndImage(itemList[position])
-            textView.text = userPath.first
+            textView.text = userPath.first + "/"
             image.setImageResource(userPath.second!!)
             return view
         }
 
+        @SuppressLint("SetTextI18n")
         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View
         {
             val view: View = convertView ?: LayoutInflater.from(context).inflate(com.opentouchgaming.androidcore.R.layout.spinner_item_end, parent, false)
             val textView = view.findViewById<TextView>(com.opentouchgaming.androidcore.R.id.path)
             val image = view.findViewById<ImageView>(com.opentouchgaming.androidcore.R.id.image)
             val userPath = AppInfo.getDisplayPathAndImage(itemList[position])
-            textView.text = userPath.first
+            textView.text = userPath.first + "/"
             image.setImageResource(userPath.second!!)
             return view
         }
@@ -146,24 +155,24 @@ class ImportExportDialog
 
             //viewHolder.binding.engineVersionTextView.text = entries[position].description.version
 
+            // Clear to stop it triggering when recycling views
+            viewHolder.binding.enableCheckBox.setOnCheckedChangeListener (null);
+
             if (entries[position].lastModified != 0L)
             {
                 val p = PrettyTime()
                 //  viewHolder.binding.engineDetailsTextView.text = "Last modified - ${p.format(Date(entries[position].lastModified))}"
                 viewHolder.binding.engineSizeTextView.text = Utils.humanReadableByteCount(entries[position].totalSize, false)
                 viewHolder.binding.enableCheckBox.isEnabled = true
+                viewHolder.binding.enableCheckBox.isChecked = entries[position].selected
             }
             else
             {
                 //   viewHolder.binding.engineDetailsTextView.text = "No files"
-                viewHolder.binding.engineSizeTextView.text = ""
+                viewHolder.binding.engineSizeTextView.text = "0"
                 viewHolder.binding.enableCheckBox.isEnabled = false
+                viewHolder.binding.enableCheckBox.isChecked = false
             }
-
-            // Clear to stop it triggering when recycling views
-            viewHolder.binding.enableCheckBox.setOnCheckedChangeListener (null);
-
-            viewHolder.binding.enableCheckBox.isChecked = entries[position].selected
 
             viewHolder.binding.enableCheckBox.onCheckedChange { _, isChecked ->
                 entries[position].selected = isChecked

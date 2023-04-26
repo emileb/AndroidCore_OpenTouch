@@ -15,6 +15,7 @@ import com.opentouchgaming.androidcore.R
 import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.DialogUserFilesManagerBinding
 import com.opentouchgaming.androidcore.databinding.ListItemUserFilesEntryBinding
+import com.opentouchgaming.saffal.FileSAF
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.sdk27.coroutines.onClick
@@ -23,10 +24,10 @@ import org.jetbrains.anko.uiThread
 import org.ocpsoft.prettytime.PrettyTime
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.*
 import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 class UserFilesDialog
@@ -60,6 +61,8 @@ class UserFilesDialog
 
     lateinit var act: Activity
 
+    var message = ""
+
     fun showDialog(activity: Activity, entries: Array<UserFileEntryDescription>)
     {
         act = activity
@@ -88,8 +91,12 @@ class UserFilesDialog
         binding.importButton.onClick {
             val d = ImportExportDialog()
             d.showDialog(activity, false, userFileEntries, userFilesPath) { filename, folders ->
-                val unzipper = ZipExtractor(filename, "$userFilesPath", folders)
-                import(unzipper)
+                val file = FileSAF(filename)
+                if (file.exists())
+                {
+                    val unzipper = ZipExtractor(file.inputStream, "$userFilesPath", folders)
+                    import(unzipper)
+                }
             }
         }
 
@@ -122,7 +129,7 @@ class UserFilesDialog
                 File(path).walk(FileWalkDirection.BOTTOM_UP).forEach {
                     if (it.isFile)
                     {
-                        println(it)
+                        // println(it)
                         entry.lastModified = it.lastModified();
                         entry.files.add(it.absolutePath)
                         entry.totalSize += it.length()
@@ -195,22 +202,22 @@ class UserFilesDialog
     {
         fun zip()
         {
-            val zipFile = File(zipFilePath)
+            val zipFile = FileSAF(zipFilePath)
 
-            zipFile.parentFile.mkdirs()
+            val zipFileParent = FileSAF(zipFile.parent)
+            zipFileParent.mkdirs()
 
             if (!zipFile.exists())
             {
                 zipFile.createNewFile()
             }
 
-            val zipOut = ZipOutputStream(FileOutputStream(zipFile))
+            val zipOut = ZipOutputStream(zipFile.getOutputStream())
 
             foldersToZip.forEach { folderName ->
                 var folder: File
                 folder = if (folderName.startsWith("/")) File(folderName)
                 else File("$topLevelFolderPath/$folderName")
-
 
                 if (folder.exists())
                 {
@@ -255,16 +262,18 @@ class UserFilesDialog
         }
     }
 
-    class ZipExtractor(private val zipFilePath: String, private val extractToFolder: String, private val topLevelFolders: List<String>)
+    class ZipExtractor(private val zipInputStream: InputStream, private val extractToFolder: String, private val topLevelFolders: List<String>)
     {
         fun extract()
         {
-            val zipFile = ZipFile(zipFilePath)
+            val zipStream = ZipInputStream(zipInputStream)
 
-            // Loop through each entry in the ZIP file
-            zipFile.entries().asSequence().forEach { entry ->
+            // Loop through each entry in the ZIP stream
+            var entry: ZipEntry? = zipStream.nextEntry
+            while (entry != null)
+            {
                 // Check if the entry's name starts with any of the top-level folder names
-                val matchingFolder = topLevelFolders.find { entry.name.startsWith("$it/") }
+                val matchingFolder = topLevelFolders.find { entry!!.name.startsWith("$it/") }
                 if (matchingFolder != null)
                 {
                     // Determine the relative path of the entry within the matching folder
@@ -277,17 +286,19 @@ class UserFilesDialog
                     // Extract the entry to the target folder with the relative path
                     if (!entry.isDirectory)
                     {
-                        zipFile.getInputStream(entry).use { input ->
-                            targetFile.outputStream().use { output ->
-                                input.copyTo(output)
-                            }
+                        println("Extracting: " + targetFile.absolutePath)
+                        targetFile.outputStream().use { output ->
+                            zipStream.copyTo(output)
                         }
                     }
                 }
+
+                // Move to the next entry in the ZIP stream
+                entry = zipStream.nextEntry
             }
 
-            // Close the ZIP file
-            zipFile.close()
+            // Close the ZIP stream
+            zipStream.close()
         }
     }
 
@@ -313,7 +324,7 @@ class UserFilesDialog
             binding.statusTextView.textColor = Color.parseColor("#FF9f0f0f")
             if (runningState == RunningState.EXPORTING)
             {
-                binding.statusTextView.text = "Processing..."
+                binding.statusTextView.text = "Exporting..."
             }
             else if (runningState == RunningState.IMPORTING)
             {
@@ -328,6 +339,12 @@ class UserFilesDialog
             binding.statusTextView.text = "Ready"
             binding.importButton.isEnabled = true
             binding.exportButton.isEnabled = true
+        }
+
+        if (message.length > 0)
+        {
+            binding.statusTextView.text = message
+            message = ""
         }
     }
 
@@ -362,7 +379,7 @@ class UserFilesDialog
                 viewHolder.binding.engineSizeTextView.text = ""
             }
 
-            val userPath = AppInfo.getDisplayPathAndImage(userFilesPath + "/" + entries[position].description.path)
+            val userPath = AppInfo.getDisplayPathAndImage("..user_files/" + entries[position].description.path)
             viewHolder.binding.enginePathTextView.text = userPath.first
             viewHolder.binding.enginePathImageView.imageResource = userPath.second
 
