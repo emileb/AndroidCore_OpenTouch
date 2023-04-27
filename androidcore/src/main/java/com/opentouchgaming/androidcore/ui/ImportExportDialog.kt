@@ -214,20 +214,27 @@ class ImportExportDialog
             // Clear to stop it triggering when recycling views
             viewHolder.binding.enableCheckBox.setOnCheckedChangeListener(null);
 
-            if (entries[position].lastModified != 0L)
+            if(export)
             {
-                val p = PrettyTime()
-                //  viewHolder.binding.engineDetailsTextView.text = "Last modified - ${p.format(Date(entries[position].lastModified))}"
-                viewHolder.binding.engineSizeTextView.text = Utils.humanReadableByteCount(entries[position].totalSize, false)
+                if (entries[position].lastModified != 0L)
+                {
+                    viewHolder.binding.engineSizeTextView.text = Utils.humanReadableByteCount(entries[position].totalSize, false)
+                    viewHolder.binding.enableCheckBox.isEnabled = true
+                    viewHolder.binding.enableCheckBox.isChecked = entries[position].selected
+                }
+                else
+                {
+                    //   viewHolder.binding.engineDetailsTextView.text = "No files"
+                    viewHolder.binding.engineSizeTextView.text = "0"
+                    viewHolder.binding.enableCheckBox.isEnabled = false
+                    viewHolder.binding.enableCheckBox.isChecked = false
+                }
+            }
+            else // import
+            {
+                viewHolder.binding.engineSizeTextView.text = ""
                 viewHolder.binding.enableCheckBox.isEnabled = true
                 viewHolder.binding.enableCheckBox.isChecked = entries[position].selected
-            }
-            else
-            {
-                //   viewHolder.binding.engineDetailsTextView.text = "No files"
-                viewHolder.binding.engineSizeTextView.text = "0"
-                viewHolder.binding.enableCheckBox.isEnabled = false
-                viewHolder.binding.enableCheckBox.isChecked = false
             }
 
             viewHolder.binding.enableCheckBox.onCheckedChange { _, isChecked ->
