@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.ImageView
@@ -17,14 +16,14 @@ import com.opentouchgaming.androidcore.R
 import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.DialogImportExportBinding
 import com.opentouchgaming.androidcore.databinding.ListItemUserFilesExportBinding
+import com.opentouchgaming.saffal.FileSAF
 import kotlinx.android.synthetic.main.spinner_item_end.view.*
-import org.jetbrains.anko.doIfSdk
 import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.ocpsoft.prettytime.PrettyTime
+import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ImportExportDialog
 {
@@ -51,7 +50,7 @@ class ImportExportDialog
 
         val width: Int = ((activity.getResources().getDisplayMetrics().widthPixels * 0.98).toInt())
         //val height: Int = ((activity.getResources().getDisplayMetrics().heightPixels * 0.90).toInt())
-        dialog.getWindow()?.setLayout(width,  ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.getWindow()?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
 
 
         binding.advancedButton.onClick {
@@ -69,49 +68,107 @@ class ImportExportDialog
             e.selected = true
         }
 
-        backupPaths.addAll(AppInfo.getBackupPaths())
-
-        val customAdapter = CustomSpinnerAdapter(activity, backupPaths)
-
-        //val adapter = ArrayAdapter(activity, com.opentouchgaming.androidcore.R.layout.spinner_item_end, backupPaths)
-        //adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        binding.savePathSpinner.adapter = customAdapter
-
-        if(export)
+        if (export)
         {
+            backupPaths.addAll(AppInfo.getBackupPaths())
+
             binding.okButton.text = "Export"
             binding.okButton.setIconResource(R.drawable.ic_baseline_file_upload_24)
+
+            val sdf = SimpleDateFormat("dd_M_yyyy")
+            val currentDate = sdf.format(Date())
+
+            val filename = getNewFilename(AppInfo.directory + "_" + currentDate + ".zip", backupPaths[0])
+
+            binding.filenameEditText.setText(filename)
         }
         else
         {
             binding.okButton.text = "Import"
             binding.okButton.setIconResource(R.drawable.ic_baseline_file_download_24)
+
+            binding.filenameEditText.visibility = View.GONE
+
+            var backFileList = Utils.listFiles(AppInfo.getBackupPaths())
+            if (backFileList.size > 0)
+            {
+                val filenames = backFileList.sortedByDescending { it.lastModified() }.map { it.absolutePath }
+                backupPaths.addAll(filenames)
+            }
+            else
+            {
+                binding.okButton.isEnabled = false
+            }
         }
 
-        binding.okButton.setOnClickListener(View.OnClickListener {
+        val customAdapter = CustomSpinnerAdapter(activity, backupPaths)
+        binding.savePathSpinner.adapter = customAdapter
+
+        binding.okButton.setOnClickListener {
             exportList.clear()
-            for(entry in entries)
+            for (entry in entries)
             {
-                if(entry.selected)
-                    exportList.add(entry.description.path)
+                if (entry.selected) exportList.add(entry.description.path)
             }
-            callback.invoke(backupPaths[binding.savePathSpinner.selectedItemPosition] + "/test.zip", exportList)
-            dialog.dismiss()
-        })
+
+            if (export)
+            {
+                var filename = binding.filenameEditText.text.toString()
+                if (filename != null)
+                {
+                    if (filename.length > 1)
+                    {
+                        if (!filename.endsWith(".zip")) filename = "$filename.zip"
+                        callback.invoke(backupPaths[binding.savePathSpinner.selectedItemPosition] + "/" + filename, exportList)
+                        dialog.dismiss()
+                    }
+                }
+            }
+            else
+            {
+                if (binding.savePathSpinner.selectedItemPosition > -1)
+                {
+                    var filename = backupPaths[binding.savePathSpinner.selectedItemPosition]
+                    if (filename != null)
+                    {
+                        callback.invoke(backupPaths[binding.savePathSpinner.selectedItemPosition], exportList)
+                        dialog.dismiss()
+                    }
+                }
+            }
+        }
         dialog.show()
     }
 
+    fun getNewFilename(filename: String, directory: String): String
+    {
+        var file = FileSAF("$directory/$filename")
+        var newFilename = filename
+        var i = 1
 
-    class CustomSpinnerAdapter(context: Context, private val itemList: List<String>) : ArrayAdapter<String>(context, 0, itemList)
+        while (file.exists())
+        {
+            val extension = FileSAF(filename).extension
+            val basename = filename.substringBeforeLast(".")
+            newFilename = "$basename(${i}).$extension"
+            file = FileSAF("$directory/$newFilename")
+            i++
+        }
+
+        return newFilename
+    }
+
+    inner class CustomSpinnerAdapter(context: Context, private val itemList: List<String>) : ArrayAdapter<String>(context, 0, itemList)
     {
         @SuppressLint("SetTextI18n")
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
         {
-            val view: View = convertView ?: LayoutInflater.from(context).inflate(com.opentouchgaming.androidcore.R.layout.spinner_item_end, parent, false)
-            val textView = view.findViewById<TextView>(com.opentouchgaming.androidcore.R.id.path)
-            val image = view.findViewById<ImageView>(com.opentouchgaming.androidcore.R.id.image)
+            val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.spinner_item_end, parent, false)
+            val textView = view.findViewById<TextView>(R.id.path)
+            val image = view.findViewById<ImageView>(R.id.image)
             val userPath = AppInfo.getDisplayPathAndImage(itemList[position])
-            textView.text = userPath.first + "/"
+            if (export) textView.text = userPath.first + "/"
+            else textView.text = userPath.first
             image.setImageResource(userPath.second!!)
             return view
         }
@@ -119,11 +176,12 @@ class ImportExportDialog
         @SuppressLint("SetTextI18n")
         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View
         {
-            val view: View = convertView ?: LayoutInflater.from(context).inflate(com.opentouchgaming.androidcore.R.layout.spinner_item_end, parent, false)
-            val textView = view.findViewById<TextView>(com.opentouchgaming.androidcore.R.id.path)
-            val image = view.findViewById<ImageView>(com.opentouchgaming.androidcore.R.id.image)
+            val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.spinner_item_end, parent, false)
+            val textView = view.findViewById<TextView>(R.id.path)
+            val image = view.findViewById<ImageView>(R.id.image)
             val userPath = AppInfo.getDisplayPathAndImage(itemList[position])
-            textView.text = userPath.first + "/"
+            if (export) textView.text = userPath.first + "/"
+            else textView.text = userPath.first
             image.setImageResource(userPath.second!!)
             return view
         }
@@ -148,15 +206,13 @@ class ImportExportDialog
         {
             viewHolder.binding.engineIconImageView.imageResource = (entries[position].description.icon)
 
-            if(entries[position].description.version.isNotEmpty())
-                viewHolder.binding.engineNameTextView.text = entries[position].description.name + " (" + entries[position].description.version + ")"
-            else
-                viewHolder.binding.engineNameTextView.text = entries[position].description.name
+            if (entries[position].description.version.isNotEmpty()) viewHolder.binding.engineNameTextView.text = entries[position].description.name + " (" + entries[position].description.version + ")"
+            else viewHolder.binding.engineNameTextView.text = entries[position].description.name
 
             //viewHolder.binding.engineVersionTextView.text = entries[position].description.version
 
             // Clear to stop it triggering when recycling views
-            viewHolder.binding.enableCheckBox.setOnCheckedChangeListener (null);
+            viewHolder.binding.enableCheckBox.setOnCheckedChangeListener(null);
 
             if (entries[position].lastModified != 0L)
             {

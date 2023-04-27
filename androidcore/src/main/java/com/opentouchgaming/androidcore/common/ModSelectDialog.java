@@ -324,27 +324,19 @@ public class ModSelectDialog
         log.log(D, "sortTpe = " + sortType);
         if (sortType == SORT_TYPE_NAME)
         {
-            comparator = new Comparator<ModFile>()
+            comparator = (lhs, rhs) ->
             {
-                @Override
-                public int compare(ModFile lhs, ModFile rhs)
-                {
-                    int res = String.CASE_INSENSITIVE_ORDER.compare(lhs.fileName, rhs.fileName);
-                    return res;
-                }
+                int res = String.CASE_INSENSITIVE_ORDER.compare(lhs.fileName, rhs.fileName);
+                return res;
             };
         }
         else if (sortType == SORT_TYPE_DATE)
         {
-            comparator = new Comparator<ModFile>()
+            comparator = (lhs, rhs) ->
             {
-                @Override
-                public int compare(ModFile lhs, ModFile rhs)
-                {
-                    // This puts the largest date at the top
-                    int res = (rhs.date < lhs.date) ? -1 : (rhs.date == lhs.date) ? 0 : 1;
-                    return res;
-                }
+                // This puts the largest date at the top
+                int res = (rhs.date < lhs.date) ? -1 : (rhs.date == lhs.date) ? 0 : 1;
+                return res;
             };
         }
 
