@@ -324,6 +324,15 @@ public class AppInfo
         }
     }
 
+    static public String getQuickCommandsPath()
+    {
+        String qcBasePath = getUserFiles() + "/QC";
+
+        new File(qcBasePath).mkdirs();
+
+        return qcBasePath;
+    }
+
     static public String getUserFiles_FROMSEC()
     {
         String userFiles = getAppSecDirectory() + "/user_files";
