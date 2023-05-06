@@ -251,12 +251,16 @@ class UserFilesDialog
                 }
                 else
                 {
-                    val entryPath = "$parentFolder/${file.name}"
-                    zipOut.putNextEntry(ZipEntry(entryPath))
-                    val input = FileInputStream(file)
-                    input.copyTo(zipOut)
-                    input.close()
-                    zipOut.closeEntry()
+                    try {
+                        val entryPath = "$parentFolder/${file.name}"
+                        zipOut.putNextEntry(ZipEntry(entryPath))
+                        val input = FileInputStream(file)
+                        input.copyTo(zipOut)
+                        input.close()
+                        zipOut.closeEntry()
+                    } catch (e: Exception) {
+                        println("Error sipping file: " + file.absolutePath)
+                    }
                 }
             }
         }
@@ -371,7 +375,9 @@ class UserFilesDialog
             {
                 val p = PrettyTime()
                 viewHolder.binding.engineDetailsTextView.text = "Last modified - ${p.format(Date(entries[position].lastModified))}"
-                viewHolder.binding.engineSizeTextView.text = Utils.humanReadableByteCount(entries[position].totalSize, false)
+                val sizeInMegabytes = entries[position].totalSize.toDouble() / (1024 * 1024)
+                val size =  "%.2f MB".format(sizeInMegabytes.coerceAtLeast(0.01))
+                viewHolder.binding.engineSizeTextView.text = size
             }
             else
             {
