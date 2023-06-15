@@ -145,7 +145,7 @@ public class AppInfo
         {
             for (File file : files)
             {
-                if(file.getName().contains(".xml"))
+                if (file.getName().contains(".xml"))
                 {
                     log.log(DebugLog.Level.D, "Found XML and moving:" + file.getName());
                     try
@@ -313,14 +313,14 @@ public class AppInfo
         String b1 = getAppDirectory() + "/backup";
 
         String b2 = null;
-        if(isScopedEnabled() && getAppSecDirectory() != null)
+        if (isScopedEnabled() && getAppSecDirectory() != null)
         {
             b2 = getAppSecDirectory() + "/backup";
-            return new String[] {b2, b1};
+            return new String[]{b2, b1};
         }
         else
         {
-            return new String[] {b1};
+            return new String[]{b1};
         }
     }
 
@@ -433,7 +433,9 @@ public class AppInfo
 
     static public String getSuperModFile()
     {
-        return AppInfo.getUserFiles() + "/loadouts/loadout.dat";
+        File file = new File(AppInfo.getUserFiles() + "/loadouts/loadout.dat");
+        file.getParentFile().mkdirs();
+        return file.getAbsolutePath();
     }
 
     // JNI
