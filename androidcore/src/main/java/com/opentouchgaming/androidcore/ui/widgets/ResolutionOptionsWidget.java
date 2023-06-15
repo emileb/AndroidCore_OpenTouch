@@ -67,6 +67,9 @@ public class ResolutionOptionsWidget
     {
         int selected = AppSettings.getIntOption(AppInfo.getContext(), prefix + "_resolution_spinner", def);
         ResolutionOptions option = resolutionList.get(selected);
+
+        option.position = selected; // Save this if we want to know which spinner position it was
+
         if (option.type == ResolutionType.CUSTOM)
         {
             option.w = AppSettings.getStringOption(AppInfo.getContext(), prefix + "_resolution_cust_w", "640");
@@ -239,6 +242,7 @@ public class ResolutionOptionsWidget
         public String h;
         String title;
         ResolutionType type;
+        public int position; // Spinner position
 
         public ResolutionOptions(String title, ResolutionType t, String w, String h)
         {
