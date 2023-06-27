@@ -45,6 +45,7 @@ public interface EngineOptionsInterface
         public int glesVersion;
         public boolean useGL4ES;
 
+        public boolean maintainAspect;
         public String frameBufferWidth;
         public String frameBufferHeight;
     }

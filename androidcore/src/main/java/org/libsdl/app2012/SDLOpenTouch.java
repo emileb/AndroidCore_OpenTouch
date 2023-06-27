@@ -82,19 +82,25 @@ public class SDLOpenTouch
         // Use native cache on android 11 and above
         boolean cacheNativeFs = Build.VERSION.SDK_INT > 29;
         //Do something
-        UtilsSAF.setContext(activity.getApplicationContext(),cacheNativeFs);
+        UtilsSAF.setContext(activity.getApplicationContext(), cacheNativeFs);
         UtilsSAF.loadTreeRoot(activity.getApplicationContext());
 
 
         NativeConsoleBox.init(activity);
 
         // Load FMOD if needed
-        if(intent.getBooleanExtra("load_fmod", false)) {
-            try {
+        if (intent.getBooleanExtra("load_fmod", false))
+        {
+            try
+            {
                 System.loadLibrary("fmod");
-            } catch (UnsatisfiedLinkError e) {
+            }
+            catch (UnsatisfiedLinkError e)
+            {
                 System.err.println(e.getMessage());
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.err.println(e.getMessage());
             }
             org.fmod.FMOD.init(activity);
@@ -111,10 +117,12 @@ public class SDLOpenTouch
                 System.loadLibrary(lib);
             }
 
-        } catch (UnsatisfiedLinkError e)
+        }
+        catch (UnsatisfiedLinkError e)
         {
             System.err.println(e.getMessage());
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             System.err.println(e.getMessage());
         }
@@ -132,7 +140,8 @@ public class SDLOpenTouch
         gyro = new SDLOpenTouchGyro(activity, activity.getWindowManager().getDefaultDisplay().getRotation());
 
         engine = new NativeLib();
-        controlInterp = new ControlInterpreter(activity, engine, GamepadDefinitions.getDefinition(AppInfo.app), TouchSettings.gamePadEnabled, TouchSettings.altTouchCode);
+        controlInterp = new ControlInterpreter(activity, engine, GamepadDefinitions.getDefinition(AppInfo.app), TouchSettings.gamePadEnabled,
+                TouchSettings.altTouchCode);
 
         enableVibrate = AppSettings.getBoolOption(activity, "enable_vibrate", true);
         resDiv = intent.getFloatExtra("res_div_float", 1.0f);
@@ -155,13 +164,14 @@ public class SDLOpenTouch
 
     static void RunApplication(Activity activity, Intent intent, float displayWidth, float displayHeight)
     {
-
         {
             int fbWidth = 0;
             int fbHeight = 0;
 
             String frameBufferWidth = intent.getStringExtra("framebuffer_width");
             String frameBufferHeight = intent.getStringExtra("framebuffer_height");
+
+            boolean maintainAspect = intent.getBooleanExtra("framebuffer_maintain_aspect", false);
 
             if (frameBufferWidth != null && frameBufferHeight != null)
             {
@@ -171,12 +181,13 @@ public class SDLOpenTouch
                 {
                     fbWidth = Integer.decode(frameBufferWidth);
                     fbHeight = Integer.decode(frameBufferHeight);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
 
                 }
             }
-            NativeLib.setFramebufferSize(fbWidth, fbHeight);
+            NativeLib.setFramebufferSize(fbWidth, fbHeight, maintainAspect ? 1 : 0);
         }
 
         String args = intent.getStringExtra("args");
@@ -205,10 +216,10 @@ public class SDLOpenTouch
         if (gles_version == 3)
             options |= TouchSettings.GAME_OPTION_GLES3;
 
-        int audioBackend = intent.getIntExtra("audio_backend",0);
-        if(audioBackend == 1)
+        int audioBackend = intent.getIntExtra("audio_backend", 0);
+        if (audioBackend == 1)
             options |= TouchSettings.GAME_OPTION_SDL_OLD_AUDIO;
-        else if(audioBackend == 2)
+        else if (audioBackend == 2)
             options |= TouchSettings.GAME_OPTION_SDL_AAUDIO_AUDIO;
 
         if (intent.getBooleanExtra("use_gl4es", false))
@@ -255,7 +266,8 @@ public class SDLOpenTouch
         Log.v(TAG, "gamePath = " + gamePath);
         Log.v(TAG, "logFilename = " + logFilename);
 
-        int ret = NativeLib.init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir, resDir);
+        int ret = NativeLib.init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir,
+                resDir);
 
         Log.v(TAG, "SDL thread terminated");
         //context.finish();
@@ -268,14 +280,14 @@ public class SDLOpenTouch
 
         if (resDiv != 1.0 && !divDone)
         {
-            holder.setFixedSize((int)((width * resDiv) + 0.5), (int)((height * resDiv) + 0.5));
+            holder.setFixedSize((int) ((width * resDiv) + 0.5), (int) ((height * resDiv) + 0.5));
             divDone = true;
             return true;
         }
 
         NativeLib.setScreenSize(width, height);
 
-        controlInterp.setScreenSize((int)(width / resDiv), (int)(height / resDiv));
+        controlInterp.setScreenSize((int) (width / resDiv), (int) (height / resDiv));
 
         gyro.reload(context);
 
@@ -419,7 +431,7 @@ public class SDLOpenTouch
             }
             case COMMAND_SHOW_QUICK_COMMANDS:
             {
-                if(quickCommandDialog == null)
+                if (quickCommandDialog == null)
                 {
                     quickCommandDialog = new QuickCommandDialog(activity, quickCommandMainPath, quickCommandModPath, input ->
                     {
@@ -429,7 +441,7 @@ public class SDLOpenTouch
                 }
 
                 quickCommandDialog.show();
-            break;
+                break;
             }
             case COMMAND_EXIT_APP:
             {

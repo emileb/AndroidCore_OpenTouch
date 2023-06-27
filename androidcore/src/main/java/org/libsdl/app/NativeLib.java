@@ -9,7 +9,7 @@ public class NativeLib implements ControlInterface {
 
     public static native void setScreenSize(int width, int height);
 
-    public static native void setFramebufferSize(int width, int height);
+    public static native void setFramebufferSize(int width, int height, int aspect);
 
     public static native int frame();
 

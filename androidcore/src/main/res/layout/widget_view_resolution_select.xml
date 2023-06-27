@@ -72,4 +72,44 @@
 
         </LinearLayout>
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/aspect_layout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageView_aspect"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_baseline_aspect" />
+
+        <TextView
+            android:id="@+id/title_aspect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/imageView_aspect"
+            android:text="Maintain aspect ratio"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/description_aspect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_aspect"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/imageView_aspect"
+            android:text="Draw black bars with custom resolutions above"
+            style="@style/SettingSubText" />
+
+        <Switch
+            android:id="@+id/maintain_aspect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
 </LinearLayout>

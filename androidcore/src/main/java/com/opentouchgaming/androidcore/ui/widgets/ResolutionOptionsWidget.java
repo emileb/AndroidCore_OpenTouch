@@ -38,6 +38,8 @@ public class ResolutionOptionsWidget
     String prefix;
     int def;
 
+    boolean allowMaintainAspect = true;
+
     public ResolutionOptionsWidget(Context context, View view, String prefix, List<ResolutionOptions> resolutions)
     {
         Init(context, view, prefix, resolutions, 0);
@@ -69,6 +71,8 @@ public class ResolutionOptionsWidget
         ResolutionOptions option = resolutionList.get(selected);
 
         option.position = selected; // Save this if we want to know which spinner position it was
+
+        option.maintainAspect = AppSettings.getBoolOption(AppInfo.getContext(), prefix + "_resolution_maint_aspect", false);
 
         if (option.type == ResolutionType.CUSTOM)
         {
@@ -148,6 +152,12 @@ public class ResolutionOptionsWidget
         binding.resolutionWidthEditText.addTextChangedListener(tw);
         binding.resolutionHeightEditText.addTextChangedListener(tw);
 
+
+        binding.maintainAspect.setOnCheckedChangeListener((compoundButton, b) ->
+        {
+            AppSettings.setBoolOption(AppInfo.getContext(), prefix + "_resolution_maint_aspect", b);
+        });
+
         // Save to tag so it can removed later if necessary
         binding.resolutionWidthEditText.setTag(tw);
 
@@ -155,13 +165,19 @@ public class ResolutionOptionsWidget
         if (selected < resolutionList.size())
         {
             binding.resolutionSpinner.setSelection(selected);
-            updateSelected(context, selected);
+            //updateSelected(context, selected);
         }
         else
         {
             binding.resolutionSpinner.setSelection(def);
-            updateSelected(context, def);
+            //updateSelected(context, def);
         }
+    }
+
+    public ResolutionOptionsWidget disableMaintainAspect()
+    {
+        allowMaintainAspect = false;
+        return this;
     }
 
     private void updateSelected(Context context, int selected)
@@ -182,6 +198,16 @@ public class ResolutionOptionsWidget
 
         binding.resolutionWidthEditText.setText("" + option.w);
         binding.resolutionHeightEditText.setText("" + option.h);
+
+        if (allowMaintainAspect && ((option.type == ResolutionType.CUSTOM) || (option.type == ResolutionType.SET)))
+        {
+            binding.aspectLayout.setVisibility(View.VISIBLE);
+            binding.maintainAspect.setChecked(option.maintainAspect);
+        }
+        else
+        {
+            binding.aspectLayout.setVisibility(View.GONE);
+        }
     }
 
     public void setEnabled(boolean enabled)
@@ -243,6 +269,7 @@ public class ResolutionOptionsWidget
         String title;
         ResolutionType type;
         public int position; // Spinner position
+        public boolean maintainAspect;
 
         public ResolutionOptions(String title, ResolutionType t, String w, String h)
         {
