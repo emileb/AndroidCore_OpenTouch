@@ -8,14 +8,8 @@ import android.widget.ArrayAdapter
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.databinding.WidgetViewSpinnerBinding
 
-class SpinnerWidget(val context: Context,
-                    view: View,
-                    title: String,
-                    description: String,
-                    items: Array<Pair<String, View?>>,
-                    settingPrefix: String,
-                    default: Int,
-                    image: Int = 0)
+class SpinnerWidget(val context: Context, view: View, title: String, description: String, items: Array<Pair<String, View?>>, settingPrefix: String,
+                    default: Int, image: Int = 0)
 {
     private var binding = WidgetViewSpinnerBinding.bind(view)
 
@@ -65,7 +59,10 @@ class SpinnerWidget(val context: Context,
         }
 
         // Set to existing value if set
-        binding.spinner.setSelection(fetchValue(context, settingPrefix, default))
+        var selection = fetchValue(context, settingPrefix, default)
+        if (selection >= labels.size) selection = 0
+
+        binding.spinner.setSelection(selection)
     }
 
     companion object

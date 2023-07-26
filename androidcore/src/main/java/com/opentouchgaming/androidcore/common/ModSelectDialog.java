@@ -72,7 +72,6 @@ public class ModSelectDialog
 
     ModSelectDialog(Activity act, String appDir, String appSecDir, CustomArgs args, Function<ArrayList<String>, Void> result)
     {
-
         this.appDir = appDir;
         this.appSecDir = appSecDir;
         this.result = result;
