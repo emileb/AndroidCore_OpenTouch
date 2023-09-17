@@ -128,7 +128,7 @@ public class CustomArgs implements Serializable
             result += buildFileType(new String[]{".map"}, "-map ", false);
             result += buildFileType(new String[]{".con"}, "-mx ", false);
         }
-        else if ((AppInfo.currentEngine.engine == GameEngine.Engine.ECWOLF))
+        else if ((AppInfo.currentEngine.engine == GameEngine.Engine.ECWOLF) || (AppInfo.currentEngine.engine == GameEngine.Engine.LZWOLF))
         {
             result += buildFileType(new String[]{".pk3", ".zip"}, "-file ", false);
         }
