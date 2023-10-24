@@ -101,8 +101,6 @@ public class ScopedStorageDialog
                 {
                     AppInfo.setAppSecDirectory(UtilsSAF.getTreeRoot().rootPath);
                     dialog.dismiss();
-
-
                 }
                 return null;
             }

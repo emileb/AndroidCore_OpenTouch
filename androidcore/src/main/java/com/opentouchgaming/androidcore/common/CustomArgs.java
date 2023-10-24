@@ -89,10 +89,10 @@ public class CustomArgs implements Serializable
             (AppInfo.currentEngine.engine == GameEngine.Engine.ZANDRONUM ||
              (AppInfo.currentEngine.engine == GameEngine.Engine.LZDOOM)))//This is a bit shit referring to this...
         {
-            result += buildFileType(new String[]{".wad", ".pk3", ".pk7", ".zip"}, "-file ", false);
+            result += buildFileType(new String[]{".wad", ".pk3", ".pk7", ".zip", ".ipk3"}, "-file ", false);
             result += buildFileType(new String[]{".deh", ".bex"}, "-deh ", false);
             result += buildFileType(new String[]{".lmp"}, "-playdemo ", true);
-            result += buildFileType(new String[]{".sf2"}, "+set fluid_patchset ", true);
+            result += buildFileType(new String[]{".sf2"}, "+set fluid_patchset ", false);
         }
         else if (AppInfo.currentEngine.engine == GameEngine.Engine.PRBOOM)
         {
