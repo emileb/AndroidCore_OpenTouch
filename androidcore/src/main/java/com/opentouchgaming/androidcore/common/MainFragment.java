@@ -146,8 +146,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         View view = inflater.inflate(R.layout.fragment_alpha, container, false);
 
-        boolean uiGroup = AppSettings.getBoolOption(getContext(), "group_similar_engines", false);
-        enginesLeftPanel = new EnginesPanel(getContext(), view, AppInfo.gameEngines, AppInfo.sidePanelImage, uiGroup, this);
+        enginesLeftPanel = new EnginesPanel(getContext(), view, AppInfo.gameEngines, AppInfo.sidePanelImage, AppInfo.groupSimilarEngines, this);
 
         toolsPanel = new ToolsPanel(getContext(), view, toolsButtons, this);
 

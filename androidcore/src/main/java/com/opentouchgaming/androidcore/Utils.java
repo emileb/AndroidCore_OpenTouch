@@ -484,7 +484,6 @@ public class Utils
                             emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
 
                             activity.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-
                         }
                         catch (IOException e)
                         {
@@ -496,16 +495,15 @@ public class Utils
                 });
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener()
         {
-
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
                 dialog.cancel();
             }
         });
+
         AlertDialog alert = builder.create();
         alert.show();
-
     }
 
     static public void copyAsset(Context ctx, String file, String destdir, String destFilename)

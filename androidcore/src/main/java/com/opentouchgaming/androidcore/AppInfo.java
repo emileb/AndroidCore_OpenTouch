@@ -44,6 +44,7 @@ public class AppInfo
     public static ScopedStorageDialog.Tutorial scopedTutorial;
     public static String website = null;
     public static boolean hideModWads = false;
+    public static boolean groupSimilarEngines = false;
     public static UserFilesDialog.UserFileEntryDescription[] userFilesEntries = null;
 
     public static int defaultAppImage;
@@ -83,6 +84,7 @@ public class AppInfo
 
         AppInfo.flashRoot = Environment.getExternalStorageDirectory().toString();
 
+        AppInfo.groupSimilarEngines = AppSettings.getBoolOption(getContext(), "group_similar_engines", false);
         // NOW DEFAULT TO SCOPED STORAGE ON NEW INSTALL!!
         if (app != Apps.RAZE_TOUCH)
         {
