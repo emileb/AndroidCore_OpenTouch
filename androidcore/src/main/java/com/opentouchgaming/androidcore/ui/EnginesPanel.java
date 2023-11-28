@@ -129,7 +129,8 @@ public class EnginesPanel
         if (useGroups)
         {
             buttonCfgSize = buttonSize / 2;
-            totalWidth = buttonSize * largestGroup;
+            buttonCfgSize = (int) (buttonSize * cfgButtonSize);
+            totalWidth = buttonSize * largestGroup + buttonCfgSize;
         }
         else
         {
@@ -155,7 +156,7 @@ public class EnginesPanel
 
             // Create new ui group layout
             int margin = 1;
-            LinearLayout groupLayout = new LinearLayout(context);
+            RelativeLayout groupLayout = new RelativeLayout(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
             params.weight = 1;
             params.setMargins(margin, margin, margin, margin);
@@ -190,7 +191,7 @@ public class EnginesPanel
                     }
                 });
 
-
+                params.leftMargin = e * buttonSize;
                 button.setLayoutParams(params);
                 groupLayout.addView(button);
 
@@ -198,7 +199,7 @@ public class EnginesPanel
                 AppCompatImageView buttonCfg;
                 buttonCfg = new AppCompatImageView(context);
                 params = new LinearLayout.LayoutParams(buttonCfgSize, buttonCfgSize);
-                if (useGroups)
+                if (false)
                 {
                     // Move to bottom right
                     params.setMargins(-buttonCfgSize, buttonSize - buttonCfgSize, 0, 0);
@@ -206,7 +207,7 @@ public class EnginesPanel
                 else
                 {
                     // Put next to the button
-                    params.setMargins(0, (int) (buttonCfgSize * (1 - cfgButtonSize)), 0, 0);
+                    params.setMargins(group.engines.size() * buttonSize, (int) (buttonCfgSize * (1 - cfgButtonSize)), 0, 0);
                 }
                 buttonCfg.setTag(engine); // Used for the click listener callback
                 buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -226,10 +227,8 @@ public class EnginesPanel
                     }
                 });
 
-
                 buttonCfg.setLayoutParams(params);
                 groupLayout.addView(buttonCfg);
-
 
                 engine.imageButton = button;
                 engine.imageButtonCfg = buttonCfg;
