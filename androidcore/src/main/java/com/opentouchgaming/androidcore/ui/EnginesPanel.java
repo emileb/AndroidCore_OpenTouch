@@ -1,7 +1,8 @@
 package com.opentouchgaming.androidcore.ui;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.res.Configuration;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -38,7 +39,7 @@ public class EnginesPanel
     boolean useGroups;
     ArrayList<EngineGroup> engineGroups = new ArrayList<>();
 
-    public EnginesPanel(Context context, View topView, GameEngine[] engines, int sideImage, boolean useGroups, final Listener listener)
+    public EnginesPanel(Activity context, View topView, GameEngine[] engines, int sideImage, boolean useGroups, final Listener listener)
     {
         this.listener = listener;
         this.useGroups = useGroups;
@@ -97,10 +98,20 @@ public class EnginesPanel
 
         // Total width of the panel excluding the open button
         int leftPanelSlideAmmount = 0;
+        int screenHeightPx;  // Get screen height in pixels
 
-        // Get screen height in pixels
-        Configuration configuration = context.getResources().getConfiguration();
-        int screenHeightPx = Utils.dpToPx(context.getResources(), configuration.screenHeightDp);
+        //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+        if(false)
+        {
+            DisplayMetrics outMetrics = new DisplayMetrics();
+            context.getWindowManager().getDefaultDisplay().getRealMetrics(outMetrics);
+            screenHeightPx = outMetrics.heightPixels;
+        }
+        else // Very old, Android 16!
+        {
+            Configuration configuration = context.getResources().getConfiguration();
+            screenHeightPx = Utils.dpToPx(context.getResources(), configuration.screenHeightDp);
+        }
 
         // Check if we have a side image
         if (sideImage != 0)
@@ -118,23 +129,22 @@ public class EnginesPanel
             sideImageView.setVisibility(View.GONE);
         }
 
-
         float cfgButtonSize = 0.8f;
 
         // Calculate square button size
         // Give equal size for each ui group
         int buttonSize = screenHeightPx / engineGroups.size();
-        int buttonCfgSize = buttonSize / 3;
+        int buttonCfgSize;
         int totalWidth;
+
+        buttonCfgSize = (int) (buttonSize * cfgButtonSize);
+
         if (useGroups)
         {
-            buttonCfgSize = buttonSize / 2;
-            buttonCfgSize = (int) (buttonSize * cfgButtonSize);
             totalWidth = buttonSize * largestGroup + buttonCfgSize;
         }
         else
         {
-            buttonCfgSize = (int) (buttonSize * cfgButtonSize);
             totalWidth = buttonSize + buttonCfgSize;
         }
 
@@ -144,32 +154,41 @@ public class EnginesPanel
         leftPanelLayout.setLayoutParams(lp);
         leftPanelSlideAmmount += lp.width;
 
-
         // Create sliding panel
         leftSlidePanel = new SlidePanel(leftPanelTopView, SlidePanel.SlideSide.LEFT, leftPanelSlideAmmount, 300);
-
 
         for (int g = 0; g < engineGroups.size(); g++)
         {
             //log.log(DebugLog.Level.D,"g = " + g +  " engineGroups.size() = " + engineGroups.size());
             group = engineGroups.get(g);
 
-            // Create new ui group layout
-            int margin = 1;
-            RelativeLayout groupLayout = new RelativeLayout(context);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
+            // Create new ui group layout, complete row of engines and config button
+            int margin = 0;
+            LinearLayout groupLayout = new LinearLayout(context);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 0);
             params.weight = 1;
             params.setMargins(margin, margin, margin, margin);
             groupLayout.setLayoutParams(params);
+
+            // Contains one or more engine icons in a row
+            LinearLayout enginesLayout = new LinearLayout(context);
+            params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(margin, margin, margin, margin);
+            enginesLayout.setLayoutParams(params);
+
+            // Contains all the config buttons in a row, on top of each other
+            RelativeLayout configButtonsLayout = new RelativeLayout(context);
+            configButtonsLayout.setLayoutParams(new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
             // Add buttons to the group
             for (int e = 0; e < group.engines.size(); e++)
             {
                 GameEngine engine = group.engines.get(e);
 
-                // MAIN BUTTON
+                // MAIN BUTTON ------------------------------------------------------------------
                 AppCompatImageView button = new AppCompatImageView(context);
                 params = new LinearLayout.LayoutParams(buttonSize, buttonSize);
+                params.setMargins(margin, margin, margin, margin);
                 button.setTag(engine); // Used for the click listener callback
                 button.setImageResource(engine.iconRes);
                 button.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -180,35 +199,19 @@ public class EnginesPanel
                 else
                     button.setBackgroundResource(R.drawable.focusable);
 
-                button.setOnClickListener(new View.OnClickListener()
+                button.setOnClickListener(view ->
                 {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        GameEngine engine = (GameEngine) view.getTag();
-                        selectEngine(engine);
-                        close();
-                    }
+                    GameEngine engine12 = (GameEngine) view.getTag();
+                    selectEngine(engine12);
+                    close();
                 });
 
-                params.leftMargin = e * buttonSize;
                 button.setLayoutParams(params);
-                groupLayout.addView(button);
+                enginesLayout.addView(button);
 
-                // CFG BUTTON
+                // CFG BUTTON  ------------------------------------------------------------------
                 AppCompatImageView buttonCfg;
                 buttonCfg = new AppCompatImageView(context);
-                params = new LinearLayout.LayoutParams(buttonCfgSize, buttonCfgSize);
-                if (false)
-                {
-                    // Move to bottom right
-                    params.setMargins(-buttonCfgSize, buttonSize - buttonCfgSize, 0, 0);
-                }
-                else
-                {
-                    // Put next to the button
-                    params.setMargins(group.engines.size() * buttonSize, (int) (buttonCfgSize * (1 - cfgButtonSize)), 0, 0);
-                }
                 buttonCfg.setTag(engine); // Used for the click listener callback
                 buttonCfg.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 buttonCfg.setBackgroundResource(R.drawable.focusable);
@@ -217,23 +220,27 @@ public class EnginesPanel
                 if (engine.engineOptions != null) // Only show if available
                     buttonCfg.setImageResource(R.drawable.ic_settings_black_24dp);
 
-                buttonCfg.setOnClickListener(new View.OnClickListener()
+                buttonCfg.setOnClickListener(view ->
                 {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        GameEngine engine = (GameEngine) view.getTag();
-                        listener.engineConfig(engine);
-                    }
+                    GameEngine engine1 = (GameEngine) view.getTag();
+                    listener.engineConfig(engine1);
                 });
 
-                buttonCfg.setLayoutParams(params);
-                groupLayout.addView(buttonCfg);
+                RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(buttonCfgSize, buttonCfgSize);
+                buttonParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                buttonCfg.setLayoutParams(buttonParams);
+
+                // Add button to button relative layout
+                configButtonsLayout.addView(buttonCfg);
 
                 engine.imageButton = button;
                 engine.imageButtonCfg = buttonCfg;
             }
 
+            groupLayout.addView(enginesLayout);
+            groupLayout.addView(configButtonsLayout);
+
+            // Add full row
             leftPanelLayout.addView(groupLayout);
         }
         updateFocus();

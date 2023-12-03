@@ -146,7 +146,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         View view = inflater.inflate(R.layout.fragment_alpha, container, false);
 
-        enginesLeftPanel = new EnginesPanel(getContext(), view, AppInfo.gameEngines, AppInfo.sidePanelImage, AppInfo.groupSimilarEngines, this);
+        enginesLeftPanel = new EnginesPanel(getActivity(), view, AppInfo.gameEngines, AppInfo.sidePanelImage, AppInfo.groupSimilarEngines, this);
 
         toolsPanel = new ToolsPanel(getContext(), view, toolsButtons, this);
 
