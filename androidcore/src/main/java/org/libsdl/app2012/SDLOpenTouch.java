@@ -36,7 +36,6 @@ import java.io.File;
 
 public class SDLOpenTouch
 {
-
     static final String TAG = "SDLOpenTouch";
 
     static float resDiv = 1.0f;
@@ -116,7 +115,6 @@ public class SDLOpenTouch
                 Log.d(TAG, "Loading: " + lib);
                 System.loadLibrary(lib);
             }
-
         }
         catch (UnsatisfiedLinkError e)
         {

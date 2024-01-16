@@ -78,13 +78,6 @@ public class ControlConfig implements Serializable
         this.listener = listener;
     }
 
-    /*
-    void saveControls() throws IOException
-    {
-        saveControls(new File(filename));
-    }
-*/
-
     void reset()
     {
         actions.clear();
@@ -115,12 +108,6 @@ public class ControlConfig implements Serializable
         out.close();
     }
 
-    /*
-        public void loadControls() throws IOException, ClassNotFoundException
-        {
-            loadControls(new File(filename));
-        }
-    */
     public void loadControls(String filename) throws IOException, ClassNotFoundException
     {
         log.log(D, "loadControls, file = " + filename);

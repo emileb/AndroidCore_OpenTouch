@@ -233,7 +233,6 @@ public class ControlInterpreter
 
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
         {
-
             if (event.getRepeatCount() > 0)
                 return true;
 
@@ -279,7 +278,6 @@ public class ControlInterpreter
 
     public boolean onKeyUp(int keyCode, KeyEvent event)
     {
-
         boolean used = false;
 
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
