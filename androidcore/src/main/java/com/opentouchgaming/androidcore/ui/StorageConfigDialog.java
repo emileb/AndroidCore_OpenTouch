@@ -449,7 +449,6 @@ public class StorageConfigDialog
     {
         if (AppInfo.isScopedEnabled() || AppInfo.getAppSecDirectory() != null)
         {
-
             FileSAF oldUserFilesDir = new FileSAF(oldPath + "/user_files");
             FileSAF newUserFilesDir = new FileSAF(newPath + "/user_files");
 
