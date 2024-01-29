@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.widget.TextView;
 
+import com.opentouchgaming.saffal.FileSAF;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Created by Emile on 31/10/2017.
@@ -46,7 +48,7 @@ public class LogViewDialog
         BufferedReader br = null;
         try
         {
-            br = new BufferedReader(new FileReader(fileName));
+            br = new BufferedReader(new InputStreamReader(new FileSAF(fileName).getInputStream(), "UTF-8"));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 

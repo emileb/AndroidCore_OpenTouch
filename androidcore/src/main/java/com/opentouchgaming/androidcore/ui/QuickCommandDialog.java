@@ -26,17 +26,17 @@ import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.DragSortRecycler;
 import com.opentouchgaming.androidcore.ItemClickSupport;
 import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.saffal.FileSAF;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -221,7 +221,8 @@ public class QuickCommandDialog
 
     private void saveCommands()
     {
-        File pathFile = new File(dataPath);
+        FileSAF pathFile = new FileSAF(dataPath);
+
         if (!pathFile.exists())
             pathFile.mkdirs();
 
@@ -230,12 +231,14 @@ public class QuickCommandDialog
             String jsonInString = new Gson().toJson(commandList);
             JSONArray jsonObject = new JSONArray(jsonInString);
 
-            File file = new File(pathFile, QC_FILENAME);
+            FileSAF file = new FileSAF(pathFile + "/" + QC_FILENAME);
 
-            BufferedWriter output = new BufferedWriter(new FileWriter(file));
+            if (!file.exists())
+                file.createNewFile();
+
+            BufferedWriter output = new BufferedWriter(new OutputStreamWriter((file.getOutputStream())));
             output.write(jsonObject.toString(4));
             output.close();
-
         }
         catch (JSONException | IOException e)
         {
@@ -247,16 +250,24 @@ public class QuickCommandDialog
     {
         dataPath = path;
 
+        Gson gson = new Gson();
+
         try
         {
-            Gson gson = new Gson();
-            BufferedReader br = null;
-            br = new BufferedReader(new FileReader(dataPath + "/" + QC_FILENAME));
-            Type type = new TypeToken<ArrayList<QuickCommand>>()
+            FileSAF file = new FileSAF(dataPath + "/" + QC_FILENAME);
+            if (file.exists() && file.getInputStream() != null)
             {
-            }.getType();
+                BufferedReader br = new BufferedReader(new InputStreamReader(new FileSAF(dataPath + "/" + QC_FILENAME).getInputStream()));
+                Type type = new TypeToken<ArrayList<QuickCommand>>()
+                {
+                }.getType();
 
-            commandList = gson.fromJson(br, type);
+                commandList = gson.fromJson(br, type);
+            }
+            else
+            {
+                commandList = new ArrayList<>();
+            }
         }
         catch (FileNotFoundException e)
         {

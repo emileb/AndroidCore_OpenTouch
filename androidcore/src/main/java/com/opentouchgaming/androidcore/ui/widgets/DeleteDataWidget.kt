@@ -7,6 +7,7 @@ import android.view.Window
 import com.opentouchgaming.androidcore.AppInfo
 import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.WidgetViewDeleteDataBinding
+import com.opentouchgaming.saffal.FileSAF
 import java.io.File
 
 class DeleteDataWidget constructor(val context: Context,
@@ -53,13 +54,13 @@ class DeleteDataWidget constructor(val context: Context,
         {
             for (type in fileTypes)
             {
-                Utils.findFiles(File(AppInfo.getUserFiles() + p), type, files)
+                Utils.findFiles(FileSAF(AppInfo.getUserFiles() + p), type, files)
             }
         }
 
         for (f in files)
         {
-            File(f).delete()
+            FileSAF(f).delete()
         }
     }
 }

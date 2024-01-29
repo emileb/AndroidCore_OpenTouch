@@ -11,6 +11,7 @@ import com.opentouchgaming.androidcore.ui.ScopedStorageDialog;
 import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.UserFilesDialog;
 import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
+import com.opentouchgaming.saffal.FileSAF;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -238,15 +239,26 @@ public class AppInfo
         AppSettings.setStringOption(context, "app_sec_dir", appDir);
     }
 
+    static public void setUserFileInSecondary(boolean yes)
+    {
+        AppSettings.setBoolOption(context, "user_files_in_secondary", yes);
+    }
+
     // User files (engine config, savegames, touch control saves)
     static public String getUserFiles()
     {
-        String userFiles = getAppDirectory() + "/user_files";
+        String userFiles;
 
-        new File(userFiles).mkdirs();
+        // Option to put user_files on secondary storage
+        if (AppSettings.getBoolOption(context, "user_files_in_secondary", false) && getAppSecDirectory() != null)
+            userFiles = getAppSecDirectory() + "/user_files";
+        else
+            userFiles = getAppDirectory() + "/user_files";
+
+        new FileSAF(userFiles).mkdirs();
 
         // Also create touch_layouts folder
-        new File(userFiles + "/touch_layouts").mkdirs();
+        new FileSAF(userFiles + "/touch_layouts").mkdirs();
 
         return userFiles;
     }
@@ -280,17 +292,11 @@ public class AppInfo
     {
         String qcBasePath = getUserFiles() + "/QC";
 
-        new File(qcBasePath).mkdirs();
+        new FileSAF(qcBasePath).mkdirs();
 
         return qcBasePath;
     }
 
-    static public String getUserFiles_FROMSEC()
-    {
-        String userFiles = getAppSecDirectory() + "/user_files";
-
-        return userFiles;
-    }
 
     static public String replaceRootPaths(String path)
     {
@@ -380,12 +386,16 @@ public class AppInfo
 
     static public String getGamepadDirectory()
     {
-        return AppInfo.getUserFiles() + "/gamepad";
+        String path = getUserFiles() + "/gamepad";
+
+        new FileSAF(path).mkdirs();
+
+        return path;
     }
 
     static public String getSuperModFile()
     {
-        File file = new File(AppInfo.getUserFiles() + "/loadouts/loadout.dat");
+        FileSAF file = new FileSAF(AppInfo.getUserFiles() + "/loadouts/loadout.dat");
         file.getParentFile().mkdirs();
         return file.getAbsolutePath();
     }

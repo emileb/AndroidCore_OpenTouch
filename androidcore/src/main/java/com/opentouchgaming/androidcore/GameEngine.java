@@ -4,8 +4,7 @@ import android.app.Activity;
 import android.widget.ImageView;
 
 import com.opentouchgaming.androidcore.controls.ActionInputDefinition;
-
-import java.io.File;
+import com.opentouchgaming.saffal.FileSAF;
 
 /**
  * Created by Emile on 09/07/2017.
@@ -71,7 +70,7 @@ public class GameEngine
 
     public String getLogFilename()
     {
-        new File(AppInfo.getUserFiles() + "/logs/").mkdirs();
+        new FileSAF(AppInfo.getUserFiles() + "/logs/").mkdirs();
         return AppInfo.getUserFiles() + "/logs/" + name + ".txt";
     }
 

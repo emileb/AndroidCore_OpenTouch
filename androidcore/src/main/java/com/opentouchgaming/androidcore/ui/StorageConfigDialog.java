@@ -240,8 +240,38 @@ public class StorageConfigDialog
 
         userDirButton.setOnClickListener(v ->
         {
-            UserFilesDialog userFilesDialog = new UserFilesDialog();
-            userFilesDialog.showDialog(activity, AppInfo.userFilesEntries);
+            // If scoped storage and secondary folder is configured
+            if (AppInfo.isScopedEnabled() && AppInfo.getAppSecDirectory() != null)
+            {
+                PopupMenu popup = new PopupMenu(activity, userDirButton);
+
+                popup.getMenuInflater().inflate(R.menu.user_file_config_popup, popup.getMenu());
+                popup.setOnMenuItemClickListener(item ->
+                {
+                    if (item.getItemId() == R.id.primary)
+                    {
+                        AppInfo.setUserFileInSecondary(false);
+                    }
+                    else if (item.getItemId() == R.id.secondary)
+                    {
+                        AppInfo.setUserFileInSecondary(true);
+                    }
+                    else if (item.getItemId() == R.id.export)
+                    {
+                        UserFilesDialog userFilesDialog = new UserFilesDialog();
+                        userFilesDialog.showDialog(activity, AppInfo.userFilesEntries);
+                    }
+                    updateUI();
+
+                    return true;
+                });
+                popup.show();
+            }
+            else
+            {
+                UserFilesDialog userFilesDialog = new UserFilesDialog();
+                userFilesDialog.showDialog(activity, AppInfo.userFilesEntries);
+            }
         });
 
         // HIDE FOR NOW

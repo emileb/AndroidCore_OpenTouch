@@ -734,12 +734,12 @@ public class Utils
         return ret;
     }
 
-    static public ArrayList<String> findFiles(File root, String name, ArrayList<String> files)
+    static public ArrayList<String> findFiles(FileSAF root, String name, ArrayList<String> files)
     {
-        File[] list = root.listFiles();
+        FileSAF[] list = root.listFiles();
         if (list != null)
         {
-            for (File fil : list)
+            for (FileSAF fil : list)
             {
                 if (fil.isDirectory())
                 {

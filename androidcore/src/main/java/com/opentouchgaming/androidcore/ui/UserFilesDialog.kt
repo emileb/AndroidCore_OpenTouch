@@ -112,6 +112,19 @@ class UserFilesDialog
         scanFolders()
     }
 
+    fun traverseDirectory(directory: FileSAF, entry: UserFileEntry) {
+        directory.listFiles()?.forEach { file ->
+            if (file.isDirectory) {
+                traverseDirectory(file, entry)
+            } else {
+                println(file.absolutePath)
+                entry.lastModified = file.lastModified();
+                entry.files.add(file.absolutePath)
+                entry.totalSize += file.length()
+            }
+        }
+    }
+
     fun scanFolders()
     {
         runningState = RunningState.SCANNING
@@ -126,20 +139,11 @@ class UserFilesDialog
                 entry.files.clear()
 
                 val path = userFilesPath + "/" + entry.description.path
-                File(path).walk(FileWalkDirection.BOTTOM_UP).forEach {
-                    if (it.isFile)
-                    {
-                        // println(it)
-                        entry.lastModified = it.lastModified();
-                        entry.files.add(it.absolutePath)
-                        entry.totalSize += it.length()
-                    }
 
-                    Thread.sleep(5)
+                traverseDirectory(FileSAF(path), entry)
 
-                    uiThread {
-                        updateUI()
-                    }
+                uiThread {
+                    updateUI()
                 }
 
                 totalSize += entry.totalSize
@@ -158,8 +162,15 @@ class UserFilesDialog
         updateUI()
 
         doAsync {
+
             val path = userFilesPath + "/" + entry.description.path
-            val success = File(path).deleteRecursively();
+            val file = FileSAF(path)
+
+            if(file.isRealFile)
+                file.deleteRecursively()
+            else // SAF seems to delete whole folder
+                file.delete()
+
             uiThread {
                 runningState = RunningState.READY
                 // Rescan
@@ -216,8 +227,8 @@ class UserFilesDialog
 
             foldersToZip.forEach { folderName ->
                 var folder: File
-                folder = if (folderName.startsWith("/")) File(folderName)
-                else File("$topLevelFolderPath/$folderName")
+                folder = if (folderName.startsWith("/")) FileSAF(folderName)
+                else FileSAF("$topLevelFolderPath/$folderName")
 
                 if (folder.exists())
                 {
@@ -240,7 +251,7 @@ class UserFilesDialog
             println("Folder(s) zipped successfully to $zipFilePath")
         }
 
-        private fun addFolderToZip(zipOut: ZipOutputStream, folder: File, parentFolder: String)
+        private fun addFolderToZip(zipOut: ZipOutputStream, folder: FileSAF, parentFolder: String)
         {
             val fileList = folder.listFiles()
             for (file in fileList)
@@ -254,7 +265,7 @@ class UserFilesDialog
                     try {
                         val entryPath = "$parentFolder/${file.name}"
                         zipOut.putNextEntry(ZipEntry(entryPath))
-                        val input = FileInputStream(file)
+                        val input = file.inputStream
                         input.copyTo(zipOut)
                         input.close()
                         zipOut.closeEntry()
@@ -284,14 +295,16 @@ class UserFilesDialog
                     val relativePath = entry.name.removePrefix("$matchingFolder/")
 
                     // Create any missing directories in the target folder hierarchy
-                    val targetFile = File("$extractToFolder/$matchingFolder/$relativePath")
+                    val targetFile = FileSAF("$extractToFolder/$matchingFolder/$relativePath")
                     targetFile.parentFile.mkdirs()
 
                     // Extract the entry to the target folder with the relative path
                     if (!entry.isDirectory)
                     {
                         println("Extracting: " + targetFile.absolutePath)
-                        targetFile.outputStream().use { output ->
+                        targetFile.createNewFile();
+
+                        targetFile.outputStream.use { output ->
                             zipStream.copyTo(output)
                         }
                     }

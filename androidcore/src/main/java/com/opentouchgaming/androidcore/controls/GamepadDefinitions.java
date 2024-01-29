@@ -183,6 +183,9 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("crouch", "Crouch/Swim down", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_DOWN,
                         ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_THUMBL);
 
+                gamepadDefinition.addAction("run_toggle", "Run Smart Toggle", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SMART_TOGGLE_RUN,
+                        ActionInput.SourceType.BUTTON, -1);
+
                 gamepadDefinition.addAction("next_weapon", "Next weapon", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_NEXT_WEP,
                         ActionInput.SourceType.BUTTON, KeyEvent.KEYCODE_BUTTON_R1);
 

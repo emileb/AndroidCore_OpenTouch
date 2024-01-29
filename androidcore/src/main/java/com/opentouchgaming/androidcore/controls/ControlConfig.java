@@ -13,12 +13,9 @@ import android.widget.TextView;
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.saffal.FileSAF;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -95,15 +92,11 @@ public class ControlConfig implements Serializable
 
         configFilename = filename;
 
-        new File(AppInfo.getGamepadDirectory()).mkdirs();
+        FileSAF file = new FileSAF(AppInfo.getGamepadDirectory() + "/" + configFilename);
+        file.createNewFile();
 
-        File file = new File(AppInfo.getGamepadDirectory() + "/" + configFilename);
+        ObjectOutputStream out = new ObjectOutputStream(file.getOutputStream());
 
-        FileOutputStream fos = null;
-        ObjectOutputStream out = null;
-
-        fos = new FileOutputStream(file);
-        out = new ObjectOutputStream(fos);
         out.writeObject(actions);
         out.close();
     }
@@ -114,14 +107,10 @@ public class ControlConfig implements Serializable
 
         configFilename = filename;
 
-        File file = new File(AppInfo.getGamepadDirectory() + "/" + configFilename);
+        FileSAF file = new FileSAF(AppInfo.getGamepadDirectory() + "/" + configFilename);
 
-        InputStream fis = null;
-        ObjectInputStream in = null;
+        ObjectInputStream in = new ObjectInputStream(file.getInputStream());
 
-        fis = new FileInputStream(file);
-
-        in = new ObjectInputStream(fis);
         ArrayList<ActionInput> cd = (ArrayList<ActionInput>) in.readObject();
 
         log.log(D, "loadControls, file loaded OK");
@@ -168,7 +157,7 @@ public class ControlConfig implements Serializable
             }
         }
 
-        fis.close();
+        in.close();
     }
 
 

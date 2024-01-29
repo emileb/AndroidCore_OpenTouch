@@ -34,6 +34,7 @@ import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.GameEngine;
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.ui.FileSelectDialog;
+import com.opentouchgaming.saffal.FileSAF;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -225,11 +226,7 @@ public class SuperModDialog
 
         try
         {
-            InputStream fis = null;
-            ObjectInputStream in = null;
-
-            fis = new FileInputStream(fileName);
-            in = new ObjectInputStream(fis);
+            ObjectInputStream in = new ObjectInputStream(new FileSAF((fileName)).getInputStream());
 
             ArrayList<SuperModItem> d = (ArrayList<SuperModItem>) in.readObject();
             data = d;
@@ -262,13 +259,9 @@ public class SuperModDialog
     {
         String fileName = AppInfo.getSuperModFile();
 
-        FileOutputStream fos = null;
-        ObjectOutputStream out = null;
-
         try
         {
-            fos = new FileOutputStream(fileName);
-            out = new ObjectOutputStream(fos);
+            ObjectOutputStream out = new ObjectOutputStream(new FileSAF(fileName).getOutputStream());
             out.writeObject(items);
             out.close();
         }
@@ -403,16 +396,10 @@ public class SuperModDialog
 
     class ListAdapter extends BaseAdapter
     {
-
-        //Picasso picassoInstance;
-
         public ListAdapter()
         {
-            //Picasso.Builder picassoBuilder = new Picasso.Builder(activity);
-            //picassoBuilder.addRequestHandler(new CachedModPicDownloader());
-            //picassoInstance = picassoBuilder.build();
-        }
 
+        }
 
         public int getCount()
         {

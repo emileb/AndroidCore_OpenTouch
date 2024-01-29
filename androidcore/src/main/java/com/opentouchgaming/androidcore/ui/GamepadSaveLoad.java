@@ -17,8 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.ItemClickSupport;
 import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.saffal.FileSAF;
 
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -84,7 +85,6 @@ public class GamepadSaveLoad
         // Swipe to dismiss
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
         {
-
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
             {
@@ -97,7 +97,7 @@ public class GamepadSaveLoad
                 //Remove swiped item from list and notify the RecyclerView
                 ArgsRecyclerViewAdapter.ViewHolder h = (ArgsRecyclerViewAdapter.ViewHolder) viewHolder;
 
-                File file = new File(AppInfo.getGamepadDirectory() + "/" + h.item);
+                FileSAF file = new FileSAF(AppInfo.getGamepadDirectory() + "/" + h.item);
                 file.delete();
                 findFiles();
             }
@@ -133,7 +133,7 @@ public class GamepadSaveLoad
 
     private void findFiles()
     {
-        String[] gamepadFiles = new File(AppInfo.getGamepadDirectory()).list();
+        String[] gamepadFiles = new FileSAF(AppInfo.getGamepadDirectory()).list();
         files.clear();
         files.addAll(new ArrayList<String>(Arrays.asList(gamepadFiles)));
         rvAdapter.notifyDataSetChanged();
