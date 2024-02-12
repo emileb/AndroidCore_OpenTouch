@@ -222,7 +222,7 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("custom_10", "Custom 10 (Q)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_9,
                         ActionInput.SourceType.BUTTON, -1);
 
-                gamepadDefinition.addHeader("Inventory keys( Quake 2, Hexen 2)");
+                gamepadDefinition.addHeader("Inventory keys (Quake 2, Hexen 2)");
 
                 gamepadDefinition.addAction("show_inv", "Show inventory buttons", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SHOW_INV,
                         ActionInput.SourceType.BUTTON, -1);
@@ -262,19 +262,20 @@ public class GamepadDefinitions
                         ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Malice specific keys");
-
                 gamepadDefinition.addAction("malice_reload", "Reload (Q1 Malice)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_MALICE_RELOAD,
                         ActionInput.SourceType.BUTTON, -1);
-
                 gamepadDefinition.addAction("malice_cycle", "Cycle toys (Q1 Malice)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_MALICE_CYCLE,
                         ActionInput.SourceType.BUTTON, -1);
-
                 gamepadDefinition.addAction("malice_use", "Use toy (Q1 Malice)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_MALICE_USE,
                         ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Slight Mechanical Destruction specific keys");
-
                 gamepadDefinition.addAction("smd_use", "Use", ActionInput.ActionType.BUTTON, PortActDefs.PORT_SMD_USE, ActionInput.SourceType.BUTTON, -1);
+
+                gamepadDefinition.addHeader("WRATH specific keys");
+                gamepadDefinition.addAction("wrath_alt_attack", "Alt Attack", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_ALT_ATTACK, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("wrath_open_runes", "Show artifacts", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVEN, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("wrath_use_rune", "Use artifact", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVUSE, ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Common menu navigation keys");
 

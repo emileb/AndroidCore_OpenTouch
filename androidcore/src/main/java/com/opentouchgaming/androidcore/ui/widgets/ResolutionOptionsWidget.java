@@ -152,7 +152,6 @@ public class ResolutionOptionsWidget
         binding.resolutionWidthEditText.addTextChangedListener(tw);
         binding.resolutionHeightEditText.addTextChangedListener(tw);
 
-
         binding.maintainAspect.setOnCheckedChangeListener((compoundButton, b) ->
         {
             AppSettings.setBoolOption(AppInfo.getContext(), prefix + "_resolution_maint_aspect", b);
