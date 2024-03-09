@@ -273,6 +273,7 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("smd_use", "Use", ActionInput.ActionType.BUTTON, PortActDefs.PORT_SMD_USE, ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("WRATH specific keys");
+                gamepadDefinition.addAction("wrath_use", "Use", ActionInput.ActionType.BUTTON, PortActDefs.PORT_WRATH_USE, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("wrath_alt_attack", "Alt Attack", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_ALT_ATTACK, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("wrath_open_runes", "Show artifacts", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVEN, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("wrath_use_rune", "Use artifact", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVUSE, ActionInput.SourceType.BUTTON, -1);
