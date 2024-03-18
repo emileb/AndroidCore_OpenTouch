@@ -228,8 +228,9 @@ public class OptionsDialog
             {
                 dontUpdate = true;
                 AppSettings.deleteAllOptions(act);
+                AppInfo.currentEngine = null;
                 dialog.dismiss();
-                act.finish();
+                System.exit(0); // Kill the process so everything is reloaded
             });
 
             dialogBuilder.create().show();

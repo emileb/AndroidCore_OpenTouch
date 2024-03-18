@@ -105,5 +105,4 @@ public class AppSettings
         editor.clear();
         editor.commit();
     }
-
 }
