@@ -51,6 +51,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.opentouchgaming.saffal.UtilsSAF;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -226,6 +228,16 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
             Thread.currentThread().setName("SDLActivity");
         } catch (Exception e) {
             Log.v(TAG, "modify thread properties failed " + e.toString());
+        }
+
+        // Load SAFFAL
+        if(OPENTOUCH_SDL_EXTRA)
+        {
+            // Use native cache on android 11 and above
+            boolean cacheNativeFs = Build.VERSION.SDK_INT > 29;
+            // Load SAF library, before SDL so it works on Android 4.1
+            UtilsSAF.setContext(getApplicationContext(), cacheNativeFs);
+            UtilsSAF.loadTreeRoot(getApplicationContext());
         }
 
         // Load shared libraries
@@ -1839,27 +1851,28 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             return;
 
         int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
-        switch (format) {
-        case PixelFormat.RGBA_8888:
-            Log.v("SDL", "pixel format RGBA_8888");
-            sdlFormat = 0x16462004; // SDL_PIXELFORMAT_RGBA8888
-            break;
-        case PixelFormat.RGBX_8888:
-            Log.v("SDL", "pixel format RGBX_8888");
-            sdlFormat = 0x16261804; // SDL_PIXELFORMAT_RGBX8888
-            break;
-        case PixelFormat.RGB_565:
-            Log.v("SDL", "pixel format RGB_565");
-            sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565
-            break;
-        case PixelFormat.RGB_888:
-            Log.v("SDL", "pixel format RGB_888");
-            // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
-            sdlFormat = 0x16161804; // SDL_PIXELFORMAT_RGB888
-            break;
-        default:
-            Log.v("SDL", "pixel format unknown " + format);
-            break;
+        switch (format)
+        {
+            case PixelFormat.RGBA_8888:
+                Log.v("SDL", "pixel format RGBA_8888");
+                sdlFormat = 0x16462004; // SDL_PIXELFORMAT_RGBA8888
+                break;
+            case PixelFormat.RGBX_8888:
+                Log.v("SDL", "pixel format RGBX_8888");
+                sdlFormat = 0x16261804; // SDL_PIXELFORMAT_RGBX8888
+                break;
+            case PixelFormat.RGB_565:
+                Log.v("SDL", "pixel format RGB_565");
+                sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565
+                break;
+            case PixelFormat.RGB_888:
+                Log.v("SDL", "pixel format RGB_888");
+                // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
+                sdlFormat = 0x16161804; // SDL_PIXELFORMAT_RGB888
+                break;
+            default:
+                Log.v("SDL", "pixel format unknown " + format);
+                break;
         }
 
         mWidth = width;

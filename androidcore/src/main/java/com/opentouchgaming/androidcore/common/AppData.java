@@ -32,7 +32,6 @@ public class AppData implements Serializable
         log = new DebugLog(DebugLog.Module.APP, "AppData");
     }
 
-
     private final EnumMap<GameEngine.Engine, EngineData> engineData = new EnumMap<>(GameEngine.Engine.class);
 
     public static void saveToFile(String file, AppData appData)

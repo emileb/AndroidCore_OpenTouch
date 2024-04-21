@@ -27,7 +27,6 @@ import com.opentouchgaming.androidcore.controls.TouchSettings;
 import com.opentouchgaming.androidcore.ui.GyroDialog;
 import com.opentouchgaming.androidcore.ui.QuickCommandDialog;
 import com.opentouchgaming.androidcore.ui.TouchSettingsSaveLoad;
-import com.opentouchgaming.saffal.UtilsSAF;
 
 import org.libsdl.app.NativeConsoleBox;
 import org.libsdl.app.NativeLib;
@@ -77,13 +76,6 @@ public class SDLOpenTouch
 
         AppInfo.setContext(activity);
         AppInfo.setApp(app);
-
-        // Use native cache on android 11 and above
-        boolean cacheNativeFs = Build.VERSION.SDK_INT > 29;
-        //Do something
-        UtilsSAF.setContext(activity.getApplicationContext(), cacheNativeFs);
-        UtilsSAF.loadTreeRoot(activity.getApplicationContext());
-
 
         NativeConsoleBox.init(activity);
 
