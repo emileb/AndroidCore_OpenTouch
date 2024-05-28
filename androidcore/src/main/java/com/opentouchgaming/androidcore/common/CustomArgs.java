@@ -15,7 +15,6 @@ public class CustomArgs implements Serializable
 {
     static final long serialVersionUID = 1;
 
-
     private ArrayList<String> files = new ArrayList<>();
     private String args = "";
 

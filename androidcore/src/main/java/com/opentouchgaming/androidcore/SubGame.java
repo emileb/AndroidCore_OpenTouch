@@ -330,7 +330,6 @@ public class SubGame
             dialog.setContentView(R.layout.dialog_subgame_options);
             dialog.setCancelable(true);
 
-
             final EditText title = dialog.findViewById(R.id.subgame_title_edittext);
             title.setText(getTitle());
 

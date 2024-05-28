@@ -261,7 +261,12 @@ public class SuperModDialog
 
         try
         {
-            ObjectOutputStream out = new ObjectOutputStream(new FileSAF(fileName).getOutputStream());
+            FileSAF fileSave = new FileSAF(fileName);
+
+            if (!fileSave.exists())
+                fileSave.createNewFile();
+
+            ObjectOutputStream out = new ObjectOutputStream(fileSave.getOutputStream());
             out.writeObject(items);
             out.close();
         }
