@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
@@ -784,7 +785,12 @@ public class Utils
         {
             String jsonInString = new Gson().toJson(object);
             JSONArray jsonObject = new JSONArray(jsonInString);
-            BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
+            FileSAF fileOut = new FileSAF(outputFile);
+
+            if(!fileOut.exists())
+                fileOut.createNewFile();
+
+            BufferedWriter output = new BufferedWriter(new OutputStreamWriter(fileOut.getOutputStream()));
             output.write(jsonObject.toString(4));
             output.close();
         }
@@ -796,13 +802,14 @@ public class Utils
         return error;
     }
 
-    public static <T> T fromJson(String outputFile, Type type, boolean creatNew)
+    public static <T> T fromJson(String inputFile, Type type, boolean createNew)
     {
         T t = null;
+
         try
         {
             Gson gson = new Gson();
-            BufferedReader br = new BufferedReader(new FileReader(outputFile));
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileSAF(inputFile).getInputStream()));
             // Type type = new TypeToken<clazz>() {  }.getType();
             t = gson.fromJson(br, type);
         }
