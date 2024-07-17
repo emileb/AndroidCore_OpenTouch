@@ -41,14 +41,19 @@ public class AboutDialog
         final ChangeLogRecyclerView changeLogView = dialog.findViewById(R.id.changeLogView);
 
         //set up button
-        Button button = dialog.findViewById(R.id.about_changes_button);
+        Button button = dialog.findViewById(R.id.ok_button);
+        button.setOnClickListener(v ->
+        {
+            dialog.dismiss();
+        });
+
+        button = dialog.findViewById(R.id.about_changes_button);
         button.setOnClickListener(v ->
         {
             dialog.setTitle("Changes");
             text.setVisibility(View.INVISIBLE);
             changeLogView.setVisibility(View.VISIBLE);
         });
-
 
         button = dialog.findViewById(R.id.about_license_button);
         button.setOnClickListener(v ->
