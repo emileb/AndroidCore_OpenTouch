@@ -27,13 +27,11 @@ import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.ItemClickSupport;
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.controls.ControlInterface;
+import com.opentouchgaming.saffal.FileSAF;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -65,7 +63,6 @@ public class TouchSettingsSaveLoad
 
     public TouchSettingsSaveLoad(final Activity act, String userFolder, ControlInterface nativeIf)
     {
-
         log.log(D, "userFolder = " + userFolder);
 
         this.userFolder = userFolder;
@@ -117,7 +114,6 @@ public class TouchSettingsSaveLoad
         // Swipe to dismiss
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
         {
-
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
             {
@@ -160,7 +156,6 @@ public class TouchSettingsSaveLoad
             }
             else
             {
-
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
                 //dialogBuilder.setTitle("Load settings");
                 dialogBuilder.setMessage("Load touch settings? (" + layouts.get(position).name + ")");
@@ -197,27 +192,27 @@ public class TouchSettingsSaveLoad
         return userFolder + "/" + layoutsFolder;
     }
 
-    private void saveLayout(String name, File path)
+    private void saveLayout(String name, FileSAF path)
     {
         int error = nativeIf.saveSettings_if(path.getAbsolutePath());
 
         if (error == 0)
         {
-
             // Create new TouchSettingSaveInfo object
             TouchSettingSaveInfo info = new TouchSettingSaveInfo();
             info.name = name;
             info.timeSaved = new Date().getTime();
 
             // Serialise new file
-            File infoFile = new File(path, layoutsInfoFilename);
+            FileSAF infoFile = new FileSAF(path, layoutsInfoFilename);
+
             try
             {
-                FileOutputStream fos = null;
-                ObjectOutputStream out = null;
+                if (!infoFile.exists())
+                    infoFile.createNewFile();
 
-                fos = new FileOutputStream(infoFile);
-                out = new ObjectOutputStream(fos);
+                ObjectOutputStream out = null;
+                out = new ObjectOutputStream(infoFile.getOutputStream());
                 out.writeObject(info);
                 out.close();
 
@@ -244,25 +239,25 @@ public class TouchSettingsSaveLoad
     {
         long nextDir = findLayouts() + 1;
 
-        File layoutDir = null;
+        FileSAF layoutDir = null;
 
         // Check if a name already exists
         for (TouchSettingSaveInfo info : layouts)
         {
             if (info.name.contentEquals(name))
-                layoutDir = new File(getLayoutsFolder() + "/" + info.folder);
+                layoutDir = new FileSAF(getLayoutsFolder() + "/" + info.folder);
         }
 
         // No existing name was found, choose the next
         if (layoutDir == null)
-            layoutDir = new File(getLayoutsFolder() + "/" + nextDir);
+            layoutDir = new FileSAF(getLayoutsFolder() + "/" + nextDir);
 
         if (layoutDir.exists())
         {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
             //dialogBuilder.setTitle("Load settings");
             dialogBuilder.setMessage("Overwrite setting? (" + name + ")");
-            File finalLayoutDir = layoutDir;
+            FileSAF finalLayoutDir = layoutDir;
             dialogBuilder.setPositiveButton("OK", (alertdialog, which) ->
             {
                 saveLayout(name, finalLayoutDir);
@@ -281,15 +276,14 @@ public class TouchSettingsSaveLoad
 
     private long findLayouts()
     {
-
         layouts.clear();
 
         long lastLayoutNumber = 0;
 
-        File[] layoutsDirs = new File(getLayoutsFolder()).listFiles();
+        FileSAF[] layoutsDirs = new FileSAF(getLayoutsFolder()).listFiles();
         if (layoutsDirs != null)
         {
-            for (File dir : layoutsDirs)
+            for (FileSAF dir : layoutsDirs)
             {
                 // Only dirs which are numbers are valid
                 try
@@ -298,35 +292,32 @@ public class TouchSettingsSaveLoad
                     if (num > lastLayoutNumber)
                         lastLayoutNumber = num;
 
-
-                    File infoFile = new File(dir, layoutsInfoFilename);
+                    FileSAF infoFile = new FileSAF(dir, layoutsInfoFilename);
 
                     // Try to De-seraialize the file
                     TouchSettingSaveInfo info = null;
-                    try
+                    if (infoFile.exists())
                     {
-                        InputStream fis = null;
-                        ObjectInputStream in = null;
+                        try
+                        {
+                            ObjectInputStream in = new ObjectInputStream(infoFile.getInputStream());
+                            info = (TouchSettingSaveInfo) in.readObject();
+                            in.close();
+                            log.log(I, "File " + infoFile + " loaded");
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            log.log(I, "File " + infoFile + " not found");
+                        }
+                        catch (IOException e)
+                        {
+                            log.log(E, "Could not open file " + infoFile + " :" + e);
 
-                        fis = new FileInputStream(infoFile);
-                        in = new ObjectInputStream(fis);
-
-                        info = (TouchSettingSaveInfo) in.readObject();
-                        in.close();
-                        log.log(I, "File " + infoFile + " loaded");
-                    }
-                    catch (FileNotFoundException e)
-                    {
-                        log.log(I, "File " + infoFile + " not found");
-                    }
-                    catch (IOException e)
-                    {
-                        log.log(E, "Could not open file " + infoFile + " :" + e);
-
-                    }
-                    catch (ClassNotFoundException e)
-                    {
-                        log.log(E, "Error reading file " + infoFile + " :" + e);
+                        }
+                        catch (ClassNotFoundException e)
+                        {
+                            log.log(E, "Error reading file " + infoFile + " :" + e);
+                        }
                     }
 
                     if (info != null)
@@ -342,7 +333,6 @@ public class TouchSettingsSaveLoad
                     {
                         log.log(E, "Failed to load info file");
                     }
-
                 }
                 catch (NumberFormatException nfe)
                 {

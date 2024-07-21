@@ -39,6 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/save_button"
+            android:maxLines="1"
+            android:singleLine="true"
             android:layout_toRightOf="@+id/name_textview" />
 
         <Button
