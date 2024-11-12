@@ -54,6 +54,5 @@ public class GamepadActivity extends Activity
             return true;
         else
             return super.onKeyUp(keyCode, event);
-
     }
 }

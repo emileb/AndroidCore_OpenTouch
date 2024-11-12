@@ -24,6 +24,7 @@ public class TouchSettings
     public static final int GAME_OPTION_SDL_OLD_AUDIO = 0x20;
     public static final int GAME_OPTION_GL4ES = 0x40;
     public static final int GAME_OPTION_SDL_AAUDIO_AUDIO = 0x80;
+    public static final int GAME_OPTION_SDL_MIDI_FLUIDSYNTH = 0x100;
 
     public static boolean DEBUG = true;
     public static String gamePadControlsFile;

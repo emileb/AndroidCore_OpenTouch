@@ -34,6 +34,11 @@ public interface EngineOptionsInterface
         return -1;
     }
 
+    default int SDLMidiBackend()
+    {
+        return 0;
+    } // 0 = Timidity, 1 = Fluidsynth
+
     interface MultiplayerCallback
     {
         void launch(String mpArgs);

@@ -212,6 +212,10 @@ public class SDLOpenTouch
         else if (audioBackend == 2)
             options |= TouchSettings.GAME_OPTION_SDL_AAUDIO_AUDIO;
 
+        int sdlMidiPlayer = intent.getIntExtra("sdl_midi_player", 0); //0 = default timidity, 1 = fluidsynth
+        if (sdlMidiPlayer == 1)
+            options |= TouchSettings.GAME_OPTION_SDL_MIDI_FLUIDSYNTH;
+
         if (intent.getBooleanExtra("use_gl4es", false))
             options |= TouchSettings.GAME_OPTION_GL4ES;
 
