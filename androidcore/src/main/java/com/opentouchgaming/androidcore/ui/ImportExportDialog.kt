@@ -17,10 +17,6 @@ import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.DialogImportExportBinding
 import com.opentouchgaming.androidcore.databinding.ListItemUserFilesExportBinding
 import com.opentouchgaming.saffal.FileSAF
-import kotlinx.android.synthetic.main.spinner_item_end.view.*
-import org.jetbrains.anko.imageResource
-import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
-import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,7 +49,7 @@ class ImportExportDialog
         dialog.getWindow()?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
 
 
-        binding.advancedButton.onClick {
+        binding.advancedButton.setOnClickListener {
             binding.recyclerView.visibility = View.VISIBLE
             binding.advancedButton.visibility = View.GONE
         }
@@ -204,8 +200,7 @@ class ImportExportDialog
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
         {
-            viewHolder.binding.engineIconImageView.imageResource = (entries[position].description.icon)
-
+            viewHolder.binding.engineIconImageView.setImageResource(entries[position].description.icon)
             if (entries[position].description.version.isNotEmpty()) viewHolder.binding.engineNameTextView.text = entries[position].description.name + " (" + entries[position].description.version + ")"
             else viewHolder.binding.engineNameTextView.text = entries[position].description.name
 
@@ -237,8 +232,8 @@ class ImportExportDialog
                 viewHolder.binding.enableCheckBox.isChecked = entries[position].selected
             }
 
-            viewHolder.binding.enableCheckBox.onCheckedChange { _, isChecked ->
-                entries[position].selected = isChecked
+            viewHolder.binding.enableCheckBox.setOnCheckedChangeListener { compoundButton, b ->
+                entries[position].selected = b
                 adaptor.notifyDataSetChanged()
             }
 

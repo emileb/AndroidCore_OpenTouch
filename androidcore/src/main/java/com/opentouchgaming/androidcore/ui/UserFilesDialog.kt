@@ -16,14 +16,12 @@ import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.DialogUserFilesManagerBinding
 import com.opentouchgaming.androidcore.databinding.ListItemUserFilesEntryBinding
 import com.opentouchgaming.saffal.FileSAF
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.imageResource
-import org.jetbrains.anko.sdk27.coroutines.onClick
-import org.jetbrains.anko.textColor
-import org.jetbrains.anko.uiThread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.ocpsoft.prettytime.PrettyTime
 import java.io.File
-import java.io.FileInputStream
 import java.io.InputStream
 import java.util.*
 import java.util.zip.ZipEntry
@@ -88,7 +86,7 @@ class UserFilesDialog
             userFileEntries.add(UserFileEntry(description))
         }
 
-        binding.importButton.onClick {
+        binding.importButton.setOnClickListener {
             val d = ImportExportDialog()
             d.showDialog(activity, false, userFileEntries, userFilesPath) { filename, folders ->
                 val file = FileSAF(filename)
@@ -100,7 +98,7 @@ class UserFilesDialog
             }
         }
 
-        binding.exportButton.onClick {
+        binding.exportButton.setOnClickListener {
             val d = ImportExportDialog()
             d.showDialog(activity, true, userFileEntries, userFilesPath) { filename, folders ->
                 val zipper = FolderZipper(userFilesPath, folders, filename)
@@ -112,11 +110,14 @@ class UserFilesDialog
         scanFolders()
     }
 
-    fun traverseDirectory(directory: FileSAF, entry: UserFileEntry) {
+    fun traverseDirectory(directory: FileSAF, entry: UserFileEntry)
+    {
         directory.listFiles()?.forEach { file ->
-            if (file.isDirectory) {
+            if (file.isDirectory)
+            {
                 traverseDirectory(file, entry)
-            } else {
+            } else
+            {
                 println(file.absolutePath)
                 entry.lastModified = file.lastModified();
                 entry.files.add(file.absolutePath)
@@ -131,7 +132,8 @@ class UserFilesDialog
 
         totalSize = 0;
 
-        doAsync {
+
+        GlobalScope.launch  {
             for (entry in userFileEntries)
             {
                 entry.totalSize = 0;
@@ -142,14 +144,14 @@ class UserFilesDialog
 
                 traverseDirectory(FileSAF(path), entry)
 
-                uiThread {
+                withContext(Dispatchers.Main) {
                     updateUI()
                 }
 
                 totalSize += entry.totalSize
             }
 
-            uiThread {
+            withContext(Dispatchers.Main) {
                 runningState = RunningState.READY
                 updateUI()
             }
@@ -161,17 +163,16 @@ class UserFilesDialog
         runningState = RunningState.DELETING
         updateUI()
 
-        doAsync {
+        GlobalScope.launch  {
 
             val path = userFilesPath + "/" + entry.description.path
             val file = FileSAF(path)
 
-            if(file.isRealFile)
-                file.deleteRecursively()
+            if (file.isRealFile) file.deleteRecursively()
             else // SAF seems to delete whole folder
                 file.delete()
 
-            uiThread {
+            withContext(Dispatchers.Main) {
                 runningState = RunningState.READY
                 // Rescan
                 scanFolders()
@@ -184,9 +185,9 @@ class UserFilesDialog
         runningState = RunningState.EXPORTING
         updateUI()
 
-        doAsync {
+        GlobalScope.launch  {
             zipper.zip()
-            uiThread {
+            withContext(Dispatchers.Main) {
                 runningState = RunningState.READY
                 // Rescan
                 scanFolders()
@@ -199,9 +200,9 @@ class UserFilesDialog
         runningState = RunningState.IMPORTING
         updateUI()
 
-        doAsync {
+        GlobalScope.launch  {
             zipper.extract()
-            uiThread {
+            withContext(Dispatchers.Main) {
                 runningState = RunningState.READY
                 // Rescan
                 scanFolders()
@@ -235,13 +236,11 @@ class UserFilesDialog
                     if (folder.isDirectory)
                     {
                         addFolderToZip(zipOut, folder, folderName)
-                    }
-                    else
+                    } else
                     {
                         println("$folderName is not a directory. Skipping.")
                     }
-                }
-                else
+                } else
                 {
                     println("$folderName does not exist. Skipping.")
                 }
@@ -259,17 +258,18 @@ class UserFilesDialog
                 if (file.isDirectory)
                 {
                     addFolderToZip(zipOut, file, "$parentFolder/${file.name}")
-                }
-                else
+                } else
                 {
-                    try {
+                    try
+                    {
                         val entryPath = "$parentFolder/${file.name}"
                         zipOut.putNextEntry(ZipEntry(entryPath))
                         val input = file.inputStream
                         input.copyTo(zipOut)
                         input.close()
                         zipOut.closeEntry()
-                    } catch (e: Exception) {
+                    } catch (e: Exception)
+                    {
                         println("Error sipping file: " + file.absolutePath)
                     }
                 }
@@ -338,21 +338,19 @@ class UserFilesDialog
 
         if (runningState != RunningState.READY)
         {
-            binding.statusTextView.textColor = Color.parseColor("#FF9f0f0f")
+            binding.statusTextView.setTextColor(Color.parseColor("#FF9f0f0f"))
             if (runningState == RunningState.EXPORTING)
             {
                 binding.statusTextView.text = "Exporting..."
-            }
-            else if (runningState == RunningState.IMPORTING)
+            } else if (runningState == RunningState.IMPORTING)
             {
                 binding.statusTextView.text = "Importing..."
             }
             binding.importButton.isEnabled = false
             binding.exportButton.isEnabled = false
-        }
-        else
+        } else
         {
-            binding.statusTextView.textColor = Color.parseColor("#1c7a07")
+            binding.statusTextView.setTextColor(Color.parseColor("#1c7a07"))
             binding.statusTextView.text = "Ready"
             binding.importButton.isEnabled = true
             binding.exportButton.isEnabled = true
@@ -380,7 +378,7 @@ class UserFilesDialog
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
         {
-            viewHolder.binding.engineIconImageView.imageResource = (entries[position].description.icon)
+            viewHolder.binding.engineIconImageView.setImageResource((entries[position].description.icon))
             viewHolder.binding.engineNameTextView.text = entries[position].description.name
             viewHolder.binding.engineVersionTextView.text = entries[position].description.version
 
@@ -389,10 +387,9 @@ class UserFilesDialog
                 val p = PrettyTime()
                 viewHolder.binding.engineDetailsTextView.text = "Last modified - ${p.format(Date(entries[position].lastModified))}"
                 val sizeInMegabytes = entries[position].totalSize.toDouble() / (1024 * 1024)
-                val size =  "%.2f MB".format(sizeInMegabytes.coerceAtLeast(0.01))
+                val size = "%.2f MB".format(sizeInMegabytes.coerceAtLeast(0.01))
                 viewHolder.binding.engineSizeTextView.text = size
-            }
-            else
+            } else
             {
                 viewHolder.binding.engineDetailsTextView.text = "No files"
                 viewHolder.binding.engineSizeTextView.text = ""
@@ -400,7 +397,7 @@ class UserFilesDialog
 
             val userPath = AppInfo.getDisplayPathAndImage("..user_files/" + entries[position].description.path)
             viewHolder.binding.enginePathTextView.text = userPath.first
-            viewHolder.binding.enginePathImageView.imageResource = userPath.second
+            viewHolder.binding.enginePathImageView.setImageResource(userPath.second)
 
             if (runningState == RunningState.READY && (entries[position].lastModified != 0L))
             {
@@ -408,14 +405,13 @@ class UserFilesDialog
 
                 viewHolder.binding.deleteButton.setOnClickListener {
                     showAlert(
-                            act, "DELETE FILES",
-                            "Delete all user files for: " + entries[position].description.name + " (" + entries[position].description.version + ")",
+                        act, "DELETE FILES",
+                        "Delete all user files for: " + entries[position].description.name + " (" + entries[position].description.version + ")",
                     ) {
                         deleteEntry(entries[position])
                     }
                 }
-            }
-            else
+            } else
             {
                 viewHolder.binding.deleteButton.visibility = View.INVISIBLE
             }

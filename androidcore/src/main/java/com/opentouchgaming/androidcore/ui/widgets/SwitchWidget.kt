@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.databinding.WidgetViewSwitchBinding
-import org.jetbrains.anko.sdk27.coroutines.onClick
 
 class SwitchWidget(val context: Context,
                    view: View,
@@ -36,7 +35,7 @@ class SwitchWidget(val context: Context,
         }
 
         // Allow whole control to be clickable
-        binding.topLayout.onClick {
+        binding.topLayout.setOnClickListener {
             binding.switch1.isChecked = !binding.switch1.isChecked
         }
     }
