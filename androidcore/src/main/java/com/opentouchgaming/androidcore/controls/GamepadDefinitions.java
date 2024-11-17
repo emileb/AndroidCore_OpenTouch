@@ -79,6 +79,9 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("crouch_toggle", "Crouch (toggle) (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_TOGGLE_CROUCH,
                         ActionInput.SourceType.BUTTON, -1);
 
+                gamepadDefinition.addAction("run_toggle", "Run Smart Toggle", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SMART_TOGGLE_RUN,
+                        ActionInput.SourceType.BUTTON, -1);
+
                 gamepadDefinition.addAction("fly_up", "Fly up", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_FLY_UP, ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addAction("fly_down", "Fly down", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_FLY_DOWN, ActionInput.SourceType.BUTTON,
