@@ -3,6 +3,8 @@ package com.opentouchgaming.androidcore;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +25,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
@@ -40,7 +43,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -541,27 +543,16 @@ public class Utils
         copyAsset(ctx, file, destdir, file);
     }
 
-    /*
-        static public boolean extractAsset(Context ctx, String zipFile, String destdir)
-        {
-            AssetManager assetManager = ctx.getAssets();
+    static public void copyToClipboard(Context ctx, String lable, String text)
+    {
+        ClipboardManager clipboard = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(lable, text);
+        clipboard.setPrimaryClip(clip);
 
-            new File(destdir).mkdirs();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+            Toast.makeText(ctx, "Copied", Toast.LENGTH_SHORT).show();
+    }
 
-            try
-            {
-                InputStream in = assetManager.open(zipFile);
-                ZipUtils.extractInputStream(in, destdir);
-                in.close();
-                return true;
-            } catch (IOException e)
-            {
-                Log.e("tag", "Failed to copy asset file: " + zipFile + " error = " + e.toString());
-            }
-
-            return false;
-        }
-    */
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
     {
         // Raw height and width of image
