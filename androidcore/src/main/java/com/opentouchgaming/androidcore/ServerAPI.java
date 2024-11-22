@@ -316,6 +316,12 @@ public class ServerAPI
                         ZipEntry entry;
                         while ((entry = zis.getNextEntry()) != null)
                         {
+                            File f = new File(basePath, entry.getName());
+                            String canonicalPath = f.getCanonicalPath();
+                            if (!canonicalPath.startsWith(basePath)) {
+                               throw new IOException("Bad path traversal");
+                            }
+
                             if (entry.isDirectory())
                             {
                                 (new File(basePath, entry.getName())).mkdirs();
@@ -330,8 +336,6 @@ public class ServerAPI
                             if (cancel)
                                 break;
                         }
-
-
                     }
                     catch (FileNotFoundException e)
                     {
