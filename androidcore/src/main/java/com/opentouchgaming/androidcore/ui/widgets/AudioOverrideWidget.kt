@@ -12,7 +12,6 @@ import com.opentouchgaming.androidcore.R
 
 class AudioOverrideWidget internal constructor(internal var settingPrefix: String)
 {
-
     private val freqList = arrayOf(48000, 44100, 22050, 11025)
     private val samplesList = arrayOf(512, 1024, 1536, 2048, 2560, 3072, 3584, 4096, 5120, 6144, 7168, 8192)
 
@@ -23,7 +22,6 @@ class AudioOverrideWidget internal constructor(internal var settingPrefix: Strin
 
     fun linkUI(activity: Activity, dialog: Dialog)
     {
-
         loadSettings()
 
         val overrideCheckbox = dialog.findViewById<Switch>(R.id.override_checkBox)

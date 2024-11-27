@@ -19,7 +19,6 @@ import com.opentouchgaming.androidcore.R;
 
 public class ScopedStorageFirstTimeDialog
 {
-
     static DebugLog log;
 
     static
@@ -42,7 +41,7 @@ public class ScopedStorageFirstTimeDialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_scoped_storage_first_time);
         dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(true);
+        dialog.setCancelable(false);
 
         appDirTextView = dialog.findViewById(R.id.app_dir_textview);
         appDirIcon = dialog.findViewById(R.id.app_dir_image);
@@ -62,6 +61,4 @@ public class ScopedStorageFirstTimeDialog
 
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
-
-
 }

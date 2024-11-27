@@ -2,6 +2,8 @@ package com.opentouchgaming.androidcore;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.opentouchgaming.saffal.FileSAF;
@@ -17,10 +19,11 @@ import java.io.InputStreamReader;
 
 public class LogViewDialog
 {
-
     TextView textView;
 
     Activity activity;
+
+    String text;
 
     public LogViewDialog(final Activity act, String file, String name)
     {
@@ -28,7 +31,7 @@ public class LogViewDialog
 
         final Dialog dialog = new Dialog(act);
         //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        //dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         dialog.setContentView(R.layout.dialog_log_view);
 
@@ -37,9 +40,16 @@ public class LogViewDialog
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
 
+        text = readFile(file);
         textView = dialog.findViewById(R.id.textView);
-        textView.setText(readFile(file));
+        textView.setText(text);
 
+        Button copyButton = dialog.findViewById(R.id.copy_button);
+
+        copyButton.setOnClickListener(view ->
+        {
+            Utils.copyToClipboard(act, AppInfo.title, text);
+        });
         dialog.show();
     }
 

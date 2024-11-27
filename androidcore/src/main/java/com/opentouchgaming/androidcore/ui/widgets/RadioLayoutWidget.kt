@@ -2,12 +2,12 @@ package com.opentouchgaming.androidcore.ui.widgets
 
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.RadioButton
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.R
 import com.opentouchgaming.androidcore.databinding.WidgetViewRadioLayoutBinding
-import org.jetbrains.anko.layoutInflater
 
 
 class RadioLayoutWidget(val context: Context,
@@ -31,8 +31,10 @@ class RadioLayoutWidget(val context: Context,
     {
         val button = RadioButton(context)
 
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
         // Don't add vertical line for first element
-        if (items.size != 0) context.layoutInflater.inflate(R.layout.view_vertical_line, binding.radioLayout)
+        if (items.size != 0) inflater.inflate(R.layout.view_vertical_line, binding.radioLayout)
 
         button.text = title
 
