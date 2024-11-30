@@ -121,7 +121,9 @@ public class CustomArgs implements Serializable
         {
             result += buildFileType(new String[]{".grp", ".zip"}, "-file ", false);
         }
-        else if ((AppInfo.currentEngine.engine == GameEngine.Engine.EDUKE32) || (AppInfo.currentEngine.engine == GameEngine.Engine.EDUKE32_IONFURY))
+        else if ((AppInfo.currentEngine.engine == GameEngine.Engine.EDUKE32) ||
+                 (AppInfo.currentEngine.engine == GameEngine.Engine.EDUKE32_IONFURY) ||
+                 (AppInfo.currentEngine.engine == GameEngine.Engine.EDUKE32_NBLOOD))
         {
             result += buildFileType(new String[]{".grp", ".zip"}, "-g ", false);
             result += buildFileType(new String[]{".map"}, "-map ", false);
