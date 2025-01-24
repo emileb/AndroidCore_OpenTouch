@@ -64,6 +64,12 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+
+    // Java language implementation
+    implementation "androidx.activity:activity:1.8.0"
+    // Kotlin
+    implementation 'androidx.activity:activity-ktx:1.8.0'
 }
 
 repositories {
