@@ -7,10 +7,12 @@ import android.os.Environment;
 
 import androidx.core.util.Pair;
 
+import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
 import com.opentouchgaming.androidcore.ui.ScopedStorageDialog;
 import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.UserFilesDialog;
 import com.opentouchgaming.androidcore.ui.tutorial.Tutorial;
+import com.opentouchgaming.androidcore.ui.widgets.SwitchWidget;
 import com.opentouchgaming.saffal.FileSAF;
 
 import java.io.File;
@@ -84,7 +86,8 @@ public class AppInfo
 
         AppInfo.flashRoot = Environment.getExternalStorageDirectory().toString();
 
-        AppInfo.groupSimilarEngines = AppSettings.getBoolOption(getContext(), "group_similar_engines", false);
+        AppInfo.groupSimilarEngines = SwitchWidget.fetchValue(ctx, OptionsDialogKt.GROUP_SIMILAR_ENGINES, false);
+
         // NOW DEFAULT TO SCOPED STORAGE ON NEW INSTALL!!
         if (app != Apps.RAZE_TOUCH)
         {

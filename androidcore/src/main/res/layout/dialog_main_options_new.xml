@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/top_linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:minWidth="500dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="System settings"
+            android:textStyle="bold"
+            android:textSize="20dp">
+
+        </TextView>
+
+        <include
+            android:id="@+id/resolution_override"
+            layout="@layout/widget_view_spinner" />
+
+        <include
+            android:id="@+id/hide_nav_buttons"
+            layout="@layout/widget_view_switch" />
+
+        <include
+            android:id="@+id/expand_to_notch"
+            layout="@layout/widget_view_switch" />
+
+        <include
+            android:id="@+id/hide_touch_graphics"
+            layout="@layout/widget_view_switch" />
+
+        <include
+            android:id="@+id/use_android_keyboard"
+            layout="@layout/widget_view_switch" />
+
+        <include
+            android:id="@+id/alt_touch_code"
+            layout="@layout/widget_view_switch" />
+
+        <include
+            android:id="@+id/group_similar_engines"
+            layout="@layout/widget_view_switch" />
+
+        <include
+            android:id="@+id/sdl_audio_backend"
+            layout="@layout/widget_view_spinner" />
+
+        <include layout="@layout/view_horizontal_line" />
+
+        <LinearLayout
+            android:id="@+id/extras_linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minWidth="500dp"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reset_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="RESET ALL SETTINGS"
+            android:theme="@style/ButtonMaterial" />
+
+
+    </LinearLayout>
+</ScrollView>

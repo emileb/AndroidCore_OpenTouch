@@ -46,7 +46,7 @@ import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.Dpad;
 import com.opentouchgaming.androidcore.license.LicenseCheck;
 import com.opentouchgaming.androidcore.ui.EnginesPanel;
-import com.opentouchgaming.androidcore.ui.OptionsDialog;
+import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
 import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.SuperMod.SuperModDialog;
 import com.opentouchgaming.androidcore.ui.SuperMod.SuperModItem;
@@ -705,7 +705,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         }
         else if (code == TOOL_BUTTON_SETTINGS)
         {
-            new OptionsDialog(getActivity(), getExtraOptions(), () -> updateAll());
+            //new OptionsDialog(getActivity(), getExtraOptions(), this::updateAll);
+            new OptionsDialogKt(getActivity(), getExtraOptions(), this::updateAll);
         }
         else if (code == TOOL_BUTTON_STORAGE)
         {

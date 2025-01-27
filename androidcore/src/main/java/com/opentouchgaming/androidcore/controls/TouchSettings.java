@@ -6,6 +6,8 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.opentouchgaming.androidcore.AppInfo;
+import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
+import com.opentouchgaming.androidcore.ui.widgets.SwitchWidget;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,10 +41,10 @@ public class TouchSettings
     {
         gamePadControlsFile = ctx.getFilesDir().toString() + "/gamepadSettings.dat";
         gamePadEnabled = getBoolOption(ctx, "gamepad_enabled", true);
-        altTouchCode = getBoolOption(ctx, "alt_touch_code", false);
+        altTouchCode = SwitchWidget.fetchValue(ctx, OptionsDialogKt.USE_ALT_TOUCH_CODE, false);
         gamepadHidetouch = getBoolOption(ctx, "gamepad_hide_touch", true);
-        hideGameAndMenuTouch = getBoolOption(ctx, "hide_game_menu_touch", AppInfo.isAndroidTv); // default to hide on Android TV
-        useSystemKeyboard = getBoolOption(ctx, "use_system_keyboard", false);
+        hideGameAndMenuTouch = SwitchWidget.fetchValue(ctx, OptionsDialogKt.HIDE_TOUCH_GFX, AppInfo.isAndroidTv); // default to hide on Android TV
+        useSystemKeyboard = SwitchWidget.fetchValue(ctx, OptionsDialogKt.USE_SYSTEM_KEYBOARD, false);
     }
 
     public static float getFloatOption(Context ctx, String name, float def)
