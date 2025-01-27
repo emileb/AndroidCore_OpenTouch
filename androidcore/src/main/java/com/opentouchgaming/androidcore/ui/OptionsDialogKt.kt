@@ -1,13 +1,17 @@
 package com.opentouchgaming.androidcore.ui
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.LinearLayout
+import com.opentouchgaming.androidcore.AppInfo
+import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.R
 import com.opentouchgaming.androidcore.databinding.DialogMainOptionsNewBinding
 import com.opentouchgaming.androidcore.ui.widgets.SpinnerWidget
@@ -36,10 +40,10 @@ class OptionsDialogKt(
             Pair("100%", 1.0f), Pair("75%", 0.75f), Pair("60%", 0.6f), Pair("50%", 0.5f), Pair("30%", 0.30f), Pair("25%", 0.25f)
         )
 
-        fun GetResolutionScale( ctx: Context): Float
+        fun GetResolutionScale(ctx: Context): Float
         {
-            var idx = SpinnerWidget.fetchValue(ctx,SYSTEM_RESOLUTION_OVERRIDE, 0);
-            return if(idx < resolutions.size) resolutions[idx].second;
+            var idx = SpinnerWidget.fetchValue(ctx, SYSTEM_RESOLUTION_OVERRIDE, 0);
+            return if (idx < resolutions.size) resolutions[idx].second;
             else 1.0f
         }
     }
@@ -151,11 +155,26 @@ class OptionsDialogKt(
             R.drawable.setting_audio
         )
 
+        binding.resetButton.setOnClickListener {
+            val dialogBuilder = AlertDialog.Builder(activity)
+            dialogBuilder.setTitle("WARNING: This will reset all app settings! (Game data and save games are not touched)")
+            dialogBuilder.setPositiveButton("OK") { _: DialogInterface?, _: Int ->
+                dontUpdate = true
+                AppSettings.deleteAllOptions(activity)
+                AppInfo.currentEngine = null
+                dialog.dismiss()
+                System.exit(0) // Kill the process so everything is reloaded
+            }
+            dialogBuilder.create().show()
+        }
+
         if (extraOptions != null)
         {
             val layout = dialog.findViewById<LinearLayout>(R.id.extras_linearlayout)
             binding.extrasLinearlayout.addView(extraOptions)
         }
+
+
 
         dialog.show()
     }
