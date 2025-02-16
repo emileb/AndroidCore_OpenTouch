@@ -146,6 +146,16 @@ public class PortActDefs
     public static final int PORT_ACT_CUSTOM_13 = 163;
     public static final int PORT_ACT_CUSTOM_14 = 164;
     public static final int PORT_ACT_CUSTOM_15 = 165;
+    public static final int PORT_ACT_CUSTOM_16 = 166;
+    public static final int PORT_ACT_CUSTOM_17 = 167;
+    public static final int PORT_ACT_CUSTOM_18 = 168;
+    public static final int PORT_ACT_CUSTOM_19 = 169;
+    public static final int PORT_ACT_CUSTOM_20 = 170;
+    public static final int PORT_ACT_CUSTOM_21 = 171;
+    public static final int PORT_ACT_CUSTOM_22 = 172;
+    public static final int PORT_ACT_CUSTOM_23 = 173;
+    public static final int PORT_ACT_CUSTOM_24 = 174;
+    public static final int PORT_ACT_CUSTOM_25 = 175;
 
     //Doom 3
     public static final int PORT_ACT_FLASH_LIGHT = 200;

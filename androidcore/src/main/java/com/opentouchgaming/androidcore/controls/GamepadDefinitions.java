@@ -92,26 +92,46 @@ public class GamepadDefinitions
 
                 gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
 
-                gamepadDefinition.addAction("custom_0", "Custom 1 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_0,
-                        ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_1", "Custom 2 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_1,
-                        ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_2", "Custom 3 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_2,
-                        ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_3", "Custom 4 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_3,
-                        ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_4", "Custom 5 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_4,
-                        ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_5", "Custom 6 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_5,
-                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_0", "Custom 1", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_0, ActionInput.SourceType.BUTTON,
+                        -1);
+                gamepadDefinition.addAction("custom_1", "Custom 2", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_1, ActionInput.SourceType.BUTTON,
+                        -1);
+                gamepadDefinition.addAction("custom_2", "Custom 3", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_2, ActionInput.SourceType.BUTTON,
+                        -1);
+                gamepadDefinition.addAction("custom_3", "Custom 4", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_3, ActionInput.SourceType.BUTTON,
+                        -1);
+                gamepadDefinition.addAction("custom_4", "Custom 5", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_4, ActionInput.SourceType.BUTTON,
+                        -1);
+                gamepadDefinition.addAction("custom_5", "Custom 6", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_5, ActionInput.SourceType.BUTTON,
+                        -1);
 
-                gamepadDefinition.addAction("custom_6", "Custom 7 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_6,
+                gamepadDefinition.addAction("custom_6", "Custom 7", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_6, ActionInput.SourceType.BUTTON,
+                        -1);
+                gamepadDefinition.addAction("custom_7", "Custom 8", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_7, ActionInput.SourceType.BUTTON,
+                        -1);
+                gamepadDefinition.addAction("custom_8", "Custom 9", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_8, ActionInput.SourceType.BUTTON,
+                        -1);
+                gamepadDefinition.addAction("custom_9", "Custom 10", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_9,
                         ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_7", "Custom 8 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_7,
+                gamepadDefinition.addAction("custom_10", "Custom 11", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_10,
                         ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_8", "Custom 9 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_8,
+                gamepadDefinition.addAction("custom_11", "Custom 12", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_11,
                         ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("custom_9", "Custom 10 (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_9,
+                gamepadDefinition.addAction("custom_12", "Custom 13", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_12,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_13", "Custom 14", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_13,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_14", "Custom 15", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_14,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_15", "Custom 16", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_15,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_16", "Custom 17", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_16,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_17", "Custom 18", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_17,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_18", "Custom 19", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_18,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_19", "Custom 20", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_19,
                         ActionInput.SourceType.BUTTON, -1);
 
 
@@ -224,6 +244,24 @@ public class GamepadDefinitions
                         ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("custom_10", "Custom 10 (Q)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_9,
                         ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_11", "Custom 12", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_11,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_12", "Custom 13", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_12,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_13", "Custom 14", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_13,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_14", "Custom 15", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_14,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_15", "Custom 16", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_15,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_16", "Custom 17", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_16,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_17", "Custom 18", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_17,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_18", "Custom 19", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_18,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_19", "Custom 20", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_19,
+                        ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Inventory keys (Quake 2, Hexen 2)");
 
@@ -277,9 +315,12 @@ public class GamepadDefinitions
 
                 gamepadDefinition.addHeader("WRATH specific keys");
                 gamepadDefinition.addAction("wrath_use", "Use", ActionInput.ActionType.BUTTON, PortActDefs.PORT_WRATH_USE, ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("wrath_alt_attack", "Alt Attack", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_ALT_ATTACK, ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("wrath_open_runes", "Show artifacts", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVEN, ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("wrath_use_rune", "Use artifact", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVUSE, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("wrath_alt_attack", "Alt Attack", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_ALT_ATTACK,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("wrath_open_runes", "Show artifacts", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVEN,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("wrath_use_rune", "Use artifact", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVUSE,
+                        ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Common menu navigation keys");
 
@@ -408,6 +449,26 @@ public class GamepadDefinitions
                         -1);
                 gamepadDefinition.addAction("custom_9", "Custom 10", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_9,
                         ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_10", "Custom 11", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_10,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_11", "Custom 12", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_11,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_12", "Custom 13", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_12,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_13", "Custom 14", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_13,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_14", "Custom 15", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_14,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_15", "Custom 16", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_15,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_16", "Custom 17", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_16,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_17", "Custom 18", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_17,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_18", "Custom 19", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_18,
+                        ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("custom_19", "Custom 20", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_19,
+                        ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Common menu navigation keys");
 
@@ -513,7 +574,8 @@ public class GamepadDefinitions
 
                 gamepadDefinition.addHeader("Rise Of The Triad");
                 gamepadDefinition.addAction("fly_up", "Fly up", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_FLY_UP, ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("fly_down", "Fly down", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_FLY_DOWN, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("fly_down", "Fly down", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_FLY_DOWN, ActionInput.SourceType.BUTTON,
+                        -1);
 
                 gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
 
