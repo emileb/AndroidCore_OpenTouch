@@ -110,7 +110,7 @@ public class SubGame
         FileSAF iconFile = new FileSAF(imageFilename);
         File cacheFile = new File(imageCacheFilename());
 
-        // Check if icon.ong exists
+        // Check if icon.png exists
         if (iconFile.exists())
         {
             boolean validImage = true;
@@ -145,7 +145,6 @@ public class SubGame
             String args = AppSettings.getStringOption(ctx, tag + "extraArgs", null);
             if (args != null)
                 setExtraArgs(args);
-
 
             String imageOverride = AppSettings.getStringOption(ctx, tag + "imageOverride", null);
 
