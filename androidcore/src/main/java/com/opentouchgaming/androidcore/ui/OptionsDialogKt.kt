@@ -21,8 +21,6 @@ class OptionsDialogKt(
     activity: Activity, private val extraOptions: View?, private val update: Runnable
 )
 {
-
-
     var binding: DialogMainOptionsNewBinding = DialogMainOptionsNewBinding.inflate(activity.layoutInflater)
 
     companion object
@@ -127,7 +125,7 @@ class OptionsDialogKt(
             "Group similar engines",
             "Group engines on the left panel, makes icons larger",
             GROUP_SIMILAR_ENGINES,
-            false
+            AppInfo.groupSimilarEngines
         )
 
         val sdlAudioItems: Array<Pair<String, View?>>

@@ -68,7 +68,7 @@ public class AppInfo
     }
 
     static public void setAppInfo(Context ctx, Apps app, String title, String directory, String pkg, String email, boolean isAndroidTv, int defaultAppImage,
-                                  boolean hideModWads)
+                                  boolean hideModWads, boolean groupSimilarDefault)
     {
         AppInfo.context = ctx;
         AppInfo.app = app;
@@ -86,7 +86,7 @@ public class AppInfo
 
         AppInfo.flashRoot = Environment.getExternalStorageDirectory().toString();
 
-        AppInfo.groupSimilarEngines = SwitchWidget.fetchValue(ctx, OptionsDialogKt.GROUP_SIMILAR_ENGINES, false);
+        AppInfo.groupSimilarEngines = SwitchWidget.fetchValue(ctx, OptionsDialogKt.GROUP_SIMILAR_ENGINES, groupSimilarDefault);
 
         // NOW DEFAULT TO SCOPED STORAGE ON NEW INSTALL!!
         if (app != Apps.RAZE_TOUCH)
