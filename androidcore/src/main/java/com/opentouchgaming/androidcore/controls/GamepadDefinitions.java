@@ -72,11 +72,11 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("alt_attack", "Alt Attack (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_ALT_ATTACK,
                         ActionInput.SourceType.BUTTON, -1);
 
-                gamepadDefinition.addAction("jump", "Jump (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_JUMP, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("jump", "Jump", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_JUMP, ActionInput.SourceType.BUTTON, -1);
 
-                gamepadDefinition.addAction("crouch", "Crouch (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_DOWN, ActionInput.SourceType.BUTTON,
+                gamepadDefinition.addAction("crouch", "Crouch", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_DOWN, ActionInput.SourceType.BUTTON,
                         -1);
-                gamepadDefinition.addAction("crouch_toggle", "Crouch (toggle) (GZ)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_TOGGLE_CROUCH,
+                gamepadDefinition.addAction("crouch_toggle", "Crouch (toggle)", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_TOGGLE_CROUCH,
                         ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addAction("run_toggle", "Run Smart Toggle", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SMART_TOGGLE_RUN,
