@@ -141,7 +141,10 @@ public class ScopedStorage
 
                 justGotNewSaf = true;
 
-                openDocumentCallback.apply(null);
+                AppInfo.setAppSecDirectory(UtilsSAF.getTreeRoot().rootPath);
+
+                if (openDocumentCallback != null)
+                    openDocumentCallback.apply(null);
             }
             else
             {
