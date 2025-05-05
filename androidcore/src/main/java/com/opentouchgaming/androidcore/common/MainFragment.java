@@ -80,8 +80,11 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_STORAGE, "Files", R.drawable.ic_baseline_sd_card_black),
             new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_LOG, "View last log", R.drawable.ic_computer_black_24dp),
             new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_INFO, "Changes", R.drawable.ic_info_outline_black_24dp),
-            AppInfo.website == null ? new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL, "Email log",
-                    R.drawable.ic_email_black_24dp) : new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_WEBSITE, "Online", R.drawable.ic_baseline_world),
+            AppInfo.website == null ? new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL,
+                                                                      "Email log",
+                                                                      R.drawable.ic_email_black_24dp) : new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_WEBSITE,
+                                                                                                                                        "Online",
+                                                                                                                                        R.drawable.ic_baseline_world),
             new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_HELP, "Tutorials", R.drawable.ic_help_green),};
     private final ArrayList<SubGame> multiselectGames = new ArrayList<>();
     public boolean noLicCheck = false;
@@ -164,7 +167,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         appTitleTextView = view.findViewById(R.id.app_title_textive);
         Typeface face = Typeface.createFromAsset(getContext().getAssets(), "recharge_font.ttf");
         appTitleTextView.setTypeface(face);
-        engineTitleTextView= view.findViewById(R.id.engine_title_textView);
+        engineTitleTextView = view.findViewById(R.id.engine_title_textView);
         engineTitleTextView.setTypeface(face);
 
         Context context = view.getContext();
@@ -232,8 +235,12 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         showArgsButton = view.findViewById(R.id.imageview_doom_show_args);
 
         showArgsButton.setBackgroundResource(R.drawable.focusable);
-        showArgsButton.setOnClickListener(v -> new CustomArgsDialog(getActivity(), launcher.getRunDirectory(), launcher.getSecondaryDirectory(), engineData,
-                 AppInfo.hideModWads & !launcher.forceShowModsWads()).dialog.setOnDismissListener(dialog -> updateArgs()));
+        showArgsButton.setOnClickListener(v -> new CustomArgsDialog(getActivity(),
+                                                                    launcher.getRunDirectory(),
+                                                                    launcher.getSecondaryDirectory(),
+                                                                    engineData,
+                                                                    AppInfo.hideModWads &
+                                                                    !launcher.forceShowModsWads()).dialog.setOnDismissListener(dialog -> updateArgs()));
 
         // START game
         startButton.setBackgroundResource(R.drawable.focusable);
@@ -273,8 +280,11 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                     // Ones with blank filenames are downloads or other non games
                     //if (!selectedSubGame.getFilename().contentEquals(""))
                     {
-                        superMod = new SuperModItem(AppInfo.currentEngine.engine, selectedVersion, selectedSubGame.getTag(), selectedSubGame.getImagePng(),
-                                engineData.getCurrentCustomArgs());
+                        superMod = new SuperModItem(AppInfo.currentEngine.engine,
+                                                    selectedVersion,
+                                                    selectedSubGame.getTag(),
+                                                    selectedSubGame.getImagePng(),
+                                                    engineData.getCurrentCustomArgs());
                     }
 
                     new SuperModDialog(getActivity(), superMod, superModItem ->
@@ -595,7 +605,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         appTitleTextView.setText(AppInfo.title);
         //appTitleTextView.setTextColor(0xFF000000 | engine.color);
         appTitleTextView.setTextColor(0xFF808080);
-        engineTitleTextView.setText( engine.title + " - " + engine.versions[selectedVersion]);
+        engineTitleTextView.setText(engine.title + " - " + engine.versions[selectedVersion]);
         engineTitleTextView.setTextColor(0xFF000000 | engine.color);
 
         // Change the color of the separating lines

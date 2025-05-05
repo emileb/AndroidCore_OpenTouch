@@ -216,7 +216,7 @@ public class ControlConfig implements Serializable
 
         if (monitoring)
         {
-            if (actionMonitor != null && gotInput == false)
+            if (actionMonitor != null && !gotInput)
             {
                 for (int a : axisTest)
                 {

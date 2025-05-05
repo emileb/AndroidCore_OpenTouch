@@ -121,10 +121,10 @@ public class SimpleServerAccess
             catch (IOException e)
             {
                 errorstring = e.toString();
-                return 1l;
+                return 1L;
             }
 
-            return 0l;
+            return 0L;
         }
 
         protected void onProgressUpdate(Integer... progress)

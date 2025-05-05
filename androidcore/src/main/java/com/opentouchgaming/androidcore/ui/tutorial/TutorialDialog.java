@@ -219,8 +219,8 @@ public class TutorialDialog
 
             Glide.with(activity).load(tutorial.getScreens().get(position).image).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
                     .apply(new RequestOptions()
-                            //.placeholder(R.drawable.ic_tut_cloud_download)
-                            .placeholder(android.R.drawable.stat_sys_download).fitCenter()).into(imageView);
+                                   //.placeholder(R.drawable.ic_tut_cloud_download)
+                                   .placeholder(android.R.drawable.stat_sys_download).fitCenter()).into(imageView);
 
             container.addView(view);
             return view;

@@ -51,10 +51,10 @@ public class OptionsDialog
         dialog.setCancelable(true);
 
         dialog.setOnDismissListener(dialog12 ->
-        {
-            if (!dontUpdate)
-                update.run();
-        });
+                                    {
+                                        if (!dontUpdate)
+                                            update.run();
+                                    });
 
         CheckBox immersiveCheck = dialog.findViewById(R.id.immersive_mode_checkbox);
         CheckBox cutoutCheckbox = dialog.findViewById(R.id.expand_cutout_checkbox);
@@ -78,22 +78,22 @@ public class OptionsDialog
         resolutions.add(new Pair<>("25%", 0.25f));
 
         screenDivSeek.setCustomSectionTextArray((sectionCount, array) ->
-        {
-            array.clear();
+                                                {
+                                                    array.clear();
 
-            int n = 0;
-            for (Pair<String, Float> res : resolutions)
-            {
-                array.put(n++, res.first);
-            }
-            return array;
-        });
+                                                    int n = 0;
+                                                    for (Pair<String, Float> res : resolutions)
+                                                    {
+                                                        array.put(n++, res.first);
+                                                    }
+                                                    return array;
+                                                });
 
         storagebutton.setOnClickListener(v ->
-        {
-            StorageConfigDialog scd = new StorageConfigDialog(act, AppInfo.storageExamples, update);
-            dialog.dismiss();
-        });
+                                         {
+                                             StorageConfigDialog scd = new StorageConfigDialog(act, AppInfo.storageExamples, update);
+                                             dialog.dismiss();
+                                         });
         // ----
 
         immersiveCheck.setChecked(AppSettings.getBoolOption(activity, "immersive_mode", false));
@@ -221,20 +221,20 @@ public class OptionsDialog
         });
 
         resetButton.setOnClickListener(v ->
-        {
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
-            dialogBuilder.setTitle("WARNING: This will reset all app settings!");
-            dialogBuilder.setPositiveButton("OK", (dialog1, which) ->
-            {
-                dontUpdate = true;
-                AppSettings.deleteAllOptions(act);
-                AppInfo.currentEngine = null;
-                dialog.dismiss();
-                System.exit(0); // Kill the process so everything is reloaded
-            });
+                                       {
+                                           AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+                                           dialogBuilder.setTitle("WARNING: This will reset all app settings!");
+                                           dialogBuilder.setPositiveButton("OK", (dialog1, which) ->
+                                           {
+                                               dontUpdate = true;
+                                               AppSettings.deleteAllOptions(act);
+                                               AppInfo.currentEngine = null;
+                                               dialog.dismiss();
+                                               System.exit(0); // Kill the process so everything is reloaded
+                                           });
 
-            dialogBuilder.create().show();
-        });
+                                           dialogBuilder.create().show();
+                                       });
 
 
         if (extraOptions != null)

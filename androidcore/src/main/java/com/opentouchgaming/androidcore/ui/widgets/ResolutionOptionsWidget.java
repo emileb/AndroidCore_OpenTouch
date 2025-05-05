@@ -153,9 +153,9 @@ public class ResolutionOptionsWidget
         binding.resolutionHeightEditText.addTextChangedListener(tw);
 
         binding.maintainAspect.setOnCheckedChangeListener((compoundButton, b) ->
-        {
-            AppSettings.setBoolOption(AppInfo.getContext(), prefix + "_resolution_maint_aspect", b);
-        });
+                                                          {
+                                                              AppSettings.setBoolOption(AppInfo.getContext(), prefix + "_resolution_maint_aspect", b);
+                                                          });
 
         // Save to tag so it can removed later if necessary
         binding.resolutionWidthEditText.setTag(tw);
@@ -195,8 +195,8 @@ public class ResolutionOptionsWidget
             binding.resolutionHeightEditText.setEnabled(false);
         }
 
-        binding.resolutionWidthEditText.setText("" + option.w);
-        binding.resolutionHeightEditText.setText("" + option.h);
+        binding.resolutionWidthEditText.setText(option.w);
+        binding.resolutionHeightEditText.setText(option.h);
 
         if (allowMaintainAspect && ((option.type == ResolutionType.CUSTOM) || (option.type == ResolutionType.SET)))
         {
@@ -265,10 +265,10 @@ public class ResolutionOptionsWidget
     {
         public String w;
         public String h;
-        String title;
-        ResolutionType type;
         public int position; // Spinner position
         public boolean maintainAspect;
+        String title;
+        ResolutionType type;
 
         public ResolutionOptions(String title, ResolutionType t, String w, String h)
         {

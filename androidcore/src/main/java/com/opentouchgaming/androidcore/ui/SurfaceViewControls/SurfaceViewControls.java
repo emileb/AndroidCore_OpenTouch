@@ -12,11 +12,13 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class SurfaceViewControls extends GLSurfaceView {
+public class SurfaceViewControls extends GLSurfaceView
+{
 
     private final MyRenderer mRenderer;
 
-    public SurfaceViewControls(Context context) {
+    public SurfaceViewControls(Context context)
+    {
         super(context);
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
@@ -35,42 +37,44 @@ public class SurfaceViewControls extends GLSurfaceView {
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
-    private static class MyRenderer implements GLSurfaceView.Renderer {
+    private static class MyRenderer implements GLSurfaceView.Renderer
+    {
         // Square vertex coordinates (x, y, z)
-        private final float[] squareCoords = {
-                0.5f,  0.5f, 0.0f,   // top right
-                -0.5f,  0.5f, 0.0f,   // top left
+        private final float[] squareCoords = {0.5f, 0.5f, 0.0f,   // top right
+                -0.5f, 0.5f, 0.0f,   // top left
                 -0.5f, -0.5f, 0.0f,   // bottom left
                 0.5f, -0.5f, 0.0f    // bottom right
         };
+        private final int COORDS_PER_VERTEX = 3;
+        private final int vertexCount = squareCoords.length / COORDS_PER_VERTEX;
+        private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per float
+        // simple vertex shader
+        private final String vertexShaderCode = "attribute vec4 vPosition;" + "void main() {" + "  gl_Position = vPosition;" + "}";
+        // simple fragment shader: solid color
+        private final String fragmentShaderCode = "precision mediump float;" + "uniform vec4 vColor;" + "void main() {" + "  gl_FragColor = vColor;" + "}";
+        // square color: RGBA (red, green, blue, alpha)
+        private final float[] color = {0.2f, 0.7f, 0.3f, 1.0f};
+        boolean waited = false;
+        int width, height;
         private FloatBuffer vertexBuffer;
         private int mProgram;
         private int positionHandle;
         private int colorHandle;
-        private final int COORDS_PER_VERTEX = 3;
-        private final int vertexCount = squareCoords.length / COORDS_PER_VERTEX;
-        private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per float
 
-        // simple vertex shader
-        private final String vertexShaderCode =
-                "attribute vec4 vPosition;" +
-                "void main() {" +
-                "  gl_Position = vPosition;" +
-                "}";
-
-        // simple fragment shader: solid color
-        private final String fragmentShaderCode =
-                "precision mediump float;" +
-                "uniform vec4 vColor;" +
-                "void main() {" +
-                "  gl_FragColor = vColor;" +
-                "}";
-
-        // square color: RGBA (red, green, blue, alpha)
-        private final float[] color = { 0.2f, 0.7f, 0.3f, 1.0f };
+        /**
+         * Utility method for compiling a shader.
+         */
+        private static int loadShader(int type, String shaderCode)
+        {
+            int shader = GLES20.glCreateShader(type);
+            GLES20.glShaderSource(shader, shaderCode);
+            GLES20.glCompileShader(shader);
+            return shader;
+        }
 
         @Override
-        public void onSurfaceCreated(GL10 gl, EGLConfig config){
+        public void onSurfaceCreated(GL10 gl, EGLConfig config)
+        {
 
             // Set the background frame color
             GLES20.glClearColor(0f, 0f, 0f, 0f);
@@ -93,11 +97,11 @@ public class SurfaceViewControls extends GLSurfaceView {
              */
         }
 
-        boolean waited = false;
         @Override
-        public void onDrawFrame(javax.microedition.khronos.opengles.GL10 unused) {
+        public void onDrawFrame(javax.microedition.khronos.opengles.GL10 unused)
+        {
 
-            if(!waited)
+            if (!waited)
             {
                 try
                 {
@@ -154,23 +158,14 @@ public class SurfaceViewControls extends GLSurfaceView {
 
         }
 
-        int width, height;
-
         @Override
-        public void onSurfaceChanged(javax.microedition.khronos.opengles.GL10 unused, int width, int height) {
+        public void onSurfaceChanged(javax.microedition.khronos.opengles.GL10 unused, int width, int height)
+        {
             // adjust the viewport based on geometry changes
 
             this.width = width;
             this.height = height;
             GLES20.glViewport(0, 0, width, height);
-        }
-
-        /** Utility method for compiling a shader. */
-        private static int loadShader(int type, String shaderCode){
-            int shader = GLES20.glCreateShader(type);
-            GLES20.glShaderSource(shader, shaderCode);
-            GLES20.glCompileShader(shader);
-            return shader;
         }
     }
 }

@@ -165,7 +165,7 @@ public class AppInfo
     @SuppressLint("NewApi")
     static public String getDefaultAppDirectory()
     {
-        if (isScopedEnabled() == false)
+        if (!isScopedEnabled())
         {
             return flashRoot + "/OpenTouch/" + directory;
         }
@@ -185,7 +185,7 @@ public class AppInfo
     {
         if (sdcardRoot != null)
         {
-            if (isScopedEnabled() == false)
+            if (!isScopedEnabled())
             {
                 return sdcardRoot + "/OpenTouch/" + directory;
             }

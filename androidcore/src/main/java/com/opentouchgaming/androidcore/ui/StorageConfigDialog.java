@@ -105,174 +105,183 @@ public class StorageConfigDialog
 
         scopedStorage.setChecked(AppInfo.isScopedEnabled());
         scopedStorage.setOnCheckedChangeListener((buttonView, isChecked) ->
-        {
-            if (isChecked)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setMessage("Enabled Scoped Storage?").setCancelable(false).setPositiveButton("Yes", (dialog13, id) ->
-                {
-                    String oldPath = AppInfo.getAppDirectory();
-                    AppInfo.setScoped(true);
-                    String newPath = AppInfo.getAppDirectory();
+                                                 {
+                                                     if (isChecked)
+                                                     {
+                                                         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                                                         builder.setMessage("Enabled Scoped Storage?").setCancelable(false)
+                                                                 .setPositiveButton("Yes", (dialog13, id) ->
+                                                                 {
+                                                                     String oldPath = AppInfo.getAppDirectory();
+                                                                     AppInfo.setScoped(true);
+                                                                     String newPath = AppInfo.getAppDirectory();
 
-                    new CopyFilesTask().execute(oldPath, newPath);
-                    updateUI();
-                }).setNegativeButton("No", (dialog1, which) ->
-                {
-                    scopedStorage.setChecked(false);
-                    updateUI();
-                });
+                                                                     new CopyFilesTask().execute(oldPath, newPath);
+                                                                     updateUI();
+                                                                 }).setNegativeButton("No", (dialog1, which) ->
+                                                                 {
+                                                                     scopedStorage.setChecked(false);
+                                                                     updateUI();
+                                                                 });
 
-                AlertDialog alert = builder.create();
-                alert.show();
+                                                         AlertDialog alert = builder.create();
+                                                         alert.show();
 
-            }
-            else
-            {
-                AppInfo.setScoped(false);
-            }
+                                                     }
+                                                     else
+                                                     {
+                                                         AppInfo.setScoped(false);
+                                                     }
 
-            updateUI();
-        });
+                                                     updateUI();
+                                                 });
 
         // PRIMARY folder options
         appDirButton.setOnClickListener(v ->
-        {
-            PopupMenu popup = new PopupMenu(activity, appDirButton);
-            popup.getMenuInflater().inflate(R.menu.app_dir_popup, popup.getMenu());
-            popup.setOnMenuItemClickListener(item ->
-            {
-                if (item.getItemId() == R.id.reset)
-                {
-                    AppInfo.setAppDirectory(null); //This resets it
-                }
-                else if (item.getItemId() == R.id.sdcard)
-                {
+                                        {
+                                            PopupMenu popup = new PopupMenu(activity, appDirButton);
+                                            popup.getMenuInflater().inflate(R.menu.app_dir_popup, popup.getMenu());
+                                            popup.setOnMenuItemClickListener(item ->
+                                                                             {
+                                                                                 if (item.getItemId() == R.id.reset)
+                                                                                 {
+                                                                                     AppInfo.setAppDirectory(null); //This resets it
+                                                                                 }
+                                                                                 else if (item.getItemId() == R.id.sdcard)
+                                                                                 {
 
-                    // Primary always need to be on the writable SD card area
-                    if (AppInfo.sdcardWritable != null)
-                    {
-                        AppInfo.setAppDirectory(AppInfo.sdcardWritable);
-                    }
-                    else
-                        Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG).show();
+                                                                                     // Primary always need to be on the writable SD card area
+                                                                                     if (AppInfo.sdcardWritable != null)
+                                                                                     {
+                                                                                         AppInfo.setAppDirectory(AppInfo.sdcardWritable);
+                                                                                     }
+                                                                                     else
+                                                                                         Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG)
+                                                                                                 .show();
 
-                }
-                else if (item.getItemId() == R.id.choose)
-                {
-                    DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(activity, chosenDir ->
-                    {
-                        updateAppDir(chosenDir);
-                        updateUI();
-                    });
-                    directoryChooserDialog.chooseDirectory(AppInfo.getAppDirectory());
-                }
+                                                                                 }
+                                                                                 else if (item.getItemId() == R.id.choose)
+                                                                                 {
+                                                                                     DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(
+                                                                                             activity,
+                                                                                             chosenDir ->
+                                                                                             {
+                                                                                                 updateAppDir(chosenDir);
+                                                                                                 updateUI();
+                                                                                             });
+                                                                                     directoryChooserDialog.chooseDirectory(AppInfo.getAppDirectory());
+                                                                                 }
 
-                updateUI();
+                                                                                 updateUI();
 
-                return true;
-            });
+                                                                                 return true;
+                                                                             });
 
-            popup.show();
-        });
+                                            popup.show();
+                                        });
 
         // SECONDARY folder options
         appSecDirButton.setOnClickListener(v ->
-        {
-            PopupMenu popup = new PopupMenu(activity, appSecDirButton);
+                                           {
+                                               PopupMenu popup = new PopupMenu(activity, appSecDirButton);
 
-            if (AppInfo.isScopedEnabled())
-            {
-                new ScopedStorageDialog(activity, AppInfo.scopedTutorial, () ->
-                {
-                    updateUI();
-                });
-                updateUI();
-            }
-            else
-            {
-                popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup, popup.getMenu());
-                popup.setOnMenuItemClickListener(item ->
-                {
-                    if (item.getItemId() == R.id.reset)
-                    {
-                        AppInfo.setAppSecDirectory(null); //This resets it
-                    }
-                    else if (item.getItemId() == R.id.sdcard)
-                    {
+                                               if (AppInfo.isScopedEnabled())
+                                               {
+                                                   new ScopedStorageDialog(activity, AppInfo.scopedTutorial, () ->
+                                                   {
+                                                       updateUI();
+                                                   });
+                                                   updateUI();
+                                               }
+                                               else
+                                               {
+                                                   popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup, popup.getMenu());
+                                                   popup.setOnMenuItemClickListener(item ->
+                                                                                    {
+                                                                                        if (item.getItemId() == R.id.reset)
+                                                                                        {
+                                                                                            AppInfo.setAppSecDirectory(null); //This resets it
+                                                                                        }
+                                                                                        else if (item.getItemId() == R.id.sdcard)
+                                                                                        {
 
-                        if (AppInfo.sdcardRoot != null)
-                        {
-                            if (AppInfo.isScopedEnabled())
-                            { // Scoped storage can only read here now..
-                                AppInfo.setAppSecDirectory(AppInfo.sdcardWritable);
-                            }
-                            else
-                            {
-                                AppInfo.setAppSecDirectory(AppInfo.sdcardRoot);
-                            }
-                        }
-                        else
-                            Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG).show();
+                                                                                            if (AppInfo.sdcardRoot != null)
+                                                                                            {
+                                                                                                if (AppInfo.isScopedEnabled())
+                                                                                                { // Scoped storage can only read here now..
+                                                                                                    AppInfo.setAppSecDirectory(AppInfo.sdcardWritable);
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    AppInfo.setAppSecDirectory(AppInfo.sdcardRoot);
+                                                                                                }
+                                                                                            }
+                                                                                            else
+                                                                                                Toast.makeText(activity,
+                                                                                                               "Did not detect SD card",
+                                                                                                               Toast.LENGTH_LONG).show();
 
-                    }
-                    else if (item.getItemId() == R.id.internal)
-                    {
-                        AppInfo.setAppSecDirectory(AppInfo.flashRoot);
-                    }
-                    else if (item.getItemId() == R.id.choose)
-                    {
-                        DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(activity, chosenDir ->
-                        {
-                            updateAppSecDir(chosenDir);
-                            updateUI();
-                        });
-                        directoryChooserDialog.chooseDirectory(AppInfo.getAppSecDirectory());
-                    }
+                                                                                        }
+                                                                                        else if (item.getItemId() == R.id.internal)
+                                                                                        {
+                                                                                            AppInfo.setAppSecDirectory(AppInfo.flashRoot);
+                                                                                        }
+                                                                                        else if (item.getItemId() == R.id.choose)
+                                                                                        {
+                                                                                            DirectoryChooserDialog directoryChooserDialog =
+                                                                                                    new DirectoryChooserDialog(
+                                                                                                    activity,
+                                                                                                    chosenDir ->
+                                                                                                    {
+                                                                                                        updateAppSecDir(chosenDir);
+                                                                                                        updateUI();
+                                                                                                    });
+                                                                                            directoryChooserDialog.chooseDirectory(AppInfo.getAppSecDirectory());
+                                                                                        }
 
-                    updateUI();
+                                                                                        updateUI();
 
-                    return true;
-                });
-            }
-            popup.show();
-        });
+                                                                                        return true;
+                                                                                    });
+                                               }
+                                               popup.show();
+                                           });
 
         userDirButton.setOnClickListener(v ->
-        {
-            // If scoped storage and secondary folder is configured
-            if (AppInfo.isScopedEnabled() && AppInfo.getAppSecDirectory() != null)
-            {
-                PopupMenu popup = new PopupMenu(activity, userDirButton);
+                                         {
+                                             // If scoped storage and secondary folder is configured
+                                             if (AppInfo.isScopedEnabled() && AppInfo.getAppSecDirectory() != null)
+                                             {
+                                                 PopupMenu popup = new PopupMenu(activity, userDirButton);
 
-                popup.getMenuInflater().inflate(R.menu.user_file_config_popup, popup.getMenu());
-                popup.setOnMenuItemClickListener(item ->
-                {
-                    if (item.getItemId() == R.id.primary)
-                    {
-                        AppInfo.setUserFileInSecondary(false);
-                    }
-                    else if (item.getItemId() == R.id.secondary)
-                    {
-                        AppInfo.setUserFileInSecondary(true);
-                    }
-                    else if (item.getItemId() == R.id.export)
-                    {
-                        UserFilesDialog userFilesDialog = new UserFilesDialog();
-                        userFilesDialog.showDialog(activity, AppInfo.userFilesEntries);
-                    }
-                    updateUI();
+                                                 popup.getMenuInflater().inflate(R.menu.user_file_config_popup, popup.getMenu());
+                                                 popup.setOnMenuItemClickListener(item ->
+                                                                                  {
+                                                                                      if (item.getItemId() == R.id.primary)
+                                                                                      {
+                                                                                          AppInfo.setUserFileInSecondary(false);
+                                                                                      }
+                                                                                      else if (item.getItemId() == R.id.secondary)
+                                                                                      {
+                                                                                          AppInfo.setUserFileInSecondary(true);
+                                                                                      }
+                                                                                      else if (item.getItemId() == R.id.export)
+                                                                                      {
+                                                                                          UserFilesDialog userFilesDialog = new UserFilesDialog();
+                                                                                          userFilesDialog.showDialog(activity, AppInfo.userFilesEntries);
+                                                                                      }
+                                                                                      updateUI();
 
-                    return true;
-                });
-                popup.show();
-            }
-            else
-            {
-                UserFilesDialog userFilesDialog = new UserFilesDialog();
-                userFilesDialog.showDialog(activity, AppInfo.userFilesEntries);
-            }
-        });
+                                                                                      return true;
+                                                                                  });
+                                                 popup.show();
+                                             }
+                                             else
+                                             {
+                                                 UserFilesDialog userFilesDialog = new UserFilesDialog();
+                                                 userFilesDialog.showDialog(activity, AppInfo.userFilesEntries);
+                                             }
+                                         });
 
         // HIDE FOR NOW
         //userDirButton.setVisibility(View.GONE);
@@ -618,7 +627,7 @@ public class StorageConfigDialog
             String oldPath = paths[0];
             String newPath = paths[1];
             copyUserFiles(oldPath, newPath);
-            return 0l;
+            return 0L;
         }
 
         protected void onProgressUpdate(Integer... progress)

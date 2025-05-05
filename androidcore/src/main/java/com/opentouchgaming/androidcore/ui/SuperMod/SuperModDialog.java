@@ -37,11 +37,8 @@ import com.opentouchgaming.androidcore.ui.FileSelectDialog;
 import com.opentouchgaming.saffal.FileSAF;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -96,30 +93,30 @@ public class SuperModDialog
         mainList.setAdapter(listAdapter);
 
         mainList.setOnItemLongClickListener((parent, view, position, id) ->
-        {
-            editItem(position);
-            return true;
-        });
+                                            {
+                                                editItem(position);
+                                                return true;
+                                            });
 
         mainList.setOnItemClickListener((parent, view, position, id) ->
-        {
-            SuperModItem item = itemsSorted.get(position);
-            log.log(D, "Selected " + id + " Title = " + item.title);
-            selectCallback.accept(itemsSorted.get(position));
-            dialog.dismiss();
-        });
+                                        {
+                                            SuperModItem item = itemsSorted.get(position);
+                                            log.log(D, "Selected " + id + " Title = " + item.title);
+                                            selectCallback.accept(itemsSorted.get(position));
+                                            dialog.dismiss();
+                                        });
 
         ImageButton addButton = dialog.findViewById(R.id.add_imageButton);
         addButton.setOnClickListener(v ->
-        {
-            if (newSuperMod != null)
-            {
-                SuperModItem copy = new SuperModItem(newSuperMod);
-                items.add(0, copy);
-                saveList();
-                editItem(0);
-            }
-        });
+                                     {
+                                         if (newSuperMod != null)
+                                         {
+                                             SuperModItem copy = new SuperModItem(newSuperMod);
+                                             items.add(0, copy);
+                                             saveList();
+                                             editItem(0);
+                                         }
+                                     });
 
         ImageButton sortButton = dialog.findViewById(R.id.sort_imageButton);
         sortButton.setOnClickListener(new View.OnClickListener()
@@ -152,9 +149,9 @@ public class SuperModDialog
         if (items.size() == 0)
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage(
-                    "This screen allows you to save your wad + mod + args configurations. Configure your game how to wish to play then come to this " +
-                    "screen and press the '+' button to save.").setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
+            builder.setMessage("This screen allows you to save your wad + mod + args configurations. Configure your game how to wish to play then come to " +
+                               "this " +
+                               "screen and press the '+' button to save.").setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
@@ -358,44 +355,44 @@ public class SuperModDialog
         args_editText.setText(item.customArgs.getArgsString());
 
         dialog.setOnDismissListener(dialog1 ->
-        {
-            item.title = title_editText.getText().toString();
-            item.customArgs.setArgs(args_editText.getText().toString());
-            saveList();
-        });
+                                    {
+                                        item.title = title_editText.getText().toString();
+                                        item.customArgs.setArgs(args_editText.getText().toString());
+                                        saveList();
+                                    });
 
         Button removeButton = dialog.findViewById(R.id.delete_button);
         removeButton.setOnClickListener(v ->
-        {
-            //itemsSorted.remove(pos);
-            items.remove(item);
-            saveList();
-            dialog.dismiss();
-        });
+                                        {
+                                            //itemsSorted.remove(pos);
+                                            items.remove(item);
+                                            saveList();
+                                            dialog.dismiss();
+                                        });
 
         Button selectImageButton = dialog.findViewById(R.id.select_image_button);
         selectImageButton.setOnClickListener(v ->
-        {
+                                             {
 
-            FileSelectDialog.FileSelectCallback callback = filesArray ->
-            {
-                String imageOverride;
+                                                 FileSelectDialog.FileSelectCallback callback = filesArray ->
+                                                 {
+                                                     String imageOverride;
 
-                if (filesArray == null || filesArray.size() == 0)
-                {
-                    imageOverride = null;
-                }
-                else
-                {
-                    imageOverride = filesArray.get(0);
-                }
-                item.gameTypeImage = imageOverride;
+                                                     if (filesArray == null || filesArray.size() == 0)
+                                                     {
+                                                         imageOverride = null;
+                                                     }
+                                                     else
+                                                     {
+                                                         imageOverride = filesArray.get(0);
+                                                     }
+                                                     item.gameTypeImage = imageOverride;
 
-            };
+                                                 };
 
-            new FileSelectDialog(activity, callback, AppInfo.getAppDirectory(), new String[]{".png", ".jpg"}, false);
+                                                 new FileSelectDialog(activity, callback, AppInfo.getAppDirectory(), new String[]{".png", ".jpg"}, false);
 
-        });
+                                             });
         dialog.show();
     }
 

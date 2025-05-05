@@ -8,8 +8,9 @@ import android.widget.ArrayAdapter
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.databinding.WidgetViewSpinnerBinding
 
-class SpinnerWidget(val context: Context, view: View, title: String, description: String, items: Array<Pair<String, View?>>, settingPrefix: String,
-                    default: Int, image: Int = 0)
+class SpinnerWidget(
+    val context: Context, view: View, title: String, description: String, items: Array<Pair<String, View?>>, settingPrefix: String, default: Int, image: Int = 0
+)
 {
     private var binding = WidgetViewSpinnerBinding.bind(view)
 

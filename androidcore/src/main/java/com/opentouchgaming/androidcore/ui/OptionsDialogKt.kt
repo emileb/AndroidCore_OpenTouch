@@ -40,8 +40,8 @@ class OptionsDialogKt(
 
         fun GetResolutionScale(ctx: Context): Float
         {
-            var idx = SpinnerWidget.fetchValue(ctx, SYSTEM_RESOLUTION_OVERRIDE, 0);
-            return if (idx < resolutions.size) resolutions[idx].second;
+            var idx = SpinnerWidget.fetchValue(ctx, SYSTEM_RESOLUTION_OVERRIDE, 0)
+            return if (idx < resolutions.size) resolutions[idx].second
             else 1.0f
         }
     }
@@ -135,7 +135,8 @@ class OptionsDialogKt(
             sdlAudioItems = arrayOf(
                 Pair("OpenSL (Default)", null), Pair("Audio Tack (Old)", null), Pair("AAudio (low latency)", null)
             )
-        } else
+        }
+        else
         {
             sdlAudioItems = arrayOf(
                 Pair("OpenSL (Default)", null), Pair("Audio Tack (Old)", null)

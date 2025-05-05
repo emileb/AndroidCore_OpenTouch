@@ -34,7 +34,7 @@ public class ScopedStorage
         // Always set context, this also loads the saffal library, needed if even not used
         UtilsSAF.setContext(activity, false);
 
-        if (AppInfo.isScopedEnabled() == false)
+        if (!AppInfo.isScopedEnabled())
         {
             //Thank fuck scoped storage not necessary
             return true;
@@ -44,7 +44,7 @@ public class ScopedStorage
             UtilsSAF.loadTreeRoot(activity);
 
             // Check if the first time are checking this
-            if (AppSettings.getBoolOption(activity, "storage_checked", false) == false)
+            if (!AppSettings.getBoolOption(activity, "storage_checked", false))
             {
                 // First reset the primary folder, do this in call cases even an upgrade
                 // Example will be set to: /Android/data/com.opentouchgaming.deltatouch/files
@@ -52,12 +52,12 @@ public class ScopedStorage
                 AppSettings.setBoolOption(activity, "storage_checked", true);
             }
 
-            if (justGotNewSaf == false)
+            if (!justGotNewSaf)
             {
                 // Check we can still access the SAF folder OK, to avoid security exceptions later on
                 if (AppInfo.getAppSecDirectory() != null)
                 {
-                    if (UtilsSAF.isInSAFRoot(AppInfo.getAppSecDirectory()) == true)
+                    if (UtilsSAF.isInSAFRoot(AppInfo.getAppSecDirectory()))
                     {
                         FileSAF root = new FileSAF(AppInfo.getAppSecDirectory());
                         try
@@ -100,7 +100,7 @@ public class ScopedStorage
                 log.log(DebugLog.Level.D, "rootDocumentId = " + rootDocumentId);
                 log.log(DebugLog.Level.D, "getAuthority = " + treeUri.getAuthority());
 
-                if (treeUri.getAuthority().contentEquals("com.android.externalstorage.documents") == false)
+                if (!treeUri.getAuthority().contentEquals("com.android.externalstorage.documents"))
                 {
                     openDocumentCallback.apply("Did not choose a valid folder.");
                     return;

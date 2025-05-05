@@ -43,26 +43,26 @@ public class AboutDialog
         //set up button
         Button button = dialog.findViewById(R.id.ok_button);
         button.setOnClickListener(v ->
-        {
-            dialog.dismiss();
-        });
+                                  {
+                                      dialog.dismiss();
+                                  });
 
         button = dialog.findViewById(R.id.about_changes_button);
         button.setOnClickListener(v ->
-        {
-            dialog.setTitle("Changes");
-            text.setVisibility(View.INVISIBLE);
-            changeLogView.setVisibility(View.VISIBLE);
-        });
+                                  {
+                                      dialog.setTitle("Changes");
+                                      text.setVisibility(View.INVISIBLE);
+                                      changeLogView.setVisibility(View.VISIBLE);
+                                  });
 
         button = dialog.findViewById(R.id.about_license_button);
         button.setOnClickListener(v ->
-        {
-            dialog.setTitle("About");
-            text.setText(readTxt(ctx, aboutRes));
-            text.setVisibility(View.VISIBLE);
-            changeLogView.setVisibility(View.INVISIBLE);
-        });
+                                  {
+                                      dialog.setTitle("About");
+                                      text.setText(readTxt(ctx, aboutRes));
+                                      text.setVisibility(View.VISIBLE);
+                                      changeLogView.setVisibility(View.INVISIBLE);
+                                  });
 
 
         button = dialog.findViewById(R.id.about_rate_button);
@@ -76,10 +76,11 @@ public class AboutDialog
             button.startAnimation(mAnimation);
 
             button.setOnClickListener(v ->
-            {
-                Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + ctx.getPackageName()));
-                ctx.startActivity(marketIntent);
-            });
+                                      {
+                                          Intent marketIntent = new Intent(Intent.ACTION_VIEW,
+                                                                           Uri.parse("http://play.google.com/store/apps/details?id=" + ctx.getPackageName()));
+                                          ctx.startActivity(marketIntent);
+                                      });
         }
         else
         {

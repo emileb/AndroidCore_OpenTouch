@@ -165,20 +165,20 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
         enableCb.setChecked(TouchSettings.gamePadEnabled);
 
         enableCb.setOnCheckedChangeListener((buttonView, isChecked) ->
-        {
-            TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
-            TouchSettings.gamePadEnabled = isChecked;
-            setListViewEnabled(TouchSettings.gamePadEnabled);
-        });
+                                            {
+                                                TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
+                                                TouchSettings.gamePadEnabled = isChecked;
+                                                setListViewEnabled(TouchSettings.gamePadEnabled);
+                                            });
 
         CheckBox showTouchcd = mainView.findViewById(R.id.gamepad_hide_touch_checkbox);
         showTouchcd.setChecked(TouchSettings.gamepadHidetouch);
 
         showTouchcd.setOnCheckedChangeListener((buttonView, isChecked) ->
-        {
-            TouchSettings.setBoolOption(getActivity(), "gamepad_hide_touch", isChecked);
-            TouchSettings.gamepadHidetouch = isChecked;
-        });
+                                               {
+                                                   TouchSettings.setBoolOption(getActivity(), "gamepad_hide_touch", isChecked);
+                                                   TouchSettings.gamepadHidetouch = isChecked;
+                                               });
 
         listView = mainView.findViewById(R.id.gamepad_listview);
         adapter = new ControlListAdapter(getActivity());
@@ -188,10 +188,10 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
 
         //listView.setSelector(R.drawable.layout_sel_background);
         listView.setOnItemClickListener((arg0, v, pos, id) ->
-        {
-            config.startMonitor(getActivity(), pos);
-            adapter.notifyDataSetChanged();
-        });
+                                        {
+                                            config.startMonitor(getActivity(), pos);
+                                            adapter.notifyDataSetChanged();
+                                        });
 
         listView.setOnItemLongClickListener((arg0, v, pos, id) -> config.showExtraOptions(getActivity(), pos));
 

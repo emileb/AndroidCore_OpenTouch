@@ -238,7 +238,7 @@ public class ControlInterpreter
 
             // If this returns 1 it means the volume key was used
             int ret = controlInterface.doAction_if(1,
-                    (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
+                                                   (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
             if (ret == 1)
                 return true;
         }
@@ -288,7 +288,7 @@ public class ControlInterpreter
 
             // If this returns 1 it means the volume key was used
             int ret = controlInterface.doAction_if(0,
-                    (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
+                                                   (keyCode == KeyEvent.KEYCODE_VOLUME_UP ? PortActDefs.PORT_ACT_VOLUME_UP : PortActDefs.PORT_ACT_VOLUME_DOWN));
             if (ret == 1)
                 return true;
         }

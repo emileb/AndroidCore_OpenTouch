@@ -4,8 +4,11 @@ import android.app.Activity
 import android.app.Dialog
 import android.os.Build
 import android.view.View
-import android.widget.*
-
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.Switch
 import com.opentouchgaming.androidcore.AppInfo
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.R

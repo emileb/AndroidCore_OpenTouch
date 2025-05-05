@@ -77,10 +77,10 @@ public class ToolsPanel
             AppCompatImageButton button = view.findViewById(R.id.image_button);
             TextView lableTextView = view.findViewById(R.id.label_textView);
             lableTextView.setText(buttons[n].label);
-            lableTextView.setTag(new Integer(n)); // Used for the click listener callback
+            lableTextView.setTag(Integer.valueOf(n)); // Used for the click listener callback
 
             buttons[n].imageButton = button;
-            button.setTag(new Integer(n)); // Used for the click listener callback
+            button.setTag(Integer.valueOf(n)); // Used for the click listener callback
 
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);

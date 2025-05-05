@@ -77,7 +77,7 @@ public class PortActDefs
 
     //SMD for Q2
     public static final int PORT_SMD_USE = 62;
-    public static final int  PORT_WRATH_USE = 63;
+    public static final int PORT_WRATH_USE = 63;
 
     //JK2
     //public static final int   PORT_ACT_FORCE_LIGHTNING = 60;

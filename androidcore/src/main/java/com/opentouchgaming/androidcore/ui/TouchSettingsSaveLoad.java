@@ -95,21 +95,21 @@ public class TouchSettingsSaveLoad
         // Toggle save
         ImageView addButton = dialog.findViewById(R.id.add_imageview);
         addButton.setOnClickListener(v ->
-        {
-            saving = !saving;
-            saveLayout.setVisibility(saving ? View.VISIBLE : View.GONE);
-        });
+                                     {
+                                         saving = !saving;
+                                         saveLayout.setVisibility(saving ? View.VISIBLE : View.GONE);
+                                     });
 
         // Save button
         Button saveButton = dialog.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v ->
-        {
-            String name = nameEditText.getText().toString().trim();
-            if (name.length() > 0)
-            {
-                saveLayout(name);
-            }
-        });
+                                      {
+                                          String name = nameEditText.getText().toString().trim();
+                                          if (name.length() > 0)
+                                          {
+                                              saveLayout(name);
+                                          }
+                                      });
 
         // Swipe to dismiss
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
@@ -149,38 +149,41 @@ public class TouchSettingsSaveLoad
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) ->
-        {
-            if (saving)
-            {
-                nameEditText.setText(layouts.get(position).name);
-            }
-            else
-            {
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
-                //dialogBuilder.setTitle("Load settings");
-                dialogBuilder.setMessage("Load touch settings? (" + layouts.get(position).name + ")");
-                dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface alertdialog, int which)
-                    {
-                        String layoutDir = getLayoutsFolder() + "/" + layouts.get(position).folder;
-                        // Call native to code to load
-                        int error = nativeIf.loadSettings_if(layoutDir);
+                                                                    {
+                                                                        if (saving)
+                                                                        {
+                                                                            nameEditText.setText(layouts.get(position).name);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+                                                                            //dialogBuilder.setTitle("Load settings");
+                                                                            dialogBuilder.setMessage("Load touch settings? (" +
+                                                                                                     layouts.get(position).name +
+                                                                                                     ")");
+                                                                            dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                                                            {
+                                                                                @Override
+                                                                                public void onClick(DialogInterface alertdialog, int which)
+                                                                                {
+                                                                                    String layoutDir = getLayoutsFolder() + "/" + layouts.get(position).folder;
+                                                                                    // Call native to code to load
+                                                                                    int error = nativeIf.loadSettings_if(layoutDir);
 
-                        if (error == 0)
-                        {
-                            Toast.makeText(act, "Loaded layout", Toast.LENGTH_LONG).show();
-                            dialog.dismiss();
-                        }
-                        else
-                            Toast.makeText(act, "ERROR loading layout: " + error, Toast.LENGTH_LONG).show();
-                    }
-                });
-                AlertDialog alertdialog = dialogBuilder.create();
-                alertdialog.show();
-            }
-        });
+                                                                                    if (error == 0)
+                                                                                    {
+                                                                                        Toast.makeText(act, "Loaded layout", Toast.LENGTH_LONG).show();
+                                                                                        dialog.dismiss();
+                                                                                    }
+                                                                                    else
+                                                                                        Toast.makeText(act, "ERROR loading layout: " + error, Toast.LENGTH_LONG)
+                                                                                                .show();
+                                                                                }
+                                                                            });
+                                                                            AlertDialog alertdialog = dialogBuilder.create();
+                                                                            alertdialog.show();
+                                                                        }
+                                                                    });
 
         findLayouts();
 

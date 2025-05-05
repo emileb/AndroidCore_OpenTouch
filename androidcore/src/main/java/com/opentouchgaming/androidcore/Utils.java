@@ -56,6 +56,7 @@ import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 
 public class Utils
@@ -235,9 +236,9 @@ public class Utils
 
     static public String checkFilesInPaths(String path1, String path2, String[] files)
     {
-        if ((path1 != null) && (checkFilesInPath(path1, files) == true))
+        if ((path1 != null) && (checkFilesInPath(path1, files)))
             return path1;
-        else if ((path2 != null) && (checkFilesInPath(path2, files) == true))
+        else if ((path2 != null) && (checkFilesInPath(path2, files)))
             return path2;
         else
             return null;
@@ -302,10 +303,7 @@ public class Utils
                     FileSAF[] safFiles = new FileSAF(path).listFiles();
 
                     if (safFiles != null)
-                        for (FileSAF safFile : safFiles)
-                        {
-                            files.add(safFile);
-                        }
+                        Collections.addAll(files, safFiles);
                 }
                 else
                 { // Normal file
@@ -597,7 +595,7 @@ public class Utils
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
-            if(SwitchWidget.fetchValue(act, OptionsDialogKt.HIDE_NAV_BAR, false))
+            if (SwitchWidget.fetchValue(act, OptionsDialogKt.HIDE_NAV_BAR, false))
             {
                 act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                                                                      View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
@@ -613,21 +611,21 @@ public class Utils
 
                 View decorView = act.getWindow().getDecorView();
                 decorView.setOnSystemUiVisibilityChangeListener(visibility ->
-                {
-                    Log.d(LOG, "onSystemUiVisibilityChange");
+                                                                {
+                                                                    Log.d(LOG, "onSystemUiVisibilityChange");
 
-                    act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                                                                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                                                                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                                                                         View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                                                         // hide nav bar
-                                                                         |
-                                                                         View.SYSTEM_UI_FLAG_FULLSCREEN
-                                                                         // hide status bar
-                                                                         |
-                                                                         View.SYSTEM_UI_FLAG_IMMERSIVE |
-                                                                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                });
+                                                                    act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                                                                                                                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                                                                                                                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                                                                                                         View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                                                                                                         // hide nav bar
+                                                                                                                         |
+                                                                                                                         View.SYSTEM_UI_FLAG_FULLSCREEN
+                                                                                                                         // hide status bar
+                                                                                                                         |
+                                                                                                                         View.SYSTEM_UI_FLAG_IMMERSIVE |
+                                                                                                                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                                                                });
             }
         }
     }
@@ -636,7 +634,7 @@ public class Utils
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
         {
-            if(SwitchWidget.fetchValue(act, OptionsDialogKt.EXPAND_INTO_NOTCH, false))
+            if (SwitchWidget.fetchValue(act, OptionsDialogKt.EXPAND_INTO_NOTCH, false))
             {
                 WindowManager.LayoutParams attributes = act.getWindow().getAttributes();
                 attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;

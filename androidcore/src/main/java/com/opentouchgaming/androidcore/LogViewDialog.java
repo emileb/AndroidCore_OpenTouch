@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by Emile on 31/10/2017.
@@ -47,9 +48,9 @@ public class LogViewDialog
         Button copyButton = dialog.findViewById(R.id.copy_button);
 
         copyButton.setOnClickListener(view ->
-        {
-            Utils.copyToClipboard(act, AppInfo.title, text);
-        });
+                                      {
+                                          Utils.copyToClipboard(act, AppInfo.title, text);
+                                      });
         dialog.show();
     }
 
@@ -58,7 +59,7 @@ public class LogViewDialog
         BufferedReader br = null;
         try
         {
-            br = new BufferedReader(new InputStreamReader(new FileSAF(fileName).getInputStream(), "UTF-8"));
+            br = new BufferedReader(new InputStreamReader(new FileSAF(fileName).getInputStream(), StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
@@ -77,10 +78,6 @@ public class LogViewDialog
         catch (IOException e)
         {
             e.printStackTrace();
-        }
-        finally
-        {
-
         }
         return "--No log file--";
     }

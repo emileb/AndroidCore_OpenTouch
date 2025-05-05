@@ -19,7 +19,6 @@ import com.opentouchgaming.androidcore.ItemClickSupport;
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.saffal.FileSAF;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 

@@ -8,16 +8,11 @@ import com.opentouchgaming.androidcore.AppInfo
 import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.WidgetViewDeleteDataBinding
 import com.opentouchgaming.saffal.FileSAF
-import java.io.File
 
-class DeleteDataWidget constructor(val context: Context,
-                                            view: View,
-                                            messageSettings: String,
-                                            pathsSettings: Array<String>,
-                                            fileTypesSettings: Array<String>,
-                                            messageSaves: String,
-                                            pathsSaves: Array<String>,
-                                            fileTypesSaves: Array<String>)
+class DeleteDataWidget(
+    val context: Context, view: View, messageSettings: String, pathsSettings: Array<String>, fileTypesSettings: Array<String>, messageSaves: String,
+    pathsSaves: Array<String>, fileTypesSaves: Array<String>
+)
 {
     private var binding = WidgetViewDeleteDataBinding.bind(view)
 

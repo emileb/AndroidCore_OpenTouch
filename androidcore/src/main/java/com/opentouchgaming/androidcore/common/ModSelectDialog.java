@@ -111,35 +111,35 @@ public class ModSelectDialog
         listView.setAdapter(listAdapter);
 
         listView.setOnItemClickListener((parent, view, position, id) ->
-        {
+                                        {
 
-            if (filteredFiles.get(position).fileName.contentEquals(".."))
-            {
-                goUp();
-            }
-            else if (filteredFiles.get(position).fileName.startsWith("/"))
-            {
-                populateList(extraPath + filteredFiles.get(position).fileName);
-            }
-            else //select/deselect
-            {
-                boolean removed = false;
-                for (Iterator<String> iter = customArgs.getFiles().listIterator(); iter.hasNext(); )
-                {
-                    String s = iter.next();
-                    if (s.contentEquals(filteredFiles.get(position).file))
-                    {
-                        iter.remove();
-                        removed = true;
-                    }
-                }
+                                            if (filteredFiles.get(position).fileName.contentEquals(".."))
+                                            {
+                                                goUp();
+                                            }
+                                            else if (filteredFiles.get(position).fileName.startsWith("/"))
+                                            {
+                                                populateList(extraPath + filteredFiles.get(position).fileName);
+                                            }
+                                            else //select/deselect
+                                            {
+                                                boolean removed = false;
+                                                for (Iterator<String> iter = customArgs.getFiles().listIterator(); iter.hasNext(); )
+                                                {
+                                                    String s = iter.next();
+                                                    if (s.contentEquals(filteredFiles.get(position).file))
+                                                    {
+                                                        iter.remove();
+                                                        removed = true;
+                                                    }
+                                                }
 
-                if (!removed)
-                    customArgs.getFiles().add(filteredFiles.get(position).file);
+                                                if (!removed)
+                                                    customArgs.getFiles().add(filteredFiles.get(position).file);
 
-                updateUi();
-            }
-        });
+                                                updateUi();
+                                            }
+                                        });
 /*
         //Add folders on long press
         listView.setOnItemLongClickListener((parent, view, position, id) -> {
@@ -181,41 +181,41 @@ public class ModSelectDialog
 
         ImageButton sortButton = dialog.findViewById(R.id.sort_imageButton);
         sortButton.setOnClickListener(v ->
-        {
-            String[] colors = {"Name", "Date"};
+                                      {
+                                          String[] colors = {"Name", "Date"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Sort by..");
-            builder.setItems(colors, (dialog, which) ->
-            {
-                AppSettings.setIntOption(activity, "mod_filenames_sort", which);
-                populateList("mods");
-            });
-            builder.show();
-        });
+                                          AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                                          builder.setTitle("Sort by..");
+                                          builder.setItems(colors, (dialog, which) ->
+                                          {
+                                              AppSettings.setIntOption(activity, "mod_filenames_sort", which);
+                                              populateList("mods");
+                                          });
+                                          builder.show();
+                                      });
 
         // SEARCH STUFF ----------------------------------------------------------------------------------
 
         final ImageButton searchButton = dialog.findViewById(R.id.search_imageButton);
         searchButton.setOnClickListener(v ->
-        {
-            if (searchLayout.getVisibility() == View.GONE)
-            {
-                searchText = AppSettings.getStringOption(activity, "mod_search_filter", null);
+                                        {
+                                            if (searchLayout.getVisibility() == View.GONE)
+                                            {
+                                                searchText = AppSettings.getStringOption(activity, "mod_search_filter", null);
 
-                if (searchText != null)
-                    searchEditText.setText(searchText);
+                                                if (searchText != null)
+                                                    searchEditText.setText(searchText);
 
-                searchLayout.setVisibility(View.VISIBLE);
-                applySearch();
-            }
-            else
-            {
-                searchText = null;
-                searchLayout.setVisibility(View.GONE);
-                applySearch();
-            }
-        });
+                                                searchLayout.setVisibility(View.VISIBLE);
+                                                applySearch();
+                                            }
+                                            else
+                                            {
+                                                searchText = null;
+                                                searchLayout.setVisibility(View.GONE);
+                                                applySearch();
+                                            }
+                                        });
 
         searchEditText.addTextChangedListener(new TextWatcher()
         {

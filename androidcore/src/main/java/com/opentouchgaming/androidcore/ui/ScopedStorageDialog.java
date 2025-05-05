@@ -76,9 +76,9 @@ public class ScopedStorageDialog
         Button goButton = dialog.findViewById(R.id.go_button);
 
         goButton.setOnClickListener(v ->
-        {
-            UtilsSAF.openDocumentTree(activity, ScopedStorage.OPENDOCUMENT_TREE_RESULT);
-        });
+                                    {
+                                        UtilsSAF.openDocumentTree(activity, ScopedStorage.OPENDOCUMENT_TREE_RESULT);
+                                    });
 
         dialog.setOnDismissListener(dialog1 -> update.run());
 

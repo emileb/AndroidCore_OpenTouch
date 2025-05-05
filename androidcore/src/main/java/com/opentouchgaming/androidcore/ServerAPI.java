@@ -82,7 +82,6 @@ public class ServerAPI
                 public void onClick(DialogInterface dialog, int which)
                 {
                     cancel = true;
-                    return;
                 }
             });
             progressBar.show();
@@ -126,7 +125,6 @@ public class ServerAPI
                 String apk_hash = PackageVerif.bytesToString(PackageVerif.packageSig(ctx).sig);
 
                 urlString = "http://opentouchgaming.com/api/download_v5.php?" +
-                            "" +
                             "ldata=" +
                             URLEncoder.encode(lic_data, "UTF-8") +
                             "&lsig=" +
@@ -156,7 +154,8 @@ public class ServerAPI
                 URL url = new URL(urlString);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestProperty("User-Agent",
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36");
+                                              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 " +
+                                              "Safari/537.36");
                 connection.setRequestMethod("GET");
                 //connection.setDoOutput(true);
                 connection.setRequestProperty("Connection", "keep-alive");
@@ -251,7 +250,7 @@ public class ServerAPI
 
                 if (cancel)
                 {
-                    return 0l;
+                    return 0L;
                 }
 
                 if (status.code == STATUS_COMPLETE)
@@ -278,7 +277,7 @@ public class ServerAPI
                     else
                     {
                         errorstring = status.message;
-                        return 0l;
+                        return 0L;
                     }
                 }
                 else if (status.code == STATUS_EXCEP_WHILE_DL) // If it did download something, don't decrement the attempts
@@ -296,7 +295,7 @@ public class ServerAPI
                 else // Unrecoverable error
                 {
                     errorstring = status.message;
-                    return 0l;
+                    return 0L;
                 }
             }
 
@@ -318,8 +317,9 @@ public class ServerAPI
                         {
                             File f = new File(basePath, entry.getName());
                             String canonicalPath = f.getCanonicalPath();
-                            if (!canonicalPath.startsWith(basePath)) {
-                               throw new IOException("Bad path traversal");
+                            if (!canonicalPath.startsWith(basePath))
+                            {
+                                throw new IOException("Bad path traversal");
                             }
 
                             if (entry.isDirectory())
@@ -380,7 +380,7 @@ public class ServerAPI
                 }
             }
 
-            return 0l;
+            return 0L;
         }
 
         protected void onProgressUpdate(Integer... progress)

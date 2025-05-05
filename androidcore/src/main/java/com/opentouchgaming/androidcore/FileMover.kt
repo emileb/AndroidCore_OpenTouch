@@ -64,12 +64,12 @@ class FileMover
                     }
                 }
 
-                withContext(Dispatchers.Main)  {
+                withContext(Dispatchers.Main) {
                     progressBar.progress++
                 }
             }
 
-            withContext(Dispatchers.Main)  {
+            withContext(Dispatchers.Main) {
                 dialog.dismiss()
             }
         }

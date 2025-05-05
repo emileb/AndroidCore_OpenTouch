@@ -87,13 +87,13 @@ public class EnginesPanel
         // Button to open panel
         leftPanelButton.setFocusable(false);
         leftPanelButton.setOnClickListener(view ->
-        {
-            if (isOpen())
-                close();
-            else
-                open();
-            updateFocus();
-        });
+                                           {
+                                               if (isOpen())
+                                                   close();
+                                               else
+                                                   open();
+                                               updateFocus();
+                                           });
 
 
         // Total width of the panel excluding the open button
@@ -101,7 +101,7 @@ public class EnginesPanel
         int screenHeightPx;  // Get screen height in pixels
 
         //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-        if(false)
+        if (false)
         {
             DisplayMetrics outMetrics = new DisplayMetrics();
             context.getWindowManager().getDefaultDisplay().getRealMetrics(outMetrics);
@@ -178,7 +178,8 @@ public class EnginesPanel
 
             // Contains all the config buttons in a row, on top of each other
             RelativeLayout configButtonsLayout = new RelativeLayout(context);
-            configButtonsLayout.setLayoutParams(new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            configButtonsLayout.setLayoutParams(new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                                                                LinearLayout.LayoutParams.MATCH_PARENT));
 
             // Add buttons to the group
             for (int e = 0; e < group.engines.size(); e++)
@@ -200,11 +201,11 @@ public class EnginesPanel
                     button.setBackgroundResource(R.drawable.focusable);
 
                 button.setOnClickListener(view ->
-                {
-                    GameEngine engine12 = (GameEngine) view.getTag();
-                    selectEngine(engine12);
-                    close();
-                });
+                                          {
+                                              GameEngine engine12 = (GameEngine) view.getTag();
+                                              selectEngine(engine12);
+                                              close();
+                                          });
 
                 button.setLayoutParams(params);
                 enginesLayout.addView(button);
@@ -221,10 +222,10 @@ public class EnginesPanel
                     buttonCfg.setImageResource(R.drawable.ic_settings_black_24dp);
 
                 buttonCfg.setOnClickListener(view ->
-                {
-                    GameEngine engine1 = (GameEngine) view.getTag();
-                    listener.engineConfig(engine1);
-                });
+                                             {
+                                                 GameEngine engine1 = (GameEngine) view.getTag();
+                                                 listener.engineConfig(engine1);
+                                             });
 
                 RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(buttonCfgSize, buttonCfgSize);
                 buttonParams.addRule(RelativeLayout.CENTER_VERTICAL);

@@ -6,7 +6,11 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +27,7 @@ import kotlinx.coroutines.withContext
 import org.ocpsoft.prettytime.PrettyTime
 import java.io.File
 import java.io.InputStream
-import java.util.*
+import java.util.Date
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
@@ -116,10 +120,11 @@ class UserFilesDialog
             if (file.isDirectory)
             {
                 traverseDirectory(file, entry)
-            } else
+            }
+            else
             {
                 println(file.absolutePath)
-                entry.lastModified = file.lastModified();
+                entry.lastModified = file.lastModified()
                 entry.files.add(file.absolutePath)
                 entry.totalSize += file.length()
             }
@@ -130,14 +135,14 @@ class UserFilesDialog
     {
         runningState = RunningState.SCANNING
 
-        totalSize = 0;
+        totalSize = 0
 
 
-        GlobalScope.launch  {
+        GlobalScope.launch {
             for (entry in userFileEntries)
             {
-                entry.totalSize = 0;
-                entry.lastModified = 0L;
+                entry.totalSize = 0
+                entry.lastModified = 0L
                 entry.files.clear()
 
                 val path = userFilesPath + "/" + entry.description.path
@@ -163,7 +168,7 @@ class UserFilesDialog
         runningState = RunningState.DELETING
         updateUI()
 
-        GlobalScope.launch  {
+        GlobalScope.launch {
 
             val path = userFilesPath + "/" + entry.description.path
             val file = FileSAF(path)
@@ -185,7 +190,7 @@ class UserFilesDialog
         runningState = RunningState.EXPORTING
         updateUI()
 
-        GlobalScope.launch  {
+        GlobalScope.launch {
             zipper.zip()
             withContext(Dispatchers.Main) {
                 runningState = RunningState.READY
@@ -200,7 +205,7 @@ class UserFilesDialog
         runningState = RunningState.IMPORTING
         updateUI()
 
-        GlobalScope.launch  {
+        GlobalScope.launch {
             zipper.extract()
             withContext(Dispatchers.Main) {
                 runningState = RunningState.READY
@@ -236,11 +241,13 @@ class UserFilesDialog
                     if (folder.isDirectory)
                     {
                         addFolderToZip(zipOut, folder, folderName)
-                    } else
+                    }
+                    else
                     {
                         println("$folderName is not a directory. Skipping.")
                     }
-                } else
+                }
+                else
                 {
                     println("$folderName does not exist. Skipping.")
                 }
@@ -258,7 +265,8 @@ class UserFilesDialog
                 if (file.isDirectory)
                 {
                     addFolderToZip(zipOut, file, "$parentFolder/${file.name}")
-                } else
+                }
+                else
                 {
                     try
                     {
@@ -268,7 +276,8 @@ class UserFilesDialog
                         input.copyTo(zipOut)
                         input.close()
                         zipOut.closeEntry()
-                    } catch (e: Exception)
+                    }
+                    catch (e: Exception)
                     {
                         println("Error sipping file: " + file.absolutePath)
                     }
@@ -302,7 +311,7 @@ class UserFilesDialog
                     if (!entry.isDirectory)
                     {
                         println("Extracting: " + targetFile.absolutePath)
-                        targetFile.createNewFile();
+                        targetFile.createNewFile()
 
                         targetFile.outputStream.use { output ->
                             zipStream.copyTo(output)
@@ -342,13 +351,15 @@ class UserFilesDialog
             if (runningState == RunningState.EXPORTING)
             {
                 binding.statusTextView.text = "Exporting..."
-            } else if (runningState == RunningState.IMPORTING)
+            }
+            else if (runningState == RunningState.IMPORTING)
             {
                 binding.statusTextView.text = "Importing..."
             }
             binding.importButton.isEnabled = false
             binding.exportButton.isEnabled = false
-        } else
+        }
+        else
         {
             binding.statusTextView.setTextColor(Color.parseColor("#1c7a07"))
             binding.statusTextView.text = "Ready"
@@ -389,7 +400,8 @@ class UserFilesDialog
                 val sizeInMegabytes = entries[position].totalSize.toDouble() / (1024 * 1024)
                 val size = "%.2f MB".format(sizeInMegabytes.coerceAtLeast(0.01))
                 viewHolder.binding.engineSizeTextView.text = size
-            } else
+            }
+            else
             {
                 viewHolder.binding.engineDetailsTextView.text = "No files"
                 viewHolder.binding.engineSizeTextView.text = ""
@@ -411,7 +423,8 @@ class UserFilesDialog
                         deleteEntry(entries[position])
                     }
                 }
-            } else
+            }
+            else
             {
                 viewHolder.binding.deleteButton.visibility = View.INVISIBLE
             }

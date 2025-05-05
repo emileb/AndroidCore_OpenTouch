@@ -86,9 +86,9 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
         }
 
         holder.mGameTypeImage.setOnClickListener(v ->
-        {
-            subgameAdditional.apply(holder.mItem);
-        });
+                                                 {
+                                                     subgameAdditional.apply(holder.mItem);
+                                                 });
     }
 
     @Override

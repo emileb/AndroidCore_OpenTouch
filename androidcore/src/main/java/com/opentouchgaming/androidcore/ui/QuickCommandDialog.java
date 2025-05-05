@@ -129,26 +129,26 @@ public class QuickCommandDialog
         });
 
         add.setOnClickListener(v ->
-        {
-            if (editLayout.getVisibility() == View.GONE)
-                editLayout.setVisibility(View.VISIBLE);
-            else
-                editLayout.setVisibility(View.GONE);
-        });
+                               {
+                                   if (editLayout.getVisibility() == View.GONE)
+                                       editLayout.setVisibility(View.VISIBLE);
+                                   else
+                                       editLayout.setVisibility(View.GONE);
+                               });
 
         save.setOnClickListener(v ->
-        {
-            String title = titleEditText.getText().toString();
-            String command = commandEditText.getText().toString();
-            if (title != null && title.length() > 0 && command != null & command.length() > 0)
-            {
-                QuickCommand newCmd = new QuickCommand(title, command);
-                commandList.add(0, newCmd);
-                editLayout.setVisibility(View.GONE);
-                saveCommands();
-            }
-            rvAdapter.notifyDataSetChanged();
-        });
+                                {
+                                    String title = titleEditText.getText().toString();
+                                    String command = commandEditText.getText().toString();
+                                    if (title != null && title.length() > 0 && command != null & command.length() > 0)
+                                    {
+                                        QuickCommand newCmd = new QuickCommand(title, command);
+                                        commandList.add(0, newCmd);
+                                        editLayout.setVisibility(View.GONE);
+                                        saveCommands();
+                                    }
+                                    rvAdapter.notifyDataSetChanged();
+                                });
 
         // Swipe to dismiss
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
@@ -179,37 +179,37 @@ public class QuickCommandDialog
         dragSortRecycler.setViewHandleId(R.id.imageView); //View you wish to use as the handle
 
         dragSortRecycler.setOnItemMovedListener((from, to) ->
-        {
-            Log.d("TEST", "onItemMoved " + from + " to " + to);
+                                                {
+                                                    Log.d("TEST", "onItemMoved " + from + " to " + to);
 
-            QuickCommand command = commandList.get(from);
+                                                    QuickCommand command = commandList.get(from);
 
-            commandList.add(from > to ? to : to + 1, command);
-            commandList.remove(from > to ? from + 1 : from);
-            saveCommands();
-            rvAdapter.notifyDataSetChanged();
-        });
+                                                    commandList.add(from > to ? to : to + 1, command);
+                                                    commandList.remove(from > to ? from + 1 : from);
+                                                    saveCommands();
+                                                    rvAdapter.notifyDataSetChanged();
+                                                });
 
         recyclerView.addItemDecoration(dragSortRecycler);
         recyclerView.addOnItemTouchListener(dragSortRecycler);
         recyclerView.setOnScrollListener(dragSortRecycler.getScrollListener());
 
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) ->
-        {
-            //selected( position );
-            callback.apply(commandList.get(position).getCommand());
-            dialog.hide();
-        });
+                                                                    {
+                                                                        //selected( position );
+                                                                        callback.apply(commandList.get(position).getCommand());
+                                                                        dialog.hide();
+                                                                    });
 
         ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener((recyclerView1, position, v) ->
-        {
-            QuickCommand command = commandList.get(position);
+                                                                        {
+                                                                            QuickCommand command = commandList.get(position);
 
-            titleEditText.setText(command.getTitle());
-            commandEditText.setText(command.getCommand());
-            editLayout.setVisibility(View.VISIBLE);
-            return true;
-        });
+                                                                            titleEditText.setText(command.getTitle());
+                                                                            commandEditText.setText(command.getCommand());
+                                                                            editLayout.setVisibility(View.VISIBLE);
+                                                                            return true;
+                                                                        });
 
         setDataPath(mainPath);
     }

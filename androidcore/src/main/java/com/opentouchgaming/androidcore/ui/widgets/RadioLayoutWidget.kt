@@ -10,12 +10,9 @@ import com.opentouchgaming.androidcore.R
 import com.opentouchgaming.androidcore.databinding.WidgetViewRadioLayoutBinding
 
 
-class RadioLayoutWidget(val context: Context,
-                        view: View,
-                        private val title: String,
-                        private val description: String,
-                        private val settingPrefix: String,
-                        val default: Int)
+class RadioLayoutWidget(
+    val context: Context, view: View, private val title: String, private val description: String, private val settingPrefix: String, val default: Int
+)
 {
     private var binding = WidgetViewRadioLayoutBinding.bind(view)
 

@@ -115,7 +115,7 @@ public class LicenseCheck
         }
 
         // Delete the file if failed
-        if (ok == false)
+        if (!ok)
         {
             File f = new File(AppInfo.internalFiles + "/l.dat");
             f.delete();

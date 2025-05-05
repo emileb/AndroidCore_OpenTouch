@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,9 +20,8 @@ import com.opentouchgaming.androidcore.Utils
 import com.opentouchgaming.androidcore.databinding.DialogImportExportBinding
 import com.opentouchgaming.androidcore.databinding.ListItemUserFilesExportBinding
 import com.opentouchgaming.saffal.FileSAF
-import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 class ImportExportDialog
 {
@@ -32,8 +34,10 @@ class ImportExportDialog
     val backupPaths = ArrayList<String>()
     val exportList = ArrayList<String>()
 
-    fun showDialog(activity: Activity, export: Boolean, entries: ArrayList<UserFilesDialog.UserFileEntry>, userFilesPath: String,
-                   callback: ((filename: String, folders: ArrayList<String>) -> Unit))
+    fun showDialog(
+        activity: Activity, export: Boolean, entries: ArrayList<UserFilesDialog.UserFileEntry>, userFilesPath: String,
+        callback: ((filename: String, folders: ArrayList<String>) -> Unit)
+    )
     {
         this.activity = activity
         this.export = export
@@ -44,9 +48,9 @@ class ImportExportDialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(binding.root)
 
-        val width: Int = ((activity.getResources().getDisplayMetrics().widthPixels * 0.98).toInt())
+        val width: Int = ((activity.resources.displayMetrics.widthPixels * 0.98).toInt())
         //val height: Int = ((activity.getResources().getDisplayMetrics().heightPixels * 0.90).toInt())
-        dialog.getWindow()?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
 
 
         binding.advancedButton.setOnClickListener {
@@ -185,7 +189,7 @@ class ImportExportDialog
 
 
     inner class ImportExportEntryAdapter(val entries: ArrayList<UserFilesDialog.UserFileEntry>, val userFilesPath: String) :
-            RecyclerView.Adapter<ImportExportEntryAdapter.ViewHolder>()
+        RecyclerView.Adapter<ImportExportEntryAdapter.ViewHolder>()
     {
         inner class ViewHolder(view: View, val binding: ListItemUserFilesExportBinding) : RecyclerView.ViewHolder(view)
 
@@ -201,15 +205,16 @@ class ImportExportDialog
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
         {
             viewHolder.binding.engineIconImageView.setImageResource(entries[position].description.icon)
-            if (entries[position].description.version.isNotEmpty()) viewHolder.binding.engineNameTextView.text = entries[position].description.name + " (" + entries[position].description.version + ")"
+            if (entries[position].description.version.isNotEmpty()) viewHolder.binding.engineNameTextView.text =
+                entries[position].description.name + " (" + entries[position].description.version + ")"
             else viewHolder.binding.engineNameTextView.text = entries[position].description.name
 
             //viewHolder.binding.engineVersionTextView.text = entries[position].description.version
 
             // Clear to stop it triggering when recycling views
-            viewHolder.binding.enableCheckBox.setOnCheckedChangeListener(null);
+            viewHolder.binding.enableCheckBox.setOnCheckedChangeListener(null)
 
-            if(export)
+            if (export)
             {
                 if (entries[position].lastModified != 0L)
                 {

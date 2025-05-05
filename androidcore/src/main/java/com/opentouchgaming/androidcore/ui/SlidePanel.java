@@ -40,7 +40,7 @@ public class SlidePanel
                     case LEFT:
                     {
                         // Opening
-                        if (isOpen == true)
+                        if (isOpen)
                         {
                             Params.leftMargin = value.intValue() - distance;
                         }
@@ -53,7 +53,7 @@ public class SlidePanel
                     case RIGHT:
                     {
                         // Opening
-                        if (isOpen == true)
+                        if (isOpen)
                         {
                             Params.rightMargin = value.intValue() - distance;
                         }
@@ -66,7 +66,7 @@ public class SlidePanel
                     case BOTTOM:
                     {
                         // Opening
-                        if (isOpen == true)
+                        if (isOpen)
                         {
                             Params.bottomMargin = value.intValue() - distance;
                         }

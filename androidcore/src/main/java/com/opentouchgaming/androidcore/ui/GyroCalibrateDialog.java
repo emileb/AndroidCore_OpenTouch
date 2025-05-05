@@ -60,16 +60,16 @@ public class GyroCalibrateDialog implements SensorEventListener
         Button go = dialog.findViewById(R.id.gyro_calibrate_button);
 
         go.setOnClickListener(v ->
-        {
-            registerSensor(true);
-            startTime = System.currentTimeMillis();
+                              {
+                                  registerSensor(true);
+                                  startTime = System.currentTimeMillis();
 
-            // Reset averaging
-            count = 0;
-            values[0] = 0;
-            values[1] = 0;
-            values[2] = 0;
-        });
+                                  // Reset averaging
+                                  count = 0;
+                                  values[0] = 0;
+                                  values[1] = 0;
+                                  values[2] = 0;
+                              });
 
         dialog.show();
     }
