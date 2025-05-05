@@ -148,7 +148,8 @@ public class ScopedStorage
             }
             else
             {
-                openDocumentCallback.apply("Folder selection canceled");
+                if (openDocumentCallback != null)
+                    openDocumentCallback.apply("Folder selection canceled");
             }
         }
     }
