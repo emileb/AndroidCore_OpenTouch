@@ -38,6 +38,8 @@ public class NativeLib implements ControlInterface {
 
     public static native int executeCommand(String command);
 
+    public static native int renderControls();
+
     @Override
     public void initTouchControls_if(String pngPath, int width, int height) {
 

@@ -46,11 +46,12 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
+import com.opentouchgaming.androidcore.ui.SurfaceViewControls.SurfaceViewControls;
 import com.opentouchgaming.saffal.UtilsSAF;
 
 import java.io.IOException;
@@ -300,7 +301,18 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         if(OPENTOUCH_SDL_EXTRA) // Directly use the surface, otherwise screen scaling does not work and it's a box in the corner
         {
             SDLOpenTouch.Setup(this, this.getIntent());
-            setContentView(mSurface);
+            if(false)
+            {
+                FrameLayout frame = new FrameLayout(this);
+                frame.addView(mSurface);
+
+                SurfaceViewControls controls = new SurfaceViewControls(this);
+
+                 frame.addView(controls);
+                 setContentView(frame);
+            }
+            else
+                setContentView(mSurface);
         }
         else {
             mLayout.addView(mSurface);
