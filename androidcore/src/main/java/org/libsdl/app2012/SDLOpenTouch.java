@@ -206,6 +206,14 @@ public class SDLOpenTouch
         if (gles_version == 3)
             options |= TouchSettings.GAME_OPTION_GLES3;
 
+        if (gles_version == 4)
+            options |= TouchSettings.GAME_OPTION_VULKAN;
+
+        boolean touchSurfaceview = intent.getBooleanExtra("touch_surfaceview", false);
+
+        if(touchSurfaceview)
+            options |= TouchSettings.GAME_OPTION_TOUCH_SURFACE_VIEW;
+
         int audioBackend = intent.getIntExtra("audio_backend", 0);
         if (audioBackend == 1)
             options |= TouchSettings.GAME_OPTION_SDL_OLD_AUDIO;
@@ -230,8 +238,6 @@ public class SDLOpenTouch
         quickCommandMainPath = intent.getStringExtra("quick_command_main_path");
         quickCommandModPath = intent.getStringExtra("quick_command_mod_path");
 
-        //NativeLib.setScreenSize(1920,1104);
-        //NativeLib.setScreenSize(1280,736);
         userFiles = intent.getStringExtra("user_files");
         String logFilename = intent.getStringExtra("log_filename");
         String tmpFiles = activity.getCacheDir().getAbsolutePath();

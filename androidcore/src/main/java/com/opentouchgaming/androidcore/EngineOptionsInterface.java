@@ -47,12 +47,12 @@ public interface EngineOptionsInterface
     class RunInfo
     {
         public String args;
-        public int glesVersion;
+        public int glesVersion; //1 = GLES1, 2 = GLES 2, 3 = GLES 3, 4 = Vulkan
         public boolean useGL4ES;
+        public boolean touchSurfaceview;
 
         public boolean maintainAspect;
         public String frameBufferWidth;
         public String frameBufferHeight;
     }
-
 }

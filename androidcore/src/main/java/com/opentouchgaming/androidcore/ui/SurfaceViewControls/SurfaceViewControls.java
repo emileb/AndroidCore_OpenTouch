@@ -23,6 +23,9 @@ public class SurfaceViewControls extends GLSurfaceView
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
 
+        // Keep context when minimising
+        setPreserveEGLContextOnPause(true);
+
         // 2. Request an 8-bit RGBA buffer, plus 16-bit depth (no stencil)
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 
@@ -100,19 +103,6 @@ public class SurfaceViewControls extends GLSurfaceView
         @Override
         public void onDrawFrame(javax.microedition.khronos.opengles.GL10 unused)
         {
-
-            if (!waited)
-            {
-                try
-                {
-                    Thread.sleep(3000);
-                }
-                catch (InterruptedException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                waited = true;
-            }
             GLES20.glClearColor(0f, 0f, 0f, 0f);
             GLES20.glViewport(0, 0, width, height);
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);

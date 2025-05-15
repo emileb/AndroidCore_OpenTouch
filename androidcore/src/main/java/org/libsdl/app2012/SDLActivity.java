@@ -119,6 +119,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     // This is what SDL runs in. It invokes SDL_main(), eventually
     protected static Thread mSDLThread;
 
+    static SurfaceViewControls surfaceViewControls;
+
     protected static SDLGenericMotionListener_API12 getMotionListener() {
         if (mMotionListener == null) {
             if(SDLActivity.OPENTOUCH_SDL_EXTRA) {
@@ -301,15 +303,18 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         if(OPENTOUCH_SDL_EXTRA) // Directly use the surface, otherwise screen scaling does not work and it's a box in the corner
         {
             SDLOpenTouch.Setup(this, this.getIntent());
-            if(false)
+            boolean touchSurfaceview = this.getIntent().getBooleanExtra("touch_surfaceview", false);
+            //if(false)
+            if (touchSurfaceview)
             {
                 FrameLayout frame = new FrameLayout(this);
                 frame.addView(mSurface);
 
-                SurfaceViewControls controls = new SurfaceViewControls(this);
+                surfaceViewControls = new SurfaceViewControls(this);
 
-                 frame.addView(controls);
-                 setContentView(frame);
+
+                frame.addView(surfaceViewControls);
+                setContentView(frame);
             }
             else
                 setContentView(mSurface);
@@ -377,6 +382,9 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         if (!mHasMultiWindow) {
             pauseNativeThread();
         }
+
+        if (surfaceViewControls != null)
+            surfaceViewControls.onPause();
     }
 
     @Override
@@ -395,6 +403,9 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         if (!mHasMultiWindow) {
             resumeNativeThread();
         }
+
+        if (surfaceViewControls != null)
+            surfaceViewControls.onResume();
     }
 
     @Override
