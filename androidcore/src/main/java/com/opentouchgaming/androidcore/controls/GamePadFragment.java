@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -155,30 +154,9 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-
         config = new ControlConfig(GamepadDefinitions.getDefinition(AppInfo.app), this);
 
-
         View mainView = inflater.inflate(R.layout.fragment_gamepad, null);
-
-        CheckBox enableCb = mainView.findViewById(R.id.gamepad_enable_checkbox);
-        enableCb.setChecked(TouchSettings.gamePadEnabled);
-
-        enableCb.setOnCheckedChangeListener((buttonView, isChecked) ->
-                                            {
-                                                TouchSettings.setBoolOption(getActivity(), "gamepad_enabled", isChecked);
-                                                TouchSettings.gamePadEnabled = isChecked;
-                                                setListViewEnabled(TouchSettings.gamePadEnabled);
-                                            });
-
-        CheckBox showTouchcd = mainView.findViewById(R.id.gamepad_hide_touch_checkbox);
-        showTouchcd.setChecked(TouchSettings.gamepadHidetouch);
-
-        showTouchcd.setOnCheckedChangeListener((buttonView, isChecked) ->
-                                               {
-                                                   TouchSettings.setBoolOption(getActivity(), "gamepad_hide_touch", isChecked);
-                                                   TouchSettings.gamepadHidetouch = isChecked;
-                                               });
 
         listView = mainView.findViewById(R.id.gamepad_listview);
         adapter = new ControlListAdapter(getActivity());
@@ -189,7 +167,12 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
         //listView.setSelector(R.drawable.layout_sel_background);
         listView.setOnItemClickListener((arg0, v, pos, id) ->
                                         {
-                                            config.startMonitor(getActivity(), pos);
+                                            // Make it so if you tap on it while monitoring it cancels it
+                                            if(!config.isMonitoring())
+                                                config.startMonitor(getActivity(), pos);
+                                            else
+                                                config.stopMonitor();
+
                                             adapter.notifyDataSetChanged();
                                         });
 
@@ -270,7 +253,6 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
 
     private void setListViewEnabled(boolean v)
     {
-
         listView.setEnabled(v);
         if (v)
         {
@@ -322,9 +304,9 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
     public void startMonitoring(ActionInput action)
     {
         if (action.actionType == ActionInput.ActionType.ANALOG)
-            info.setText("Move Stick for: " + action.description);
+            info.setText("Move Stick: " + action.description);
         else
-            info.setText("Press Button for: " + action.description);
+            info.setText(action.description);
 
         info.setTextColor(getActivity().getResources().getColor(android.R.color.holo_green_light));
         //Make it flash
@@ -342,6 +324,7 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
         info.setText("Config: " + configFilename);
         info.setTextColor(getActivity().getResources().getColor(android.R.color.holo_blue_light));
         info.clearAnimation();
+        adapter.notifyDataSetChanged();
     }
 
     class ControlListAdapter extends BaseAdapter

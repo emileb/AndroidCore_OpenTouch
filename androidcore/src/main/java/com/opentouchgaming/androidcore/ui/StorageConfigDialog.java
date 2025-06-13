@@ -76,7 +76,8 @@ public class StorageConfigDialog
         this.examples = examples;
         this.update = update;
 
-        final Dialog dialog = new Dialog(act, R.style.DialogThemeFullscreen_dark);
+        //final Dialog dialog = new Dialog(act, R.style.DialogThemeFullscreen_dark);
+        final Dialog dialog = new FullscreenDialog(act);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_storage_config);

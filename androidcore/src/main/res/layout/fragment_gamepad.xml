@@ -6,28 +6,25 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/gamepad_enable_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enable Game Pad" />
-
-        <CheckBox
-            android:id="@+id/gamepad_hide_touch_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/gamepad_enable_checkbox"
-            android:text="Hide touch controls" />
+        <TextView
+            android:id="@+id/title_textView"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#1b1b1b"
+            android:focusable="false"
+            android:gravity="left"
+            android:singleLine="true"
+            android:text="   Gamepad"
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/gamepad_info_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
             android:layout_toLeftOf="@+id/menu_imageButton"
-            android:layout_toRightOf="@+id/gamepad_hide_touch_checkbox"
             android:gravity="center"
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -36,8 +33,10 @@
             android:id="@+id/menu_imageButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
             android:layout_alignParentRight="true"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_menu" />
     </RelativeLayout>
 
@@ -46,6 +45,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:dividerHeight="2dp"
-        android:listSelector="@drawable/focusable"></ListView>
+        android:listSelector="@drawable/focusable"/>
 
 </LinearLayout>

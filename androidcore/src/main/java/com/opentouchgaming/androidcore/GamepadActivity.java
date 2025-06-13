@@ -1,13 +1,16 @@
 package com.opentouchgaming.androidcore;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.opentouchgaming.androidcore.controls.GamePadFragment;
+import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
 
 public class GamepadActivity extends Activity
 {
@@ -22,6 +25,9 @@ public class GamepadActivity extends Activity
         AppInfo.Apps app = AppInfo.Apps.valueOf(getIntent().getStringExtra("app"));
         AppInfo.setApp(app);
 
+        Utils.setImmersionMode(this, getWindow(), OptionsDialogKt.LAUNCHER_HIDE_NAV_BAR);
+        Utils.expandToCutout(this, getWindow(), OptionsDialogKt.LAUNCHER_EXPAND_INTO_NOTCH);
+
         if (AppInfo.getContext() == null)
             AppInfo.setContext(this);
 
@@ -29,6 +35,10 @@ public class GamepadActivity extends Activity
         setContentView(R.layout.activity_gamepad);
 
         fragment = (GamePadFragment) getFragmentManager().findFragmentById(R.id.gamepad_fragment_container);
+        Typeface face = Typeface.createFromAsset(getAssets(), "recharge_font.ttf");
+
+        TextView titleTextView = findViewById(R.id.title_textView);
+        titleTextView.setTypeface(face);
     }
 
 

@@ -28,11 +28,16 @@ class OptionsDialogKt(
         const val SYSTEM_RESOLUTION_OVERRIDE = "system_resolution_override"
         const val HIDE_NAV_BAR = "hide_nav_bar"
         const val EXPAND_INTO_NOTCH = "expand_into_notch"
+        const val LAUNCHER_HIDE_NAV_BAR = "launcher_hide_nav_bar"
+        const val LAUNCHER_EXPAND_INTO_NOTCH = "launcher_expand_into_notch"
         const val HIDE_TOUCH_GFX = "hide_touch_graphics"
         const val USE_SYSTEM_KEYBOARD = "use_system_keyboard"
         const val USE_ALT_TOUCH_CODE = "use_alt_touch_code"
         const val GROUP_SIMILAR_ENGINES = "group_similar_engines"
         const val SDL_AUDIO_BACKEND = "sdl_audio_backend"
+        const val ENABLE_GAMEPAD = "gamepad_enabled"
+        const val GAMEPAD_HIDE_TOUCH = "gamepad_hide_touch"
+        const val USE_MINI_UI = "use_mini_ui"
 
         val resolutions = arrayListOf(
             Pair("100%", 1.0f), Pair("75%", 0.75f), Pair("60%", 0.6f), Pair("50%", 0.5f), Pair("30%", 0.30f), Pair("25%", 0.25f)
@@ -98,6 +103,26 @@ class OptionsDialogKt(
 
         SwitchWidget(
             activity,
+            binding.launcherHideNavButtons.root,
+            "Full screen",
+            "Go full screen by hiding the system navigation buttons",
+            LAUNCHER_HIDE_NAV_BAR,
+            false,
+            R.drawable.settings_hide_nav
+        )
+
+        SwitchWidget(
+            activity,
+            binding.launcherExpandToNotch.root,
+            "Expand in to camera notch",
+            "Expand the screen in to the camera notch",
+            LAUNCHER_EXPAND_INTO_NOTCH,
+            false,
+            R.drawable.setting_expand_notch
+        )
+
+        SwitchWidget(
+            activity,
             binding.hideTouchGraphics.root,
             "Hide on-screen controls",
             "Hide all the touch screen graphics on menu and in-game",
@@ -154,6 +179,35 @@ class OptionsDialogKt(
             R.drawable.setting_audio
         )
 
+        SwitchWidget(
+            activity,
+            binding.enableGamepad.root,
+            "Enable gamepad",
+            "Enable gamepad input events. Disable if randomly moving.",
+            ENABLE_GAMEPAD,
+            true,
+            R.drawable.baseline_videogame_asset_24
+        )
+
+        SwitchWidget(
+            activity,
+            binding.gamepadHideTouch.root,
+            "Gamepad auto hide touch controls",
+            "When you press a gamepad button the touch controls will automatically hide",
+            GAMEPAD_HIDE_TOUCH,
+            true,
+            R.drawable.setting_hide_touch_graphics
+        )
+
+        SwitchWidget(
+            activity,
+            binding.useMiniUi.root,
+            "Mini UI list",
+            "Use smaller user interface for game list (restart needed)",
+            USE_MINI_UI,
+            false,
+        )
+
         binding.resetButton.setOnClickListener {
             val dialogBuilder = AlertDialog.Builder(activity)
             dialogBuilder.setTitle("WARNING: This will reset all app settings! (Game data and save games are not touched)")
@@ -172,7 +226,6 @@ class OptionsDialogKt(
             val layout = dialog.findViewById<LinearLayout>(R.id.extras_linearlayout)
             binding.extrasLinearlayout.addView(extraOptions)
         }
-
 
 
         dialog.show()

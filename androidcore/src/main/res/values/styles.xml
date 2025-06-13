@@ -22,6 +22,7 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
+
     <style name="SettingSubText">
         <item name="android:textColor">#A0A0A0</item>
         <item name="android:textSize">12sp</item>

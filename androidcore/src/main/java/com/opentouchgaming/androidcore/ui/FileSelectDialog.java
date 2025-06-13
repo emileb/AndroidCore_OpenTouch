@@ -64,19 +64,13 @@ public class FileSelectDialog
         dialog.setContentView(R.layout.dialog_select_files);
         dialog.setCancelable(true);
 
-        dialog.setOnKeyListener(new Dialog.OnKeyListener()
-        {
-
-            @Override
-            public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event)
+        dialog.setOnKeyListener((arg0, keyCode, event) -> {
+            // TODO Auto-generated method stub
+            if (keyCode == KeyEvent.KEYCODE_BACK)
             {
-                // TODO Auto-generated method stub
-                if (keyCode == KeyEvent.KEYCODE_BACK)
-                {
-                    return goUp();
-                }
-                return false;
+                return goUp();
             }
+            return false;
         });
 
         resultTextView = dialog.findViewById(R.id.result_textView);

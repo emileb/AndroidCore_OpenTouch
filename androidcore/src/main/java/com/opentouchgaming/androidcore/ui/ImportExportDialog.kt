@@ -52,7 +52,6 @@ class ImportExportDialog
         //val height: Int = ((activity.getResources().getDisplayMetrics().heightPixels * 0.90).toInt())
         dialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-
         binding.advancedButton.setOnClickListener {
             binding.recyclerView.visibility = View.VISIBLE
             binding.advancedButton.visibility = View.GONE

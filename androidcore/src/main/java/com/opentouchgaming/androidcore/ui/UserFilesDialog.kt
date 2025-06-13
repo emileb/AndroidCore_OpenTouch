@@ -71,9 +71,8 @@ class UserFilesDialog
 
         binding = DialogUserFilesManagerBinding.inflate(activity.layoutInflater)
 
-        val dialog = Dialog(activity, R.style.Theme_Material3_Dark)
+        val dialog = FullscreenDialog(activity)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         dialog.setContentView(binding.root)
 
         val userPath = AppInfo.getDisplayPathAndImage(AppInfo.getUserFiles())
@@ -136,7 +135,6 @@ class UserFilesDialog
         runningState = RunningState.SCANNING
 
         totalSize = 0
-
 
         GlobalScope.launch {
             for (entry in userFileEntries)

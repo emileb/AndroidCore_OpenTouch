@@ -42,9 +42,9 @@ public class TouchSettings
     public static void reloadSettings(Context ctx)
     {
         gamePadControlsFile = ctx.getFilesDir().toString() + "/gamepadSettings.dat";
-        gamePadEnabled = getBoolOption(ctx, "gamepad_enabled", true);
+        gamePadEnabled = getBoolOption(ctx, OptionsDialogKt.ENABLE_GAMEPAD, true);
         altTouchCode = SwitchWidget.fetchValue(ctx, OptionsDialogKt.USE_ALT_TOUCH_CODE, false);
-        gamepadHidetouch = getBoolOption(ctx, "gamepad_hide_touch", true);
+        gamepadHidetouch = getBoolOption(ctx, OptionsDialogKt.GAMEPAD_HIDE_TOUCH, true);
         hideGameAndMenuTouch = SwitchWidget.fetchValue(ctx, OptionsDialogKt.HIDE_TOUCH_GFX, AppInfo.isAndroidTv); // default to hide on Android TV
         useSystemKeyboard = SwitchWidget.fetchValue(ctx, OptionsDialogKt.USE_SYSTEM_KEYBOARD, false);
     }

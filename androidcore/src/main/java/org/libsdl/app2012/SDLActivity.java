@@ -299,6 +299,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
 
+        // mSurface.getHolder().setFormat(PixelFormat.RGBA_8888);
+
         mLayout = new RelativeLayout(this);
         if(OPENTOUCH_SDL_EXTRA) // Directly use the surface, otherwise screen scaling does not work and it's a box in the corner
         {
@@ -311,7 +313,6 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
                 frame.addView(mSurface);
 
                 surfaceViewControls = new SurfaceViewControls(this);
-
 
                 frame.addView(surfaceViewControls);
                 setContentView(frame);

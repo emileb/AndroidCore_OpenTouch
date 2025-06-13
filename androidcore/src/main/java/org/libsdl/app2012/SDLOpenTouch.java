@@ -25,6 +25,7 @@ import com.opentouchgaming.androidcore.controls.ControlInterpreter;
 import com.opentouchgaming.androidcore.controls.GamepadDefinitions;
 import com.opentouchgaming.androidcore.controls.TouchSettings;
 import com.opentouchgaming.androidcore.ui.GyroDialog;
+import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
 import com.opentouchgaming.androidcore.ui.QuickCommandDialog;
 import com.opentouchgaming.androidcore.ui.TouchSettingsSaveLoad;
 
@@ -124,8 +125,8 @@ public class SDLOpenTouch
         // keep screen on
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        Utils.setImmersionMode(activity);
-        Utils.expandToCutout(activity);
+        Utils.setImmersionMode(activity, activity.getWindow(),  OptionsDialogKt.HIDE_NAV_BAR);
+        Utils.expandToCutout(activity, activity.getWindow(), OptionsDialogKt.EXPAND_INTO_NOTCH);
 
         gyro = new SDLOpenTouchGyro(activity, activity.getWindowManager().getDefaultDisplay().getRotation());
 

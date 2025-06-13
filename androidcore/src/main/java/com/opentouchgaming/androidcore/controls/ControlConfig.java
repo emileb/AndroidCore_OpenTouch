@@ -64,6 +64,7 @@ public class ControlConfig implements Serializable
 			MotionEvent.AXIS_GENERIC_15,
 			MotionEvent.AXIS_GENERIC_16,
 			 */
+
             MotionEvent.AXIS_HAT_X, MotionEvent.AXIS_HAT_Y, MotionEvent.AXIS_LTRIGGER, MotionEvent.AXIS_RTRIGGER, MotionEvent.AXIS_RUDDER, MotionEvent.AXIS_RX,
             MotionEvent.AXIS_RY, MotionEvent.AXIS_RZ, MotionEvent.AXIS_THROTTLE, MotionEvent.AXIS_X, MotionEvent.AXIS_Y, MotionEvent.AXIS_Z,
             MotionEvent.AXIS_BRAKE, MotionEvent.AXIS_GAS,};
@@ -203,7 +204,7 @@ public class ControlConfig implements Serializable
             listener.startMonitoring(actionMonitor);
     }
 
-    private void stopMonitor()
+    public void stopMonitor()
     {
         monitoring = false;
         if (listener != null)
@@ -323,7 +324,6 @@ public class ControlConfig implements Serializable
 
             if ((ai.actionType == ActionInput.ActionType.BUTTON) || (ai.actionType == ActionInput.ActionType.MENU))
             {
-
                 if ((ai.actionType == ActionInput.ActionType.MENU))
                 {
                     name.setTextColor(0xFF00aeef); //BLUEY
@@ -356,6 +356,20 @@ public class ControlConfig implements Serializable
             else
                 setting_image.setVisibility(View.GONE);
 
+            // If monitoring, override the settings button so it can clear the action
+            if(monitoring && (ai == actionMonitor))
+            {
+                setting_image.setImageResource(R.drawable.setting_trash);
+                setting_image.setVisibility(View.VISIBLE);
+                setting_image.setOnClickListener(v -> {
+
+                    actionMonitor.source = -1;
+                    actionMonitor.sourceType = ActionInput.SourceType.BUTTON;
+
+                    stopMonitor();
+                    updated();
+                });
+            }
 
             if (ai.source == -1)
             {

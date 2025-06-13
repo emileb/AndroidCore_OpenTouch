@@ -43,6 +43,6 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/ic_build_white" />
+        app:srcCompat="@drawable/ic_settings_white" />
 
 </RelativeLayout>

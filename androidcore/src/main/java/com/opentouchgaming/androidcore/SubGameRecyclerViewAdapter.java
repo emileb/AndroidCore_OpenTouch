@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
 
 import java.util.ArrayList;
 
@@ -39,7 +40,7 @@ public class SubGameRecyclerViewAdapter extends RecyclerView.Adapter<SubGameRecy
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        boolean useMini = AppSettings.getBoolOption(parent.getContext(), "use_mini_ui", false);
+        boolean useMini = AppSettings.getBoolOption(parent.getContext(), OptionsDialogKt.USE_MINI_UI, false);
 
         View view = LayoutInflater.from(parent.getContext()).inflate(useMini ? R.layout.list_item_subgame_mini : R.layout.list_item_subgame, parent, false);
         return new ViewHolder(view);

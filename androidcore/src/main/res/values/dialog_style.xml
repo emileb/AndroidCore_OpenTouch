@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="MyDialog" >
+    <style name="DialogEngineSettings" >
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowMinWidthMajor">80%</item>
         <item name="android:windowMinWidthMinor">80%</item>
     </style>
+
+    <style name="DialogAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+
+    <style name="DialogFullscreenAnimate" parent="Theme.Material3.Dark">
+        <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+    </style>
+
 </resources>

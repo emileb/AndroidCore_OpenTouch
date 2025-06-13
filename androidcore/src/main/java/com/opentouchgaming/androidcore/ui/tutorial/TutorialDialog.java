@@ -32,6 +32,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.androidcore.ui.FullscreenDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class TutorialDialog
         activity = act;
         this.tutorials = tut;
 
-        dialog = new Dialog(activity, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        dialog = new FullscreenDialog(activity)
         {
             @Override
             public void onBackPressed()
