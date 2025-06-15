@@ -184,69 +184,31 @@ public class StorageConfigDialog
         // SECONDARY folder options
         appSecDirButton.setOnClickListener(v ->
                                            {
-                                               PopupMenu popup = new PopupMenu(activity, appSecDirButton);
-
                                                if (AppInfo.isScopedEnabled())
                                                {
+                                                   PopupMenu popup = new PopupMenu(activity, appSecDirButton);
+
                                                    new ScopedStorageDialog(activity, AppInfo.scopedTutorial, () ->
                                                    {
                                                        updateUI();
                                                    });
                                                    updateUI();
+                                                   popup.show();
                                                }
                                                else
                                                {
-                                                   popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup, popup.getMenu());
-                                                   popup.setOnMenuItemClickListener(item ->
-                                                                                    {
-                                                                                        if (item.getItemId() == R.id.reset)
-                                                                                        {
-                                                                                            AppInfo.setAppSecDirectory(null); //This resets it
-                                                                                        }
-                                                                                        else if (item.getItemId() == R.id.sdcard)
-                                                                                        {
-
-                                                                                            if (AppInfo.sdcardRoot != null)
-                                                                                            {
-                                                                                                if (AppInfo.isScopedEnabled())
-                                                                                                { // Scoped storage can only read here now..
-                                                                                                    AppInfo.setAppSecDirectory(AppInfo.sdcardWritable);
-                                                                                                }
-                                                                                                else
-                                                                                                {
-                                                                                                    AppInfo.setAppSecDirectory(AppInfo.sdcardRoot);
-                                                                                                }
-                                                                                            }
-                                                                                            else
-                                                                                                Toast.makeText(activity,
-                                                                                                               "Did not detect SD card",
-                                                                                                               Toast.LENGTH_LONG).show();
-
-                                                                                        }
-                                                                                        else if (item.getItemId() == R.id.internal)
-                                                                                        {
-                                                                                            AppInfo.setAppSecDirectory(AppInfo.flashRoot);
-                                                                                        }
-                                                                                        else if (item.getItemId() == R.id.choose)
-                                                                                        {
-                                                                                            DirectoryChooserDialog directoryChooserDialog =
-                                                                                                    new DirectoryChooserDialog(
-                                                                                                    activity,
-                                                                                                    chosenDir ->
-                                                                                                    {
-                                                                                                        updateAppSecDir(chosenDir);
-                                                                                                        updateUI();
-                                                                                                    });
-                                                                                            directoryChooserDialog.chooseDirectory(AppInfo.getAppSecDirectory());
-                                                                                        }
-
-                                                                                        updateUI();
-
-                                                                                        return true;
-                                                                                    });
+                                                   secondarySelectLegacy();
                                                }
-                                               popup.show();
                                            });
+
+        appSecDirButton.setOnLongClickListener(v ->
+                                               {
+                                                   if(AppInfo.isAndroidTv)
+                                                   {
+                                                       secondarySelectLegacy();
+                                                   }
+                                                   return true;
+                                               });
 
         userDirButton.setOnClickListener(v ->
                                          {
@@ -292,6 +254,56 @@ public class StorageConfigDialog
         dialog.setOnDismissListener(dialog12 -> update.run());
 
         dialog.show();
+    }
+
+    void secondarySelectLegacy()
+    {
+        PopupMenu popup = new PopupMenu(activity, appSecDirButton);
+
+        popup.getMenuInflater().inflate(R.menu.app_sec_dir_popup, popup.getMenu());
+        popup.setOnMenuItemClickListener(item ->
+                                         {
+                                             if (item.getItemId() == R.id.reset)
+                                             {
+                                                 AppInfo.setAppSecDirectory(null); //This resets it
+                                             }
+                                             else if (item.getItemId() == R.id.sdcard)
+                                             {
+
+                                                 if (AppInfo.sdcardRoot != null)
+                                                 {
+                                                     if (AppInfo.isScopedEnabled())
+                                                     { // Scoped storage can only read here now..
+                                                         AppInfo.setAppSecDirectory(AppInfo.sdcardWritable);
+                                                     }
+                                                     else
+                                                     {
+                                                         AppInfo.setAppSecDirectory(AppInfo.sdcardRoot);
+                                                     }
+                                                 }
+                                                 else
+                                                     Toast.makeText(activity, "Did not detect SD card", Toast.LENGTH_LONG).show();
+
+                                             }
+                                             else if (item.getItemId() == R.id.internal)
+                                             {
+                                                 AppInfo.setAppSecDirectory(AppInfo.flashRoot);
+                                             }
+                                             else if (item.getItemId() == R.id.choose)
+                                             {
+                                                 DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(activity, chosenDir ->
+                                                 {
+                                                     updateAppSecDir(chosenDir);
+                                                     updateUI();
+                                                 });
+                                                 directoryChooserDialog.chooseDirectory(AppInfo.getAppSecDirectory());
+                                             }
+
+                                             updateUI();
+
+                                             return true;
+                                         });
+        popup.show();
     }
 
     private void updateUI()
