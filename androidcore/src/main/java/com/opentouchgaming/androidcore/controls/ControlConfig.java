@@ -357,18 +357,19 @@ public class ControlConfig implements Serializable
                 setting_image.setVisibility(View.GONE);
 
             // If monitoring, override the settings button so it can clear the action
-            if(monitoring && (ai == actionMonitor))
+            if (monitoring && (ai == actionMonitor))
             {
                 setting_image.setImageResource(R.drawable.setting_trash);
                 setting_image.setVisibility(View.VISIBLE);
-                setting_image.setOnClickListener(v -> {
+                setting_image.setOnClickListener(v ->
+                                                 {
 
-                    actionMonitor.source = -1;
-                    actionMonitor.sourceType = ActionInput.SourceType.BUTTON;
+                                                     actionMonitor.source = -1;
+                                                     actionMonitor.sourceType = ActionInput.SourceType.BUTTON;
 
-                    stopMonitor();
-                    updated();
-                });
+                                                     stopMonitor();
+                                                     updated();
+                                                 });
             }
 
             if (ai.source == -1)

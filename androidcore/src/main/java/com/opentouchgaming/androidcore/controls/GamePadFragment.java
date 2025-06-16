@@ -168,7 +168,7 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
         listView.setOnItemClickListener((arg0, v, pos, id) ->
                                         {
                                             // Make it so if you tap on it while monitoring it cancels it
-                                            if(!config.isMonitoring())
+                                            if (!config.isMonitoring())
                                                 config.startMonitor(getActivity(), pos);
                                             else
                                                 config.stopMonitor();

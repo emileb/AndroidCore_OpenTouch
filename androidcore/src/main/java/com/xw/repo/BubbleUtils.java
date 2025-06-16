@@ -12,42 +12,60 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
-class BubbleUtils {
+class BubbleUtils
+{
 
     private static final String KEY_MIUI_MANE = "ro.miui.ui.version.name";
-    private static Properties sProperties = new Properties();
+    private static final Properties sProperties = new Properties();
     private static Boolean miui;
 
-    static boolean isMIUI() {
-        if (miui != null) {
+    static boolean isMIUI()
+    {
+        if (miui != null)
+        {
             return miui;
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+        {
             FileInputStream fis = null;
-            try {
+            try
+            {
                 fis = new FileInputStream(new File(Environment.getRootDirectory(), "build.prop"));
                 sProperties.load(fis);
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 e.printStackTrace();
-            } finally {
-                if (fis != null) {
-                    try {
+            }
+            finally
+            {
+                if (fis != null)
+                {
+                    try
+                    {
                         fis.close();
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e)
+                    {
                         e.printStackTrace();
                     }
                 }
             }
             miui = sProperties.containsKey(KEY_MIUI_MANE);
-        } else {
+        }
+        else
+        {
             Class<?> clazz;
-            try {
+            try
+            {
                 clazz = Class.forName("android.os.SystemProperties");
                 Method getMethod = clazz.getDeclaredMethod("get", String.class);
                 String name = (String) getMethod.invoke(null, KEY_MIUI_MANE);
                 miui = !TextUtils.isEmpty(name);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 miui = false;
             }
         }
@@ -55,13 +73,13 @@ class BubbleUtils {
         return miui;
     }
 
-    static int dp2px(int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                Resources.getSystem().getDisplayMetrics());
+    static int dp2px(int dp)
+    {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().getDisplayMetrics());
     }
 
-    static int sp2px(int sp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
-                Resources.getSystem().getDisplayMetrics());
+    static int sp2px(int sp)
+    {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, Resources.getSystem().getDisplayMetrics());
     }
 }

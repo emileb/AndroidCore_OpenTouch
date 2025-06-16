@@ -203,7 +203,7 @@ public class StorageConfigDialog
 
         appSecDirButton.setOnLongClickListener(v ->
                                                {
-                                                   if(AppInfo.isAndroidTv)
+                                                   if (AppInfo.isAndroidTv)
                                                    {
                                                        secondarySelectLegacy();
                                                    }

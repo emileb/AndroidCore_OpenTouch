@@ -12,7 +12,8 @@ import androidx.annotation.IntRange;
  * <p/>
  * Created by woxingxiao on 2017-03-14.
  */
-public class BubbleConfigBuilder {
+public class BubbleConfigBuilder
+{
 
     float min;
     float max;
@@ -50,64 +51,76 @@ public class BubbleConfigBuilder {
     boolean hideBubble;
     boolean rtl;
 
-    private BubbleSeekBar mBubbleSeekBar;
+    private final BubbleSeekBar mBubbleSeekBar;
 
-    BubbleConfigBuilder(BubbleSeekBar bubbleSeekBar) {
+    BubbleConfigBuilder(BubbleSeekBar bubbleSeekBar)
+    {
         mBubbleSeekBar = bubbleSeekBar;
     }
 
-    public void build() {
+    public void build()
+    {
         mBubbleSeekBar.config(this);
     }
 
-    public BubbleConfigBuilder min(float min) {
+    public BubbleConfigBuilder min(float min)
+    {
         this.min = min;
         this.progress = min;
         return this;
     }
 
-    public BubbleConfigBuilder max(float max) {
+    public BubbleConfigBuilder max(float max)
+    {
         this.max = max;
         return this;
     }
 
-    public BubbleConfigBuilder progress(float progress) {
+    public BubbleConfigBuilder progress(float progress)
+    {
         this.progress = progress;
         return this;
     }
 
-    public BubbleConfigBuilder floatType() {
+    public BubbleConfigBuilder floatType()
+    {
         this.floatType = true;
         return this;
     }
 
-    public BubbleConfigBuilder trackSize(int dp) {
+    public BubbleConfigBuilder trackSize(int dp)
+    {
         this.trackSize = dp2px(dp);
         return this;
     }
 
-    public BubbleConfigBuilder secondTrackSize(int dp) {
+    public BubbleConfigBuilder secondTrackSize(int dp)
+    {
         this.secondTrackSize = dp2px(dp);
         return this;
     }
 
-    public BubbleConfigBuilder thumbRadius(int dp) {
+    public BubbleConfigBuilder thumbRadius(int dp)
+    {
         this.thumbRadius = dp2px(dp);
         return this;
     }
 
-    public BubbleConfigBuilder thumbRadiusOnDragging(int dp) {
+    public BubbleConfigBuilder thumbRadiusOnDragging(int dp)
+    {
         this.thumbRadiusOnDragging = dp2px(dp);
         return this;
     }
 
-    public BubbleConfigBuilder trackColor(@ColorInt int color) {
+    public BubbleConfigBuilder trackColor(@ColorInt int color)
+    {
         this.trackColor = color;
         this.sectionTextColor = color;
         return this;
     }
 
-    public BubbleConfigBuilder secondTrackColor(@ColorInt int color) {
+    public BubbleConfigBuilder secondTrackColor(@ColorInt int color)
+    {
         this.secondTrackColor = color;
         this.thumbColor = color;
         this.thumbTextColor = color;
@@ -115,259 +128,317 @@ public class BubbleConfigBuilder {
         return this;
     }
 
-    public BubbleConfigBuilder thumbColor(@ColorInt int color) {
+    public BubbleConfigBuilder thumbColor(@ColorInt int color)
+    {
         this.thumbColor = color;
         return this;
     }
 
-    public BubbleConfigBuilder sectionCount(@IntRange(from = 1) int count) {
+    public BubbleConfigBuilder sectionCount(@IntRange(from = 1) int count)
+    {
         this.sectionCount = count;
         return this;
     }
 
-    public BubbleConfigBuilder showSectionMark() {
+    public BubbleConfigBuilder showSectionMark()
+    {
         this.showSectionMark = true;
         return this;
     }
 
-    public BubbleConfigBuilder autoAdjustSectionMark() {
+    public BubbleConfigBuilder autoAdjustSectionMark()
+    {
         this.autoAdjustSectionMark = true;
         return this;
     }
 
-    public BubbleConfigBuilder showSectionText() {
+    public BubbleConfigBuilder showSectionText()
+    {
         this.showSectionText = true;
         return this;
     }
 
-    public BubbleConfigBuilder sectionTextSize(int sp) {
+    public BubbleConfigBuilder sectionTextSize(int sp)
+    {
         this.sectionTextSize = sp2px(sp);
         return this;
     }
 
-    public BubbleConfigBuilder sectionTextColor(@ColorInt int color) {
+    public BubbleConfigBuilder sectionTextColor(@ColorInt int color)
+    {
         this.sectionTextColor = color;
         return this;
     }
 
-    public BubbleConfigBuilder sectionTextPosition(@BubbleSeekBar.TextPosition int position) {
+    public BubbleConfigBuilder sectionTextPosition(@BubbleSeekBar.TextPosition int position)
+    {
         this.sectionTextPosition = position;
         return this;
     }
 
-    public BubbleConfigBuilder sectionTextInterval(@IntRange(from = 1) int interval) {
+    public BubbleConfigBuilder sectionTextInterval(@IntRange(from = 1) int interval)
+    {
         this.sectionTextInterval = interval;
         return this;
     }
 
-    public BubbleConfigBuilder showThumbText() {
+    public BubbleConfigBuilder showThumbText()
+    {
         this.showThumbText = true;
         return this;
     }
 
-    public BubbleConfigBuilder thumbTextSize(int sp) {
+    public BubbleConfigBuilder thumbTextSize(int sp)
+    {
         this.thumbTextSize = sp2px(sp);
         return this;
     }
 
-    public BubbleConfigBuilder thumbTextColor(@ColorInt int color) {
+    public BubbleConfigBuilder thumbTextColor(@ColorInt int color)
+    {
         thumbTextColor = color;
         return this;
     }
 
-    public BubbleConfigBuilder showProgressInFloat() {
+    public BubbleConfigBuilder showProgressInFloat()
+    {
         this.showProgressInFloat = true;
         return this;
     }
 
-    public BubbleConfigBuilder animDuration(long duration) {
+    public BubbleConfigBuilder animDuration(long duration)
+    {
         animDuration = duration;
         return this;
     }
 
-    public BubbleConfigBuilder touchToSeek() {
+    public BubbleConfigBuilder touchToSeek()
+    {
         this.touchToSeek = true;
         return this;
     }
 
-    public BubbleConfigBuilder seekStepSection() {
+    public BubbleConfigBuilder seekStepSection()
+    {
         this.seekStepSection = true;
         return this;
     }
 
-    public BubbleConfigBuilder seekBySection() {
+    public BubbleConfigBuilder seekBySection()
+    {
         this.seekBySection = true;
         return this;
     }
 
-    public BubbleConfigBuilder bubbleColor(@ColorInt int color) {
+    public BubbleConfigBuilder bubbleColor(@ColorInt int color)
+    {
         this.bubbleColor = color;
         return this;
     }
 
-    public BubbleConfigBuilder bubbleTextSize(int sp) {
+    public BubbleConfigBuilder bubbleTextSize(int sp)
+    {
         this.bubbleTextSize = sp2px(sp);
         return this;
     }
 
-    public BubbleConfigBuilder bubbleTextColor(@ColorInt int color) {
+    public BubbleConfigBuilder bubbleTextColor(@ColorInt int color)
+    {
         this.bubbleTextColor = color;
         return this;
     }
 
-    public BubbleConfigBuilder alwaysShowBubble() {
+    public BubbleConfigBuilder alwaysShowBubble()
+    {
         this.alwaysShowBubble = true;
         return this;
     }
 
-    public BubbleConfigBuilder alwaysShowBubbleDelay(long delay) {
+    public BubbleConfigBuilder alwaysShowBubbleDelay(long delay)
+    {
         alwaysShowBubbleDelay = delay;
         return this;
     }
 
-    public BubbleConfigBuilder hideBubble() {
+    public BubbleConfigBuilder hideBubble()
+    {
         this.hideBubble = true;
         return this;
     }
 
-    public BubbleConfigBuilder rtl(boolean rtl) {
+    public BubbleConfigBuilder rtl(boolean rtl)
+    {
         this.rtl = rtl;
         return this;
     }
 
-    public float getMin() {
+    public float getMin()
+    {
         return min;
     }
 
-    public float getMax() {
+    public float getMax()
+    {
         return max;
     }
 
-    public float getProgress() {
+    public float getProgress()
+    {
         return progress;
     }
 
-    public boolean isFloatType() {
+    public boolean isFloatType()
+    {
         return floatType;
     }
 
-    public int getTrackSize() {
+    public int getTrackSize()
+    {
         return trackSize;
     }
 
-    public int getSecondTrackSize() {
+    public int getSecondTrackSize()
+    {
         return secondTrackSize;
     }
 
-    public int getThumbRadius() {
+    public int getThumbRadius()
+    {
         return thumbRadius;
     }
 
-    public int getThumbRadiusOnDragging() {
+    public int getThumbRadiusOnDragging()
+    {
         return thumbRadiusOnDragging;
     }
 
-    public int getTrackColor() {
+    public int getTrackColor()
+    {
         return trackColor;
     }
 
-    public int getSecondTrackColor() {
+    public int getSecondTrackColor()
+    {
         return secondTrackColor;
     }
 
-    public int getThumbColor() {
+    public int getThumbColor()
+    {
         return thumbColor;
     }
 
-    public int getSectionCount() {
+    public int getSectionCount()
+    {
         return sectionCount;
     }
 
-    public boolean isShowSectionMark() {
+    public boolean isShowSectionMark()
+    {
         return showSectionMark;
     }
 
-    public boolean isAutoAdjustSectionMark() {
+    public boolean isAutoAdjustSectionMark()
+    {
         return autoAdjustSectionMark;
     }
 
-    public boolean isShowSectionText() {
+    public boolean isShowSectionText()
+    {
         return showSectionText;
     }
 
-    public int getSectionTextSize() {
+    public int getSectionTextSize()
+    {
         return sectionTextSize;
     }
 
-    public int getSectionTextColor() {
+    public int getSectionTextColor()
+    {
         return sectionTextColor;
     }
 
-    public int getSectionTextPosition() {
+    public int getSectionTextPosition()
+    {
         return sectionTextPosition;
     }
 
-    public int getSectionTextInterval() {
+    public int getSectionTextInterval()
+    {
         return sectionTextInterval;
     }
 
-    public boolean isShowThumbText() {
+    public boolean isShowThumbText()
+    {
         return showThumbText;
     }
 
-    public int getThumbTextSize() {
+    public int getThumbTextSize()
+    {
         return thumbTextSize;
     }
 
-    public int getThumbTextColor() {
+    public int getThumbTextColor()
+    {
         return thumbTextColor;
     }
 
-    public boolean isShowProgressInFloat() {
+    public boolean isShowProgressInFloat()
+    {
         return showProgressInFloat;
     }
 
-    public long getAnimDuration() {
+    public long getAnimDuration()
+    {
         return animDuration;
     }
 
-    public boolean isTouchToSeek() {
+    public boolean isTouchToSeek()
+    {
         return touchToSeek;
     }
 
-    public boolean isSeekStepSection() {
+    public boolean isSeekStepSection()
+    {
         return seekStepSection;
     }
 
-    public boolean isSeekBySection() {
+    public boolean isSeekBySection()
+    {
         return seekBySection;
     }
 
-    public int getBubbleColor() {
+    public int getBubbleColor()
+    {
         return bubbleColor;
     }
 
-    public int getBubbleTextSize() {
+    public int getBubbleTextSize()
+    {
         return bubbleTextSize;
     }
 
-    public int getBubbleTextColor() {
+    public int getBubbleTextColor()
+    {
         return bubbleTextColor;
     }
 
-    public boolean isAlwaysShowBubble() {
+    public boolean isAlwaysShowBubble()
+    {
         return alwaysShowBubble;
     }
 
-    public long getAlwaysShowBubbleDelay() {
+    public long getAlwaysShowBubbleDelay()
+    {
         return alwaysShowBubbleDelay;
     }
 
-    public boolean isHideBubble() {
+    public boolean isHideBubble()
+    {
         return hideBubble;
     }
 
-    public boolean isRtl() {
+    public boolean isRtl()
+    {
         return rtl;
     }
 }

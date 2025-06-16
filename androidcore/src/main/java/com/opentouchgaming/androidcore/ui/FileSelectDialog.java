@@ -5,7 +5,6 @@ import static com.opentouchgaming.androidcore.DebugLog.Level.D;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,14 +63,15 @@ public class FileSelectDialog
         dialog.setContentView(R.layout.dialog_select_files);
         dialog.setCancelable(true);
 
-        dialog.setOnKeyListener((arg0, keyCode, event) -> {
-            // TODO Auto-generated method stub
-            if (keyCode == KeyEvent.KEYCODE_BACK)
-            {
-                return goUp();
-            }
-            return false;
-        });
+        dialog.setOnKeyListener((arg0, keyCode, event) ->
+                                {
+                                    // TODO Auto-generated method stub
+                                    if (keyCode == KeyEvent.KEYCODE_BACK)
+                                    {
+                                        return goUp();
+                                    }
+                                    return false;
+                                });
 
         resultTextView = dialog.findViewById(R.id.result_textView);
         infoTextView = dialog.findViewById(R.id.info_textView);
