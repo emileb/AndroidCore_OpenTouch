@@ -1221,6 +1221,8 @@ public class GamepadDefinitions
                                             ActionInput.SourceType.AXIS,
                                             MotionEventCompat.AXIS_GAS);
 
+                gamepadDefinition.addAction("reload", "Reload", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_RELOAD, ActionInput.SourceType.BUTTON, -1);
+
                 gamepadDefinition.addAction("use",
                                             "Open/Use",
                                             ActionInput.ActionType.BUTTON,
@@ -1305,12 +1307,14 @@ public class GamepadDefinitions
                                             PortActDefs.PORT_ACT_INVPREV,
                                             ActionInput.SourceType.BUTTON,
                                             -1);
+
                 gamepadDefinition.addAction("inv_next",
                                             "Inventory next",
                                             ActionInput.ActionType.BUTTON,
                                             PortActDefs.PORT_ACT_INVNEXT,
                                             ActionInput.SourceType.BUTTON,
                                             -1);
+
                 gamepadDefinition.addAction("inv_use",
                                             "Inventory use",
                                             ActionInput.ActionType.BUTTON,
@@ -1341,7 +1345,6 @@ public class GamepadDefinitions
 
                 gamepadDefinition.addHeader("RTCW");
                 gamepadDefinition.addAction("kick", "Kick", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_KICK, ActionInput.SourceType.BUTTON, -1);
-                gamepadDefinition.addAction("reload", "Reload", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_RELOAD, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("lean_left",
                                             "Lean left",
                                             ActionInput.ActionType.BUTTON,
@@ -1352,6 +1355,14 @@ public class GamepadDefinitions
                                             "Lean right",
                                             ActionInput.ActionType.BUTTON,
                                             PortActDefs.PORT_ACT_LEAN_RIGHT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addHeader("MOHAA");
+                gamepadDefinition.addAction("show_objectives",
+                                            "Show objectives",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DATAPAD,
                                             ActionInput.SourceType.BUTTON,
                                             -1);
 
