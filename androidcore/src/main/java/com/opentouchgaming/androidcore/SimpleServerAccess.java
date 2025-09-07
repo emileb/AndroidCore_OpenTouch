@@ -19,6 +19,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 public class SimpleServerAccess
 {
     String LOG = "SimpleServerAccess";
@@ -39,7 +45,6 @@ public class SimpleServerAccess
 
     private class ServerAccessThread extends AsyncTask<Void, Integer, Long>
     {
-
         final AccessInfo accessInfo;
         String errorstring = null;
         ByteArrayOutputStream data_out = new ByteArrayOutputStream();
@@ -67,56 +72,54 @@ public class SimpleServerAccess
         {
             String url_full = accessInfo.url;
 
-            try
+            if (GD.DEBUG)
+                Log.d(LOG, url_full);
+
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder().url(url_full).post(RequestBody.create(new byte[0])) // Replace with actual body if needed
+                    .build();
+
+            try (Response response = client.newCall(request).execute())
             {
+                int code = response.code();
 
                 if (GD.DEBUG)
-                    Log.d(LOG, url_full);
-
-                HttpClient httpclient = new DefaultHttpClient();
-
-
-                HttpPost httppost = new HttpPost(url_full);
-
-                HttpResponse httpResponse = null;
-                httpResponse = httpclient.execute(httppost);
-
-                int code = httpResponse.getStatusLine().getStatusCode();
-
-                if (GD.DEBUG)
+                {
                     Log.d(LOG, "code = " + code);
-                if (GD.DEBUG)
-                    Log.d(LOG, "reason = " + httpResponse.getStatusLine().getReasonPhrase());
+                    Log.d(LOG, "reason = " + response.message());
+                }
 
                 if (code != 200)
                 {
-                    errorstring = httpResponse.getStatusLine().getReasonPhrase();
+                    errorstring = response.message();
                     return 1L;
                 }
 
-                int dlSize = (int) httpResponse.getEntity().getContentLength();
+                ResponseBody body = response.body();
+                if (body == null)
+                {
+                    errorstring = "Empty response body";
+                    return 1L;
+                }
 
-                BufferedInputStream in = null;
-
-                InputStream ins = httpResponse.getEntity().getContent();
+                long dlSize = body.contentLength();
+                InputStream ins = body.byteStream();
 
                 if (accessInfo.showUI)
-                    progressBar.setMax(dlSize);
+                    progressBar.setMax((int) dlSize);
 
                 if (GD.DEBUG)
                     Log.d(LOG, "File size = " + dlSize);
 
-                in = new BufferedInputStream(ins);
-
+                BufferedInputStream in = new BufferedInputStream(ins);
                 byte[] data = new byte[1024];
                 int count;
-                while ((count = in.read(data, 0, 1024)) != -1)
+                while ((count = in.read(data)) != -1)
                 {
                     data_out.write(data, 0, count);
                 }
                 in.close();
-
-
             }
             catch (IOException e)
             {
