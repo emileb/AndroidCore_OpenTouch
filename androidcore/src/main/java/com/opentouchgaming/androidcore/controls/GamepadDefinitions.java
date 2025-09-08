@@ -1266,9 +1266,9 @@ public class GamepadDefinitions
                                             KeyEvent.KEYCODE_BUTTON_L1);
 
                 gamepadDefinition.addAction("weapon_alt",
-                                            "Weapon alternative",
+                                            "Alt Attack",
                                             ActionInput.ActionType.BUTTON,
-                                            PortActDefs.PORT_ACT_WEAP_ALT,
+                                            PortActDefs.PORT_ACT_ALT_ATTACK,
                                             ActionInput.SourceType.BUTTON,
                                             -1);
 
