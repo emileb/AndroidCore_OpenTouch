@@ -34,6 +34,8 @@ public class GamepadActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gamepad);
 
+        Utils.setInsets(this, findViewById(R.id.activity_entry_top), false);
+
         fragment = (GamePadFragment) getFragmentManager().findFragmentById(R.id.gamepad_fragment_container);
         Typeface face = Typeface.createFromAsset(getAssets(), "recharge_font.ttf");
 

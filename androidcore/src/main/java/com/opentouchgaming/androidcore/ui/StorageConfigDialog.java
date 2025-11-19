@@ -85,6 +85,8 @@ public class StorageConfigDialog
         dialog.setCancelable(true);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        Utils.setInsets(act, dialog);
+
         appDirTextView = dialog.findViewById(R.id.app_dir_textview);
         appDirIcon = dialog.findViewById(R.id.app_dir_image);
         appSecDirTextView = dialog.findViewById(R.id.appSec_dir_textview);

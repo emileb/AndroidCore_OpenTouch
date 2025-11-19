@@ -2,6 +2,7 @@ package com.opentouchgaming.androidcore;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -29,9 +30,13 @@ import android.view.animation.Transformation;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.gson.Gson;
 import com.opentouchgaming.androidcore.license.LicenseCheck;
+import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
 import com.opentouchgaming.androidcore.ui.widgets.SwitchWidget;
 import com.opentouchgaming.saffal.FileSAF;
 import com.opentouchgaming.saffal.UtilsSAF;
@@ -806,7 +811,6 @@ public class Utils
 
     public static class SpinnerValues
     {
-
         private float value;
         private String name;
 
@@ -858,6 +862,40 @@ public class Utils
             }
 
             return false;
+        }
+    }
+
+    public static void setInsets(Context ctx, Dialog dialog)
+    {
+        View decorView = dialog.getWindow() != null ? dialog.getWindow().getDecorView() : null;
+
+        if (decorView != null)
+        {
+            setInsets(ctx, decorView, false);
+        }
+    }
+
+    public static void setInsets(Context ctx, View view, boolean isGame)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+        {
+            ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) ->
+            {
+                // Always system bars
+                int type = WindowInsetsCompat.Type.systemBars();
+
+                // Camera cut, note by default it expands for API35+ now
+                if (!SwitchWidget.fetchValue(ctx, isGame ? OptionsDialogKt.EXPAND_INTO_NOTCH : OptionsDialogKt.LAUNCHER_EXPAND_INTO_NOTCH, false))
+                {
+                    type |= WindowInsetsCompat.Type.displayCutout();
+                }
+
+                Insets insets = windowInsets.getInsets(type);
+
+                v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+
+                return windowInsets;
+            });
         }
     }
 }

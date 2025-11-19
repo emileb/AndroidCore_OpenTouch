@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/activity_entry_top"
     tools:context="com.opentouchgaming.androidcore.GamepadActivity">
 
     <fragment

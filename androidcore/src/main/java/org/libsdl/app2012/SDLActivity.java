@@ -51,6 +51,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.ui.SurfaceViewControls.SurfaceViewControls;
 import com.opentouchgaming.saffal.UtilsSAF;
 
@@ -306,19 +307,34 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         {
             SDLOpenTouch.Setup(this, this.getIntent());
             boolean touchSurfaceview = this.getIntent().getBooleanExtra("touch_surfaceview", false);
-            //if(false)
+
             if (touchSurfaceview)
             {
                 FrameLayout frame = new FrameLayout(this);
                 frame.addView(mSurface);
-
                 surfaceViewControls = new SurfaceViewControls(this);
 
                 frame.addView(surfaceViewControls);
                 setContentView(frame);
+
+                Utils.setInsets(this, frame, true);
             }
             else
-                setContentView(mSurface);
+            {
+                // For Edge to Edge wrap in frame to allow the insets
+                // Would probably work on pre 35 but won't risk it so keep original behavior
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+                {
+                    FrameLayout frame = new FrameLayout(this);
+                    frame.addView(mSurface);
+                    setContentView(frame);
+                    Utils.setInsets(this, frame, true);
+                }
+                else // Pre API 35
+                {
+                    setContentView(mSurface);
+                }
+            }
         }
         else {
             mLayout.addView(mSurface);
@@ -1821,7 +1837,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         mHeight = 1.0f;
 
         mIsSurfaceReady = false;
-
     }
 
     public void handlePause() {

@@ -72,6 +72,8 @@ class UserFilesDialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(binding.root)
 
+        Utils.setInsets(activity, dialog)
+
         val userPath = AppInfo.getDisplayPathAndImage(AppInfo.getUserFiles())
         binding.userDirTextview.text = userPath.first
         binding.userDirImage.setImageResource(userPath.second!!)
