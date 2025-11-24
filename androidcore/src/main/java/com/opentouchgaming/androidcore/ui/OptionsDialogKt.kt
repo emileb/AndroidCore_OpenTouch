@@ -35,6 +35,7 @@ class OptionsDialogKt(
         const val USE_ALT_TOUCH_CODE = "use_alt_touch_code"
         const val GROUP_SIMILAR_ENGINES = "group_similar_engines"
         const val SDL_AUDIO_BACKEND = "sdl_audio_backend"
+        const val ENABLE_VIBRATE = "enable_vibrate"
         const val ENABLE_GAMEPAD = "gamepad_enabled"
         const val GAMEPAD_HIDE_TOUCH = "gamepad_hide_touch"
         const val USE_MINI_UI = "use_mini_ui"
@@ -151,6 +152,15 @@ class OptionsDialogKt(
             "Group engines on the left panel, makes icons larger",
             GROUP_SIMILAR_ENGINES,
             AppInfo.groupSimilarEngines
+        )
+
+        SwitchWidget(
+            activity,
+            binding.enableVibrate.root,
+            "Enable vibrate for keyboard",
+            "Enable vibration on each keyboard key press",
+            ENABLE_VIBRATE,
+            true
         )
 
         val sdlAudioItems: Array<Pair<String, View?>>

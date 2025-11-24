@@ -44,10 +44,13 @@
             android:id="@+id/alt_touch_code"
             layout="@layout/widget_view_switch" />
 
-
         <include
             android:id="@+id/sdl_audio_backend"
             layout="@layout/widget_view_spinner" />
+
+        <include
+            android:id="@+id/enable_vibrate"
+            layout="@layout/widget_view_switch" />
 
         <TextView
             android:layout_width="wrap_content"
