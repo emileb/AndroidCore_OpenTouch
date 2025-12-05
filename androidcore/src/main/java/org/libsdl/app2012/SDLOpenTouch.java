@@ -59,7 +59,7 @@ public class SDLOpenTouch
         SDLAudioManager.onPause();
     }
 
-    static void onResume(Context context)
+    public static void onResume(Context context)
     {
         if (controlInterp != null)
         {
@@ -69,7 +69,7 @@ public class SDLOpenTouch
         SDLAudioManager.onResume();
     }
 
-    static void Setup(Activity activity, Intent intent)
+    public static void Setup(Activity activity, Intent intent)
     {
         AppSettings.reloadSettings(activity);
 
@@ -138,7 +138,7 @@ public class SDLOpenTouch
         resDiv = intent.getFloatExtra("res_div_float", 1.0f);
     }
 
-    static String ReplaceDisplaySize(String test, float width, float height)
+    public static String ReplaceDisplaySize(String test, float width, float height)
     {
         test = test.replace("$W2", Integer.toString((int) (width / 2)));
         test = test.replace("$H2", Integer.toString((int) (height / 2)));
@@ -153,7 +153,7 @@ public class SDLOpenTouch
         return test;
     }
 
-    static void RunApplication(Activity activity, Intent intent, float displayWidth, float displayHeight)
+    public static void RunApplication(Activity activity, Intent intent, float displayWidth, float displayHeight)
     {
         {
             int fbWidth = 0;
@@ -275,7 +275,7 @@ public class SDLOpenTouch
     }
 
 
-    static public boolean surfaceChanged(Context context, SurfaceHolder holder, int width, int height)
+    public static boolean surfaceChanged(Context context, SurfaceHolder holder, int width, int height)
     {
         Log.v(TAG, "surfaceChanged: " + width + " x " + height);
 
