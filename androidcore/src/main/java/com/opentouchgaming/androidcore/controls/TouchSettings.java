@@ -29,6 +29,7 @@ public class TouchSettings
     public static final int GAME_OPTION_SDL_MIDI_FLUIDSYNTH = 0x100;
     public static final int GAME_OPTION_TOUCH_SURFACE_VIEW = 0x200;
     public static final int GAME_OPTION_VULKAN = 0x400;
+    public static final int GAME_OPTION_DOOM_SET_DOOMWADDIR = 0x800;
 
     public static boolean DEBUG = true;
     public static String gamePadControlsFile;

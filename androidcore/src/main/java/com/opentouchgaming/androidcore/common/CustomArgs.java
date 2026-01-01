@@ -85,6 +85,7 @@ public class CustomArgs implements Serializable
     {
         String result = "";
         if ((AppInfo.currentEngine.engine == GameEngine.Engine.GZDOOM) ||
+            (AppInfo.currentEngine.engine == GameEngine.Engine.UZDOOM) ||
             (AppInfo.currentEngine.engine == GameEngine.Engine.ZANDRONUM ||
              (AppInfo.currentEngine.engine == GameEngine.Engine.LZDOOM)))//This is a bit shit referring to this...
         {
