@@ -228,6 +228,9 @@ public class SDLOpenTouch
         if (intent.getBooleanExtra("use_gl4es", false))
             options |= TouchSettings.GAME_OPTION_GL4ES;
 
+        if (intent.getBooleanExtra("search_secondary_storage_iwads", false))
+            options |= TouchSettings.GAME_OPTION_DOOM_SET_DOOMWADDIR;
+
         int freq = intent.getIntExtra("audio_freq", 0);
         int samples = intent.getIntExtra("audio_samples", 0);
 
@@ -246,6 +249,7 @@ public class SDLOpenTouch
         String nativeSoPath = activity.getApplicationInfo().nativeLibraryDir;
         String pngFiles = activity.getFilesDir().getAbsolutePath();
         String resDir = intent.getStringExtra("res_files");
+        String secondaryPath = intent.getStringExtra("secondary_path");
 
         Utils.copyPNGAssets(activity, pngFiles);
 
@@ -266,8 +270,9 @@ public class SDLOpenTouch
         Log.v(TAG, "Native .so path = " + nativeSoPath);
         Log.v(TAG, "gamePath = " + gamePath);
         Log.v(TAG, "logFilename = " + logFilename);
+        Log.v(TAG, "secondaryPath  = " + secondaryPath);
 
-        int ret = NativeLib.init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir,
+        int ret = NativeLib.init(pngFiles + "/", options, wheelNbr, args_array, gameType, gamePath, secondaryPath, logFilename, nativeSoPath, userFiles, tmpFiles, sourceDir,
                 resDir);
 
         Log.v(TAG, "SDL thread terminated");
