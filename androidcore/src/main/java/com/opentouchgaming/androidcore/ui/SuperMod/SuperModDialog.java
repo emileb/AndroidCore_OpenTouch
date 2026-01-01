@@ -33,6 +33,7 @@ import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.GameEngine;
 import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.ui.FileSelectDialog;
 import com.opentouchgaming.saffal.FileSAF;
 
@@ -71,6 +72,7 @@ public class SuperModDialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_super_mod);
         dialog.setCancelable(true);
+        Utils.setInsets(act, dialog);
 
         dialog.setOnKeyListener(new Dialog.OnKeyListener()
         {
