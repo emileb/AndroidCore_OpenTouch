@@ -33,7 +33,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    useLibrary 'org.apache.http.legacy'
+    //useLibrary 'org.apache.http.legacy'
     namespace 'com.opentouchgaming.androidcore'
 }
 
@@ -76,7 +76,7 @@ dependencies {
     // Kotlin
    // implementation 'androidx.activity:activity-ktx:1.8.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+  //  implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }
 
 repositories {
