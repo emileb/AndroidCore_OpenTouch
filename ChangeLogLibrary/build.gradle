@@ -10,23 +10,13 @@ android {
     compileSdkVersion 35
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 35
         versionCode 1
         versionName "1.0"
     }
-
-    // It would be better to fix the issues
-    lintOptions {
-        abortOnError false
-    }
 }
 
 dependencies{
-    //compile 'com.android.support:support-v4:23.3.0'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
 }
-
-// Used to push in maven
-// apply from: '../maven_push.gradle'
