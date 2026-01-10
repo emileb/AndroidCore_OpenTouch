@@ -22,6 +22,7 @@
             android:textSize="20dp" />
 
         <EditText
+            android:importantForAutofill="no"
             android:id="@+id/name_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

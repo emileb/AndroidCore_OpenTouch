@@ -104,6 +104,7 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:importantForAutofill="no"
             android:id="@+id/editText_custom_args"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -17,6 +17,7 @@
             android:textSize="20dp" />
 
         <EditText
+            android:importantForAutofill="no"
             android:id="@+id/title_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,6 +36,7 @@
             android:textSize="20dp" />
 
         <EditText
+            android:importantForAutofill="no"
             android:id="@+id/args_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

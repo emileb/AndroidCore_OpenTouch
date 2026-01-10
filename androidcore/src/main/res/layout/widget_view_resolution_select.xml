@@ -52,6 +52,7 @@
                 android:text="W:" />
 
             <EditText
+                android:importantForAutofill="no"
                 android:id="@+id/resolution_width_editText"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
@@ -64,6 +65,7 @@
                 android:text="H:" />
 
             <EditText
+                android:importantForAutofill="no"
                 android:id="@+id/resolution_height_editText"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
