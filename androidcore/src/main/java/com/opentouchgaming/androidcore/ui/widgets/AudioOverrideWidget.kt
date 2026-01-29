@@ -16,7 +16,7 @@ import com.opentouchgaming.androidcore.R
 class AudioOverrideWidget internal constructor(internal var settingPrefix: String)
 {
     private val freqList = arrayOf(48000, 44100, 22050, 11025)
-    private val samplesList = arrayOf(512, 1024, 1536, 2048, 2560, 3072, 3584, 4096, 5120, 6144, 7168, 8192)
+    private val samplesList = arrayOf(128, 256, 512, 1024, 1536, 2048, 2560, 3072, 3584, 4096, 5120, 6144, 7168, 8192)
 
     internal var override: Boolean = false
     internal var backend: Int = -1
@@ -110,7 +110,7 @@ class AudioOverrideWidget internal constructor(internal var settingPrefix: Strin
     {
         override = AppSettings.getBoolOption(AppInfo.getContext(), settingPrefix + "audio_override", false)
         freq = AppSettings.getIntOption(AppInfo.getContext(), settingPrefix + "audio_freq", 0) // default 48000
-        samples = AppSettings.getIntOption(AppInfo.getContext(), settingPrefix + "audio_samples", 3) // default 2048
+        samples = AppSettings.getIntOption(AppInfo.getContext(), settingPrefix + "audio_samples_v2", 5) // default 2048
         backend = AppSettings.getIntOption(AppInfo.getContext(), settingPrefix + "audio_backend", 0)
     }
 
@@ -118,7 +118,7 @@ class AudioOverrideWidget internal constructor(internal var settingPrefix: Strin
     {
         AppSettings.setBoolOption(AppInfo.getContext(), settingPrefix + "audio_override", override)
         AppSettings.setIntOption(AppInfo.getContext(), settingPrefix + "audio_freq", freq)
-        AppSettings.setIntOption(AppInfo.getContext(), settingPrefix + "audio_samples", samples)
+        AppSettings.setIntOption(AppInfo.getContext(), settingPrefix + "audio_samples_v2", samples)
         AppSettings.setIntOption(AppInfo.getContext(), settingPrefix + "audio_backend", backend)
     }
 
