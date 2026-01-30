@@ -3,6 +3,8 @@ package com.opentouchgaming.androidcore.ui.SuperMod;
 import com.opentouchgaming.androidcore.GameEngine;
 import com.opentouchgaming.androidcore.common.CustomArgs;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 public class SuperModItem implements Serializable
@@ -19,7 +21,7 @@ public class SuperModItem implements Serializable
 
     String gameTypeImage;
 
-    String modImage; // null = none, "zipfile:filename" = image in zip/wad file
+    public String modImage; // null = none, "zipfile:filename" = image in zip/wad file
 
     public SuperModItem(GameEngine.Engine engine, int version, String subgameTag, String image, CustomArgs customArgs)
     {
@@ -33,7 +35,7 @@ public class SuperModItem implements Serializable
         title = "";
     }
 
-    SuperModItem(SuperModItem item)
+    public SuperModItem(SuperModItem item)
     {
         engine = item.engine;
         title = item.title;
@@ -42,5 +44,27 @@ public class SuperModItem implements Serializable
         customArgs = new CustomArgs(item.customArgs);
         lastPlayed = item.lastPlayed;
         gameTypeImage = item.gameTypeImage;
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        ObjectInputStream.GetField fields = in.readFields();
+
+        title = (String) fields.get("title", "");
+        engine = (GameEngine.Engine) fields.get("engine", null);
+        version = fields.get("version", 0);
+        customArgs = (CustomArgs) fields.get("customArgs", null);
+        lastPlayed = fields.get("lastPlayed", 0L);
+        modImage = (String) fields.get("modImage", null);
+        gameTypeImage = (String) fields.get("gameTypeImage", null);
+
+        if (fields.defaulted("subgameTag"))
+        {
+            subgameTag = (String) fields.get("iwad", "");
+        }
+        else
+        {
+            subgameTag = (String) fields.get("subgameTag", "");
+        }
     }
 }

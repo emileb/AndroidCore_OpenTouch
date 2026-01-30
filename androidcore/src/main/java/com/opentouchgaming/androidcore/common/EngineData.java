@@ -1,5 +1,7 @@
 package com.opentouchgaming.androidcore.common;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,4 +59,21 @@ public class EngineData implements Serializable
         return currentCustomArgs;
     }
 
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        ObjectInputStream.GetField fields = in.readFields();
+
+        argsHistory = (ArrayList<CustomArgs>) fields.get("argsHistory", new ArrayList<CustomArgs>());
+        currentCustomArgs = (CustomArgs) fields.get("currentCustomArgs", new CustomArgs());
+
+        if (fields.defaulted("selectedSubGamePos"))
+        {
+            // If selectedSubGamePos is missing, try to read selectedIWadPos (the old name)
+            selectedSubGamePos = fields.get("selectedIWadPos", 0);
+        }
+        else
+        {
+            selectedSubGamePos = fields.get("selectedSubGamePos", 0);
+        }
+    }
 }

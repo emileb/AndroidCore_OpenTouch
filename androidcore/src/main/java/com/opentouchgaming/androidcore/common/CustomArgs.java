@@ -89,12 +89,12 @@ public class CustomArgs implements Serializable
             (AppInfo.currentEngine.engine == GameEngine.Engine.ZANDRONUM ||
              (AppInfo.currentEngine.engine == GameEngine.Engine.LZDOOM)))//This is a bit shit referring to this...
         {
-            result += buildFileType(new String[]{".wad", ".pk3", ".pk7", ".zip", ".ipk3"}, "-file ", false);
+            result += buildFileType(new String[]{".wad", ".pk3", ".pk7", ".zip"}, "-file ", false);
             result += buildFileType(new String[]{".deh", ".bex"}, "-deh ", false);
             result += buildFileType(new String[]{".lmp"}, "-playdemo ", true);
-            result += buildFileType(new String[]{".sf2"}, "+set fluid_patchset ", false);
+            result += buildFileType(new String[]{".sf2"}, "+set fluid_patchset ", true);
         }
-        else if (AppInfo.currentEngine.engine == GameEngine.Engine.PRBOOM)
+        else if (AppInfo.currentEngine.engine == GameEngine.Engine.PRBOOM || AppInfo.currentEngine.engine == GameEngine.Engine.DSDA)
         {
             result += buildFileType(new String[]{".wad", ".pk3", ".pk7"}, "-file ", true);
             result += buildFileType(new String[]{".deh", ".bex"}, "-deh ", true);
@@ -105,13 +105,22 @@ public class CustomArgs implements Serializable
             result += buildFileType(new String[]{".wad"}, "-merge ", true);
             result += buildFileType(new String[]{".deh", ".bex"}, "-deh ", true);
             result += buildFileType(new String[]{".lmp"}, "-playdemo ", true);
-
+        }
+        else if (AppInfo.currentEngine.engine == GameEngine.Engine.CRISPY)
+        {
+            result += buildFileType(new String[]{".wad"}, "-file ", true);
+            result += buildFileType(new String[]{".deh", ".bex"}, "-deh ", true);
+            result += buildFileType(new String[]{".lmp"}, "-playdemo ", true);
         }
         else if (AppInfo.currentEngine.engine == GameEngine.Engine.RETRO)
         {
             result += buildFileType(new String[]{".wad", ".pk3", ".pk7"}, "-file ", false);
             result += buildFileType(new String[]{".deh", ".bex"}, "-deh ", false);
             result += buildFileType(new String[]{".lmp"}, "-playdemo ", true);
+        }
+        else if (AppInfo.currentEngine.engine == GameEngine.Engine.D64PLUS)
+        {
+            result += buildFileType(new String[]{".wad", ".deh", ".pk3"}, "-file ", true);
         }
         else if ((AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_DUKE) ||
                  (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_BLOOD) ||

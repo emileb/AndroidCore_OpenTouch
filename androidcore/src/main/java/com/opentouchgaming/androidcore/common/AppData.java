@@ -71,7 +71,7 @@ public class AppData implements Serializable
             ObjectInputStream in = null;
 
             fis = new FileInputStream(file);
-            in = new ObjectInputStream(fis);
+            in = new CompatibleObjectInputStream(fis);
 
             AppData d = (AppData) in.readObject();
             data = d;
