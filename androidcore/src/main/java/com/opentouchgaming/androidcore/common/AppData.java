@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
@@ -32,7 +34,23 @@ public class AppData implements Serializable
         log = new DebugLog(DebugLog.Module.APP, "AppData");
     }
 
-    private final EnumMap<GameEngine.Engine, EngineData> engineData = new EnumMap<>(GameEngine.Engine.class);
+    /**
+     * Define which fields the serialization system should recognize.
+     * We include "doomIWads" here so we can read it from old files,
+     * even though we don't use it in this version of the class.
+     */
+    private static final ObjectStreamField[] serialPersistentFields = {
+            new ObjectStreamField("engineData", EnumMap.class),
+            new ObjectStreamField("doomIWads", ArrayList.class)
+    };
+
+    private EnumMap<GameEngine.Engine, EngineData> engineData = new EnumMap<>(GameEngine.Engine.class);
+
+    // This field must exist for GetField to read it from old deltatouch files
+    private ArrayList<Object> doomIWads;
+
+    // This is used to hold the doomIWads loaded from old deltatouch AppData files
+    public static ArrayList<Object> legacyDoomIWads = new ArrayList<>();
 
     public static void saveToFile(String file, AppData appData)
     {
@@ -117,5 +135,37 @@ public class AppData implements Serializable
         }
 
         return data;
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        ObjectInputStream.GetField fields = in.readFields();
+
+        engineData = new EnumMap<>(GameEngine.Engine.class);
+
+        EnumMap<GameEngine.Engine, EngineData> loadedEngineData = (EnumMap<GameEngine.Engine, EngineData>) fields.get("engineData", null);
+        if (loadedEngineData != null)
+        {
+            engineData.putAll(loadedEngineData);
+        }
+
+        // Now this will work because doomIWads is declared in the class
+        if (fields.defaulted("doomIWads") == false)
+        {
+            ArrayList<Object> iwads = (ArrayList<Object>) fields.get("doomIWads", null);
+            if (iwads != null)
+            {
+                legacyDoomIWads.clear();
+                legacyDoomIWads.addAll(iwads);
+            }
+        }
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        ObjectOutputStream.PutField fields = out.putFields();
+        fields.put("engineData", engineData);
+        // Note: we do NOT put "doomIWads" here, so it won't be saved in new files
+        out.writeFields();
     }
 }

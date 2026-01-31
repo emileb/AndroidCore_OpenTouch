@@ -28,6 +28,9 @@ public class CompatibleObjectInputStream extends ObjectInputStream
         {
             return com.opentouchgaming.androidcore.ui.SuperMod.SuperModItem.class;
         }
+        if ("com.opentouchgaming.deltatouch.AppData".equals(name)) {
+            return com.opentouchgaming.androidcore.common.AppData.class;
+        }
         return super.resolveClass(desc);
     }
 }

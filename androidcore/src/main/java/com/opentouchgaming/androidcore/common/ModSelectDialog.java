@@ -88,7 +88,6 @@ public class ModSelectDialog
 
         dialog.setOnKeyListener(new Dialog.OnKeyListener()
         {
-
             @Override
             public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event)
             {
@@ -285,7 +284,7 @@ public class ModSelectDialog
         // Check if in a directory
         if (extraPath.contains("/"))
         {
-            filesArray.add(new ModFile(null, "..", Long.MAX_VALUE));
+            filesArray.add(new ModFile(null, "..", 0, Long.MAX_VALUE));
         }
 
         if (files != null)
@@ -308,12 +307,12 @@ public class ModSelectDialog
                         !file.endsWith("Put your mods (.pk3 etc) files here.txt".toLowerCase()) &&
                         !file.endsWith("Put your mods files here.txt".toLowerCase()))
                     {
-                        filesArray.add(new ModFile(f.getAbsolutePath(), f.getName(), f.lastModified()));
+                        filesArray.add(new ModFile(f.getAbsolutePath(), f.getName(), f.length(), f.lastModified()));
                     }
                 }
                 else //Now also do directories
                 {
-                    filesArray.add(new ModFile(null, "/" + f.getName(), f.lastModified()));
+                    filesArray.add(new ModFile(null, "/" + f.getName(), 0, f.lastModified()));
                 }
             }
 
@@ -388,19 +387,15 @@ public class ModSelectDialog
         String file;
         String fileName;
         long date;
+        long size;
 
-        ModFile(String file, String fileName, long date)
+        ModFile(String file, String fileName, long size, long date)
         {
             this.file = file;
             this.fileName = fileName;
             this.date = date;
+            this.size = size;
         }
-/*
-        @Override
-        public String toString() {
-            return name;
-        }
-        */
     }
 
     class ModsListAdapter extends BaseAdapter
@@ -434,7 +429,6 @@ public class ModSelectDialog
 
         public View getView(int position, View convertView, ViewGroup list)
         {
-
             View view;
 
             ModFile file = filteredFiles.get(position);
@@ -452,7 +446,6 @@ public class ModSelectDialog
                     selected = true;
                 }
             }
-
 
             if (selected)
                 view.setBackgroundResource(R.drawable.layout_sel_background);
@@ -474,9 +467,15 @@ public class ModSelectDialog
             else
                 iv.setImageResource(R.drawable.file_unknown);
 
-
             TextView title = view.findViewById(R.id.name_textview);
             title.setText(file.fileName);
+
+            TextView detail = view.findViewById(R.id.detail_textview);
+            if (file.size == 0)
+                detail.setText("");
+            else
+                detail.setText(Utils.humanReadableByteCount(file.size,false));
+
             return view;
         }
     }

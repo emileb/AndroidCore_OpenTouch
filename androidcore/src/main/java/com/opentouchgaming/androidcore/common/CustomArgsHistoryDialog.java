@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -35,8 +36,9 @@ public class CustomArgsHistoryDialog
 
         final Dialog dialog = new Dialog(act);
         //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
+        //dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+       
         dialog.setTitle("Args history");
         dialog.setContentView(R.layout.dialog_args_history);
         dialog.setCanceledOnTouchOutside(true);

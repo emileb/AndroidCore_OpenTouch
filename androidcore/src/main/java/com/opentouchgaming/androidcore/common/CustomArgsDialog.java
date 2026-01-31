@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.R;
 
+import java.util.ArrayList;
+
 public class CustomArgsDialog
 {
     static CustomArgs copyPasteArgs = null;
@@ -28,6 +30,8 @@ public class CustomArgsDialog
     TextView customModsTextView;
     EditText customArgsEditText;
     ImageButton pasteButton;
+    ImageButton clearMods;
+ 	ArrayList<String> undoClearMods = new ArrayList<>();
 
     public CustomArgsDialog(final Activity act, final String appDir, String appSecDir, EngineData ed, boolean hideModsWads)
     {
@@ -52,10 +56,23 @@ public class CustomArgsDialog
         customModsTextView = dialog.findViewById(R.id.textView_custom_mods);
         customArgsEditText = dialog.findViewById(R.id.editText_custom_args);
 
-        ImageButton clearMods = dialog.findViewById(R.id.imagebutton_clear_mods);
+        clearMods = dialog.findViewById(R.id.imagebutton_clear_mods);
         clearMods.setOnClickListener(v ->
                                      {
+           // Doing an undo
+            if (engineData.getCurrentCustomArgs().getFiles().size() == 0 && undoClearMods.size() > 0)
+            {
+                engineData.getCurrentCustomArgs().getFiles().addAll(undoClearMods);
+                undoClearMods.clear();
+            }
+            else
+            {
+                // Save in case we want to undo
+                undoClearMods.clear();
+                undoClearMods.addAll(engineData.getCurrentCustomArgs().getFiles());
+
                                          engineData.getCurrentCustomArgs().getFiles().clear();
+            }
                                          update();
                                      });
 
@@ -137,12 +154,14 @@ public class CustomArgsDialog
         customModsTextView.setText(AppInfo.hideAppPaths(engineData.getCurrentCustomArgs().getModsString()));
         customArgsEditText.setText(engineData.getCurrentCustomArgs().getArgsString());
         pasteButton.setVisibility(copyPasteArgs == null ? View.GONE : View.VISIBLE);
+
+        if (engineData.getCurrentCustomArgs().getFiles().isEmpty() && !undoClearMods.isEmpty())
+        {
+            clearMods.setImageResource(R.drawable.ic_undo_white_24);
+        }
+        else
+        {
+            clearMods.setImageResource(R.drawable.ic_clear_white_24dp);
+        }
     }
-
-    public void resultResult(String result)
-    {
-
-    }
-
-
 }
