@@ -85,7 +85,6 @@ public class SuperModDialog
 
         sortType = AppSettings.getIntOption(activity, "my_mods_sort", 0);
 
-
         items = loadList();
         itemsSorted = new ArrayList<>();
 
@@ -456,9 +455,18 @@ public class SuperModDialog
                     title_textView.setText("NO TITLE");
 
                 if (item.gameTypeImage != null)
+                {
+                    iwad_imageView.setVisibility(View.VISIBLE);
                     iwad_imageView.setImageURI(Uri.fromFile(new File(item.gameTypeImage)));
-                else
+                }
+                else if (AppInfo.defaultAppImage != 0)
+                {
+                    iwad_imageView.setVisibility(View.VISIBLE);
                     iwad_imageView.setImageResource(AppInfo.defaultAppImage);
+                }
+                else
+                    iwad_imageView.setVisibility(View.GONE);
+
 
 /*
                 // Find the iwad image
