@@ -1375,6 +1375,12 @@ public class GamepadDefinitions
                                             ActionInput.SourceType.BUTTON,
                                             -1);
 
+                gamepadDefinition.addHeader("Perfect Dark");
+                gamepadDefinition.addAction("n64_a_butotn", "A Button", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_0, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("n64_b_butotn", "B Button", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_1, ActionInput.SourceType.BUTTON, -1);
+                gamepadDefinition.addAction("n64_radial", "Radial menu", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVEN, ActionInput.SourceType.BUTTON, -1);
+
+
                 gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
 
                 gamepadDefinition.addAction("custom_0",
