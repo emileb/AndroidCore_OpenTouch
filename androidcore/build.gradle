@@ -63,7 +63,3 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.recyclerview:recyclerview:1.3.2' // Needed for API 19
 }
-
-repositories {
-    mavenCentral()
-}

@@ -1,9 +1,5 @@
 apply plugin: 'com.android.library'
 
-repositories {
-    mavenCentral()
-}
-
 android {
     namespace "it.gmariotti.changelibs"
 
