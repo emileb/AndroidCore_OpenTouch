@@ -132,8 +132,6 @@ public class ControlConfig implements Serializable
                     a.deadZone = d.deadZone;
                     if (a.scale == 0)
                         a.scale = 1;
-                    if (a.deadZone == 0)
-                        a.deadZone = 0.2f;
                 }
             }
         }

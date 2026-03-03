@@ -2,14 +2,16 @@ package com.opentouchgaming.androidcore.controls;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
+
+import java.util.Locale;
 
 /**
  * Created by Emile on 31/10/2017.
@@ -25,16 +27,39 @@ public class AnalogAxisDialog implements ActionInput.ActionInputExtra
     }
 
     Activity activity;
-
-
     public AnalogAxisDialog()
     {
 
     }
-
     public void dismiss()
     {
         //Override me
+    }
+
+    private float progressToDeadZone(int progress)
+    {
+        float p = (float) progress;
+        if (p <= 50f)
+        {
+            return (p / 50f) * 0.2f;
+        }
+        else
+        {
+            return 0.2f + ((p - 50f) / 50f) * 0.6f;
+        }
+    }
+
+    private int deadZoneToProgress(float deadZone)
+    {
+        if (deadZone <= 0.2f)
+        {
+            return (int) ((deadZone / 0.2f) * 50f);
+        }
+        else
+        {
+            float p = 50f + ((deadZone - 0.2f) / 0.6f) * 50f;
+            return (int) Math.min(100, p);
+        }
     }
 
     @Override
@@ -57,29 +82,70 @@ public class AnalogAxisDialog implements ActionInput.ActionInputExtra
         final SeekBar deadZone = dialog.findViewById(R.id.dead_zone_seekBar);
         final CheckBox invert = dialog.findViewById(R.id.invert_checkBox);
 
+        final TextView sensitivityValue = dialog.findViewById(R.id.sensitivity_value_textView);
+        final TextView deadZoneValue = dialog.findViewById(R.id.dead_zone_value_textView);
+
         invert.setChecked(action.invert);
 
-        sensitivity.setMax(150);
+        sensitivity.setMax(100);
         sensitivity.setProgress((int) (action.scale * 50));
 
-        deadZone.setMax(95);
-        deadZone.setProgress((int) ((action.deadZone) * 100) - 5);
+        deadZone.setMax(100);
+        deadZone.setProgress(deadZoneToProgress(action.deadZone));
 
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
+        sensitivityValue.setText(String.format(Locale.US, "%.2f", (float) sensitivity.getProgress() / 50.f));
+        deadZoneValue.setText(String.format(Locale.US, "%.2f", progressToDeadZone(deadZone.getProgress())));
+
+        sensitivity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                sensitivityValue.setText(String.format(Locale.US, "%.2f", (float) progress / 50.f));
+            }
 
             @Override
-            public void onDismiss(DialogInterface dialog)
+            public void onStartTrackingTouch(SeekBar seekBar)
             {
-                action.scale = (float) sensitivity.getProgress() / 50.f;
-                action.invert = invert.isChecked();
-                action.deadZone = (float) (deadZone.getProgress() + 5) / 100.f;
-                runnable.run();
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {
+
             }
         });
 
+        deadZone.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                deadZoneValue.setText(String.format(Locale.US, "%.2f", progressToDeadZone(progress)));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {
+
+            }
+        });
+
+        dialog.setOnDismissListener(dialog1 ->
+                                    {
+                                        action.scale = (float) sensitivity.getProgress() / 50.f;
+                                        action.invert = invert.isChecked();
+                                        action.deadZone = progressToDeadZone(deadZone.getProgress());
+                                        runnable.run();
+                                    });
 
         dialog.show();
     }
-
 }

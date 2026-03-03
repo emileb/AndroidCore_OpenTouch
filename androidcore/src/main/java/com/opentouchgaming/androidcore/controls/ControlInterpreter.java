@@ -308,15 +308,6 @@ public class ControlInterpreter
         handleDpad(event);
 
         return used;
-        /*
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || //If these were mapped it would have already returned
-                (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
-            return false;
-        else {
-            SDLActivity.onNativeKeyUp(keyCode);
-            return true;
-        }
-         */
     }
 
     //float deadRegion = 0.2f;

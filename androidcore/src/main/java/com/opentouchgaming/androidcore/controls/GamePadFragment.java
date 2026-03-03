@@ -330,35 +330,28 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
     class ControlListAdapter extends BaseAdapter
     {
         private final Activity context;
-
         public ControlListAdapter(Activity context)
         {
             this.context = context;
         }
-
         public void add(String string)
         {
 
         }
-
         public int getCount()
         {
             return config.getSize();
         }
-
         public Object getItem(int arg0)
         {
             // TODO Auto-generated method stub
             return null;
         }
-
         public long getItemId(int arg0)
         {
             // TODO Auto-generated method stub
             return 0;
         }
-
-
         public View getView(int position, View convertView, ViewGroup list)
         {
             View v = config.getView(getActivity(), position);

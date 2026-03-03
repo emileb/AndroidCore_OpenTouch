@@ -11,7 +11,7 @@ public class ActionInput implements Serializable, Cloneable
     public String tag;
     public String description;
     public boolean invert;
-    public float scale = 1; //senstivty for analog
+    public float scale = 1; //sensitivity for analog
     public float deadZone = 0.2f;
     public ActionType actionType;
     public int actionCode;
