@@ -35,6 +35,7 @@ class OptionsDialogKt(
         const val USE_ALT_TOUCH_CODE = "use_alt_touch_code"
         const val GROUP_SIMILAR_ENGINES = "group_similar_engines"
         const val SDL_AUDIO_BACKEND = "sdl_audio_backend"
+        const val OPENAL_AUDIO_BACKEND = "openal_audio_backend"
         const val ENABLE_VIBRATE = "enable_vibrate"
         const val ENABLE_GAMEPAD = "gamepad_enabled"
         const val GAMEPAD_HIDE_TOUCH = "gamepad_hide_touch"
@@ -56,7 +57,7 @@ class OptionsDialogKt(
 
     init
     {
-        val dialog = Dialog(activity)
+        val dialog = Dialog(activity, R.style.DialogEngineSettings)
         dialog.window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -182,6 +183,21 @@ class OptionsDialogKt(
             "Audio backend SDL uses to play audio",
             sdlAudioItems,
             SDL_AUDIO_BACKEND,
+            0,
+            R.drawable.setting_audio
+        )
+
+        val openalAudioItems: Array<Pair<String, View?>> = arrayOf(
+            Pair("OBOE", null), Pair("OpenSL", null)
+        )
+
+        SpinnerWidget(
+            activity,
+            binding.openalAudioBackend.root,
+            "OpenAL audio backend",
+            "Audio backend OpenAL uses to play audio",
+            openalAudioItems,
+            OPENAL_AUDIO_BACKEND,
             0,
             R.drawable.setting_audio
         )

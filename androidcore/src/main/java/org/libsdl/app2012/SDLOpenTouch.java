@@ -234,6 +234,10 @@ public class SDLOpenTouch
         int freq = intent.getIntExtra("audio_freq", 0);
         int samples = intent.getIntExtra("audio_samples", 0);
 
+        int openalBackend = intent.getIntExtra("openal_audio_backend", 0);
+        if (openalBackend == 1)
+            options |= TouchSettings.GAME_OPTION_OPENAL_USE_OPENSL;
+
         NativeLib.audioOverride(freq, samples);
 
         int gameType = intent.getIntExtra("game_type", 0);
