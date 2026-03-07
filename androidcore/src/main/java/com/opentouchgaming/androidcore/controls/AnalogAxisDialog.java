@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.R;
@@ -69,7 +70,7 @@ public class AnalogAxisDialog implements ActionInput.ActionInputExtra
 
         this.activity = activity;
 
-        final Dialog dialog = new Dialog(activity);
+        final Dialog dialog = new Dialog(activity, R.style.DialogEngineSettingsWrap);
         //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -80,10 +81,13 @@ public class AnalogAxisDialog implements ActionInput.ActionInputExtra
 
         final SeekBar sensitivity = dialog.findViewById(R.id.sensitivity_seekBar);
         final SeekBar deadZone = dialog.findViewById(R.id.dead_zone_seekBar);
-        final CheckBox invert = dialog.findViewById(R.id.invert_checkBox);
+        final SwitchCompat invert = dialog.findViewById(R.id.invert_checkBox);
 
         final TextView sensitivityValue = dialog.findViewById(R.id.sensitivity_value_textView);
         final TextView deadZoneValue = dialog.findViewById(R.id.dead_zone_value_textView);
+
+        final TextView name = dialog.findViewById(R.id.axis_name_textBox);
+        name.setText(action.description);
 
         invert.setChecked(action.invert);
 

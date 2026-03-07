@@ -2,6 +2,10 @@ package com.opentouchgaming.androidcore;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Emile on 31/10/2017.
@@ -30,10 +36,8 @@ public class LogViewDialog
     {
         activity = act;
 
-        final Dialog dialog = new Dialog(act);
-        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        final Dialog dialog = new Dialog(act, R.style.DialogEngineSettings);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
         dialog.setContentView(R.layout.dialog_log_view);
 
         dialog.setTitle("Game log for: " + name);
@@ -43,7 +47,15 @@ public class LogViewDialog
 
         text = readFile(file);
         textView = dialog.findViewById(R.id.textView);
-        textView.setText(text);
+
+        SpannableString spannable = new SpannableString(text);
+        Pattern pattern = Pattern.compile("error", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find())
+        {
+            spannable.setSpan(new ForegroundColorSpan(Color.RED), matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        textView.setText(spannable);
 
         Button copyButton = dialog.findViewById(R.id.copy_button);
 
@@ -81,5 +93,4 @@ public class LogViewDialog
         }
         return "--No log file--";
     }
-
 }

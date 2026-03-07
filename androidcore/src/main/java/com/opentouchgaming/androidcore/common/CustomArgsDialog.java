@@ -31,7 +31,7 @@ public class CustomArgsDialog
     EditText customArgsEditText;
     ImageButton pasteButton;
     ImageButton clearMods;
- 	ArrayList<String> undoClearMods = new ArrayList<>();
+    ArrayList<String> undoClearMods = new ArrayList<>();
 
     public CustomArgsDialog(final Activity act, final String appDir, String appSecDir, EngineData ed, boolean hideModsWads)
     {
@@ -41,10 +41,11 @@ public class CustomArgsDialog
         activity = act;
         this.engineData = ed;
 
-        dialog = new Dialog(activity);
+        dialog = new Dialog(activity, R.style.DialogEngineSettings);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_custom_args);
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
 
         dialog.setOnKeyListener((arg0, keyCode, event) -> false);
 
@@ -59,20 +60,20 @@ public class CustomArgsDialog
         clearMods = dialog.findViewById(R.id.imagebutton_clear_mods);
         clearMods.setOnClickListener(v ->
                                      {
-           // Doing an undo
-            if (engineData.getCurrentCustomArgs().getFiles().size() == 0 && undoClearMods.size() > 0)
-            {
-                engineData.getCurrentCustomArgs().getFiles().addAll(undoClearMods);
-                undoClearMods.clear();
-            }
-            else
-            {
-                // Save in case we want to undo
-                undoClearMods.clear();
-                undoClearMods.addAll(engineData.getCurrentCustomArgs().getFiles());
+                                         // Doing an undo
+                                         if (engineData.getCurrentCustomArgs().getFiles().size() == 0 && undoClearMods.size() > 0)
+                                         {
+                                             engineData.getCurrentCustomArgs().getFiles().addAll(undoClearMods);
+                                             undoClearMods.clear();
+                                         }
+                                         else
+                                         {
+                                             // Save in case we want to undo
+                                             undoClearMods.clear();
+                                             undoClearMods.addAll(engineData.getCurrentCustomArgs().getFiles());
 
-                                         engineData.getCurrentCustomArgs().getFiles().clear();
-            }
+                                             engineData.getCurrentCustomArgs().getFiles().clear();
+                                         }
                                          update();
                                      });
 

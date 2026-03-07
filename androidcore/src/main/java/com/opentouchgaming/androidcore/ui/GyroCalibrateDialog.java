@@ -46,7 +46,7 @@ public class GyroCalibrateDialog implements SensorEventListener
         activity = act;
         this.sensor = sensor;
 
-        final Dialog dialog = new Dialog(act);
+        final Dialog dialog = new Dialog(act, R.style.DialogEngineSettingsWrap);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_gyro_calibrate);

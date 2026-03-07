@@ -56,7 +56,6 @@ class OptionsDialogKt(
 
     init
     {
-
         val dialog = Dialog(activity)
         dialog.window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
@@ -64,11 +63,9 @@ class OptionsDialogKt(
         dialog.setContentView(binding.root)
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
-
         dialog.setOnDismissListener {
             if (!dontUpdate) update.run()
         }
-
         val items: Array<Pair<String, View?>> = resolutions.map { Pair(it.first, null) }.toTypedArray()
         // Create and Setup the spinner options
         SpinnerWidget(

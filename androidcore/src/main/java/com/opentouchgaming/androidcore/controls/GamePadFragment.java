@@ -249,8 +249,6 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
 
         return mainView;
     }
-
-
     private void setListViewEnabled(boolean v)
     {
         listView.setEnabled(v);

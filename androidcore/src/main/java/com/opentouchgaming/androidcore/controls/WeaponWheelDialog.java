@@ -36,17 +36,14 @@ public class WeaponWheelDialog implements ActionInput.ActionInputExtra
     LinearLayout lookLayout;
     LinearLayout mode0Layout;
     LinearLayout mode1Layout;
-
     public WeaponWheelDialog()
     {
 
     }
-
     public void dismiss()
     {
         //Override me
     }
-
     @Override
     public void show(Activity activity, ActionInput action, Runnable runnable)
     {
@@ -54,7 +51,7 @@ public class WeaponWheelDialog implements ActionInput.ActionInputExtra
 
         this.activity = activity;
 
-        final Dialog dialog = new Dialog(activity);
+        final Dialog dialog = new Dialog(activity, R.style.DialogEngineSettingsWrap);
         //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -62,7 +59,6 @@ public class WeaponWheelDialog implements ActionInput.ActionInputExtra
         dialog.setContentView(R.layout.dialog_weapon_wheel);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
-
 
         moveLayout = dialog.findViewById(R.id.move_layout);
         lookLayout = dialog.findViewById(R.id.look_layout);

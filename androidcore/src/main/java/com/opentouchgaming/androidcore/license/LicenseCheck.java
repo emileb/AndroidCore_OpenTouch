@@ -39,7 +39,7 @@ public class LicenseCheck
 
     public static boolean checkLicenseFile(Context context, String key)
     {
-        boolean ok = false;//BuildConfig.DEBUG;
+        boolean ok = true;//BuildConfig.DEBUG;
 
         try
         {

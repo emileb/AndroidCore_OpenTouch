@@ -8,6 +8,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     defaultConfig {
@@ -57,7 +58,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.6.Final'
 
-    implementation 'com.google.android.material:material:1.12.0' // 1.12 is maximum for API 19
+    implementation libs.material // 1.12 is maximum for API 19
 
     implementation 'androidx.appcompat:appcompat:1.6.1'  // 1.6.1 is maximum for API 19
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

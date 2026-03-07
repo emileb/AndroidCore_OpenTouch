@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_margin="10dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_border_color"
+    android:layout_margin="10dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
@@ -16,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Select game data folder"
+            android:textStyle="bold"
             android:textSize="30dp" />
 
         <LinearLayout
@@ -38,41 +40,19 @@
                 android:textSize="20dp" />
         </LinearLayout>
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/image_recyclerView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Suggested folder: "
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/suggested_folder_1_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="'Device > OpenTouch > Quad'"
-                android:textColor="@color/light_green"
-                android:textSize="20dp" />
-        </LinearLayout>
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/go_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="20dp"
-            android:textSize="30dp"
             android:text="Select folder"
-            android:theme="@style/ButtonMaterial" />
+            android:textSize="30dp" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/image_recyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

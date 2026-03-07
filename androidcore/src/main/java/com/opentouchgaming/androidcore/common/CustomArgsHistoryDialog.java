@@ -31,19 +31,18 @@ public class CustomArgsHistoryDialog
 
     protected CustomArgsHistoryDialog(final Activity act, final ArrayList<CustomArgs> argsHistory)
     {
-
         this.argsHistory = argsHistory;
 
-        final Dialog dialog = new Dialog(act);
-        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        //dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        if(argsHistory.isEmpty())
+            return;
+
+        final Dialog dialog = new Dialog(act, R.style.DialogEngineSettingsWrap);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
        
         dialog.setTitle("Args history");
         dialog.setContentView(R.layout.dialog_args_history);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
-
 
         recyclerView = dialog.findViewById(R.id.recyclerView);
         //recyclerView.setHasFixedSize(true);
@@ -55,7 +54,6 @@ public class CustomArgsHistoryDialog
         // Swipe to dismiss
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
         {
-
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
             {
@@ -75,15 +73,11 @@ public class CustomArgsHistoryDialog
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener()
-        {
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v)
-            {
-                selected(position);
-                dialog.dismiss();
-            }
-        });
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView, position, v) ->
+                                                                    {
+                                                                        selected(position);
+                                                                        dialog.dismiss();
+                                                                    });
 
         dialog.show();
     }
@@ -100,7 +94,6 @@ public class CustomArgsHistoryDialog
 
         }
 
-
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {
@@ -114,7 +107,6 @@ public class CustomArgsHistoryDialog
         public void onBindViewHolder(final ViewHolder holder, int position)
         {
             holder.item = argsHistory.get(position);
-
             holder.textView.setText(AppInfo.hideAppPaths(holder.item.getFinalArgs()));
         }
 
@@ -126,7 +118,6 @@ public class CustomArgsHistoryDialog
 
         public class ViewHolder extends RecyclerView.ViewHolder
         {
-
             public final TextView textView;
             public final View view;
             public CustomArgs item;

@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minWidth="300dp"
+    android:padding="10dp"
+    android:background="@drawable/dialog_border_color"
     android:orientation="vertical">
 
     <LinearLayout

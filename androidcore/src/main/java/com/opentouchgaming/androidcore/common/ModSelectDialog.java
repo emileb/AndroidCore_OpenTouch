@@ -80,7 +80,7 @@ public class ModSelectDialog
 
         customArgs = args;
 
-        dialog = new Dialog(activity);
+        dialog = new Dialog(activity, R.style.DialogEngineSettings);
         dialog.setTitle("Select files");
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_select_mods_wads);

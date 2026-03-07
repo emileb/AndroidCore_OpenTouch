@@ -28,8 +28,7 @@ public class GyroDialog
     {
         activity = act;
 
-        final Dialog dialog = new Dialog(act);
-        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        final Dialog dialog = new Dialog(act, R.style.DialogEngineSettingsWrap);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

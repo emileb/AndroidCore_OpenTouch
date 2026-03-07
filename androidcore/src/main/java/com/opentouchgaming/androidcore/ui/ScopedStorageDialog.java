@@ -53,8 +53,7 @@ public class ScopedStorageDialog
         this.activity = activity;
         this.tutorial = tutorial;
 
-        final Dialog dialog = new Dialog(activity);
-        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        final Dialog dialog = new Dialog(activity, R.style.DialogEngineSettings);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_scoped_storage);
@@ -62,8 +61,6 @@ public class ScopedStorageDialog
         dialog.setCancelable(true);
 
         TextView t = dialog.findViewById(R.id.suggested_folder_textView);
-        t.setText(tutorial.folder);
-        t = dialog.findViewById(R.id.suggested_folder_1_textView);
         t.setText(tutorial.folder);
 
         recyclerView = dialog.findViewById(R.id.image_recyclerView);

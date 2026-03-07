@@ -3,12 +3,14 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:minWidth="500dp"
+    android:background="@drawable/dialog_border_color"
+    android:padding="10dp"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        >
 
         <ScrollView
             android:id="@+id/scrollview"
