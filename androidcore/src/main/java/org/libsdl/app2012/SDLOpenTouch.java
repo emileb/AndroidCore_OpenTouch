@@ -236,7 +236,7 @@ public class SDLOpenTouch
 
         int openalBackend = intent.getIntExtra("openal_audio_backend", 0);
         if (openalBackend == 1)
-            options |= TouchSettings.GAME_OPTION_OPENAL_USE_OPENSL;
+            options |= TouchSettings.GAME_OPTION_OPENAL_USE_OBOE;
 
         NativeLib.audioOverride(freq, samples);
 

@@ -188,7 +188,7 @@ class OptionsDialogKt(
         )
 
         val openalAudioItems: Array<Pair<String, View?>> = arrayOf(
-            Pair("OBOE", null), Pair("OpenSL", null)
+            Pair("OpenSL", null), Pair("OBOE", null)
         )
 
         SpinnerWidget(
@@ -198,7 +198,7 @@ class OptionsDialogKt(
             "Audio backend OpenAL uses to play audio",
             openalAudioItems,
             OPENAL_AUDIO_BACKEND,
-            0,
+            0, // Default OpenSL
             R.drawable.setting_audio
         )
 
