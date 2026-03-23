@@ -32,6 +32,7 @@
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_below="@id/title"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/imageView"
@@ -53,7 +54,7 @@
                 <Spinner
                     android:id="@+id/spinner"
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp" />
+                    android:layout_height="wrap_content" />
             </RelativeLayout>
 
         </LinearLayout>

@@ -57,7 +57,7 @@
         <include
             android:id="@+id/enable_vibrate"
             layout="@layout/widget_view_switch" />
-
+        <include layout="@layout/view_horizontal_line" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
         <include
             android:id="@+id/gamepad_hide_touch"
             layout="@layout/widget_view_switch" />
-
+        <include layout="@layout/view_horizontal_line" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
