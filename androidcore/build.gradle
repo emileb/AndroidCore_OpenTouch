@@ -27,6 +27,15 @@ android {
         jvmTarget = '11'
     }
 
+    sourceSets {
+        main {
+            java {
+                exclude 'org/libsdl/app2012_orig/**'
+                exclude 'org/libsdl/app3000_orig/**'
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false

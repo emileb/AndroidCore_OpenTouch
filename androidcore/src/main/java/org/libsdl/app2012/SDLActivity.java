@@ -55,6 +55,8 @@ import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.ui.SurfaceViewControls.SurfaceViewControls;
 import com.opentouchgaming.saffal.UtilsSAF;
 
+import org.libsdl.app.SDLOpenTouch;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -306,6 +308,10 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         if(OPENTOUCH_SDL_EXTRA) // Directly use the surface, otherwise screen scaling does not work and it's a box in the corner
         {
             SDLOpenTouch.Setup(this, this.getIntent());
+            SDLOpenTouch.setBridge(mSurface,
+                    () -> SDLAudioManager.onPause(),
+                    () -> SDLAudioManager.onResume(),
+                    () -> SDLActivity.getMotionListener().setRelativeMouseEnabled(true));
             boolean touchSurfaceview = this.getIntent().getBooleanExtra("touch_surfaceview", false);
 
             if (touchSurfaceview)

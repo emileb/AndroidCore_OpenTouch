@@ -8,6 +8,8 @@ import android.view.View;
 
 import androidx.annotation.RequiresApi;
 
+import org.libsdl.app.SDLOpenTouch;
+
 public class SDLOpenTouchControllerManager extends SDLGenericMotionListener_API12 {
 
     private boolean mRelativeModeEnabled;
