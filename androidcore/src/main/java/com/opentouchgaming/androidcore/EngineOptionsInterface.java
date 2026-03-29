@@ -54,5 +54,8 @@ public interface EngineOptionsInterface
         public boolean maintainAspect;
         public String frameBufferWidth;
         public String frameBufferHeight;
+
+        /** SDL major version to use for this engine. 2 = app2012 (SDL2), 3 = app3000 (SDL3). */
+        public int sdlVersion = 2;
     }
 }
