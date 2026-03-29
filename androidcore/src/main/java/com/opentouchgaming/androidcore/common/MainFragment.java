@@ -107,6 +107,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public ImageButton swapVerImageButton;
     public ImageButton startButton;
     public ImageButton showArgsButton;
+    public ImageButton multiplayerButton;
     public ImageButton superModButton;
     public ImageButton downloadNewVersion;
     public Drawable subgameSeparatorLine; // So we cna change the color of the line
@@ -231,6 +232,15 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         });
 
         startButton = view.findViewById(R.id.imageview_game_start);
+
+        multiplayerButton = view.findViewById(R.id.imageview_doom_multiplayer);
+        multiplayerButton.setBackgroundResource(R.drawable.focusable);
+        multiplayerButton.setOnClickListener(v ->
+                AppInfo.currentEngine.engineOptions.launchMultiplayer(getActivity(),
+                        AppInfo.currentEngine,
+                        selectedVersion,
+                        argsFinal,
+                        mpArgs -> launchGame(AppInfo.currentEngine, true, mpArgs)));
 
         showArgsButton = view.findViewById(R.id.imageview_doom_show_args);
 
@@ -361,8 +371,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         startButton.setFocusable(enabled);
         showArgsButton.setFocusable(enabled);
         swapVerImageButton.setFocusable(enabled);
+        multiplayerButton.setFocusable(enabled);
         superModButton.setFocusable(enabled);
-        //multiplayerButton.setFocusable(enabled);
         if (enabled)
             startButton.requestFocus();
     }
@@ -600,6 +610,16 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         else
         {
             swapVerImageButton.setVisibility(View.GONE);
+        }
+
+        if (engine.engineOptions != null && engine.engineOptions.hasMultiplayer())
+        {
+            multiplayerButton.setVisibility(View.VISIBLE);
+            multiplayerButton.startAnimation(fadeIn);
+        }
+        else
+        {
+            multiplayerButton.setVisibility(View.GONE);
         }
 
         appTitleTextView.setText(AppInfo.title);

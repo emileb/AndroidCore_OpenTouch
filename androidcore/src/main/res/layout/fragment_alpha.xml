@@ -104,6 +104,19 @@
         android:scaleType="fitXY"
         app:srcCompat="@drawable/mod" />
 
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/imageview_doom_multiplayer"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toLeftOf="@+id/imageview_doom_show_args"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_group_24dp" />
+
     <LinearLayout
         android:id="@+id/background_layout2"
         android:layout_width="wrap_content"
