@@ -45,12 +45,18 @@ import com.opentouchgaming.androidcore.SubGameRecyclerViewAdapter;
 import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.androidcore.controls.Dpad;
 import com.opentouchgaming.androidcore.license.LicenseCheck;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.opentouchgaming.androidcore.ui.EnginesPanel;
+import com.opentouchgaming.androidcore.ui.FileSelectDialog;
 import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
 import com.opentouchgaming.androidcore.ui.StorageConfigDialog;
 import com.opentouchgaming.androidcore.ui.SuperMod.SuperModDialog;
 import com.opentouchgaming.androidcore.ui.SuperMod.SuperModItem;
 import com.opentouchgaming.androidcore.ui.ToolsPanel;
+
+import java.io.File;
 import com.opentouchgaming.androidcore.ui.tutorial.TutorialDialog;
 
 import java.util.ArrayList;
@@ -297,29 +303,67 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
                                                     engineData.getCurrentCustomArgs());
                     }
 
-                    new SuperModDialog(getActivity(), superMod, superModItem ->
-                    {
-                        // Called when a super mod is selected
-                        GameEngine engine = AppInfo.getGameEngine(superModItem.engine);
-                        // Set version first
-                        changeEngineVersion(engine, superModItem.version);
-                        // Change engine, this reloads the iwads
-                        enginesLeftPanel.selectEngine(engine);
-
-                        // Replace args and files
-                        engineData.getCurrentCustomArgs().copy(superModItem.customArgs);
-                        // Try to find IWAD
-                        for (int n = 0; n < availableSubGames.size(); n++)
+                    new SuperModDialog(getActivity(), superMod,
+                        superModItem ->
                         {
-                            SubGame subgame = availableSubGames.get(n);
-                            if (subgame.getTag().contentEquals(superModItem.subgameTag))
+                            // Called when a super mod is selected
+                            GameEngine engine = AppInfo.getGameEngine(superModItem.engine);
+                            // Set version first
+                            changeEngineVersion(engine, superModItem.version);
+                            // Change engine, this reloads the iwads
+                            enginesLeftPanel.selectEngine(engine);
+
+                            // Replace args and files
+                            engineData.getCurrentCustomArgs().copy(superModItem.customArgs);
+                            // Try to find IWAD
+                            for (int n = 0; n < availableSubGames.size(); n++)
                             {
-                                // Found!
-                                selectSubGame(n);
-                                break;
+                                SubGame subgame = availableSubGames.get(n);
+                                if (subgame.getTag().contentEquals(superModItem.subgameTag))
+                                {
+                                    // Found!
+                                    selectSubGame(n);
+                                    break;
+                                }
                             }
-                        }
-                    });
+                        },
+                        (item, onImageSelected) ->
+                        {
+                            FileSelectDialog.FileSelectCallback callback = filesArray ->
+                            {
+                                String imageOverride = (filesArray == null || filesArray.size() == 0) ? null : filesArray.get(0);
+                                onImageSelected.accept(imageOverride);
+                            };
+                            new FileSelectDialog(getActivity(), callback, AppInfo.getAppDirectory(), new String[]{".png", ".jpg"}, false);
+                        },
+                        (item, imageView) ->
+                        {
+                            if (item.gameTypeImage != null)
+                            {
+                                imageView.setVisibility(View.VISIBLE);
+                                imageView.setImageURI(Uri.fromFile(new File(item.gameTypeImage)));
+                            }
+                            else if (AppInfo.defaultAppImage != 0)
+                            {
+                                imageView.setVisibility(View.VISIBLE);
+                                imageView.setImageResource(AppInfo.defaultAppImage);
+                            }
+                            else
+                                imageView.setVisibility(View.GONE);
+                        },
+                        (item, imageView) ->
+                        {
+                            if (item.modImage != null)
+                            {
+                                imageView.setVisibility(View.VISIBLE);
+                                Glide.with(getActivity()).load("zip_pic:" + item.modImage)
+                                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)).into(imageView);
+                            }
+                            else
+                            {
+                                imageView.setVisibility(View.GONE);
+                            }
+                        });
                 }
             }
         });

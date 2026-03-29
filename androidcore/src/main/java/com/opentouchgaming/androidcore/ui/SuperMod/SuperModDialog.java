@@ -10,7 +10,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -28,19 +27,15 @@ import android.widget.TextView;
 
 import androidx.core.util.Consumer;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.GameEngine;
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.Utils;
-import com.opentouchgaming.androidcore.ui.FileSelectDialog;
+import com.opentouchgaming.androidcore.common.CompatibleObjectInputStream;
 import com.opentouchgaming.saffal.FileSAF;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -52,6 +47,16 @@ import java.util.Comparator;
 
 public class SuperModDialog
 {
+    public interface SelectImageCallback
+    {
+        void onSelectImage(SuperModItem item, Consumer<String> onImageSelected);
+    }
+
+    public interface SetImageCallback
+    {
+        void setImage(SuperModItem item, ImageView imageView);
+    }
+
     static DebugLog log;
 
     static
@@ -60,8 +65,6 @@ public class SuperModDialog
     }
 
     final Dialog dialog;
-    private final ListView mainList;
-    private final ListAdapter listAdapter;
     Activity activity;
     ArrayList<SuperModItem> items;
     ArrayList<SuperModItem> itemsSorted;
@@ -70,10 +73,22 @@ public class SuperModDialog
     RelativeLayout searchLayout;
     String searchText;
     int sortType = 1; // 0 = added, 1 = title, 2 = wad
+    private final ListView mainList;
+    private final ListAdapter listAdapter;
+    private final SelectImageCallback selectImageCallback;
+    private final SetImageCallback iwadImageCallback;
+    private final SetImageCallback modImageCallback;
 
-    public SuperModDialog(final Activity act, final SuperModItem newSuperMod, Consumer<SuperModItem> selectCallback)
+    public SuperModDialog(final Activity act, final SuperModItem newSuperMod,
+                          Consumer<SuperModItem> selectCallback,
+                          SelectImageCallback selectImageCallback,
+                          SetImageCallback iwadImageCallback,
+                          SetImageCallback modImageCallback)
     {
         activity = act;
+        this.selectImageCallback = selectImageCallback;
+        this.iwadImageCallback = iwadImageCallback;
+        this.modImageCallback = modImageCallback;
 
         dialog = new Dialog(activity, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -135,11 +150,11 @@ public class SuperModDialog
             @Override
             public void onClick(View v)
             {
-                String[] options = {"Date added", "Title"};
+                String[] colors = {"Date added", "Title", "Path"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle("Sort by..");
-                builder.setItems(options, new DialogInterface.OnClickListener()
+                builder.setItems(colors, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -153,7 +168,7 @@ public class SuperModDialog
             }
         });
 
-        // ---- Search ----------------------------------------------------------
+        // SEARCH STUFF ----------------------------------------------------------------------------------
 
         final ImageButton searchButton = dialog.findViewById(R.id.search_imageButton);
         searchButton.setOnClickListener(v ->
@@ -161,8 +176,10 @@ public class SuperModDialog
                                             if (searchLayout.getVisibility() == View.GONE)
                                             {
                                                 searchText = AppSettings.getStringOption(activity, "super_mod_search_filter", null);
+
                                                 if (searchText != null)
                                                     searchEditText.setText(searchText);
+
                                                 searchLayout.setVisibility(View.VISIBLE);
                                                 applySearch();
                                             }
@@ -177,10 +194,14 @@ public class SuperModDialog
         searchEditText.addTextChangedListener(new TextWatcher()
         {
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s)
+            {
+            }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
@@ -192,14 +213,18 @@ public class SuperModDialog
         });
 
         ImageButton clearSearch = dialog.findViewById(R.id.clear_search_imageButton);
-        clearSearch.setOnClickListener(v ->
-                                       {
-                                           searchText = null;
-                                           searchEditText.setText("");
-                                           applySearch();
-                                       });
+        clearSearch.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                searchText = null;
+                searchEditText.setText("");
+                applySearch();
+            }
+        });
 
-        // ----------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------
 
         dialog.show();
 
@@ -221,7 +246,6 @@ public class SuperModDialog
         }
     }
 
-
     private void sortList()
     {
         itemsSorted.clear();
@@ -229,14 +253,39 @@ public class SuperModDialog
 
         Comparator<SuperModItem> comparator = null;
 
-        if (sortType == 1) // by title
+        if (sortType == 0)
+        {
+
+        }
+        else if (sortType == 1) // by title
         {
             comparator = new Comparator<SuperModItem>()
             {
                 @Override
                 public int compare(SuperModItem lhs, SuperModItem rhs)
                 {
-                    return String.CASE_INSENSITIVE_ORDER.compare(lhs.title, rhs.title);
+                    int res = String.CASE_INSENSITIVE_ORDER.compare(lhs.title, rhs.title);
+
+                    return res;
+                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                }
+            };
+        }
+        else if (sortType == 2) // by iwad
+        {
+            comparator = new Comparator<SuperModItem>()
+            {
+                @Override
+                public int compare(SuperModItem lhs, SuperModItem rhs)
+                {
+                    int res = String.CASE_INSENSITIVE_ORDER.compare(lhs.subgameTag, rhs.subgameTag);
+                    if (res == 0) // Is the same iwad, then sort by title
+                    {
+                        res = String.CASE_INSENSITIVE_ORDER.compare(lhs.title, rhs.title);
+                    }
+                    return res;
+                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+
                 }
             };
         }
@@ -245,6 +294,8 @@ public class SuperModDialog
             Collections.sort(itemsSorted, comparator);
 
         applySearch();
+
+        listAdapter.notifyDataSetChanged();
     }
 
     private void applySearch()
@@ -258,7 +309,9 @@ public class SuperModDialog
             for (SuperModItem item : itemsSorted)
             {
                 if (item.title == null || item.title.toLowerCase().contains(searchText.toLowerCase()))
+                {
                     itemsFiltered.add(item);
+                }
             }
         }
 
@@ -273,7 +326,7 @@ public class SuperModDialog
 
         try
         {
-            ObjectInputStream in = new ObjectInputStream(new FileSAF((fileName)).getInputStream());
+            ObjectInputStream in = new CompatibleObjectInputStream(new FileSAF((fileName)).getInputStream());
 
             ArrayList<SuperModItem> d = (ArrayList<SuperModItem>) in.readObject();
             data = d;
@@ -296,8 +349,22 @@ public class SuperModDialog
         //Failed to open
         if (data == null)
         {
-            data = new ArrayList<SuperModItem>();
+            data = new ArrayList<>();
         }
+
+        // Check for broken de-serialization
+        boolean broken = false;
+        for (SuperModItem item : data)
+        {
+            if (item.customArgs == null)
+            {
+                broken = true;
+                break;
+            }
+        }
+
+        if (broken)
+            data = new ArrayList<>();
 
         return data;
     }
@@ -336,10 +403,11 @@ public class SuperModDialog
     {
         final SuperModItem item = itemsFiltered.get(pos);
 
-        final Dialog dialog = new Dialog(activity,  R.style.DialogEngineSettingsWrap);
+        final Dialog dialog = new Dialog(activity, R.style.DialogEngineSettingsWrap);
         dialog.setTitle("Edit item");
         dialog.setContentView(R.layout.dialog_super_mod_edit_item);
         dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
 
         final EditText title_editText = dialog.findViewById(R.id.title_editText);
         title_editText.setText(item.title);
@@ -364,27 +432,11 @@ public class SuperModDialog
 
         Button selectImageButton = dialog.findViewById(R.id.select_image_button);
         selectImageButton.setOnClickListener(v ->
+                                             selectImageCallback.onSelectImage(item, imageFile ->
                                              {
-
-                                                 FileSelectDialog.FileSelectCallback callback = filesArray ->
-                                                 {
-                                                     String imageOverride;
-
-                                                     if (filesArray == null || filesArray.size() == 0)
-                                                     {
-                                                         imageOverride = null;
-                                                     }
-                                                     else
-                                                     {
-                                                         imageOverride = filesArray.get(0);
-                                                     }
-                                                     item.modImage = imageOverride;
-
-                                                 };
-
-                                                 new FileSelectDialog(activity, callback, AppInfo.getAppDirectory(), new String[]{".png", ".jpg"}, false);
-
-                                             });
+                                                 item.modImage = imageFile;
+                                                 saveList();
+                                             }));
         dialog.show();
     }
 
@@ -411,7 +463,6 @@ public class SuperModDialog
         {
             return 0;
         }
-
 
         public View getView(int position, View convertView, ViewGroup list)
         {
@@ -444,32 +495,11 @@ public class SuperModDialog
                 else
                     title_textView.setText("NO TITLE");
 
-                if (item.gameTypeImage != null)
-                {
-                    iwad_imageView.setVisibility(View.VISIBLE);
-                    iwad_imageView.setImageURI(Uri.fromFile(new File(item.gameTypeImage)));
-                }
-                else if (AppInfo.defaultAppImage != 0)
-                {
-                    iwad_imageView.setVisibility(View.VISIBLE);
-                    iwad_imageView.setImageResource(AppInfo.defaultAppImage);
-                }
-                else
-                    iwad_imageView.setVisibility(View.GONE);
+                // IWAD image
+                iwadImageCallback.setImage(item, iwad_imageView);
 
-                // Find mod image, look in cache first, else try to extract
-                if (item.modImage != null)
-                {
-                    mod_imageView.setVisibility(View.VISIBLE);
-                    Glide.with(activity).load("zip_pic:" + item.modImage)
-                            //.placeholder(R.drawable.questionmark)
-                            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)).into(mod_imageView);
-                }
-                else
-                {
-                    mod_imageView.setVisibility(View.GONE);
-                }
-
+                // Mod image
+                modImageCallback.setImage(item, mod_imageView);
 
                 // Engine icon
                 engine_imageView.setImageResource(engine.iconRes);

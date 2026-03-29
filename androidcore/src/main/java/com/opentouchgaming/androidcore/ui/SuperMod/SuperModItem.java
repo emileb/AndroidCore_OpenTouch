@@ -19,7 +19,7 @@ public class SuperModItem implements Serializable
     public CustomArgs customArgs;
     public long lastPlayed;
 
-    String gameTypeImage;
+    public String gameTypeImage;
 
     public String modImage; // null = none, "zipfile:filename" = image in zip/wad file
 
