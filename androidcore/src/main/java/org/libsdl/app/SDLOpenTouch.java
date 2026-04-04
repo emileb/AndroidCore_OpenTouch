@@ -157,8 +157,9 @@ public class SDLOpenTouch
         gyro = new SDLOpenTouchGyro(activity, activity.getWindowManager().getDefaultDisplay().getRotation());
 
         engine = new NativeLib();
+        String engineGamepadConfig = intent.getStringExtra("engine_gamepad_config");
         controlInterp = new ControlInterpreter(activity, engine, GamepadDefinitions.getDefinition(AppInfo.app), TouchSettings.gamePadEnabled,
-                TouchSettings.altTouchCode);
+                TouchSettings.altTouchCode, engineGamepadConfig);
 
         enableVibrate = AppSettings.getBoolOption(activity, "enable_vibrate", true);
         resDiv = intent.getFloatExtra("res_div_float", 1.0f);

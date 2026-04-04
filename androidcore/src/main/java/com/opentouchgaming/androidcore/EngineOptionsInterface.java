@@ -57,5 +57,8 @@ public interface EngineOptionsInterface
 
         /** SDL major version to use for this engine. 2 = app2012 (SDL2), 3 = app3000 (SDL3). */
         public int sdlVersion = 2;
+
+        /** Override gamepad config filename for this engine. Null means use the global setting. */
+        public String gamepadConfig = null;
     }
 }

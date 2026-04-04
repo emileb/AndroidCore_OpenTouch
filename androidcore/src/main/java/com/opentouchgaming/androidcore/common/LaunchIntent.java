@@ -44,6 +44,10 @@ public class LaunchIntent
         intent.putExtra("sdl_midi_player", SDLMidiPlayer);
         intent.putExtra("openal_audio_backend", openALBackend);
 
+        // Gamepad config override (null means use the global setting)
+        if (runInfo.gamepadConfig != null)
+            intent.putExtra("engine_gamepad_config", runInfo.gamepadConfig);
+
         // Other
         intent.putExtra("game_type", gameType);
         intent.putExtra("wheel_nbr", weaponWheel);

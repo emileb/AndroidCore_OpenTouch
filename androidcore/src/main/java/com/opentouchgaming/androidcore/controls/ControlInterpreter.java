@@ -33,12 +33,21 @@ public class ControlInterpreter
     Dpad mDpad = new Dpad();
     boolean[] dpadLastState = new boolean[4];
 
+    /** Engine-specific gamepad config override; null means use the global SharedPreferences setting. */
+    String engineGamepadConfig = null;
+
     public ControlInterpreter(Context ctx, ControlInterface qif, ActionInputDefinition gamepadDefinition, boolean ctrlEn, boolean alternatePointerCode)
+    {
+        this(ctx, qif, gamepadDefinition, ctrlEn, alternatePointerCode, null);
+    }
+
+    public ControlInterpreter(Context ctx, ControlInterface qif, ActionInputDefinition gamepadDefinition, boolean ctrlEn, boolean alternatePointerCode, String overrideGamepadConfig)
     {
         context = ctx;
         gamePadEnabled = ctrlEn;
 
         this.alternatePointerCode = alternatePointerCode;
+        this.engineGamepadConfig = overrideGamepadConfig;
 
         config = new ControlConfig(gamepadDefinition, null);
 
@@ -57,7 +66,9 @@ public class ControlInterpreter
     {
         try
         {
-            String gamepadConfigFile = AppSettings.getStringOption(context, "gamepad_config_filename", GamePadFragment.DEFAULT_CONFIG);
+            String gamepadConfigFile = (engineGamepadConfig != null)
+                    ? engineGamepadConfig
+                    : AppSettings.getStringOption(context, "gamepad_config_filename", GamePadFragment.DEFAULT_CONFIG);
             config.loadControls(gamepadConfigFile);
         }
         catch (IOException e)
