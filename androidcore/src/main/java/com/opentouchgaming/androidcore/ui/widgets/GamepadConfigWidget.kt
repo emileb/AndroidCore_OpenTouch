@@ -23,10 +23,7 @@ import com.opentouchgaming.saffal.FileSAF
 class GamepadConfigWidget(
     val context: Context,
     view: View,
-    title: String,
-    description: String,
-    private val settingKey: String,
-    image: Int = 0
+    private val settingKey: String
 )
 {
     private val binding = WidgetViewGamepadConfigBinding.bind(view)
@@ -38,10 +35,8 @@ class GamepadConfigWidget(
 
     init
     {
-        binding.title.text = title
-        binding.description.text = description
-
-        if (image != 0) binding.imageView.setImageResource(image)
+        binding.title.text = "Gamepad configuration"
+        binding.description.text = "Select a gamepad config for this engine,\nAdd and remove configs from the Gamepad setup screen."
 
         val labels = ArrayList<String>()
         fileNames.add(null) // position 0 = default
