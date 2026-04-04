@@ -91,7 +91,7 @@ public class AnalogAxisDialog implements ActionInput.ActionInputExtra
 
         invert.setChecked(action.invert);
 
-        sensitivity.setMax(100);
+        sensitivity.setMax(150);
         sensitivity.setProgress((int) (action.scale * 50));
 
         deadZone.setMax(100);
