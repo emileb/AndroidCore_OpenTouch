@@ -34,6 +34,7 @@ import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.DebugLog;
 import com.opentouchgaming.androidcore.DirectoryChooserDialog;
 import com.opentouchgaming.androidcore.R;
+import com.opentouchgaming.androidcore.UserDataFolderKt;
 import com.opentouchgaming.androidcore.Utils;
 import com.opentouchgaming.saffal.FileSAF;
 
@@ -139,9 +140,15 @@ public class StorageConfigDialog
                                                      updateUI();
                                                  });
 
-        // PRIMARY folder options
+        // PRIMARY folder: open folder in file manager when scoped, settings popup otherwise
         appDirButton.setOnClickListener(v ->
                                         {
+                                            if (AppInfo.isScopedEnabled())
+                                            {
+                                                UserDataFolderKt.openUserDataFolder(activity);
+                                                return;
+                                            }
+
                                             PopupMenu popup = new PopupMenu(activity, appDirButton);
                                             popup.getMenuInflater().inflate(R.menu.app_dir_popup, popup.getMenu());
                                             popup.setOnMenuItemClickListener(item ->
@@ -322,7 +329,10 @@ public class StorageConfigDialog
         userDirTextView.setText(userPath.first);
         userDirIcon.setImageResource(userPath.second);
 
-        appDirButton.setVisibility(AppInfo.isScopedEnabled() ? View.GONE : View.VISIBLE);
+        if (AppInfo.isScopedEnabled())
+            appDirButton.setImageResource(R.drawable.ic_folder_open_white);
+        else
+            appDirButton.setImageResource(R.drawable.ic_settings_white);
 
         if (AppInfo.isScopedEnabled() && AppInfo.getAppSecDirectory() == null)
         {
