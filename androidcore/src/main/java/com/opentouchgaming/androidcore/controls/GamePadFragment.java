@@ -53,6 +53,9 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
 
     String configFilename;
 
+    /** True when launched with an engine-specific config override; suppresses saving to gamepad_config_filename. */
+    boolean engineOverrideActive = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -62,7 +65,6 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
 
     void loadConfigFile(String file)
     {
-
         configFilename = file;
 
         if (configFilename == null)
@@ -92,7 +94,8 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
 
         finishedMonitoring();
         adapter.notifyDataSetChanged();
-        AppSettings.setStringOption(getActivity(), "gamepad_config_filename", configFilename);
+        if (!engineOverrideActive)
+            AppSettings.setStringOption(getActivity(), "gamepad_config_filename", configFilename);
     }
 
     void saveConfigFile(String file)
@@ -122,7 +125,8 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
 
         finishedMonitoring();
         adapter.notifyDataSetChanged();
-        AppSettings.setStringOption(getActivity(), "gamepad_config_filename", configFilename);
+        if (!engineOverrideActive)
+            AppSettings.setStringOption(getActivity(), "gamepad_config_filename", configFilename);
     }
 
     @Override
@@ -244,7 +248,10 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
             }
         });
 
-        String currentFile = AppSettings.getStringOption(getActivity(), "gamepad_config_filename", DEFAULT_CONFIG);
+        String engineOverride = getActivity().getIntent().getStringExtra("engine_gamepad_config");
+        engineOverrideActive = (engineOverride != null);
+        String currentFile = engineOverrideActive ? engineOverride
+                : AppSettings.getStringOption(getActivity(), "gamepad_config_filename", DEFAULT_CONFIG);
         loadConfigFile(currentFile);
 
         return mainView;

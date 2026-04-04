@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/dialog_border_color"
+
     android:minWidth="500dp"
-    android:layout_margin="10dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <RelativeLayout
         android:id="@+id/save_layout"
@@ -16,20 +18,20 @@
             android:id="@+id/name_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name: "
             android:layout_margin="5dp"
             android:gravity="center_vertical"
+            android:text="Name: "
             android:textSize="20dp" />
 
         <EditText
-            android:importantForAutofill="no"
             android:id="@+id/name_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:singleLine="true"
             android:layout_toLeftOf="@+id/save_button"
-            android:layout_toRightOf="@+id/name_textview" />
+            android:layout_toRightOf="@+id/name_textview"
+            android:importantForAutofill="no"
+            android:maxLines="1"
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/save_button"
@@ -43,8 +45,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
 
 </LinearLayout>

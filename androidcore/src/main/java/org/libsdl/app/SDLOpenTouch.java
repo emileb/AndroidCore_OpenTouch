@@ -30,9 +30,6 @@ import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
 import com.opentouchgaming.androidcore.ui.QuickCommandDialog;
 import com.opentouchgaming.androidcore.ui.TouchSettingsSaveLoad;
 
-import org.libsdl.app.NativeConsoleBox;
-import org.libsdl.app.NativeLib;
-
 import java.io.File;
 
 public class SDLOpenTouch
@@ -437,6 +434,8 @@ public class SDLOpenTouch
             {
                 Intent intent = new Intent(activity, GamepadActivity.class);
                 intent.putExtra("app", AppInfo.app.name());
+                if (controlInterp != null && controlInterp.engineGamepadConfig != null)
+                    intent.putExtra("engine_gamepad_config", controlInterp.engineGamepadConfig);
                 activity.startActivity(intent);
                 break;
             }

@@ -41,7 +41,7 @@ public class GamepadSaveLoad
     {
         this.load = load;
 
-        final Dialog dialog = new Dialog(act);
+        final Dialog dialog = new Dialog(act, R.style.DialogEngineSettingsWrap);
         //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -49,15 +49,13 @@ public class GamepadSaveLoad
             dialog.setTitle("Load");
         else
             dialog.setTitle("Save As");
+
         dialog.setContentView(R.layout.dialog_gamepad_load_save);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         dialog.show();
 
-
         RelativeLayout saveLayout = dialog.findViewById(R.id.save_layout);
-        if (load)
-            saveLayout.setVisibility(View.GONE);
 
         nameEditText = dialog.findViewById(R.id.name_edittext);
 
@@ -80,6 +78,11 @@ public class GamepadSaveLoad
                 }
             }
         });
+
+        if (load)
+            saveLayout.setVisibility(View.GONE);
+        else //saving
+            recyclerView.setVisibility(View.GONE);
 
         // Swipe to dismiss
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)

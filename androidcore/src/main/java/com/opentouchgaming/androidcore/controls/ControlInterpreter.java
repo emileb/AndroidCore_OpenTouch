@@ -34,7 +34,7 @@ public class ControlInterpreter
     boolean[] dpadLastState = new boolean[4];
 
     /** Engine-specific gamepad config override; null means use the global SharedPreferences setting. */
-    String engineGamepadConfig = null;
+    public String engineGamepadConfig = null;
 
     public ControlInterpreter(Context ctx, ControlInterface qif, ActionInputDefinition gamepadDefinition, boolean ctrlEn, boolean alternatePointerCode)
     {
