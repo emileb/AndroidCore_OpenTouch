@@ -9,6 +9,7 @@ import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.EngineOptionsInterface;
 import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
 import com.opentouchgaming.androidcore.ui.widgets.SpinnerWidget;
+import com.opentouchgaming.androidcore.ui.widgets.SwitchWidget;
 
 public class LaunchIntent
 {
@@ -53,5 +54,11 @@ public class LaunchIntent
         intent.putExtra("wheel_nbr", weaponWheel);
         intent.putExtra("quick_command_main_path", quickCommandPaths.first);
         intent.putExtra("quick_command_mod_path", quickCommandPaths.second);
+
+        // Mouse axis options
+        boolean swapMouseXY = SwitchWidget.fetchValue(ctx, OptionsDialogKt.SWAP_MOUSE_XY, false);
+        intent.putExtra("swap_mouse_xy", swapMouseXY);
+        intent.putExtra("invert_mouse_x", swapMouseXY && SwitchWidget.fetchValue(ctx, OptionsDialogKt.INVERT_MOUSE_X, false));
+        intent.putExtra("invert_mouse_y", swapMouseXY && SwitchWidget.fetchValue(ctx, OptionsDialogKt.INVERT_MOUSE_Y, false));
     }
 }

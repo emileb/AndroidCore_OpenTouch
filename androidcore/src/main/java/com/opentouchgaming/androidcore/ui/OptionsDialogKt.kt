@@ -41,6 +41,9 @@ class OptionsDialogKt(
         const val ENABLE_GAMEPAD = "gamepad_enabled"
         const val GAMEPAD_HIDE_TOUCH = "gamepad_hide_touch"
         const val USE_MINI_UI = "use_mini_ui"
+        const val SWAP_MOUSE_XY = "swap_mouse_xy"
+        const val INVERT_MOUSE_X = "invert_mouse_x"
+        const val INVERT_MOUSE_Y = "invert_mouse_y"
 
         val resolutions = arrayListOf(
             Pair("100%", 1.0f), Pair("75%", 0.75f), Pair("60%", 0.6f), Pair("50%", 0.5f), Pair("30%", 0.30f), Pair("25%", 0.25f)
@@ -147,6 +150,32 @@ class OptionsDialogKt(
         SwitchWidget(
             activity, binding.touchJoyMultitouch.root, "Touch pad multi-touch", "Enable to allow multiple touches on look and move pads", TOUCH_JOY_MULTITOUCH, false
         )
+
+        // Swap Mouse X and Y with expandable sub-options
+        SwitchWidget(
+            activity, binding.swapMouseXy.root, "Swap Mouse X and Y", "Swap the mouse X and Y axes", SWAP_MOUSE_XY, false
+        )
+
+        SwitchWidget(
+            activity, binding.invertMouseX.root, "Invert Mouse X", "Invert the mouse X axis", INVERT_MOUSE_X, false
+        )
+
+        SwitchWidget(
+            activity, binding.invertMouseY.root, "Invert Mouse Y", "Invert the mouse Y axis", INVERT_MOUSE_Y, false
+        )
+
+        // Show/hide sub-options based on swap mouse state
+        val updateSwapMouseSubOptions = {
+            binding.swapMouseXySubOptions.visibility =
+                if (SwitchWidget.fetchValue(activity, SWAP_MOUSE_XY, false)) View.VISIBLE else View.GONE
+        }
+        updateSwapMouseSubOptions()
+
+        val swapBinding = com.opentouchgaming.androidcore.databinding.WidgetViewSwitchBinding.bind(binding.swapMouseXy.root)
+        swapBinding.switch1.setOnCheckedChangeListener { _, isChecked ->
+            AppSettings.setBoolOption(activity, SWAP_MOUSE_XY, isChecked)
+            updateSwapMouseSubOptions()
+        }
 
         SwitchWidget(
             activity,

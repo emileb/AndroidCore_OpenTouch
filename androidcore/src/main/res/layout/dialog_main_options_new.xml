@@ -51,6 +51,29 @@
             layout="@layout/widget_view_switch" />
 
         <include
+            android:id="@+id/swap_mouse_xy"
+            layout="@layout/widget_view_switch" />
+
+        <LinearLayout
+            android:id="@+id/swap_mouse_xy_sub_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="32dp"
+            android:animateLayoutChanges="true"
+            android:visibility="gone">
+
+            <include
+                android:id="@+id/invert_mouse_x"
+                layout="@layout/widget_view_switch" />
+
+            <include
+                android:id="@+id/invert_mouse_y"
+                layout="@layout/widget_view_switch" />
+
+        </LinearLayout>
+
+        <include
             android:id="@+id/sdl_audio_backend"
             layout="@layout/widget_view_spinner" />
 

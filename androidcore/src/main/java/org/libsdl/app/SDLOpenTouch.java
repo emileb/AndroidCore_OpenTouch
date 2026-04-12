@@ -40,6 +40,10 @@ public class SDLOpenTouch
     static boolean divDone = false;
     public static boolean enableVibrate;
 
+    public static boolean swapMouseXY = false;
+    public static boolean invertMouseX = false;
+    public static boolean invertMouseY = false;
+
     static String userFiles;
 
     static NativeLib engine;
@@ -160,6 +164,10 @@ public class SDLOpenTouch
 
         enableVibrate = AppSettings.getBoolOption(activity, "enable_vibrate", true);
         resDiv = intent.getFloatExtra("res_div_float", 1.0f);
+
+        swapMouseXY = intent.getBooleanExtra("swap_mouse_xy", false);
+        invertMouseX = intent.getBooleanExtra("invert_mouse_x", false);
+        invertMouseY = intent.getBooleanExtra("invert_mouse_y", false);
     }
 
     public static String ReplaceDisplaySize(String test, float width, float height)

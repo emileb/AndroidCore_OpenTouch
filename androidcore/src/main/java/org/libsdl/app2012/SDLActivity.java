@@ -2255,6 +2255,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             case MotionEvent.ACTION_SCROLL:
                 x = event.getAxisValue(MotionEvent.AXIS_HSCROLL, 0);
                 y = event.getAxisValue(MotionEvent.AXIS_VSCROLL, 0);
+                if (SDLOpenTouch.swapMouseXY) { float tmp = x; x = y; y = tmp; }
+                if (SDLOpenTouch.invertMouseX) x = -x;
+                if (SDLOpenTouch.invertMouseY) y = -y;
                 SDLActivity.onNativeMouse(0, action, x, y, false);
                 return true;
 
@@ -2262,6 +2265,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             case MotionEvent.ACTION_MOVE:
                 x = event.getX(0);
                 y = event.getY(0);
+                if (SDLOpenTouch.swapMouseXY) { float tmp = x; x = y; y = tmp; }
+                if (SDLOpenTouch.invertMouseX) x = -x;
+                if (SDLOpenTouch.invertMouseY) y = -y;
                 SDLActivity.onNativeMouse(0, action, x, y, true);
                 return true;
 
@@ -2278,6 +2284,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
                 x = event.getX(0);
                 y = event.getY(0);
+                if (SDLOpenTouch.swapMouseXY) { float tmp = x; x = y; y = tmp; }
+                if (SDLOpenTouch.invertMouseX) x = -x;
+                if (SDLOpenTouch.invertMouseY) y = -y;
                 int button = event.getButtonState();
 
                 SDLActivity.onNativeMouse(button, action, x, y, true);
