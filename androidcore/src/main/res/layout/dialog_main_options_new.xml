@@ -47,6 +47,10 @@
             layout="@layout/widget_view_switch" />
 
         <include
+            android:id="@+id/touch_joy_multitouch"
+            layout="@layout/widget_view_switch" />
+
+        <include
             android:id="@+id/sdl_audio_backend"
             layout="@layout/widget_view_spinner" />
 

@@ -33,6 +33,7 @@ class OptionsDialogKt(
         const val HIDE_TOUCH_GFX = "hide_touch_graphics"
         const val USE_SYSTEM_KEYBOARD = "use_system_keyboard"
         const val USE_ALT_TOUCH_CODE = "use_alt_touch_code"
+        const val TOUCH_JOY_MULTITOUCH = "touch_joy_multitouch"
         const val GROUP_SIMILAR_ENGINES = "group_similar_engines"
         const val SDL_AUDIO_BACKEND = "sdl_audio_backend"
         const val OPENAL_AUDIO_BACKEND = "openal_audio_backend"
@@ -144,6 +145,10 @@ class OptionsDialogKt(
         )
 
         SwitchWidget(
+            activity, binding.touchJoyMultitouch.root, "Touch pad multi-touch", "Enable to allow multiple touches on look and move pads", TOUCH_JOY_MULTITOUCH, false
+        )
+
+        SwitchWidget(
             activity,
             binding.groupSimilarEngines.root,
             "Group similar engines",
@@ -153,12 +158,7 @@ class OptionsDialogKt(
         )
 
         SwitchWidget(
-            activity,
-            binding.enableVibrate.root,
-            "Enable vibrate for keyboard",
-            "Enable vibration on each keyboard key press",
-            ENABLE_VIBRATE,
-            true
+            activity, binding.enableVibrate.root, "Enable vibrate for keyboard", "Enable vibration on each keyboard key press", ENABLE_VIBRATE, true
         )
 
         val sdlAudioItems: Array<Pair<String, View?>>
@@ -168,8 +168,7 @@ class OptionsDialogKt(
             sdlAudioItems = arrayOf(
                 Pair("OpenSL (Default)", null), Pair("Audio Tack (Old)", null), Pair("AAudio (low latency)", null)
             )
-        }
-        else
+        } else
         {
             sdlAudioItems = arrayOf(
                 Pair("OpenSL (Default)", null), Pair("Audio Tack (Old)", null)

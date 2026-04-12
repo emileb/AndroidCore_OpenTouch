@@ -31,7 +31,7 @@ public class TouchSettings
     public static final int GAME_OPTION_VULKAN = 0x400;
     public static final int GAME_OPTION_DOOM_SET_DOOMWADDIR = 0x800;
     public static final int GAME_OPTION_OPENAL_USE_OBOE = 0x1000;
-
+    public static final int GAME_OPTION_TOUCHJOY_MULTITOUCH = 0x2000;
     public static boolean DEBUG = true;
     public static String gamePadControlsFile;
 
@@ -40,7 +40,7 @@ public class TouchSettings
     public static boolean gamepadHidetouch;
     public static boolean hideGameAndMenuTouch;
     public static boolean useSystemKeyboard;
-
+    public static boolean touchJoyMultiTouch;
     public static void reloadSettings(Context ctx)
     {
         gamePadControlsFile = ctx.getFilesDir().toString() + "/gamepadSettings.dat";
@@ -49,6 +49,7 @@ public class TouchSettings
         gamepadHidetouch = getBoolOption(ctx, OptionsDialogKt.GAMEPAD_HIDE_TOUCH, true);
         hideGameAndMenuTouch = SwitchWidget.fetchValue(ctx, OptionsDialogKt.HIDE_TOUCH_GFX, AppInfo.isAndroidTv); // default to hide on Android TV
         useSystemKeyboard = SwitchWidget.fetchValue(ctx, OptionsDialogKt.USE_SYSTEM_KEYBOARD, false);
+        touchJoyMultiTouch = SwitchWidget.fetchValue(ctx, OptionsDialogKt.TOUCH_JOY_MULTITOUCH, false);
     }
 
     public static float getFloatOption(Context ctx, String name, float def)

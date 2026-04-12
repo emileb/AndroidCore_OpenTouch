@@ -223,6 +223,9 @@ public class SDLOpenTouch
         if (TouchSettings.useSystemKeyboard)
             options |= TouchSettings.GAME_OPTION_USE_SYSTEM_KEYBOARD;
 
+        if (TouchSettings.touchJoyMultiTouch)
+            options |= TouchSettings.GAME_OPTION_TOUCHJOY_MULTITOUCH;
+
         int gles_version = intent.getIntExtra("gles_version", 1);
 
         if (gles_version == 2)
