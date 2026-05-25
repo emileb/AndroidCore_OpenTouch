@@ -1379,7 +1379,7 @@ public class GamepadDefinitions
                 gamepadDefinition.addAction("n64_a_butotn", "A Button", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_0, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("n64_b_butotn", "B Button", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_CUSTOM_1, ActionInput.SourceType.BUTTON, -1);
                 gamepadDefinition.addAction("n64_radial", "Radial menu", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_INVEN, ActionInput.SourceType.BUTTON, -1);
-
+                gamepadDefinition.addAction("n64_aim_mode", "Aim Mode", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_ZOOM_IN, ActionInput.SourceType.BUTTON, -1);
 
                 gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
 
