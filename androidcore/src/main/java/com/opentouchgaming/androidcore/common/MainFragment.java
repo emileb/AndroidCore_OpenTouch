@@ -48,6 +48,7 @@ import com.opentouchgaming.androidcore.license.LicenseCheck;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.opentouchgaming.androidcore.ui.AppPromoDialog;
 import com.opentouchgaming.androidcore.ui.EnginesPanel;
 import com.opentouchgaming.androidcore.ui.FileSelectDialog;
 import com.opentouchgaming.androidcore.ui.OptionsDialogKt;
@@ -89,8 +90,8 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
             AppInfo.website == null ? new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_EMAIL,
                                                                       "Email log",
                                                                       R.drawable.ic_email_black_24dp) : new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_WEBSITE,
-                                                                                                                                        "Online",
-                                                                                                                                        R.drawable.ic_baseline_world),
+                                                                                                                                        "Other apps",
+                                                                                                                                        R.drawable.baseline_android_24),
             new ToolsPanel.ToolsPanelButton(TOOL_BUTTON_HELP, "Tutorials", R.drawable.ic_help_green),};
     private final ArrayList<SubGame> multiselectGames = new ArrayList<>();
     public boolean noLicCheck = false;
@@ -804,8 +805,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         }
         else if (code == TOOL_BUTTON_WEBSITE)
         {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppInfo.website));
-            startActivity(browserIntent);
+            new AppPromoDialog().showDialog(getActivity());
         }
     }
 
