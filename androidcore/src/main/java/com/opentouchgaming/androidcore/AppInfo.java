@@ -422,6 +422,6 @@ public class AppInfo
 
     public enum Apps
     {
-        MOD_ENGINE, DELTA_TOUCH, ALPHA_TOUCH, QUAD_TOUCH, RAZE_TOUCH
+        MOD_ENGINE, DELTA_TOUCH, ALPHA_TOUCH, QUAD_TOUCH, RAZE_TOUCH, PSI_TOUCH
     }
 }
