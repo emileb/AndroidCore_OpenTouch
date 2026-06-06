@@ -9,6 +9,13 @@
         <item name="android:windowMinWidthMinor">80%</item>
     </style>
 
+    <style name="DialogAppPromo" >
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowMinWidthMajor">95%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+    </style>
 
     <style name="DialogEngineSettingsWrap" >
         <item name="android:windowNoTitle">true</item>

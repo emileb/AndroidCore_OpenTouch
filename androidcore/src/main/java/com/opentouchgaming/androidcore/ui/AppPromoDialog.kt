@@ -85,7 +85,7 @@ class AppPromoDialog
     {
         binding = DialogAppPromoBinding.inflate(activity.layoutInflater)
 
-        val dialog = Dialog(activity, R.style.DialogEngineSettings)
+        val dialog = Dialog(activity, R.style.DialogAppPromo)
         dialog.window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(binding.root)
