@@ -13,7 +13,7 @@ import com.opentouchgaming.androidcore.AppInfo
 import com.opentouchgaming.androidcore.AppSettings
 import com.opentouchgaming.androidcore.R
 
-class AudioOverrideWidget internal constructor(internal var settingPrefix: String)
+class AudioOverrideWidget constructor(internal var settingPrefix: String)
 {
     private val freqList = arrayOf(48000, 44100, 22050, 11025)
     private val samplesList = arrayOf(128, 256, 512, 1024, 1536, 2048, 2560, 3072, 3584, 4096, 5120, 6144, 7168, 8192)
@@ -138,6 +138,8 @@ class AudioOverrideWidget internal constructor(internal var settingPrefix: Strin
 
     fun getBackend(): Int
     {
-        return backend - 1 // Shift down so default returns -1
+        loadSettings()
+        return if (override) backend - 1 // Shift down so default returns -1
+        else -1
     }
 }

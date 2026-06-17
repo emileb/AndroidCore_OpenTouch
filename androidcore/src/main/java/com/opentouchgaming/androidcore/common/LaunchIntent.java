@@ -34,12 +34,16 @@ public class LaunchIntent
 
         // Audio
         int audioDefault = SpinnerWidget.fetchValue(ctx, OptionsDialogKt.SDL_AUDIO_BACKEND, 0); // For SDL
+        // A per-engine override (>= 0) takes precedence over the global SDL backend setting.
+        int audioBackend = engineOptions.audioOverrideBackend();
+        if (audioBackend < 0)
+            audioBackend = audioDefault;
         int audioFreq = engineOptions.audioOverrideFreq();
         int audioSamples = engineOptions.audioOverrideSamples();
         int SDLMidiPlayer = engineOptions.SDLMidiBackend();
         int openALBackend = SpinnerWidget.fetchValue(ctx, OptionsDialogKt.OPENAL_AUDIO_BACKEND, 0); // Default OpenSL
 
-        intent.putExtra("audio_backend", audioDefault);
+        intent.putExtra("audio_backend", audioBackend);
         intent.putExtra("audio_freq", audioFreq);
         intent.putExtra("audio_samples", audioSamples);
         intent.putExtra("sdl_midi_player", SDLMidiPlayer);
@@ -48,6 +52,9 @@ public class LaunchIntent
         // Gamepad config override (null means use the global setting)
         if (runInfo.gamepadConfig != null)
             intent.putExtra("engine_gamepad_config", runInfo.gamepadConfig);
+
+        // In-menu tap-to-position mouse (TFE / OpenJK)
+        intent.putExtra("mouse_tap_mode", runInfo.mouseTapMode);
 
         // Other
         intent.putExtra("game_type", gameType);
