@@ -32,6 +32,7 @@ public class TouchSettings
     public static final int GAME_OPTION_DOOM_SET_DOOMWADDIR = 0x800;
     public static final int GAME_OPTION_OPENAL_USE_OBOE = 0x1000;
     public static final int GAME_OPTION_TOUCHJOY_MULTITOUCH = 0x2000;
+    public static final int GAME_OPTION_MOUSE_TAP_MODE = 0x4000;
     public static boolean DEBUG = true;
     public static String gamePadControlsFile;
 

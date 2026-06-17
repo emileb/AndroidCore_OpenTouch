@@ -60,5 +60,11 @@ public interface EngineOptionsInterface
 
         /** Override gamepad config filename for this engine. Null means use the global setting. */
         public String gamepadConfig = null;
+
+        /**
+         * In-menu tap-to-position mouse (TFE / OpenJK). Defaults to enabled; only engines that
+         * implement PortableSetMouseTapMode() act on it (see GAME_OPTION_MOUSE_TAP_MODE).
+         */
+        public boolean mouseTapMode = true;
     }
 }

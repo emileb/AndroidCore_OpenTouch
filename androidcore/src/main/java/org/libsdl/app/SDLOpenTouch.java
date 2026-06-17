@@ -234,6 +234,11 @@ public class SDLOpenTouch
         if (TouchSettings.touchJoyMultiTouch)
             options |= TouchSettings.GAME_OPTION_TOUCHJOY_MULTITOUCH;
 
+        // In-menu tap-to-position mouse (TFE / OpenJK); default enabled. Engines that don't
+        // implement PortableSetMouseTapMode() ignore this bit (guarded in native).
+        if (intent.getBooleanExtra("mouse_tap_mode", true))
+            options |= TouchSettings.GAME_OPTION_MOUSE_TAP_MODE;
+
         int gles_version = intent.getIntExtra("gles_version", 1);
 
         if (gles_version == 2)
