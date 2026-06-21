@@ -1507,6 +1507,467 @@ public class GamepadDefinitions
                                             ActionInput.SourceType.BUTTON,
                                             -1);
             }
+            else if (app == AppInfo.Apps.PSI_TOUCH)
+            {
+                gamepadDefinition.addHeader("Common");
+
+                gamepadDefinition.addAction("analog_move_fwd",
+                                            "Fwd/Back",
+                                            ActionInput.ActionType.ANALOG,
+                                            PortActDefs.ACTION_ANALOG_FWD,
+                                            ActionInput.SourceType.AXIS,
+                                            MotionEventCompat.AXIS_Y,
+                                            new AnalogAxisDialog());
+
+                gamepadDefinition.addAction("analog_move_strafe",
+                                            "Strafe",
+                                            ActionInput.ActionType.ANALOG,
+                                            PortActDefs.ACTION_ANALOG_STRAFE,
+                                            ActionInput.SourceType.AXIS,
+                                            MotionEventCompat.AXIS_X,
+                                            new AnalogAxisDialog());
+
+                gamepadDefinition.addAction("analog_look_yaw",
+                                            "Look Left/Right",
+                                            ActionInput.ActionType.ANALOG,
+                                            PortActDefs.ACTION_ANALOG_YAW,
+                                            ActionInput.SourceType.AXIS,
+                                            MotionEventCompat.AXIS_Z,
+                                            new AnalogAxisDialog());
+
+                gamepadDefinition.addAction("analog_look_pitch",
+                                            "Look Up/Down",
+                                            ActionInput.ActionType.ANALOG,
+                                            PortActDefs.ACTION_ANALOG_PITCH,
+                                            ActionInput.SourceType.AXIS,
+                                            MotionEventCompat.AXIS_RZ,
+                                            new AnalogAxisDialog());
+
+                gamepadDefinition.addAction("attack",
+                                            "Fire",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_ATTACK,
+                                            ActionInput.SourceType.AXIS,
+                                            MotionEventCompat.AXIS_GAS);
+
+                gamepadDefinition.addAction("use",
+                                            "Open/Use",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_USE,
+                                            ActionInput.SourceType.BUTTON,
+                                            KeyEvent.KEYCODE_BUTTON_A);
+
+                gamepadDefinition.addAction("jump",
+                                            "Jump",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_JUMP,
+                                            ActionInput.SourceType.BUTTON,
+                                            KeyEvent.KEYCODE_BUTTON_X);
+
+                gamepadDefinition.addAction("crouch",
+                                            "Crouch",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DOWN,
+                                            ActionInput.SourceType.BUTTON,
+                                            KeyEvent.KEYCODE_BUTTON_B);
+
+                gamepadDefinition.addAction("crouch_toggle",
+                                            "Crouch (toggle)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_TOGGLE_CROUCH,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("next_weapon",
+                                            "Next weapon",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_NEXT_WEP,
+                                            ActionInput.SourceType.BUTTON,
+                                            KeyEvent.KEYCODE_BUTTON_R1);
+
+                gamepadDefinition.addAction("prev_weapon",
+                                            "Prev weapon",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_PREV_WEP,
+                                            ActionInput.SourceType.BUTTON,
+                                            KeyEvent.KEYCODE_BUTTON_L1);
+
+                gamepadDefinition.addAction("weapon_alt",
+                                            "Alt Attack",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_ALT_ATTACK,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("show_utils",
+                                            "Show Utils(Save,Load,Map,Keybrd etc)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_SHOW_GP_UTILS,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("weapon_wheel",
+                                            "Activate Weapon wheel",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_USE_WEAPON_WHEEL,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1,
+                                            new WeaponWheelDialog());
+
+                gamepadDefinition.addAction("map",
+                                            "Map",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_MAP,
+                                            ActionInput.SourceType.BUTTON,
+                                            KeyEvent.KEYCODE_BUTTON_Y);
+
+                gamepadDefinition.addAction("keyboard",
+                                            "Show keyboard",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_SHOW_KBRD,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("gyro_toggle",
+                                            "Gyro Smart Toggle",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_GYRO_TOGGLE,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addHeader("Dark Forces");
+
+                gamepadDefinition.addAction("df_holster",
+                                            "Holster weapon",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_HOLSTER_WEAPON,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("df_pda",
+                                            "PDA / Datapad",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DATAPAD,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("df_night_vision",
+                                            "Night vision goggles",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DF_NIGHT_VISION,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("df_head_lamp",
+                                            "Head lamp",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DF_HEAD_LAMP,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("df_gas_mask",
+                                            "Gas mask",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DF_GAS_MASK,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("df_cleats",
+                                            "Ice cleats",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DF_CLEATS,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addHeader("Jedi Knight (OpenJK)");
+
+                gamepadDefinition.addAction("jk_force_use",
+                                            "Use selected force power",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_USE,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_next",
+                                            "Next force power",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_NEXT_FORCE,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_prev",
+                                            "Prev force power",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_PREV_FORCE,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_select",
+                                            "Show force power select",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_SELECT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_saber_style",
+                                            "Cycle saber style",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_SABER_STYLE,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_saber_toggle",
+                                            "Toggle saber (weapon 1)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_SABER_SEL,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_third_person",
+                                            "Toggle third person",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_THIRD_PERSON,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_datapad",
+                                            "Datapad (objectives)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DATAPAD,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_inv_use",
+                                            "Inventory use",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_INVUSE,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_inv_prev",
+                                            "Inventory previous",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_INVPREV,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_inv_next",
+                                            "Inventory next",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_INVNEXT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_push",
+                                            "Force Push",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_PUSH,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_pull",
+                                            "Force Pull",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_PULL,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_speed",
+                                            "Force Speed",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_SPEED,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_heal",
+                                            "Force Heal",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_HEAL,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_mind",
+                                            "Force Mind Trick",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_MIND,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_grip",
+                                            "Force Grip",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_GRIP,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_lightning",
+                                            "Force Lightning",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_LIGHT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_drain",
+                                            "Force Drain (JA)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_DRAIN,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_rage",
+                                            "Force Rage (JA)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_RAGE,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_protect",
+                                            "Force Protect (JA)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_PROTECT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_absorb",
+                                            "Force Absorb (JA)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_ABSORB,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("jk_force_sight",
+                                            "Force Sight (JA)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FORCE_SIGHT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
+
+                gamepadDefinition.addAction("custom_0",
+                                            "Custom 1",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_0,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("custom_1",
+                                            "Custom 2",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_1,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("custom_2",
+                                            "Custom 3",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_2,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("custom_3",
+                                            "Custom 4",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_3,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("custom_4",
+                                            "Custom 5",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_4,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("custom_5",
+                                            "Custom 6",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_5,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("custom_6",
+                                            "Custom 7",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_6,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("custom_7",
+                                            "Custom 8",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_7,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("custom_8",
+                                            "Custom 9",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_8,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("custom_9",
+                                            "Custom 10",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CUSTOM_9,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addHeader("Common menu navigation keys");
+
+                gamepadDefinition.addAction("menu_select",
+                                            "Menu select",
+                                            ActionInput.ActionType.MENU,
+                                            PortActDefs.PORT_ACT_MENU_SELECT,
+                                            ActionInput.SourceType.BUTTON,
+                                            KeyEvent.KEYCODE_BUTTON_A);
+
+                gamepadDefinition.addAction("menu_back",
+                                            "Menu back",
+                                            ActionInput.ActionType.MENU,
+                                            PortActDefs.PORT_ACT_MENU_BACK,
+                                            ActionInput.SourceType.BUTTON,
+                                            KeyEvent.KEYCODE_BUTTON_B);
+
+                gamepadDefinition.addAction("menu_show",
+                                            "Menu show (back button)",
+                                            ActionInput.ActionType.MENU,
+                                            PortActDefs.PORT_ACT_MENU_SHOW,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addHeader("Digital move (do not set if using sticks)");
+
+                gamepadDefinition.addAction("forward_btn",
+                                            "Move Forward button",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FWD,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("back_btn",
+                                            "Move Backwards button",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_BACK,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("strafe_left_btn",
+                                            "Strafe Left button",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_MOVE_LEFT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("strafe_right_btn",
+                                            "Strafe Right button",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_MOVE_RIGHT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("look_left_btn",
+                                            "Look Left button",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_LEFT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+                gamepadDefinition.addAction("look_right_btn",
+                                            "Look Right button",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_RIGHT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+            }
         }
 
         return gamepadDefinition;
