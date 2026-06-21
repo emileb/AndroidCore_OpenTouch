@@ -91,6 +91,7 @@ public class PortActDefs
     public static final int PORT_ACT_FORCE_SELECT = 69;
     public static final int PORT_ACT_WEAPON_SELECT = 70;
     public static final int PORT_ACT_SABER_STYLE = 71;
+    public static final int PORT_ACT_THIRD_PERSON = 74;
     public static final int PORT_ACT_FORCE_PULL = 75;
     public static final int PORT_ACT_FORCE_MIND = 76;
     public static final int PORT_ACT_FORCE_LIGHT = 77;
@@ -98,6 +99,12 @@ public class PortActDefs
     public static final int PORT_ACT_FORCE_GRIP = 79;
     public static final int PORT_ACT_FORCE_SPEED = 80;
     public static final int PORT_ACT_FORCE_PUSH = 81;
+    //JK3 force powers
+    public static final int PORT_ACT_FORCE_DRAIN = 82;
+    public static final int PORT_ACT_FORCE_RAGE = 83;
+    public static final int PORT_ACT_FORCE_PROTECT = 84;
+    public static final int PORT_ACT_FORCE_ABSORB = 85;
+    public static final int PORT_ACT_FORCE_SIGHT = 86;
     public static final int PORT_ACT_SABER_SEL = 87; //Just chooses weapon 1 so show/hide saber.
 
     //Choloate
@@ -108,6 +115,7 @@ public class PortActDefs
     public static final int PORT_ACT_FLY_DOWN = 94;
     public static final int PORT_ACT_FLY_CENTER = 95;
     public static final int PORT_ACT_GYRO_TOGGLE = 96;
+    public static final int PORT_ACT_HOLSTER_WEAPON = 97;
 
     public static final int PORT_ACT_WEAP0 = 100;
     public static final int PORT_ACT_WEAP1 = 101;
@@ -160,6 +168,13 @@ public class PortActDefs
     //Doom 3
     public static final int PORT_ACT_FLASH_LIGHT = 200;
     public static final int PORT_ACT_SPRINT = 201;
+
+    //Dark Forces (TheForceEngine) inventory items
+    public static final int PORT_ACT_DF_NIGHT_VISION = 210;
+    public static final int PORT_ACT_DF_CLEATS = 211;
+    public static final int PORT_ACT_DF_GAS_MASK = 212;
+    public static final int PORT_ACT_DF_HEAD_LAMP = 213;
+    public static final int PORT_ACT_DF_HEADWAVE = 214;
 
     //Menu
     public static final int PORT_ACT_MENU_UP = 0x200;
