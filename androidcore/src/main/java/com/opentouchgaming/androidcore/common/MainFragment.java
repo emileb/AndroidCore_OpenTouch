@@ -23,6 +23,7 @@ import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -34,12 +35,14 @@ import com.opentouchgaming.androidcore.AboutDialog;
 import com.opentouchgaming.androidcore.AppInfo;
 import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.DebugLog;
+import com.opentouchgaming.androidcore.GD;
 import com.opentouchgaming.androidcore.GameEngine;
 import com.opentouchgaming.androidcore.GamepadActivity;
 import com.opentouchgaming.androidcore.ItemClickSupport;
 import com.opentouchgaming.androidcore.LogViewDialog;
 import com.opentouchgaming.androidcore.R;
 import com.opentouchgaming.androidcore.ScopedStorage;
+import com.opentouchgaming.androidcore.SimpleServerAccess;
 import com.opentouchgaming.androidcore.SubGame;
 import com.opentouchgaming.androidcore.SubGameRecyclerViewAdapter;
 import com.opentouchgaming.androidcore.Utils;
@@ -61,6 +64,7 @@ import java.io.File;
 import com.opentouchgaming.androidcore.ui.tutorial.TutorialDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class MainFragment extends Fragment implements ToolsPanel.Listener, EnginesPanel.Listener
@@ -148,6 +152,40 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         }
     }
 
+    // Ask the server for the latest versionCode for this app. If it is higher than
+    // the installed one, reveal the download button (which opens AppInfo.website).
+    private void checkForNewVersion()
+    {
+        if (AppInfo.versionCheckKey == null)
+            return;
+
+        String query = AppInfo.versionCheckUrl + "?app=" + AppInfo.versionCheckKey;
+        ArrayList<String> urls = new ArrayList<>(Arrays.asList("https://" + query, "http://" + query));
+
+        SimpleServerAccess.get(urls, body ->
+        {
+            if (body == null || !isAdded())
+                return;
+
+            int latest;
+            try
+            {
+                latest = Integer.decode(body);
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+
+            log.log(D, "Version check: server=" + latest + " installed=" + GD.version);
+            if (latest > GD.version)
+            {
+                Toast.makeText(getActivity(), "New version available", Toast.LENGTH_LONG).show();
+                downloadNewVersion.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -170,6 +208,12 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         swapVerImageButton.setOnClickListener(view1 -> cycleVersion());
         superModButton = view.findViewById(R.id.imageview_super_mod);
         downloadNewVersion = view.findViewById(R.id.imagebutton_new_version);
+        downloadNewVersion.setOnClickListener(v ->
+        {
+            if (AppInfo.website != null)
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AppInfo.website)));
+        });
+        checkForNewVersion();
 
         // Title text and set font
         appTitleTextView = view.findViewById(R.id.app_title_textive);

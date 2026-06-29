@@ -54,6 +54,12 @@ public class AppInfo
     public static boolean showRateButton = true;
     public static boolean canDisabledScopedStorage = true;
 
+    // Online version check. Setting versionCheckKey non-null enables it: MainFragment
+    // queries versionCheckUrl with this key and shows the download button (-> website)
+    // if the server reports a higher versionCode than the installed one.
+    public static String versionCheckKey = null; // e.g. "psi"; null = feature off
+    public static String versionCheckUrl = "opentouchgaming.com/api/version.php"; // host+path, no scheme
+
     static DebugLog log;
     private static Context context;
 
