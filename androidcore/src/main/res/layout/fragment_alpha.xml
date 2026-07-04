@@ -61,6 +61,17 @@
         android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_swap_horiz_black" />
 
+    <Spinner
+        android:id="@+id/spinner_folder_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/engine_title_textView"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#80808080"
+        android:visibility="gone" />
+
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/imagebutton_new_version"
         android:layout_width="50dp"

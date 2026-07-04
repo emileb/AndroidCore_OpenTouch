@@ -20,8 +20,11 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,6 +124,7 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
     public ImageButton multiplayerButton;
     public ImageButton superModButton;
     public ImageButton downloadNewVersion;
+    public Spinner folderSpinner;
     public Drawable subgameSeparatorLine; // So we cna change the color of the line
     public int selectedVersion = 0;
     public ArrayList<SubGame> availableSubGames = new ArrayList<>();
@@ -208,12 +212,15 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
         swapVerImageButton.setOnClickListener(view1 -> cycleVersion());
         superModButton = view.findViewById(R.id.imageview_super_mod);
         downloadNewVersion = view.findViewById(R.id.imagebutton_new_version);
+
         downloadNewVersion.setOnClickListener(v ->
         {
             if (AppInfo.website != null)
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AppInfo.website)));
         });
         checkForNewVersion();
+
+        folderSpinner = view.findViewById(R.id.spinner_folder_select);
 
         // Title text and set font
         appTitleTextView = view.findViewById(R.id.app_title_textive);
@@ -729,8 +736,64 @@ public class MainFragment extends Fragment implements ToolsPanel.Listener, Engin
 
         setLauncher();
 
+        updateFolderSpinner();
+
         refreshSubGames();
         selectSubGame(engineData.selectedSubGamePos);
+    }
+
+    // Show a small folder selection spinner in the top left if the launcher offers selectable
+    // folders (e.g. FTEQW can run from "Q1" for Quake or "H2" for Hexen). Hidden otherwise.
+    public void updateFolderSpinner()
+    {
+        String[] folders = launcher.getSelectableFolders();
+
+        if (folders == null)
+        {
+            folderSpinner.setOnItemSelectedListener(null);
+            folderSpinner.setVisibility(View.GONE);
+            return;
+        }
+
+        folderSpinner.setVisibility(View.VISIBLE);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, folders);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Attach listener before setting the adapter/selection. Programmatic selection of the
+        // already selected folder is a no-op below, so it won't trigger a spurious refresh.
+        folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                String folder = folders[position];
+                if (folder.equals(launcher.getSelectedFolder()))
+                    return; // No change
+
+                launcher.setSelectedFolder(folder);
+                refreshSubGames();
+                selectSubGame(0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+            }
+        });
+
+        folderSpinner.setAdapter(adapter);
+
+        // Sync the spinner to the launcher's current folder
+        String current = launcher.getSelectedFolder();
+        for (int i = 0; i < folders.length; i++)
+        {
+            if (folders[i].equals(current))
+            {
+                folderSpinner.setSelection(i);
+                break;
+            }
+        }
     }
 
     public void refreshSubGames()
