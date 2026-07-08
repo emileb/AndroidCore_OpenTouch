@@ -31,6 +31,9 @@ public class GamepadActivity extends Activity
         if (AppInfo.getContext() == null)
             AppInfo.setContext(this);
 
+        // May be a cold start of the main process (launched from the :game process), statics are unset
+        AppSettings.reloadSettings(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gamepad);
 
