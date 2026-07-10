@@ -1507,7 +1507,7 @@ public class GamepadDefinitions
                                             ActionInput.SourceType.BUTTON,
                                             -1);
             }
-            else if (app == AppInfo.Apps.PSI_TOUCH)
+            else if (app == AppInfo.Apps.PSI_TOUCH || app == AppInfo.Apps.SIGMA_TOUCH)
             {
                 gamepadDefinition.addHeader("Common");
 
