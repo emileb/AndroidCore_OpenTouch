@@ -3,6 +3,7 @@ package com.opentouchgaming.androidcore.ui;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -99,6 +100,7 @@ public class EnginesPanel
         // Total width of the panel excluding the open button
         int leftPanelSlideAmmount = 0;
         int screenHeightPx;  // Get screen height in pixels
+        int screenWidthPx;
 
         //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
         if (false)
@@ -106,11 +108,13 @@ public class EnginesPanel
             DisplayMetrics outMetrics = new DisplayMetrics();
             context.getWindowManager().getDefaultDisplay().getRealMetrics(outMetrics);
             screenHeightPx = outMetrics.heightPixels;
+            screenWidthPx = outMetrics.widthPixels;
         }
         else // Very old, Android 16!
         {
             Configuration configuration = context.getResources().getConfiguration();
             screenHeightPx = Utils.dpToPx(context.getResources(), configuration.screenHeightDp);
+            screenWidthPx = Utils.dpToPx(context.getResources(), configuration.screenWidthDp);
         }
 
         // Check if we have a side image
@@ -132,8 +136,9 @@ public class EnginesPanel
         float cfgButtonSize = 0.8f;
 
         // Calculate square button size
-        // Give equal size for each ui group
-        int buttonSize = screenHeightPx / engineGroups.size();
+        // Give equal size for each ui group, but never more than 1/6 of the screen width
+        // (otherwise a small number of engines results in huge buttons)
+        int buttonSize = Math.min(screenHeightPx / engineGroups.size(), screenWidthPx / 8);
         int buttonCfgSize;
         int totalWidth;
 
@@ -169,6 +174,8 @@ public class EnginesPanel
             params.weight = 1;
             params.setMargins(margin, margin, margin, margin);
             groupLayout.setLayoutParams(params);
+            // Buttons are now capped below the row height, so center them within the row
+            groupLayout.setGravity(Gravity.CENTER_VERTICAL);
 
             // Contains one or more engine icons in a row
             LinearLayout enginesLayout = new LinearLayout(context);
