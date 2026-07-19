@@ -70,6 +70,14 @@ class AppPromoDialog
             "https://play.google.com/store/apps/details?id=com.opentouchgaming.quadtouch"
         ),
         PromoApp(
+            AppInfo.Apps.PSI_TOUCH,
+            "Psi Touch",
+            "Dark Forces & Jedi Knight classics!",
+            listOf("The Force Engine", "Dark Forces", "Jedi Academy", "Jedi Outcast", "Jedi Academy MP"),
+            "promo_psi",
+            "http://opentouchgaming.com/psi-touch/"
+        ),
+        PromoApp(
             AppInfo.Apps.RAZE_TOUCH,
             "Zeta Touch",
             "Duke Nukem 3D and other Build engine classics!",
