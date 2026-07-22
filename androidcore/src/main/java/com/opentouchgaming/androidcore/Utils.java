@@ -139,6 +139,7 @@ public class Utils
             if (pb != null)
                 pb.setProgress(pb.getProgress() + read);
         }
+        out.flush();
         out.close();
     }
 
@@ -527,11 +528,13 @@ public class Utils
     static public void copyAsset(Context ctx, String file, String destdir, String destFilename)
     {
         AssetManager assetManager = ctx.getAssets();
-        new File(destdir).mkdirs();
+        new FileSAF(destdir).mkdirs();
         try
         {
             InputStream in = assetManager.open(file);
-            OutputStream out = new FileOutputStream(destdir + "/" + destFilename);
+            FileSAF outFile = new FileSAF(destdir + "/" + destFilename);
+            outFile.createNewFile();
+            OutputStream out = outFile.getOutputStream();
             copyFile(in, out);
             in.close();
             out.flush();
