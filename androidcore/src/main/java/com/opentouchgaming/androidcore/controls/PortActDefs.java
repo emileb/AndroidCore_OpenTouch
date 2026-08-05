@@ -176,6 +176,12 @@ public class PortActDefs
     public static final int PORT_ACT_DF_HEAD_LAMP = 213;
     public static final int PORT_ACT_DF_HEADWAVE = 214;
 
+    //UE1 engines: dodge, normally a double-tap of a movement direction
+    public static final int PORT_ACT_DODGE_LEFT = 221;
+    public static final int PORT_ACT_DODGE_RIGHT = 222;
+    public static final int PORT_ACT_DODGE_FWD = 223;
+    public static final int PORT_ACT_DODGE_BACK = 224;
+
     //Menu
     public static final int PORT_ACT_MENU_UP = 0x200;
     public static final int PORT_ACT_MENU_DOWN = 0x201;

@@ -2103,6 +2103,35 @@ public class GamepadDefinitions
                                             ActionInput.SourceType.BUTTON,
                                             -1);
 
+                // Both engines: normally a double-tap of a movement direction
+                gamepadDefinition.addAction("dodge_left",
+                                            "Dodge left",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DODGE_LEFT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("dodge_right",
+                                            "Dodge right",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DODGE_RIGHT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("dodge_fwd",
+                                            "Dodge forward",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DODGE_FWD,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("dodge_back",
+                                            "Dodge back",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DODGE_BACK,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
                 gamepadDefinition.addHeader("UE1 (Unreal)");
 
                 gamepadDefinition.addAction("use",
