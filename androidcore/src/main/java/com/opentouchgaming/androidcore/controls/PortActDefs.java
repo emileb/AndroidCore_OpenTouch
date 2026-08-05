@@ -182,6 +182,17 @@ public class PortActDefs
     public static final int PORT_ACT_DODGE_FWD = 223;
     public static final int PORT_ACT_DODGE_BACK = 224;
 
+    //AVP. Vision is common: intensifier for the Marine, sense for the Alien, cloak for the Predator
+    public static final int PORT_ACT_AVP_VISION = 230;
+    public static final int PORT_ACT_AVP_CLOAK = 231;
+    public static final int PORT_ACT_AVP_CYCLE_VISION = 232;
+    public static final int PORT_ACT_AVP_FLARE = 233;
+    public static final int PORT_ACT_AVP_JETPACK = 234;
+    public static final int PORT_ACT_AVP_GRAPPLE = 235;
+    public static final int PORT_ACT_AVP_RECALL_DISC = 236;
+    public static final int PORT_ACT_AVP_ZOOM_IN = 237;
+    public static final int PORT_ACT_AVP_ZOOM_OUT = 238;
+
     //Menu
     public static final int PORT_ACT_MENU_UP = 0x200;
     public static final int PORT_ACT_MENU_DOWN = 0x201;

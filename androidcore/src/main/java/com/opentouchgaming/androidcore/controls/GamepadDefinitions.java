@@ -54,7 +54,7 @@ public class GamepadDefinitions
                                             new AnalogAxisDialog());
 
                 gamepadDefinition.addAction("attack",
-                                            "Fire",
+                                            "Attack",
                                             ActionInput.ActionType.BUTTON,
                                             PortActDefs.PORT_ACT_ATTACK,
                                             ActionInput.SourceType.AXIS,
@@ -846,7 +846,7 @@ public class GamepadDefinitions
                                             new AnalogAxisDialog());
 
                 gamepadDefinition.addAction("attack",
-                                            "Fire",
+                                            "Attack",
                                             ActionInput.ActionType.BUTTON,
                                             PortActDefs.PORT_ACT_ATTACK,
                                             ActionInput.SourceType.AXIS,
@@ -1215,7 +1215,7 @@ public class GamepadDefinitions
                                             new AnalogAxisDialog());
 
                 gamepadDefinition.addAction("attack",
-                                            "Fire",
+                                            "Attack",
                                             ActionInput.ActionType.BUTTON,
                                             PortActDefs.PORT_ACT_ATTACK,
                                             ActionInput.SourceType.AXIS,
@@ -1544,7 +1544,7 @@ public class GamepadDefinitions
                                             new AnalogAxisDialog());
 
                 gamepadDefinition.addAction("attack",
-                                            "Fire",
+                                            "Attack",
                                             ActionInput.ActionType.BUTTON,
                                             PortActDefs.PORT_ACT_ATTACK,
                                             ActionInput.SourceType.AXIS,
@@ -2005,7 +2005,7 @@ public class GamepadDefinitions
                                             new AnalogAxisDialog());
 
                 gamepadDefinition.addAction("attack",
-                                            "Fire",
+                                            "Attack",
                                             ActionInput.ActionType.BUTTON,
                                             PortActDefs.PORT_ACT_ATTACK,
                                             ActionInput.SourceType.AXIS,
@@ -2140,6 +2140,66 @@ public class GamepadDefinitions
                                             PortActDefs.PORT_ACT_USE,
                                             ActionInput.SourceType.BUTTON,
                                             KeyEvent.KEYCODE_BUTTON_A);
+
+                gamepadDefinition.addHeader("AVP (Aliens vs Predator)");
+
+                // One action for all three: the engine takes it as the Marine's
+                // intensifier, the Alien's sense and the Predator's cloak
+                gamepadDefinition.addAction("avp_vision",
+                                            "Vision/Cloak",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_AVP_VISION,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("avp_flare",
+                                            "Throw flare (Marine)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_AVP_FLARE,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("avp_jetpack",
+                                            "Jetpack (Marine)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_AVP_JETPACK,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("avp_cycle_vision",
+                                            "Cycle vision mode (Predator)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_AVP_CYCLE_VISION,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("avp_recall_disc",
+                                            "Recall disc (Predator)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_AVP_RECALL_DISC,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("avp_grapple",
+                                            "Grappling hook (Predator)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_AVP_GRAPPLE,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("avp_zoom_in",
+                                            "Zoom in (Predator)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_AVP_ZOOM_IN,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("avp_zoom_out",
+                                            "Zoom out (Predator)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_AVP_ZOOM_OUT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
 
                 gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
 
