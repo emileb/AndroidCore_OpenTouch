@@ -11,6 +11,9 @@ class SwitchWidget(
 {
     private var binding = WidgetViewSwitchBinding.bind(view)
 
+    // Callback
+    var callback: ((Boolean) -> Unit)? = null
+
     init
     {
         binding.title.text = title
@@ -28,6 +31,8 @@ class SwitchWidget(
         // Add new change listener
         binding.switch1.setOnCheckedChangeListener { _, isChecked: Boolean ->
             AppSettings.setBoolOption(context, settingPrefix, isChecked)
+
+            callback?.invoke(isChecked)
         }
 
         // Allow whole control to be clickable
