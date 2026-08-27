@@ -2207,6 +2207,52 @@ public class GamepadDefinitions
                                             ActionInput.SourceType.BUTTON,
                                             -1);
 
+                gamepadDefinition.addHeader("Quake 4");
+
+                gamepadDefinition.addAction("q4_reload",
+                                            "Reload",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_RELOAD,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("q4_flash_light",
+                                            "Flashlight",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_FLASH_LIGHT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("q4_sprint",
+                                            "Sprint",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_SPRINT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                // Same engine button as "Alt Attack" above, named as the game names it
+                gamepadDefinition.addAction("q4_zoom",
+                                            "Zoom",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_ZOOM_IN,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("q4_holster",
+                                            "Holster weapon",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_HOLSTER_WEAPON,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                // Hold to show, not a toggle
+                gamepadDefinition.addAction("q4_objectives",
+                                            "Objectives",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_HELPCOMP,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
                 gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
 
                 gamepadDefinition.addAction("custom_0",
