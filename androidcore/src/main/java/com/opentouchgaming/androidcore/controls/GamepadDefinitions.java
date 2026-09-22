@@ -17,6 +17,12 @@ public class GamepadDefinitions
         //if(gamepadDefinition == null)
         {
             gamepadDefinition = new ActionInputDefinition();
+
+            gamepadDefinition.addHeader("Shift buttons (hold + another button for extra bindings)");
+
+            gamepadDefinition.addAction("shift_1", "Shift 1", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SHIFT_1, ActionInput.SourceType.BUTTON, -1);
+            gamepadDefinition.addAction("shift_2", "Shift 2", ActionInput.ActionType.BUTTON, PortActDefs.PORT_ACT_SHIFT_2, ActionInput.SourceType.BUTTON, -1);
+
             if (app == AppInfo.Apps.DELTA_TOUCH)
             {
                 gamepadDefinition.addHeader("Common");

@@ -308,12 +308,22 @@ public class GamePadFragment extends Fragment implements ControlConfig.Listener
     @Override
     public void startMonitoring(ActionInput action)
     {
+        shiftChanged(action, 0);
+    }
+
+    @Override
+    public void shiftChanged(ActionInput action, int shift)
+    {
+        String prefix = (shift != 0) ? "Shift " + shift + " + " : "";
         if (action.actionType == ActionInput.ActionType.ANALOG)
             info.setText("Move Stick: " + action.description);
+        else if (action.isShift())
+            info.setText(action.description + " (press button)");
         else
-            info.setText(action.description);
+            info.setText(prefix + action.description);
 
-        info.setTextColor(getActivity().getResources().getColor(android.R.color.holo_green_light));
+        int color = (shift != 0) ? android.R.color.holo_orange_light : android.R.color.holo_green_light;
+        info.setTextColor(getActivity().getResources().getColor(color));
         //Make it flash
         Animation anim = new AlphaAnimation(0.2f, 1.0f);
         anim.setDuration(500); //You can manage the blinking time with this parameter

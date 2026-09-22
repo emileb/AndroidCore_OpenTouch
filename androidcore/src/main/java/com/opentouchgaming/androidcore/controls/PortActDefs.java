@@ -206,6 +206,10 @@ public class PortActDefs
 
     public static final int PORT_ACT_MENU_SHOW = 0x208;
 
+    // Shift modifiers, handled in Java only and never sent to the engine
+    public static final int PORT_ACT_SHIFT_1 = 0x300;
+    public static final int PORT_ACT_SHIFT_2 = 0x301;
+
     public static final int PORT_ACT_VOLUME_UP = 0x242;
     public static final int PORT_ACT_VOLUME_DOWN = 0x243;
 }

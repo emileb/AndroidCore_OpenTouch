@@ -44,6 +44,7 @@ public class ControlConfig implements Serializable
     ActionInput actionMonitor = null;
     boolean monitoring = false;
     boolean gotInput = false;
+    int heldShift = 0; // Shift modifier currently held while monitoring
     Listener listener;
     int[] axisTest = {
             /*
@@ -128,6 +129,7 @@ public class ControlConfig implements Serializable
                     a.source = d.source;
                     a.sourceType = d.sourceType;
                     a.sourcePositive = d.sourcePositive;
+                    a.shift = d.shift;
                     a.scale = d.scale;
                     a.deadZone = d.deadZone;
                     if (a.scale == 0)
@@ -188,6 +190,61 @@ public class ControlConfig implements Serializable
             return false;
     }
 
+    // Shift number (1/2) if this physical input is bound as a shift button, else 0
+    int shiftForSource(ActionInput.SourceType type, int source)
+    {
+        for (ActionInput a : actions)
+        {
+            if (a.isShift() && a.sourceType == type && a.source == source)
+                return a.shiftIndex();
+        }
+        return 0;
+    }
+
+    ActionInput getShiftAction(int shift)
+    {
+        if (shift == 0)
+            return null;
+        for (ActionInput a : actions)
+        {
+            if (a.shiftIndex() == shift)
+                return a;
+        }
+        return null;
+    }
+
+    // Shift buttons are exclusive: drop every other binding on the same physical input
+    void unbindOthers(ActionInput keep)
+    {
+        for (ActionInput a : actions)
+        {
+            if (a != keep && a.sourceType == keep.sourceType && a.source == keep.source)
+            {
+                a.source = -1;
+                a.shift = 0;
+            }
+        }
+    }
+
+    void setHeldShift(int shift)
+    {
+        if (heldShift == shift)
+            return;
+        heldShift = shift;
+        if (listener != null)
+            listener.shiftChanged(actionMonitor, shift);
+    }
+
+    // Bind the monitored action to the given input, applying any held shift
+    private void assignMonitored(ActionInput.SourceType type, int source)
+    {
+        actionMonitor.source = source;
+        actionMonitor.sourceType = type;
+        actionMonitor.shift = actionMonitor.isShift() ? 0 : heldShift;
+        if (actionMonitor.isShift())
+            unbindOthers(actionMonitor);
+    }
+
     public void startMonitor(Activity act, int pos)
     {
         actionMonitor = actions.get(pos);
@@ -198,6 +255,7 @@ public class ControlConfig implements Serializable
 
         monitoring = true;
         gotInput = false;
+        heldShift = 0;
         if (listener != null)
             listener.startMonitoring(actionMonitor);
     }
@@ -205,6 +263,7 @@ public class ControlConfig implements Serializable
     public void stopMonitor()
     {
         monitoring = false;
+        heldShift = 0;
         if (listener != null)
             listener.finishedMonitoring();
     }
@@ -217,12 +276,21 @@ public class ControlConfig implements Serializable
         {
             if (actionMonitor != null && !gotInput)
             {
+                boolean changed = false;
                 for (int a : axisTest)
                 {
                     if (Math.abs(event.getAxisValue(a)) > 0.6)
                     {
-                        actionMonitor.source = a;
-                        actionMonitor.sourceType = ActionInput.SourceType.AXIS;
+                        // An axis bound as a shift button (trigger) only modifies, it can't be bound on its own
+                        int shift = actionMonitor.isShift() ? 0 : shiftForSource(ActionInput.SourceType.AXIS, a);
+                        if (shift != 0)
+                        {
+                            setHeldShift(shift);
+                            changed = true;
+                            continue;
+                        }
+
+                        assignMonitored(ActionInput.SourceType.AXIS, a);
                         //Used for button actions
                         actionMonitor.sourcePositive = event.getAxisValue(a) > 0;
 
@@ -235,6 +303,15 @@ public class ControlConfig implements Serializable
                         return true;
                     }
                 }
+
+                // Release an axis-held shift once the trigger returns to centre
+                ActionInput held = getShiftAction(heldShift);
+                if (held != null && held.sourceType == ActionInput.SourceType.AXIS && Math.abs(event.getAxisValue(held.source)) < 0.2)
+                {
+                    setHeldShift(0);
+                    changed = true;
+                }
+                return changed;
             }
             else // Keep monitoring until all the axis are back in the centre
             {
@@ -271,6 +348,7 @@ public class ControlConfig implements Serializable
             {
                 actionMonitor.source = -1;
                 actionMonitor.sourceType = ActionInput.SourceType.BUTTON;
+                actionMonitor.shift = 0;
 
                 stopMonitor();
                 updated();
@@ -282,8 +360,15 @@ public class ControlConfig implements Serializable
                 {
                     if (actionMonitor.actionType != ActionInput.ActionType.ANALOG)
                     {
-                        actionMonitor.source = keyCode;
-                        actionMonitor.sourceType = ActionInput.SourceType.BUTTON;
+                        // A shift button only modifies, it can't be bound to an action on its own
+                        int shift = actionMonitor.isShift() ? 0 : shiftForSource(ActionInput.SourceType.BUTTON, keyCode);
+                        if (shift != 0)
+                        {
+                            setHeldShift(shift);
+                            return true;
+                        }
+
+                        assignMonitored(ActionInput.SourceType.BUTTON, keyCode);
 
                         stopMonitor();
                         updated();
@@ -299,6 +384,9 @@ public class ControlConfig implements Serializable
 
     public boolean onKeyUp(int keyCode, KeyEvent event)
     {
+        if (monitoring && heldShift != 0 && shiftForSource(ActionInput.SourceType.BUTTON, keyCode) == heldShift)
+            setHeldShift(0);
+
         return monitoring;
     }
 
@@ -339,6 +427,12 @@ public class ControlConfig implements Serializable
                 name.setTextColor(0xFFf7941d); //ORANGE
             }
 
+            if (ai.isShift())
+            {
+                name.setTextColor(0xFFffcc00); //AMBER
+                image.setImageResource(R.drawable.gamepad);
+            }
+
             if ((ai.actionType == ActionInput.ActionType.ANALOG) || (ai.extraDialog != null))
             {
                 setting_image.setVisibility(View.VISIBLE);
@@ -364,22 +458,27 @@ public class ControlConfig implements Serializable
 
                                                      actionMonitor.source = -1;
                                                      actionMonitor.sourceType = ActionInput.SourceType.BUTTON;
+                                                     actionMonitor.shift = 0;
 
                                                      stopMonitor();
                                                      updated();
                                                  });
             }
 
-            if (ai.source == -1)
+            if (monitoring && ai == actionMonitor && heldShift != 0)
+            {
+                binding.setText("Shift " + heldShift + " + ...");
+            }
+            else if (ai.source == -1)
             {
                 binding.setText("not set");
             }
             else
             {
-                if (ai.sourceType == ActionInput.SourceType.AXIS)
-                    binding.setText(MotionEvent.axisToString(ai.source));
-                else
-                    binding.setText(KeyEvent.keyCodeToString(ai.source));
+                String text = (ai.sourceType == ActionInput.SourceType.AXIS) ? MotionEvent.axisToString(ai.source) : KeyEvent.keyCodeToString(ai.source);
+                if (ai.shift != 0)
+                    text = "Shift " + ai.shift + " + " + text;
+                binding.setText(text);
             }
 
             if (actionMonitor != null && actionMonitor == ai && monitoring)
@@ -407,6 +506,11 @@ public class ControlConfig implements Serializable
     public interface Listener
     {
         void startMonitoring(ActionInput action);
+
+        // Shift button pressed/released while monitoring; shift is 0 when released
+        default void shiftChanged(ActionInput action, int shift)
+        {
+        }
 
         void finishedMonitoring();
     }

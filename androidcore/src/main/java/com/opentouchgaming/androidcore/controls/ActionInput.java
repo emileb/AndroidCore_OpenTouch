@@ -18,6 +18,7 @@ public class ActionInput implements Serializable, Cloneable
     public SourceType sourceType;
     public int source = -1;
     public boolean sourcePositive = true; //Used when using analog as a button
+    public int shift = 0; // 0 = none, 1/2 = only active while that shift button is held
     transient ActionInputExtra extraDialog;
 
     public ActionInput(String tag, String description, ActionType actionType, int actionCode, SourceType sourceType, int source, ActionInputExtra extraDialog)
@@ -35,7 +36,18 @@ public class ActionInput implements Serializable, Cloneable
 
     public String toString()
     {
-        return description + " : " + sourceType.toString() + " source: " + source + " sourcePositive: " + sourcePositive;
+        return description + " : " + sourceType.toString() + " source: " + source + " sourcePositive: " + sourcePositive + " shift: " + shift;
+    }
+
+    public boolean isShift()
+    {
+        return actionCode == PortActDefs.PORT_ACT_SHIFT_1 || actionCode == PortActDefs.PORT_ACT_SHIFT_2;
+    }
+
+    // 1 or 2 for shift actions, 0 otherwise
+    public int shiftIndex()
+    {
+        return isShift() ? actionCode - PortActDefs.PORT_ACT_SHIFT_1 + 1 : 0;
     }
 
     @Override

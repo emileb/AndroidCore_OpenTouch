@@ -11,6 +11,7 @@ import com.opentouchgaming.androidcore.AppSettings;
 import com.opentouchgaming.androidcore.DebugLog;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ControlInterpreter
@@ -32,6 +33,9 @@ public class ControlInterpreter
     HashMap<Integer, Boolean> analogButtonState = new HashMap<Integer, Boolean>(); //Saves current state of analog buttons so all sent each time
     Dpad mDpad = new Dpad();
     boolean[] dpadLastState = new boolean[4];
+    boolean[] shiftHeld = new boolean[3]; // Index 1 and 2 used
+    // Action codes sent on key down, keyed by keycode, so key up releases exactly what was pressed even if shift changed
+    HashMap<Integer, ArrayList<Integer>> pressedByKey = new HashMap<>();
 
     /** Engine-specific gamepad config override; null means use the global SharedPreferences setting. */
     public String engineGamepadConfig = null;
@@ -70,6 +74,8 @@ public class ControlInterpreter
                     ? engineGamepadConfig
                     : AppSettings.getStringOption(context, "gamepad_config_filename", GamePadFragment.DEFAULT_CONFIG);
             config.loadControls(gamepadConfigFile);
+            shiftHeld = new boolean[3];
+            pressedByKey.clear();
         }
         catch (IOException e)
         {
@@ -205,6 +211,31 @@ public class ControlInterpreter
         return true;
     }
 
+    int currentShift()
+    {
+        return shiftHeld[1] ? 1 : (shiftHeld[2] ? 2 : 0);
+    }
+
+    boolean hasBinding(ActionInput.SourceType type, int source, boolean positive, int shift)
+    {
+        for (ActionInput ai : config.actions)
+        {
+            if (!ai.isShift() && ai.sourceType == type && ai.source == source && ai.shift == shift &&
+                (type == ActionInput.SourceType.BUTTON || ai.sourcePositive == positive))
+                return true;
+        }
+        return false;
+    }
+
+    // Exact shift level wins; unshifted bindings still fire when nothing is bound at the held level
+    boolean shiftMatches(ActionInput ai)
+    {
+        int shift = currentShift();
+        if (ai.shift == shift)
+            return true;
+        return ai.shift == 0 && !hasBinding(ai.sourceType, ai.source, ai.sourcePositive, shift);
+    }
+
     private void handleDpad(InputEvent event)
     {
         if (Dpad.isDpadDevice(event))
@@ -256,17 +287,30 @@ public class ControlInterpreter
 
         if (gamePadEnabled)
         {
+            int shift = config.shiftForSource(ActionInput.SourceType.BUTTON, keyCode);
+            if (shift != 0)
+            {
+                shiftHeld[shift] = true;
+                return true;
+            }
+
+            ArrayList<Integer> sent = new ArrayList<>();
             for (ActionInput ai : config.actions)
             {
                 if (((ai.sourceType == ActionInput.SourceType.BUTTON)) && (ai.source == keyCode))
                 {
-                    if (event.getRepeatCount() == 0)//Don't want to send key repeats
+                    if (event.getRepeatCount() == 0 && shiftMatches(ai))//Don't want to send key repeats
+                    {
                         controlInterface.doAction_if(1, ai.actionCode);
+                        sent.add(ai.actionCode);
+                    }
 
                     //log.log(D, "key down intercept");
                     used = true;
                 }
             }
+            if (!sent.isEmpty())
+                pressedByKey.put(keyCode, sent);
         }
 
         handleDpad(event);
@@ -306,13 +350,24 @@ public class ControlInterpreter
 
         if (gamePadEnabled)
         {
+            int shift = config.shiftForSource(ActionInput.SourceType.BUTTON, keyCode);
+            if (shift != 0)
+            {
+                shiftHeld[shift] = false;
+                return true;
+            }
+
+            ArrayList<Integer> sent = pressedByKey.remove(keyCode);
+            if (sent != null)
+            {
+                for (int actionCode : sent)
+                    controlInterface.doAction_if(0, actionCode);
+            }
+
             for (ActionInput ai : config.actions)
             {
                 if (((ai.sourceType == ActionInput.SourceType.BUTTON)) && (ai.source == keyCode))
-                {
-                    controlInterface.doAction_if(0, ai.actionCode);
                     used = true;
-                }
             }
         }
 
@@ -352,9 +407,20 @@ public class ControlInterpreter
         boolean used = false;
         if (gamePadEnabled)
         {
+            // Axis-bound shift buttons (triggers) update the modifier state before any bindings are evaluated
             for (ActionInput ai : config.actions)
             {
-                if ((ai.sourceType == ActionInput.SourceType.AXIS) && (ai.source != -1))
+                if (ai.isShift() && (ai.sourceType == ActionInput.SourceType.AXIS) && (ai.source != -1))
+                {
+                    float value = event.getAxisValue(ai.source);
+                    shiftHeld[ai.shiftIndex()] = ai.sourcePositive ? (value > 0.5) : (value < -0.5);
+                    used = true;
+                }
+            }
+
+            for (ActionInput ai : config.actions)
+            {
+                if (!ai.isShift() && (ai.sourceType == ActionInput.SourceType.AXIS) && (ai.source != -1))
                 {
                     int invert;
                     invert = ai.invert ? -1 : 1;
@@ -382,7 +448,8 @@ public class ControlInterpreter
                         //log.log(D, "Analog as button, value = " + value);
                         //log.log(D, ai.toString());
 
-                        if (((ai.sourcePositive) && (value) > 0.5) || ((!ai.sourcePositive) && (value) < -0.5))
+                        boolean pressed = ((ai.sourcePositive) && (value) > 0.5) || ((!ai.sourcePositive) && (value) < -0.5);
+                        if (pressed && shiftMatches(ai))
                         {
                             if (!analogButtonState.get(ai.actionCode)) //Check internal state, only send if different
                             {
