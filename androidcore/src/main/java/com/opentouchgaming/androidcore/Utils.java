@@ -727,13 +727,23 @@ public class Utils
                 {
                     findFiles(fil, name, files);
                 }
-                else if (name.equalsIgnoreCase(fil.getName()))
+                else if (matchesName(name, fil.getName()))
                 {
                     files.add(fil.getAbsolutePath());
                 }
             }
         }
         return files;
+    }
+
+    // Exact name, or a "*.ext" pattern for engines whose config file is named by the user
+    static private boolean matchesName(String name, String fileName)
+    {
+        if (name.startsWith("*"))
+        {
+            return fileName.length() > name.length() - 1 && fileName.toLowerCase().endsWith(name.substring(1).toLowerCase());
+        }
+        return name.equalsIgnoreCase(fileName);
     }
 
     static int getTargetAPI()
