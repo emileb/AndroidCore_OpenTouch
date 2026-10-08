@@ -56,6 +56,8 @@ public class PortActDefs
     public static final int PORT_ACT_MAP_ZOOM_OUT = 36;
     public static final int PORT_ACT_ALWAYS_RUN = 37;
     public static final int PORT_ACT_TOGGLE_CROUCH = 38;
+    public static final int PORT_ACT_TOGGLE_ALT_ATTACK = 39;
+    public static final int PORT_ACT_CROUCH = 40;
 
     public static final int PORT_ACT_SMART_TOGGLE_RUN = 42;
 
@@ -106,6 +108,7 @@ public class PortActDefs
     public static final int PORT_ACT_FORCE_ABSORB = 85;
     public static final int PORT_ACT_FORCE_SIGHT = 86;
     public static final int PORT_ACT_SABER_SEL = 87; //Just chooses weapon 1 so show/hide saber.
+    public static final int PORT_ACT_MP_SCORES = 89;
 
     //Choloate
     public static final int PORT_ACT_GAMMA = 90;

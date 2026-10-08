@@ -2253,6 +2253,68 @@ public class GamepadDefinitions
                                             ActionInput.SourceType.BUTTON,
                                             -1);
 
+                gamepadDefinition.addHeader("Far Cry");
+
+                // Tap toggles crouch, hold goes prone (the common "Crouch" is a held crouch)
+                gamepadDefinition.addAction("fc_stance",
+                                            "Crouch (hold: prone)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_CROUCH,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("fc_cryvision",
+                                            "CryVision",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_DF_NIGHT_VISION,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("fc_fire_mode",
+                                            "Fire mode",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_TOGGLE_ALT_ATTACK,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                // Same engine button as Quake 4's "Objectives" above
+                gamepadDefinition.addAction("fc_binoculars",
+                                            "Binoculars",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_HELPCOMP,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("fc_objectives",
+                                            "Objectives (hold)",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_MP_SCORES,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                // Same as the common "Inventory next"
+                gamepadDefinition.addAction("fc_grenade_cycle",
+                                            "Change grenade",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_INVNEXT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                // Repeats while held
+                gamepadDefinition.addAction("fc_zoom_in",
+                                            "Scope zoom in",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_MAP_ZOOM_IN,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
+                gamepadDefinition.addAction("fc_zoom_out",
+                                            "Scope zoom out",
+                                            ActionInput.ActionType.BUTTON,
+                                            PortActDefs.PORT_ACT_MAP_ZOOM_OUT,
+                                            ActionInput.SourceType.BUTTON,
+                                            -1);
+
                 gamepadDefinition.addHeader("Custom buttons (Keypad 0 to 9)");
 
                 gamepadDefinition.addAction("custom_0",
