@@ -78,6 +78,14 @@ class AppPromoDialog
             "http://opentouchgaming.com/psi-touch/"
         ),
         PromoApp(
+            AppInfo.Apps.SIGMA_TOUCH,
+            "Sigma Touch",
+            "Unreal, Unreal Tournament and more!",
+            listOf("Unreal", "Unreal Tournament", "Aliens vs Predator", "Quake 4", "Far Cry"),
+            "promo_sigma",
+            "http://opentouchgaming.com/sigma-touch/"
+        ),
+        PromoApp(
             AppInfo.Apps.RAZE_TOUCH,
             "Zeta Touch",
             "Duke Nukem 3D and other Build engine classics!",
