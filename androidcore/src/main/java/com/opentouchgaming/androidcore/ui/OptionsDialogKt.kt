@@ -41,6 +41,7 @@ class OptionsDialogKt(
         const val ENABLE_GAMEPAD = "gamepad_enabled"
         const val GAMEPAD_HIDE_TOUCH = "gamepad_hide_touch"
         const val USE_MINI_UI = "use_mini_ui"
+        const val SAF_PREFETCH = "saf_prefetch"
         const val SWAP_MOUSE_XY = "swap_mouse_xy"
         const val INVERT_MOUSE_X = "invert_mouse_x"
         const val INVERT_MOUSE_Y = "invert_mouse_y"
@@ -256,6 +257,15 @@ class OptionsDialogKt(
             "Mini UI list",
             "Use smaller user interface for game list (restart needed)",
             USE_MINI_UI,
+            false,
+        )
+
+        SwitchWidget(
+            activity,
+            binding.safPrefetch.root,
+            "Faster loading from storage folder",
+            "Opens a folder's files in parallel when a game loads from a folder you picked. Experimental",
+            SAF_PREFETCH,
             false,
         )
 

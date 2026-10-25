@@ -244,6 +244,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
             boolean cacheNativeFs = Build.VERSION.SDK_INT > 29;
             // Load SAF library, before SDL so it works on Android 4.1
             UtilsSAF.setContext(getApplicationContext(), cacheNativeFs);
+            UtilsSAF.setPrefetch(getIntent().getBooleanExtra("saf_prefetch", false));
             UtilsSAF.loadTreeRoot(getApplicationContext());
         }
 

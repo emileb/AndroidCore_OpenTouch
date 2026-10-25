@@ -125,6 +125,10 @@
             android:id="@+id/use_mini_ui"
             layout="@layout/widget_view_switch" />
 
+        <include
+            android:id="@+id/saf_prefetch"
+            layout="@layout/widget_view_switch" />
+
         <include layout="@layout/view_horizontal_line" />
 
         <LinearLayout

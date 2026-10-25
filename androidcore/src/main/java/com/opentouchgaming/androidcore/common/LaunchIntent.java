@@ -22,6 +22,7 @@ public class LaunchIntent
         intent.putExtra("user_files", AppInfo.getUserFiles());
         intent.putExtra("res_files", AppInfo.getResFiles());
         intent.putExtra("secondary_path", AppInfo.getAppSecDirectory());
+        intent.putExtra("saf_prefetch", SwitchWidget.fetchValue(ctx, OptionsDialogKt.SAF_PREFETCH, false));
 
         // Graphics
         intent.putExtra("res_div_float", OptionsDialogKt.Companion.GetResolutionScale(ctx));
