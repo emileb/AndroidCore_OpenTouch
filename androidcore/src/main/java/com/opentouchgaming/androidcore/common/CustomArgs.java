@@ -125,6 +125,7 @@ public class CustomArgs implements Serializable
         else if ((AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_DUKE) ||
                  (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_BLOOD) ||
                  (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_NAM) ||
+                 (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_WW2GI) ||
                  (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_POWERSLAVE) ||
                  (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_SW) ||
                  (AppInfo.currentEngine.engine == GameEngine.Engine.RAZE_REDNECK))
