@@ -210,6 +210,12 @@ public class ZipUtils
 
     public static boolean extractAsset(Context ctx, String file, String dest, long size)
     {
+        return extractAsset(ctx, file, dest, size, null);
+    }
+
+    // onDone runs on the UI thread after a successful extraction.
+    public static boolean extractAsset(Context ctx, String file, String dest, long size, Runnable onDone)
+    {
         try
         {
             AssetManager assetManager = ctx.getAssets();
@@ -221,7 +227,7 @@ public class ZipUtils
             return false;
         }
 
-        ExtractAsset extract = new ExtractAsset(ctx, size);
+        ExtractAsset extract = new ExtractAsset(ctx, size, onDone);
         extract.execute(file, dest);
         return true;
     }
@@ -231,12 +237,14 @@ public class ZipUtils
         Context ctx;
         long totalSize;
         String errorstring = null;
+        Runnable onDone;
         private ProgressDialog progressBar;
 
-        ExtractAsset(Context ctx, long totalSize)
+        ExtractAsset(Context ctx, long totalSize, Runnable onDone)
         {
             this.ctx = ctx;
             this.totalSize = totalSize;
+            this.onDone = onDone;
         }
 
         @Override
@@ -332,6 +340,10 @@ public class ZipUtils
                 });
 
                 builder.show();
+            }
+            else if (onDone != null)
+            {
+                onDone.run();
             }
         }
     }
