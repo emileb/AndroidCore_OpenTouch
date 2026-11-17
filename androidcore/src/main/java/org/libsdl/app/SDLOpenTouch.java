@@ -212,6 +212,29 @@ public class SDLOpenTouch
                 {
 
                 }
+
+                // Scale a too-small size up to the engine's minimum, keeping its aspect.
+                int minWidth = intent.getIntExtra("framebuffer_min_width", 0);
+                int minHeight = intent.getIntExtra("framebuffer_min_height", 0);
+                float renderScale = 1.0f;
+                if (fbWidth > 0 && fbHeight > 0)
+                {
+                    float scale = Math.max((float) minWidth / fbWidth, (float) minHeight / fbHeight);
+                    if (scale > 1)
+                    {
+                        fbWidth = Math.min(Math.round(fbWidth * scale), (int) displayWidth);
+                        fbHeight = Math.min(Math.round(fbHeight * scale), (int) displayHeight);
+                        renderScale = 1.0f / scale;
+                    }
+                }
+                // Engines that can draw their 3D view smaller than the framebuffer read this to keep the requested size.
+                try
+                {
+                    android.system.Os.setenv("OPENTOUCH_RENDER_SCALE", Float.toString(renderScale), true);
+                }
+                catch (Exception e)
+                {
+                }
             }
             NativeLib.setFramebufferSize(fbWidth, fbHeight, maintainAspect ? 1 : 0);
         }

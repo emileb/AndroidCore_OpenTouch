@@ -31,6 +31,8 @@ public class LaunchIntent
         intent.putExtra("framebuffer_width", runInfo.frameBufferWidth);
         intent.putExtra("framebuffer_height", runInfo.frameBufferHeight);
         intent.putExtra("framebuffer_maintain_aspect", runInfo.maintainAspect);
+        intent.putExtra("framebuffer_min_width", runInfo.frameBufferMinWidth);
+        intent.putExtra("framebuffer_min_height", runInfo.frameBufferMinHeight);
         intent.putExtra("touch_surfaceview", runInfo.touchSurfaceview);
 
         // Audio

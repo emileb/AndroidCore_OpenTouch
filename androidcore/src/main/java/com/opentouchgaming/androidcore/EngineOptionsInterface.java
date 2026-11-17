@@ -54,6 +54,9 @@ public interface EngineOptionsInterface
         public boolean maintainAspect;
         public String frameBufferWidth;
         public String frameBufferHeight;
+        // Smallest framebuffer the engine can render to; a smaller Screen / N size is scaled up to it (0 = none).
+        public int frameBufferMinWidth;
+        public int frameBufferMinHeight;
 
         /** SDL major version to use for this engine. 2 = app2012 (SDL2), 3 = app3000 (SDL3). */
         public int sdlVersion = 2;
