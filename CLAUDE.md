@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 AndroidCore_OpenTouch is an Android library (AAR) providing reusable infrastructure for porting games to Android. It supports multiple game engines (GZDoom, Raze, ioquake3, and 40+ others) and provides touch controls, gamepad mapping, audio backend selection, and file system abstraction.
 
-- **Min SDK:** 19 (Android 4.4 KitKat)
+- **Min SDK:** 21 (Android 5.0; NDK 27's floor, since 2026-11)
 - **Target/Compile SDK:** 35 (Android 15)
 - **Languages:** Java (primary) + Kotlin
 - **Namespace:** `com.opentouchgaming.androidcore`
@@ -66,6 +66,6 @@ Host app calls `AppInfo.setAppInfo()` → sets up directories, storage mode, eng
 ## Important Notes
 
 - Glide is pinned to 4.16.0 for Nvidia Shield TV compatibility — do not upgrade without testing on Shield.
-- `constraintlayout` is capped at 1.1.3 and `appcompat` at 1.6.1 to maintain API 19 support.
+- `constraintlayout` is capped at 1.1.3 and `appcompat` at 1.6.1 for old devices (originally for API 19) — test on Nvidia Shield TV before upgrading.
 - The project uses `jcenter()` (deprecated) — migration to Maven Central may be needed for new dependencies.
 - ViewBinding is enabled; use it instead of `findViewById`.
